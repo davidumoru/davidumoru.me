@@ -1,0 +1,8 @@
+pre {
+	padding: var(--space-xs);
+}
+:not(pre) > code {
+	background-color: var(--gray-2);
+	border: 1px solid var(--gray-6);
+	padding: 0.1em;
+}

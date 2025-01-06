@@ -1,0 +1,16 @@
+table {
+	--flow-space: var(--space-s);
+	border-collapse: collapse;
+	inline-size: 100%;
+}
+
+td,
+th {
+	border: 1px solid currentColor;
+	padding-block: var(--space-3xs);
+	padding-inline: var(--space-xs);
+}
+
+td {
+	text-align: start;
+}

@@ -1,0 +1,13 @@
+ul {
+	padding-inline-start: 0.9ch;
+}
+li {
+	padding-inline-start: var(--space-2xs);
+	& + li {
+		margin-block-start: var(--space-3xs);
+	}
+	&::marker {
+		content: '-';
+		color: var(--gray-11);
+	}
+}

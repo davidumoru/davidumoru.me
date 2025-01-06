@@ -1,0 +1,14 @@
+hr {
+	border: 0;
+	margin-block: var(--space-l);
+	--flow-space: var(--space-l);
+	white-space: nowrap;
+	overflow: hidden;
+	font-weight: 100;
+	font-size: var(--fs--1);
+	text-align: center;
+}
+
+hr::before {
+	content: '***';
+}

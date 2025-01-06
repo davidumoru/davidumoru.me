@@ -1,0 +1,26 @@
+h1,
+h2,
+h3,
+.h1,
+.h2,
+.h3 {
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+h3,
+.h3 {
+	font-size: var(--fs-0);
+	--flow-space: var(--space-s);
+}
+
+h2,
+.h2 {
+	font-size: var(--fs-1);
+	--flow-space: var(--space-m);
+}
+
+h1,
+.h1 {
+	font-size: var(--fs-3);
+}
