@@ -1,0 +1,54 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "../components/ProjectCard.astro";
+import PostCard from "../components/PostCard.astro";
+import Base from "../layouts/Base.astro";
+import SubscribeForm from "../components/SubscribeForm.astro";
+
+const posts = (await getCollection("posts"))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3); // Limit to the 3 most recent posts
+
+const projects = (await getCollection("projects"))
+  .filter((el) => el.data.highlight === true)
+  .sort((a, b) => b.data.year - a.data.year)
+  .slice(0, 3); // Limit to the 3 most recent projects
+---
+
+<Base title="Hello">
+  <section class="flow">
+    <h1>Hello :)</h1>
+    <p>
+      I'm David, a college student navigating the ups and downs of life. I'm
+      always exploring, experimenting, and writing has become a new way for me
+      to better understand myself.
+    </p>
+    <h2>Currently</h2>
+    <p>
+      I'm working on several side projects, creating designs for various brands,
+      and documenting my journey through writing.
+    </p>
+    <hr />
+  </section>
+
+  <section class="flow">
+    <h2>Recent Notes</h2>
+    <div class="region flow">
+      {posts.map((el) => <PostCard slug={el.slug} />)}
+      <a href="/notes" class="link">&rightarrow; All notes</a>
+    </div>
+  </section>
+
+  <section class="flow">
+    <h2>Projects</h2>
+    <div class="region flow">
+      {projects.map((el) => <ProjectCard slug={el.slug} />)}
+      <a href="/projects" class="link">&rightarrow; All projects</a>
+    </div>
+  </section>
+
+  <section>
+    <hr />
+    <SubscribeForm />
+  </section>
+</Base>
