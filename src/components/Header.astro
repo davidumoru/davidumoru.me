@@ -13,9 +13,23 @@ const now = displayDate(new Date());
     <nav>
       <div>
         <a
-          href="/"
-          aria-current={Astro.url.pathname === "/" ? "page" : false}
-          class="">Home</a
+          href="/now"
+          aria-current={Astro.url.pathname === "/now" ? "page" : false}
+          class="">Now</a
+        >
+      </div>
+      <div>
+        <a
+          href="/about"
+          aria-current={Astro.url.pathname === "/about" ? "page" : false}
+          class="">About</a
+        >
+      </div>
+      <div>
+        <a
+          href="/notes/"
+          aria-current={Astro.url.pathname.includes("/notes") ? "page" : false}
+          class="">Notes</a
         >
       </div>
       <div>
@@ -25,13 +39,6 @@ const now = displayDate(new Date());
             ? "page"
             : false}
           class="">Projects</a
-        >
-      </div>
-      <div>
-        <a
-          href="/notes/"
-          aria-current={Astro.url.pathname.includes("/notes") ? "page" : false}
-          class="">Notes</a
         >
       </div>
     </nav>
