@@ -1,0 +1,124 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="404: Not Found">
+  <div class="scanlines"></div>
+  <div class="glitchContainer">
+    <div class="text">
+      <h1 class="title">404</h1>
+      <div class="subtitle">Not Found</div>
+      <div class="textClip">
+        <h1 class="title">404</h1>
+        <div class="subtitle">Not Found</div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  @keyframes text-offset {
+    0% {
+      clip-path: polygon(0 110%, 100% 110%, 100% 160%, 0 160%);
+    }
+
+    100% {
+      clip-path: polygon(0 -90%, 100% -90%, 100% -10%, 0 -10%);
+    }
+  }
+
+  @keyframes scanline {
+    0% {
+      transform: translate3d(0, 100vh, 0);
+    }
+
+    50% {
+      transform: translate3d(0, -6px, 0);
+    }
+  }
+
+  @keyframes flicker {
+    0% {
+      opacity: 0.95;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .glitchContainer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: -1;
+    animation: flicker 20ms infinite;
+  }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAGCAYAAAD37n+BAAAALElEQVQYV2NkYGD4/x9IMAIxAxoDmzhIHfU0gCxFB9S1AacfsFmNJQzAoQIAH84j/OCkeYUAAAAASUVORK5CYII=");
+    background-size: 12px 6px;
+    opacity: 0.05;
+  }
+
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    background: var(--white-a12);
+    opacity: 1;
+    height: 6px;
+    animation: scanline 5s linear infinite;
+  }
+
+  .textClip {
+    position: absolute;
+    top: 0;
+    left: -0.3em;
+    text-shadow:
+      -1.5px 0 0 blue,
+      1.5px 0 0 red,
+      0 1.5px 0 lime,
+      0.4em 0 0 var(--gray-1),
+      4px 4px 0 var(--gray-1);
+    animation: text-offset 8s linear infinite;
+  }
+
+  .subtitle {
+    font-size: clamp(60px, 10vw, 96px);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-loose);
+    white-space: nowrap;
+  }
+
+  .text {
+    font-family: var(--font-sans);
+    position: relative;
+    z-index: -1;
+    line-height: 0.7;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    user-select: none;
+    text-align: center;
+    text-shadow:
+      -1.5px 0 0 blue,
+      1.5px 0 0 red,
+      0 1.5px 0 green;
+    filter: blur(1.5px);
+  }
+
+  .title {
+    font-family: var(--font-sans);
+    font-size: clamp(180px, 30vw, 280px);
+    font-weight: var(--font-weight-bold);
+  }
+</style>
