@@ -1,0 +1,203 @@
+---
+title: 'Notes'
+date: 2024-09-02
+description: 'A collection of my jottings highlighting the key concept of various topics in JavaScript.'
+---
+
+
+***NB: I update this from time to time as I learn new things.***
+
+...
+
+## OBJECTS AND OBJECT CONSTRUCTORS
+
+1. **Object Literals**:
+   - Objects in JavaScript can be created using object literals, which is a straightforward way to group related data and functions.
+   - Example: `const person = { name: 'John', age: 30 };`.
+
+2. **Dot and Bracket Notation**:
+   - Access object properties using dot notation (`person.name`) or bracket notation (`person['name']`).
+   - Bracket notation is useful when property names are dynamic or not valid identifiers.
+
+3. **Object Constructors**:
+   - Constructors are functions used to create multiple similar objects. They use the `new` keyword to instantiate objects.
+   - Example:
+
+     ```javascript
+     function Person(name, age) {
+       this.name = name;
+       this.age = age;
+     }
+     const john = new Person('John', 30);
+     ```
+
+4. **Prototypes**:
+   - JavaScript objects have a prototype, which is another object from which they inherit properties and methods.
+   - Methods defined on a constructor’s prototype are shared across all instances created by that constructor.
+   - Example:
+
+     ```javascript
+     Person.prototype.sayHello = function() {
+       console.log(`Hello, my name is ${this.name}`);
+     };
+     ```
+
+5. **Prototypal Inheritance**:
+   - Objects can inherit properties and methods from other objects. This is the basis for prototypal inheritance in JavaScript, allowing for the creation of more complex object structures.
+
+6. **Benefits of Constructors and Prototypes**:
+   - Using constructors and prototypes helps to avoid redundancy, manage memory efficiently, and organize code better by separating concerns.
+
+...
+
+## FACTORY FUNCTIONS AND THE MODULE PATTERN
+
+1. **Factory Functions**:
+   - A function that returns an object.
+   - Allows for the creation of multiple objects with similar properties and methods without using `new` keyword or constructors.
+   - Example:
+
+     ```javascript
+     function createDog(name, breed) {
+         return {
+             name,
+             breed,
+             bark() {
+                 console.log(`${this.name} says woof!`);
+             },
+         };
+     }
+     ```
+
+2. **Benefits of Factory Functions**:
+   - Encapsulation: Keeps the object creation logic within the function.
+   - No need for `new` keyword, preventing common mistakes associated with it.
+
+3. **The Module Pattern**:
+   - A way to encapsulate private variables and expose public methods.
+   - Useful for organizing code and creating modules.
+   - Example:
+
+     ```javascript
+     const Counter = (() => {
+         let count = 0; // private variable
+
+         return {
+             increment() {
+                 count++;
+                 console.log(count);
+             },
+             reset() {
+                 count = 0;
+             },
+         };
+     })();
+     ```
+
+4. **Encapsulation**:
+   - Protects private data and exposes only necessary parts of the module.
+
+5. **Real-World Application**:
+   - Useful in building libraries, managing state, and organizing code in a clean manner.
+
+6. **Practical Applications**:
+   - Use factory functions to create multiple instances of an object easily.
+   - Implement the module pattern to create namespaces in your code, reducing the likelihood of naming conflicts.
+
+7. **Example Scenarios**:
+   - Creating a Library - Use factory functions for different book objects, and a module pattern to manage the library’s collection.
+   - Game Development - Use factory functions to create characters, and the module pattern to handle game states and logic.
+
+...
+
+## ES6 MODULES
+
+### **Before ES6 Modules: The Global Scope Problem**
+
+- In pre-ES6 JavaScript, multiple scripts share the **global scope**.
+  - Example:
+    - **one.js**: `const greeting = "Hello, Odinite!";`
+    - **two.js**: `console.log(greeting);`
+    - If **one.js** loads first, `greeting` is available globally; otherwise, errors occur.
+- Workaround using **IIFE**:
+  - Wrapping code in IIFE restricts variables to local scope:
+
+    ```javascript
+    (() => { const greeting = "Hello, Odinite!"; })();
+    ```
+
+  - Only accessible values can be returned to global scope.
+
+#### **ES6 Modules (ESM)**
+
+- **Modules have private scope**. You control what’s shared using `export`/`import`.
+  - Example of **module isolation**:
+
+    ```javascript
+    // one.js
+    const greeting = "Hello, Odinite!";
+    export { greeting };
+    ```
+
+#### **Import and Export in ES6**
+
+- Two types: **Named Exports** and **Default Exports**.
+  
+1. **Named Exports**:
+   - Multiple exports possible:
+
+     ```javascript
+     export const greeting = "Hello!";
+     export const farewell = "Goodbye!";
+     ```
+
+   - Import using braces:
+
+     ```javascript
+     import { greeting, farewell } from './one.js';
+     console.log(greeting); // Hello!
+     ```
+
+2. **Default Exports**:
+   - Only one default export per file.
+   - Example:
+
+     ```javascript
+     // one.js
+     export default "Hello, Odinite!";
+     // two.js
+     import greeting from './one.js';
+     console.log(greeting); // "Hello, Odinite!"
+     ```
+
+   - Default exports can be named anything upon import.
+
+#### **Mixing Named and Default Exports**
+
+- You can have both types in one file.
+  - Example:
+
+    ```javascript
+    // one.js
+    export default "Hello, Odinite!";
+    export const farewell = "Goodbye!";
+    
+    // two.js
+    import greeting, { farewell } from './one.js';
+    console.log(greeting, farewell); // "Hello, Odinite! Goodbye!"
+    ```
+
+#### **Entry Points in ESM**
+
+- Only **one entry file** needs to be linked in HTML:
+
+  ```html
+  <script type="module" src="main.js"></script>
+  ```
+
+- Browser will load dependencies automatically.
+
+#### **CommonJS vs. ES6 Modules**
+
+- **CommonJS (CJS)** used in Node.js (`require`/`module.exports`).
+- **ESM** natively supported in browsers; focus of modern JavaScript development.
