@@ -1,9 +1,7 @@
 ---
 import { displayDate } from "../lib/date";
-import { getWeatherData } from "../lib/meteo";
 
 const now = displayDate(new Date());
-const weatherData = await getWeatherData();
 ---
 
 <header class="container">
@@ -40,8 +38,7 @@ const weatherData = await getWeatherData();
   </div>
   <div class="row">
     <p>
-      This site was updated on {now}, it was {weatherData.temperature}°C
-      {weatherData.weatherStatus && ` and ${weatherData.weatherStatus}.`}
+      This site was updated on {now}.
     </p>
   </div>
 </header>
