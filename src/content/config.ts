@@ -6,7 +6,6 @@ export const collections = {
     schema: z.object({
       title: z.string(),
       year: z.number(),
-      type: z.string(),
       description: z.string(),
       highlight: z.boolean().optional(),
     }),

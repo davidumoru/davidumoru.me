@@ -1,5 +1,5 @@
 ---
-import { displayDate } from "../lib/date";
+import { displayDate } from "../lib/mediumDate";
 
 const now = displayDate(new Date());
 ---
@@ -7,17 +7,10 @@ const now = displayDate(new Date());
 <header class="container">
   <div class="row">
     <div class="flow" data-bendo="full">
-      <a href="/" class="h1">David Umoru</a>
-      <p class="fs--1">I write code and design sometimes</p>
+      <a href="/" class="h1">davidumoru.me</a>
+      <p>I write code and design sometimes</p>
     </div>
     <nav>
-      <div>
-        <a
-          href="/now"
-          aria-current={Astro.url.pathname === "/now" ? "page" : false}
-          class="">Now</a
-        >
-      </div>
       <div>
         <a
           href="/about"
@@ -44,7 +37,7 @@ const now = displayDate(new Date());
     </nav>
   </div>
   <div class="row">
-    <p>
+    <p class="fs--1">
       This site was updated on {now}.
     </p>
   </div>

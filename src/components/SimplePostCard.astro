@@ -16,20 +16,16 @@ const url = makeRoute("/notes/[slug]", { slug });
 
 <article class="flow">
   <div class="header">
+    <span>{displayDate(date)}</span>
     <a href={url} class="underline">
       <h3>{title}</h3>
     </a>
-    <span class="fs--1 shade">- {displayDate(date)}</span>
   </div>
-  <p>
-    {description}
-  </p>
 </article>
 
 <style>
   article {
     max-inline-size: 66ch;
-    padding-bottom: 1ch;
   }
   article:not(:first-child) {
     margin-block: var(--space-m);

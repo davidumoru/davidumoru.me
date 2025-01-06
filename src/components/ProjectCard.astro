@@ -9,7 +9,7 @@ export type Props = {
 const { slug } = Astro.props;
 const entry = await getEntry("projects", slug);
 if (!entry) throw new Error(`No entry found for slug: ${slug}`);
-const { title, description, year, type } = entry.data;
+const { title, description, year } = entry.data;
 const url = makeRoute("/projects/[slug]", { slug });
 ---
 
@@ -18,8 +18,7 @@ const url = makeRoute("/projects/[slug]", { slug });
     <a href={url} class="underline">
       <h3>{title}</h3>
     </a>
-    <span class="fs--1 shade">{year}</span>
-    <span class="fs--1">[{type}]</span>
+    <span class="fs--1 shade">[{year}]</span>
   </div>
   <p>
     {description}
