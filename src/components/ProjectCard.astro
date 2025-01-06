@@ -1,0 +1,42 @@
+---
+import { getEntry } from "astro:content";
+import { makeRoute } from "../lib/routes";
+
+export type Props = {
+  slug: string;
+};
+
+const { slug } = Astro.props;
+const entry = await getEntry("projects", slug);
+if (!entry) throw new Error(`No entry found for slug: ${slug}`);
+const { title, description, year, type } = entry.data;
+const url = makeRoute("/projects/[slug]", { slug });
+---
+
+<article class="flow">
+  <div class="header">
+    <a href={url} class="underline">
+      <h3>{title}</h3>
+    </a>
+    <span class="fs--1 shade">{year}</span>
+    <span class="fs--1">[{type}]</span>
+  </div>
+  <p>
+    {description}
+    <a href={url}>&rightarrow;</a>
+  </p>
+</article>
+
+<style>
+  article {
+    max-inline-size: 66ch;
+  }
+  article:not(:first-child) {
+    margin-block: var(--space-m);
+  }
+  .header {
+    display: flex;
+    align-items: last baseline;
+    gap: var(--space-2xs);
+  }
+</style>
