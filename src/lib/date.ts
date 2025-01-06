@@ -1,7 +1,7 @@
 export function displayDate(date: Date) {
 	return new Intl.DateTimeFormat('en-GB', {
-		dateStyle: 'full',
-        timeStyle: 'long',
+		dateStyle: 'medium',
+        timeStyle: 'short',
 		timeZone: 'Africa/Lagos',
 	}).format(date)
 }
