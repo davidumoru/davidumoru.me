@@ -1,0 +1,86 @@
+---
+interface Props {
+  buttonText?: string;
+  placeholderText?: string;
+  title?: string;
+}
+
+const {
+  buttonText = "Subscribe",
+  placeholderText = "Enter your email",
+  title = "I send emails a few times a year about design and web dev. Written like notes to friends. If you're into that, sign up below!",
+} = Astro.props;
+---
+
+<div class="subscribe-container">
+  <p class="subscribe-title">{title}</p>
+  <form
+    action="https://buttondown.email/api/emails/embed-subscribe/notesfromdavid"
+    method="post"
+    target="popupwindow"
+    onsubmit="window.open('https://buttondown.email/notesfromdavid', 'popupwindow')"
+    class="subscribe-form"
+  >
+    <input
+      type="email"
+      name="email"
+      placeholder={placeholderText}
+      required
+      class="subscribe-input"
+    />
+    <input type="hidden" value="1" name="embed" />
+    <button type="submit" class="subscribe-button">
+      {buttonText}
+    </button>
+  </form>
+</div>
+
+<style>
+  .subscribe-container {
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .subscribe-title {
+    margin: 0 0 1rem 0;
+    color: #1a202c;
+    font-size: 1rem;
+  }
+
+  .subscribe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .subscribe-input {
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .subscribe-input:focus {
+    outline: none;
+    border-color: #4a5568;
+  }
+
+  .subscribe-button {
+    background: #1a202c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: fit-content;
+  }
+
+  .subscribe-button:hover {
+    background: #2d3748;
+  }
+</style>
