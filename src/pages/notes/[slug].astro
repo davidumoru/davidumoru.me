@@ -1,23 +1,31 @@
 ---
-import type { GetStaticPaths } from 'astro'
-import { getEntry } from 'astro:content'
-import { getCollection } from 'astro:content'
-import Base from '../../layouts/Base.astro'
+import type { GetStaticPaths } from "astro";
+import { getEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
 
 export const getStaticPaths = (async () => {
-	const posts = await getCollection('posts')
-	return posts.map((el) => ({
-		params: { slug: el.slug },
-	}))
-}) satisfies GetStaticPaths
+  const posts = await getCollection("posts");
+  return posts.map((el) => ({
+    params: { slug: el.slug },
+  }));
+}) satisfies GetStaticPaths;
 
-const { slug } = Astro.params
-const entry = await getEntry('posts', slug!)
-if (!entry) throw new Error(`No entry found for slug: ${slug}`)
-const { Content } = await entry.render()
+const { slug } = Astro.params;
+const entry = await getEntry("posts", slug!);
+if (!entry) throw new Error(`No entry found for slug: ${slug}`);
+const { Content } = await entry.render();
 ---
 
 <Base title={entry.data.title}>
-	<h1 class="h2">{entry.data.title}</h1>
-	<Content />
+  <h1 class="h2">{entry.data.title}</h1>
+  <Content />
+  <hr />
+  <section class="disclaimer">
+    <b>Disclaimer</b>: This article reflects my personal opinions and
+    experiences at the time of writing. Over time, my perspectives may evolve,
+    and your experiences may differ from mine. If you come across anything
+    factually incorrect or wish to discuss something further, feel free to reach
+    out to me through any of the links below.
+  </section>
 </Base>
