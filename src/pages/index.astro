@@ -3,7 +3,6 @@ import { getCollection } from "astro:content";
 import ProjectCard from "../components/ProjectCard.astro";
 import SimplePostCard from "../components/SimplePostCard.astro";
 import Base from "../layouts/Base.astro";
-import SubscribeForm from "../components/SubscribeForm.astro";
 
 const posts = (await getCollection("posts"))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
