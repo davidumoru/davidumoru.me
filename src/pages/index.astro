@@ -18,14 +18,15 @@ const projects = (await getCollection("projects"))
   <section class="flow">
     <h1>Hello, I'm David :)</h1>
     <p>
-      I'm a college student navigating the ups and downs of life. I'm always
-      exploring, experimenting, and writing has become a new way for me to
-      better understand myself.
+      Depending on who you ask, I'm a designer who writes code or a developer
+      who loves good design. I majored in CS, and now I’m just figuring things
+      out— building, exploring, experimenting, and now using writing as a way to
+      understand myself better.
     </p>
-    <h2>Currently</h2>
+    <h2>Now</h2>
     <p>
-      I'm working on several side projects, creating designs for various brands,
-      and documenting my journey through writing.
+      Enjoying CSS, doing side quests, exploring new ideas in software and
+      design, and dreaming up ways to travel the world.
     </p>
     <p><a href="/now" class="link">&rightarrow; See details</a></p>
   </section>
@@ -46,10 +47,5 @@ const projects = (await getCollection("projects"))
       {projects.map((el) => <ProjectCard slug={el.slug} />)}
       <a href="/projects" class="link">&rightarrow; All projects</a>
     </div>
-  </section>
-
-  <section>
-    <hr />
-    <SubscribeForm />
   </section>
 </Base>
