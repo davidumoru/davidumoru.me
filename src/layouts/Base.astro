@@ -5,8 +5,9 @@ import "../style/index.css";
 export type Props = {
   title?: string;
   description?: string;
+  hideFooter?: boolean;
 };
-const { title, description } = Astro.props;
+const { title, description, hideFooter } = Astro.props;
 ---
 
 <html lang="en">
@@ -57,13 +58,13 @@ const { title, description } = Astro.props;
     <meta name="twitter:url" content="https://davidumoru.me" />
 
     <title>{title && `${title} - `} David Umoru</title></head
-  >
+    >
 
   <body>
     <Header />
     <main class="container flow">
       <slot />
     </main>
-    <Footer />
+    {!hideFooter && <Footer />}
   </body>
 </html>
