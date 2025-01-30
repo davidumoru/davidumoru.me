@@ -9,6 +9,7 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
+  prefetch: true,
   trailingSlash: "ignore",
   site: "https://davidumoru.me",
   integrations: [
@@ -19,6 +20,7 @@ export default defineConfig({
           "bash,ps,sh": { preserveIndent: false },
         },
       },
+      themes: ["rose-pine-dawn"],
     }),
     mdx(),
     sitemap(),
