@@ -1,29 +1,41 @@
 ---
-import { getEntry } from "astro:content";
-import { displayDate } from "../lib/shortDate";
-import { makeRoute } from "../lib/routes";
+import { displayDate } from "../lib/mediumDate";
 
-export type Props = {
-  slug: string;
-};
+interface Feature {
+  name: string;
+  url: string;
+}
 
-const { slug } = Astro.props;
-const entry = await getEntry("posts", slug);
-if (!entry) throw new Error(`No entry found for slug: ${slug}`);
-const { title, description, date } = entry.data;
-const url = makeRoute("/posts/[slug]", { slug });
+interface Props {
+  url: string;
+  title: string;
+  description?: string;
+  datePublished?: Date;
+  features?: Feature[];
+}
+
+const { url, title, description, datePublished, features } = Astro.props;
 ---
 
 <article class="flow">
-  <div class="header">
-    <a href={url} class="underline">
-      <h3>{title}</h3>
-    </a>
-    <span class="fs--1 shade">- {displayDate(date)}</span>
+  <div class="fs--1 shade">
+    {datePublished ? displayDate(datePublished) : "Unknown Date"}
   </div>
-  <p>
-    {description}
-  </p>
+  <a href={url} class="underline heading">
+    <h3>{title}</h3>
+  </a>
+  <div>{description}</div>
+  {
+    features && (
+      <div class="fs--1 shade">
+        Featured on{" "}
+        {features.map(({ name, url }, i) => [
+          i > 0 && ", ",
+          <a href={url}>{name}</a>,
+        ])}
+      </div>
+    )
+  }
 </article>
 
 <style>
@@ -34,9 +46,7 @@ const url = makeRoute("/posts/[slug]", { slug });
   article:not(:first-child) {
     margin-block: var(--space-m);
   }
-  .header {
-    display: flex;
-    align-items: last baseline;
-    gap: var(--space-2xs);
+  div {
+    margin-block: 0.3rem;
   }
 </style>

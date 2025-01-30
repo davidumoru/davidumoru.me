@@ -1,22 +1,18 @@
 ---
-import { getEntry } from "astro:content";
 import { displayDate } from "../lib/shortDate";
-import { makeRoute } from "../lib/routes";
 
-export type Props = {
-  slug: string;
-};
+interface Props {
+  url: string;
+  title: string;
+  datePublished?: Date;
+}
 
-const { slug } = Astro.props;
-const entry = await getEntry("posts", slug);
-if (!entry) throw new Error(`No entry found for slug: ${slug}`);
-const { title, description, date } = entry.data;
-const url = makeRoute("/posts/[slug]", { slug });
+const { url, title, datePublished } = Astro.props;
 ---
 
 <article class="flow">
   <div class="header">
-    <span>{displayDate(date)}</span>
+    {datePublished ? displayDate(datePublished) : "Unknown Date"}
     <a href={url} class="underline">
       <h3>{title}</h3>
     </a>
