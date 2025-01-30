@@ -11,7 +11,7 @@ const { slug } = Astro.props;
 const entry = await getEntry("posts", slug);
 if (!entry) throw new Error(`No entry found for slug: ${slug}`);
 const { title, description, date } = entry.data;
-const url = makeRoute("/notes/[slug]", { slug });
+const url = makeRoute("/posts/[slug]", { slug });
 ---
 
 <article class="flow">

@@ -8,8 +8,8 @@ const projects = (await getCollection('posts')).sort(
 )
 ---
 
-<Base title="Notes">
-	<h1>Notes</h1>
+<Base title="Posts">
+	<h1>Posts</h1>
 	<div class="region flow">
 		{projects.map((el) => <PostCard slug={el.slug} />)}
 	</div>

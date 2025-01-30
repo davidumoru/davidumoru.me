@@ -36,7 +36,7 @@ const projects = (await getCollection("projects"))
     <h2>Recent Posts</h2>
     <div class="region flow">
       {posts.map((el) => <SimplePostCard slug={el.slug} />)}
-      <a href="/notes" class="link">&rightarrow; All notes</a>
+      <a href="/posts" class="link">&rightarrow; All posts</a>
     </div>
   </section>
 
