@@ -5,8 +5,12 @@ import SimplePostCard from "../components/SimplePostCard.astro";
 import Base from "../layouts/Base.astro";
 
 const posts = (await getCollection("posts"))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3); // Limit to the 3 most recent posts
+  .sort(
+    (a, b) =>
+      new Date(b.data.datePublished).getTime() -
+      new Date(a.data.datePublished).getTime()
+  )
+  .slice(0, 3);
 
 const projects = (await getCollection("projects"))
   .filter((el) => el.data.highlight === true)
@@ -35,8 +39,16 @@ const projects = (await getCollection("projects"))
   <section class="flow">
     <h2>Recent Posts</h2>
     <div class="region flow">
-      {posts.map((el) => <SimplePostCard slug={el.slug} />)}
-      <a href="/posts" class="link">&rightarrow; All posts</a>
+      {
+        posts.map((post) => (
+          <SimplePostCard
+            url={`posts/${post.id}`}
+            title={post.data.title}
+            datePublished={post.data.datePublished}
+          />
+        ))
+      }
+      <a href="/notes" class="link">&rightarrow; All notes</a>
     </div>
   </section>
 
