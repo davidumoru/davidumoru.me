@@ -1016,6 +1016,11 @@
     picomatch "^4.0.2"
     resolve-from "^5.0.0"
 
+"@vercel/speed-insights@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@vercel/speed-insights/-/speed-insights-1.1.0.tgz#d48bce27b38a35da86805cc316656344a2230108"
+  integrity sha512-rAXxuhhO4mlRGC9noa5F7HLMtGg8YF1zAN6Pjd1Ny4pII4cerhtwSG4vympbCl+pWkH7nBS9kVXRD4FAn54dlg==
+
 "@volar/kit@~2.4.7":
   version "2.4.11"
   resolved "https://registry.yarnpkg.com/@volar/kit/-/kit-2.4.11.tgz#12fa1825bdbaa54752e86d9eecb0d3b6d1c60f5e"

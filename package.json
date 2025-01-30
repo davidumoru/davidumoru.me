@@ -17,6 +17,8 @@
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/vercel": "^8.0.1",
     "@radix-ui/colors": "^3.0.0",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
     "astro": "^5.1.10",
     "astro-expressive-code": "^0.40.1",
     "markdown-it": "^14.1.0",

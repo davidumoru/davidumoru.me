@@ -8,6 +8,8 @@ export type Props = {
   hideFooter?: boolean;
 };
 const { title, description, hideFooter } = Astro.props;
+import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 ---
 
 <html lang="en">
@@ -58,7 +60,7 @@ const { title, description, hideFooter } = Astro.props;
     <meta name="twitter:url" content="https://davidumoru.me" />
 
     <title>{title && `${title} - `} David Umoru</title></head
-    >
+  >
 
   <body>
     <Header />
@@ -66,5 +68,7 @@ const { title, description, hideFooter } = Astro.props;
       <slot />
     </main>
     {!hideFooter && <Footer />}
+    <Analytics />
+    <SpeedInsights />
   </body>
 </html>
