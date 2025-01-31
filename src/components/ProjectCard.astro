@@ -9,7 +9,7 @@ export type Props = {
 const { slug } = Astro.props;
 const entry = await getEntry("projects", slug);
 if (!entry) throw new Error(`No entry found for slug: ${slug}`);
-const { title, description, year } = entry.data;
+const { title, description, year, githubUrl, demoUrl } = entry.data;
 const url = makeRoute("/projects/[slug]", { slug });
 ---
 
@@ -18,12 +18,28 @@ const url = makeRoute("/projects/[slug]", { slug });
     <a href={url} class="underline">
       <h3>{title}</h3>
     </a>
-    <span class="fs--1 shade">[{year}]</span>
+    <span class="fs--1 shade">- [{year}]</span>
   </div>
   <p>
     {description}
-    <a href={url}>&rightarrow;</a>
   </p>
+  <div class="icons">
+    {
+      githubUrl && (
+        <a href={githubUrl} class="icon" target="_blank">
+          <img src="icons/external-link-line.svg" alt="GitHub Url" />
+        </a>
+      )
+    }
+    {
+      demoUrl && (
+        <a href={githubUrl} class="icon" target="_blank">
+          <img src="icons/github-line.svg" alt="Demo Url" />
+          <i class="ri-github-line" />
+        </a>
+      )
+    }
+  </div>
 </article>
 
 <style>
@@ -37,5 +53,18 @@ const url = makeRoute("/projects/[slug]", { slug });
     display: flex;
     align-items: last baseline;
     gap: var(--space-2xs);
+  }
+
+  p {
+    margin-block: 0.3rem;
+  }
+  .icons {
+    display: flex;
+    gap: var(--space-xs);
+    margin-block: 0.3rem;
+  }
+  .icon {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 </style>

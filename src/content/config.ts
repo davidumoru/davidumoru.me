@@ -8,6 +8,8 @@ export const collections = {
       title: z.string(),
       year: z.number(),
       description: z.string(),
+      githubUrl: z.string().url().optional(),
+      demoUrl: z.string().url().optional(),
       highlight: z.boolean().optional(),
     }),
   }),

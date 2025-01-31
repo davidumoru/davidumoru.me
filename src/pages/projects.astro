@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
-import ProjectCard from '../../components/ProjectCard.astro'
-import Base from '../../layouts/Base.astro'
+import ProjectCard from '../components/ProjectCard.astro'
+import Base from '../layouts/Base.astro'
 
 const projects = (await getCollection('projects')).sort(
 	(a, b) => b.data.year - a.data.year,
