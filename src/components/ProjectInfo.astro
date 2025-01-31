@@ -1,0 +1,146 @@
+---
+import { Image } from "astro:assets";
+
+import ProjectInfoBlock from "./ProjectInfoBlock.astro";
+
+interface Props {
+  timeline?: {
+    start: string;
+    end: string;
+  };
+  roles?: string[];
+  tech?: string[];
+  website?: string;
+  repo?: string;
+  collaborators?: Array<{
+    name: string;
+    img: ImageMetadata;
+    url: string;
+  }>;
+}
+
+const { timeline, roles, tech, website, repo, collaborators } = Astro.props;
+---
+
+<dl class="project-info">
+  {
+    timeline && (
+      <ProjectInfoBlock title="Timeline">
+        {timeline.start} - {timeline.end}
+      </ProjectInfoBlock>
+    )
+  }
+  {
+    roles && (
+      <ProjectInfoBlock title="My Role">
+        <ul>
+          {roles.map((role) => (
+            <li>{role}</li>
+          ))}
+        </ul>
+      </ProjectInfoBlock>
+    )
+  }
+  {
+    collaborators && (
+      <ProjectInfoBlock title="Collaborators">
+        <ul>
+          {collaborators.map((collaborator) => (
+            <li>
+              <a class="collaborator" href={collaborator.url} target="_blank">
+                <Image
+                  src={collaborator.img}
+                  alt={`A photo of ${collaborator.name}`}
+                  class="avatar"
+                />
+                {collaborator.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </ProjectInfoBlock>
+    )
+  }
+  {
+    tech && (
+      <ProjectInfoBlock title="Tech">
+        <ul>
+          {tech.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </ProjectInfoBlock>
+    )
+  }
+  {
+    website && (
+      <ProjectInfoBlock title="Website">
+        <ul>
+          <li>
+            <a href={website} target="_blank">
+              {website.split("//")[1]}
+            </a>
+          </li>
+        </ul>
+      </ProjectInfoBlock>
+    )
+  }
+  {
+    repo && (
+      <ProjectInfoBlock title="Source">
+        <ul>
+          <li>
+            <a href={`https://github.com/${repo}`} target="_blank">
+              View on GitHub
+            </a>
+          </li>
+        </ul>
+      </ProjectInfoBlock>
+    )
+  }
+</dl>
+
+<style>
+  .project-info {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--gray-5);
+    border-radius: 0.5rem;
+    padding: var(--space-l);
+    gap: var(--space-s);
+    margin-bottom: var(--space-l);
+    ul,
+    li {
+      all: unset;
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: var(--space-2xs);
+    }
+
+    li:not(:last-child)::after {
+      content: ",";
+      color: var(--gray-11);
+    }
+  }
+
+  .collaborator {
+    display: inline;
+    padding-left: var(--space-l);
+    position: relative;
+  }
+
+  .avatar {
+    background: var(--gray-4);
+    width: var(--space-m);
+    height: var(--space-m);
+    border-radius: 100%;
+    line-height: 0;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+</style>

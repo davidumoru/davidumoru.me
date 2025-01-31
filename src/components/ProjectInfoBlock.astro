@@ -1,0 +1,37 @@
+---
+interface Props {
+  /**
+   * Distance between items
+   * @default "normal"
+   */
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="project-info-block">
+  <dt>{title}</dt>
+  <dd><slot /></dd>
+</div>
+
+<style>
+  .project-info-block {
+    display: flex;
+    flex-direction: row;
+    column-gap: var(--space-s);
+
+    @media (width < 600px) {
+      flex-direction: column;
+    }
+
+    dt {
+      font-weight: bolder;
+      width: 140px;
+    }
+
+    dd {
+      flex: 1;
+    }
+  }
+</style>

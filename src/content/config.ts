@@ -35,4 +35,17 @@ export const collections = {
           .optional(),
       }),
   }),
+  pages: defineCollection({
+    loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/pages" }),
+    schema: ({ image }) =>
+      z.object({
+        title: z.string(),
+        description: z.string(),
+        datePublished: z.date(),
+        dateModified: z.date().optional(),
+        img: image().array().optional(),
+        imgAlt: z.string().optional(),
+        ogImage: image().optional(),
+      }),
+  }),
 };
