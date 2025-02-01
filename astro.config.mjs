@@ -7,24 +7,22 @@ import sitemap from "@astrojs/sitemap";
 
 import vercel from "@astrojs/vercel";
 
+import db from "@astrojs/db";
+
 // https://astro.build/config
 export default defineConfig({
   prefetch: true,
   trailingSlash: "ignore",
   site: "https://davidumoru.me",
-  integrations: [
-    expressiveCode({
-      defaultProps: {
-        wrap: true,
-        overridesByLang: {
-          "bash,ps,sh": { preserveIndent: false },
-        },
+  integrations: [expressiveCode({
+    defaultProps: {
+      wrap: true,
+      overridesByLang: {
+        "bash,ps,sh": { preserveIndent: false },
       },
-      themes: ["rose-pine-dawn"],
-    }),
-    mdx(),
-    sitemap(),
-  ],
+    },
+    themes: ["rose-pine-dawn"],
+  }), mdx(), sitemap(), db()],
   markdown: {
     rehypePlugins: [[externalize, { domain: "davidumoru.me" }]],
   },

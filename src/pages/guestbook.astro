@@ -1,0 +1,206 @@
+---
+export const prerender = false;
+import { db, GuestBook, desc, sql } from "astro:db";
+import Base from "../layouts/Base.astro";
+
+const PER_PAGE = 5;
+
+if (Astro.request.method === "POST") {
+  const contentType = Astro.request.headers.get("content-type");
+  if (!contentType || !contentType.includes("multipart/form-data")) {
+    return new Response("Invalid content type", { status: 400 });
+  }
+
+  const formData = await Astro.request.formData();
+  const author = (formData.get("author") as string)?.trim();
+  const link = (formData.get("link") as string)?.trim();
+  const content = (formData.get("content") as string)?.trim();
+
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  if (!author || !content || content.length > 140) {
+    return Astro.redirect("/guestbook?error=invalid_input");
+  }
+
+  if (link && !isValidUrl(link)) {
+    return Astro.redirect("/guestbook?error=invalid_link");
+  }
+
+  if ((content.match(/https?:\/\//g) || []).length > 1) {
+    return Astro.redirect("/guestbook?error=too_many_links");
+  }
+
+  await db.insert(GuestBook).values({
+    author,
+    link,
+    content,
+    timestamp: new Date(),
+  });
+
+  return Astro.redirect("/guestbook?success=message_added");
+}
+
+const page = parseInt(Astro.url.searchParams.get("page") || "1");
+const offset = (page - 1) * PER_PAGE;
+
+const totalEntriesResult = await db
+  .select({ count: sql<number>`count(*)` })
+  .from(GuestBook);
+const totalEntries = totalEntriesResult[0].count;
+
+const guestBook = await db
+  .select()
+  .from(GuestBook)
+  .orderBy(desc(GuestBook.timestamp))
+  .limit(PER_PAGE)
+  .offset(offset);
+---
+
+<Base title="Guestbook">
+  <div class="container">
+    <h1>📖 Guestbook</h1>
+
+    <!-- Success/Error Messages -->
+    {
+      Astro.url.searchParams.get("success") && (
+        <p class="success">✅ Message added!</p>
+      )
+    }
+    {
+      Astro.url.searchParams.get("error") === "invalid_input" && (
+        <p class="error">
+          ⚠️ Invalid input. Ensure author and message are filled.
+        </p>
+      )
+    }
+    {
+      Astro.url.searchParams.get("error") === "invalid_link" && (
+        <p class="error">⚠️ Invalid URL format.</p>
+      )
+    }
+    {
+      Astro.url.searchParams.get("error") === "too_many_links" && (
+        <p class="error">⚠️ Too many links in message.</p>
+      )
+    }
+
+    <!-- Guestbook Messages -->
+    <dl class="guestbook">
+      {
+        guestBook.map(({ author, link, content, timestamp }) => (
+          <div class="message-card">
+            <dt>
+              <strong>{author}</strong>
+            </dt>
+            {link && (
+              <dd>
+                <a href={link} target="_blank" rel="noopener noreferrer">
+                  {link}
+                </a>
+              </dd>
+            )}
+            <dd>{content}</dd>
+            <dd class="timestamp">{new Date(timestamp).toLocaleString()}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      {
+        page > 1 && (
+          <a href={`?page=${page - 1}`} class="prev">
+            &leftarrow; Previous
+          </a>
+        )
+      }
+      {
+        offset + guestBook.length < totalEntries && (
+          <a href={`?page=${page + 1}`} class="next">
+            Next &rightarrow;
+          </a>
+        )
+      }
+    </div>
+
+    <!-- Form to Submit New Message -->
+    <form method="POST" class="guestbook-form" enctype="multipart/form-data">
+      <label for="author">
+        Author
+        <input id="author" name="author" required />
+      </label>
+
+      <label for="link">
+        Link (optional)
+        <input id="link" name="link" type="url" />
+      </label>
+
+      <label for="content">
+        Content (max 140 chars)
+        <textarea id="content" name="content" required maxlength="140"
+        ></textarea>
+      </label>
+
+      <button type="reset">Cancel</button>
+      <button type="submit">Leave your mark</button>
+    </form>
+  </div>
+
+  <style>
+    .container {
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    .guestbook {
+      margin-top: 20px;
+    }
+    .message-card {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .message-card .timestamp {
+      font-size: 0.8rem;
+      color: gray;
+    }
+    .pagination {
+      margin-top: 15px;
+    }
+    .pagination a {
+      margin: 0 5px;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+    }
+    .guestbook-form {
+      margin-top: 20px;
+    }
+    .error,
+    .success {
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    .error {
+      background: #ffdddd;
+      color: red;
+    }
+    .success {
+      background: #ddffdd;
+      color: green;
+    }
+  </style>
+</Base>
