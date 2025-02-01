@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import ProjectCard from "../components/ProjectCard.astro";
 import SimplePostCard from "../components/SimplePostCard.astro";
-import Base from "../layouts/Base.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const posts = (await getCollection("posts"))
   .sort(
@@ -17,7 +17,7 @@ const projects = (await getCollection("projects"))
   .sort((a, b) => b.data.year - a.data.year);
 ---
 
-<Base title="Hello">
+<BaseLayout title="Hello">
   <section class="flow">
     <h1>Hello, I'm David :)</h1>
     <p>
@@ -59,4 +59,4 @@ const projects = (await getCollection("projects"))
       <a href="/projects" class="link">&rightarrow; All projects</a>
     </div>
   </section>
-</Base>
+</BaseLayout>

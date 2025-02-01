@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import PostCard from "../../components/PostCard.astro";
-import Base from "../../layouts/Base.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const posts = await getCollection("posts");
 posts.sort(
@@ -11,7 +11,7 @@ posts.sort(
 );
 ---
 
-<Base title="Posts">
+<BaseLayout title="Posts">
   <h1>Posts</h1>
   <div class="region flow">
     {
@@ -26,4 +26,4 @@ posts.sort(
       ))
     }
   </div>
-</Base>
+</BaseLayout>

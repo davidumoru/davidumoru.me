@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 import { db, GuestBook, desc, sql } from "astro:db";
-import Base from "../layouts/Base.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const PER_PAGE = 5;
 
@@ -63,7 +63,7 @@ const guestBook = await db
   .offset(offset);
 ---
 
-<Base title="Guestbook">
+<BaseLayout title="Guestbook">
   <div class="container">
     <h1>📖 Guestbook</h1>
 
@@ -203,4 +203,4 @@ const guestBook = await db
       color: green;
     }
   </style>
-</Base>
+</BaseLayout>

@@ -1,8 +1,8 @@
 ---
-import Base from "../layouts/Base.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<Base title="404: Not Found" hideFooter={true}>
+<BaseLayout title="404: Not Found" hideFooter={true}>
   <div class="scanlines"></div>
   <div class="glitchContainer">
     <div class="text">
@@ -14,7 +14,7 @@ import Base from "../layouts/Base.astro";
       </div>
     </div>
   </div>
-</Base>
+</BaseLayout>
 
 <style>
   @keyframes text-offset {

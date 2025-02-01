@@ -1,16 +1,16 @@
 ---
 import { getCollection } from 'astro:content'
 import ProjectCard from '../components/ProjectCard.astro'
-import Base from '../layouts/Base.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
 
 const projects = (await getCollection('projects')).sort(
 	(a, b) => b.data.year - a.data.year,
 )
 ---
 
-<Base title="Projects">
+<BaseLayout title="Projects">
 	<h1>Projects</h1>
 	<div class="region flow">
 		{projects.map((el) => <ProjectCard slug={el.slug} />)}
 	</div>
-</Base>
+</BaseLayout>
