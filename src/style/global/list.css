@@ -7,7 +7,6 @@ li {
 		margin-block-start: var(--space-3xs);
 	}
 	&::marker {
-		content: '-';
 		color: var(--gray-11);
 	}
 }
