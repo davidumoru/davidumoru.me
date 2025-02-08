@@ -1,6 +1,7 @@
 ---
 import { getEntry } from "astro:content";
 import { makeRoute } from "../lib/routes";
+import { Icon } from "./Icon/Icon";
 
 export type Props = {
   slug: string;
@@ -10,7 +11,7 @@ const { slug } = Astro.props;
 const entry = await getEntry("projects", slug);
 if (!entry) throw new Error(`No entry found for slug: ${slug}`);
 const { title, description, year, githubUrl, demoUrl } = entry.data;
-const url = makeRoute("/projects/[slug]", { slug });
+const url = demoUrl || githubUrl;
 ---
 
 <article class="flow">
@@ -27,15 +28,14 @@ const url = makeRoute("/projects/[slug]", { slug });
     {
       githubUrl && (
         <a href={githubUrl} class="icon" target="_blank">
-          <img src="icons/external-link-line.svg" alt="GitHub Url" />
+          <Icon icon="github" size="20" />
         </a>
       )
     }
     {
       demoUrl && (
-        <a href={githubUrl} class="icon" target="_blank">
-          <img src="icons/github-line.svg" alt="Demo Url" />
-          <i class="ri-github-line" />
+        <a href={demoUrl} class="icon" target="_blank">
+          <Icon icon="externalLink" size="20" />
         </a>
       )
     }

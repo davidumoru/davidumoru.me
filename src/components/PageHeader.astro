@@ -1,6 +1,7 @@
 ---
 import { displayDate } from "../lib/mediumDate";
 import Picture from "./Picture.astro";
+import { Icon } from "./Icon/Icon";
 
 interface Props {
   title: string;
@@ -27,7 +28,8 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
   {description && <p class="shade">{description}</p>}
   {
     datePublished && (
-      <span class="fs--1">
+      <span class="fs--1 written-text">
+        <Icon icon="penNib" size="16" />
         Written {datePublished ? displayDate(datePublished) : "Unknown Date"}
       </span>
     )
@@ -53,5 +55,12 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
     overflow: hidden;
     border-radius: var(--radius-m);
     margin-block-start: var(--space-m);
+  }
+
+  .written-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
   }
 </style>
