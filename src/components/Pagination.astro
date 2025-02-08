@@ -1,0 +1,35 @@
+---
+interface Props {
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+const { currentPage, hasNextPage, hasPrevPage } = Astro.props;
+---
+
+<nav class="flex justify-between items-center mt-8 mb-12">
+  {
+    hasPrevPage ? (
+      <a
+        href={`/guestbook?page=${currentPage - 1}`}
+        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+      >
+        ← Previous
+      </a>
+    ) : (
+      <div />
+    )
+  }
+
+  {
+    hasNextPage && (
+      <a
+        href={`/guestbook?page=${currentPage + 1}`}
+        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+      >
+        Next →
+      </a>
+    )
+  }
+</nav>

@@ -1,0 +1,17 @@
+---
+interface Props {
+  type: "success" | "error";
+  message: string;
+}
+
+const { type, message } = Astro.props;
+
+const bgColor = type === "success" ? "bg-green-100" : "bg-red-100";
+const textColor = type === "success" ? "text-green-800" : "text-red-800";
+const icon = type === "success" ? "✅" : "⚠️";
+---
+
+<div class={`${bgColor} ${textColor} rounded-lg p-4 mb-6 flex items-center`}>
+  <span class="mr-2">{icon}</span>
+  <p class="font-medium">{message}</p>
+</div>
