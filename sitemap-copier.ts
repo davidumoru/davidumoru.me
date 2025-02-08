@@ -1,5 +1,5 @@
 import type { AstroIntegration } from "astro";
-import { readdir, cp } from "node:fs/promises";
+import { readdir, cp, mkdir } from "node:fs/promises";
 import * as path from "node:path";
 
 export function sitemapCopier(): AstroIntegration {
@@ -8,23 +8,45 @@ export function sitemapCopier(): AstroIntegration {
     hooks: {
       "astro:build:done": async ({ logger }) => {
         const buildLogger = logger.fork("sitemap-copier");
-        buildLogger.info("Copying xml files from dist to vercel out");
+        buildLogger.info(
+          "Copying XML files from dist to .vercel/output/static"
+        );
+
         try {
-          const files = await readdir("./dist");
+          const distPath = path.resolve("dist");
+          const outputPath = path.resolve(".vercel/output/static");
+
+          // Ensure the target directory exists
+          await mkdir(outputPath, { recursive: true });
+
+          const files = await readdir(distPath);
           const xmlFiles = files.filter(
             (file) =>
               path.extname(file).toLowerCase() === ".xml" &&
               path.basename(file).toLowerCase().startsWith("sitemap")
           );
-          buildLogger.info(xmlFiles.join(", "));
-          for (const file of xmlFiles) {
-            const sourcePath = path.join("./dist", file);
-            const destPath = path.join("./.vercel/output/static", file);
-            await cp(sourcePath, destPath);
+
+          if (xmlFiles.length === 0) {
+            buildLogger.warn("No sitemap XML files found.");
+            return;
           }
-          buildLogger.info("All XML files copied successfully");
+
+          buildLogger.info(`Found XML files: ${xmlFiles.join(", ")}`);
+
+          // Copy files in parallel
+          await Promise.all(
+            xmlFiles.map((file) =>
+              cp(path.join(distPath, file), path.join(outputPath, file))
+            )
+          );
+
+          buildLogger.info("All XML files copied successfully.");
         } catch (error) {
-          buildLogger.error(`Error copying files: ${error}`);
+          if (error instanceof Error) {
+            buildLogger.error(`Error copying files: ${error.message}`);
+          } else {
+            buildLogger.error("Unknown error occurred.");
+          }
         }
       },
     },
