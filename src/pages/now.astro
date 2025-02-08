@@ -1,54 +1,28 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { displayDate } from "../lib/mediumDate";
+
+const posts = await getCollection("now");
+
+posts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 ---
 
 <BaseLayout title="Now">
   <div class="timeline">
-    <div class="timeline-post">
-      <div class="timeline-marker"></div>
-      <div class="post-content">
-        <p class="date">January 6, 2025</p>
-        <div class="content">
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia,
-            expedita consequatur! Distinctio sequi, magni nam, officia deleniti
-            voluptate explicabo quia cum id nihil repellat facere ad. Est sit a
-            eveniet?
-          </p>
+    {
+      posts.map((post) => (
+        <div class="timeline-post">
+          <div class="timeline-marker" />
+          <div class="post-content">
+            <p class="date">{displayDate(post.data.date)}</p>
+            <div class="content">{post.body}</div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div class="timeline-post">
-      <div class="timeline-marker"></div>
-      <div class="post-content">
-        <p class="date">December 18, 2024</p>
-        <div class="content">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-            natus perspiciatis eum quam. Itaque eligendi magni quaerat, sapiente
-            quod perspiciatis enim maxime hic rerum, veritatis error molestias!
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="timeline-post">
-    <div class="timeline-marker"></div>
-    <div class="post-content">
-      <p class="date">August 18, 2024</p>
-      <div class="content">
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Amet dolorem
-          ad, laborum aperiam hic earum, beatae blanditiis doloremque, possimus
-          harum quia delectus ut iusto atque laboriosam tempore explicabo.
-          Quidem, in veritatis! Tempore, iure accusantium nulla expedita
-          corrupti ad eum unde earum, sequi pariatur dolorem repellendus.
-          Minima, quidem cum. Mollitia, voluptate!
-        </p>
-      </div>
-    </div>
+      ))
+    }
   </div>
 </BaseLayout>
 

@@ -50,4 +50,11 @@ export const collections = {
         ogImage: image().optional(),
       }),
   }),
+  now: defineCollection({
+    loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/now" }),
+    schema: () =>
+      z.object({
+        date: z.date(),
+      }),
+  }),
 };
