@@ -41,6 +41,15 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
     padding-block-end: var(--space-xl);
   }
 
+  .page-title {
+    line-height: 3.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      line-height: 2.3rem;
+    }
+  }
   .page-image {
     background: var(--gray-5);
     display: flex;

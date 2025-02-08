@@ -7,6 +7,26 @@
 * {
 	margin: 0;
 }
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin: 1rem 0;
+}
+.prose p {
+  margin: 1rem 0;
+}
+.prose ul {
+  margin: 1rem 0;
+}
+.prose ol {
+  margin: 1rem 0;
+}
+.prose pre {
+  margin: 1rem 0;
+}
 
 body {
 	line-height: 1.5;
