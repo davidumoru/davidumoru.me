@@ -9,6 +9,8 @@ import vercel from "@astrojs/vercel";
 
 import db from "@astrojs/db";
 
+import react from "@astrojs/react";
+
 // https://astro.build/config
 export default defineConfig({
   prefetch: true,
@@ -22,7 +24,7 @@ export default defineConfig({
       },
     },
     themes: ["rose-pine-dawn"],
-  }), mdx(), sitemap(), db()],
+  }), mdx(), sitemap(), db(), react()],
   markdown: {
     rehypePlugins: [[externalize, { domain: "davidumoru.me" }]],
   },
