@@ -4,7 +4,6 @@ import externalize from "./src/plugins/externalize";
 import expressiveCode from "astro-expressive-code";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import { sitemapCopier } from "./sitemap-copier.ts";
 
 import vercel from "@astrojs/vercel";
 
@@ -23,7 +22,7 @@ export default defineConfig({
       },
     },
     themes: ["rose-pine-dawn"],
-  }), mdx(), sitemap(), sitemapCopier(), db()],
+  }), mdx(), sitemap(), db()],
   markdown: {
     rehypePlugins: [[externalize, { domain: "davidumoru.me" }]],
   },
