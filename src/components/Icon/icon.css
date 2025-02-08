@@ -1,0 +1,16 @@
+.icon {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+}
+  
+.icon.small {
+    width: 20px;
+    height: 20px;
+}
+  
+.icon.extraSmall {
+    width: 16px;
+    height: 16px;
+}
