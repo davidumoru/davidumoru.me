@@ -21,6 +21,7 @@ export const collections = {
         description: z.string(),
         datePublished: z.date(),
         dateModified: z.date().optional(),
+        writing: z.boolean(),
         img: z
           .object({
             src: image(),
