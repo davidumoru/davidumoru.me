@@ -4,26 +4,56 @@ import PostCard from "../../components/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const posts = await getCollection("posts");
-posts.sort(
-  (a, b) =>
-    new Date(b.data.datePublished).getTime() -
-    new Date(a.data.datePublished).getTime()
-);
+
+const writings = posts
+  .filter((post) => post.data.writing === true)
+  .sort(
+    (a, b) =>
+      new Date(b.data.datePublished).getTime() -
+      new Date(a.data.datePublished).getTime()
+  );
+
+const notes = posts
+  .filter((post) => post.data.writing === false)
+  .sort(
+    (a, b) =>
+      new Date(b.data.datePublished).getTime() -
+      new Date(a.data.datePublished).getTime()
+  );
 ---
 
 <BaseLayout title="Posts">
-  <h1>Posts</h1>
-  <div class="region flow">
-    {
-      posts.map((post) => (
-        <PostCard
-          url={`posts/${post.id}`}
-          title={post.data.title}
-          description={post.data.description}
-          datePublished={post.data.datePublished}
-          features={post.data.features}
-        />
-      ))
-    }
-  </div>
+  <section>
+    <h1>Writings</h1>
+    <div class="region flow">
+      {
+        writings.map((post) => (
+          <PostCard
+            url={`posts/${post.id}`}
+            title={post.data.title}
+            description={post.data.description}
+            datePublished={post.data.datePublished}
+            features={post.data.features}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section>
+    <h1>Notes</h1>
+    <div class="region flow">
+      {
+        notes.map((post) => (
+          <PostCard
+            url={`posts/${post.id}`}
+            title={post.data.title}
+            description={post.data.description}
+            datePublished={post.data.datePublished}
+            features={post.data.features}
+          />
+        ))
+      }
+    </div>
+  </section>
 </BaseLayout>
