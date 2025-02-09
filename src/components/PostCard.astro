@@ -31,7 +31,7 @@ const { url, title, description, datePublished, features } = Astro.props;
         Featured on{" "}
         {features.map(({ name, url }, i) => [
           i > 0 && ", ",
-          <a href={url}>{name}</a>,
+          <a href={url} target="_blank">{name}</a>,
         ])}
       </div>
     )
