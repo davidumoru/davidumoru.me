@@ -1,23 +1,12 @@
 ---
-import { getCollection } from "astro:content";
-import SimplePostCard from "../components/SimplePostCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Icon } from "../components/Icon/Icon";
-
-const posts = (await getCollection("posts"))
-  .sort(
-    (a, b) =>
-      new Date(b.data.datePublished).getTime() -
-      new Date(a.data.datePublished).getTime()
-  )
-  .slice(0, 3);
-
-const projects = (await getCollection("projects"))
-  .filter((el) => el.data.highlight === true)
-  .sort((a, b) => b.data.year - a.data.year);
 ---
 
-<BaseLayout title="Hello">
+<BaseLayout
+  title="Hello"
+  image="https://www.davidumoru.me/static/meta/meta-image.webp"
+>
   <section class="flow">
     <h1 class="fs-3">Hello, I'm David :)</h1>
     <p>
@@ -40,21 +29,13 @@ const projects = (await getCollection("projects"))
 
   <hr />
 
-  <section class="flow">
-    <h2>Recent Posts</h2>
-    <div class="region flow">
-      {
-        posts.map((post) => (
-          <SimplePostCard
-            url={`posts/${post.id}`}
-            title={post.data.title}
-            datePublished={post.data.datePublished}
-          />
-        ))
-      }
-      <a href="/posts" class="link"
-        ><Icon icon="arrowRight" size="16" /> All notes </a
-      >
-    </div>
-  </section>
+  <iframe
+    style="border-radius:12px"
+    src="https://open.spotify.com/embed/playlist/57ZdpbE7DrZ1Y3wjjiQPsO?utm_source=generator"
+    width="100%"
+    height="352"
+    frameBorder="0"
+    allowfullscreen=""
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy"></iframe>
 </BaseLayout>
