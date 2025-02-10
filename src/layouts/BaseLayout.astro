@@ -6,10 +6,14 @@ export type Props = {
   title?: string;
   description?: string;
   hideFooter?: boolean;
+  image?: string;
 };
-const { title, description, hideFooter } = Astro.props;
+const { title, description, hideFooter, image } = Astro.props;
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
+
+const defaultImage = "https://www.davidumoru.me/static/meta/meta-image.webp";
+const metaImage = image || defaultImage;
 ---
 
 <html lang="en">
@@ -35,9 +39,9 @@ import SpeedInsights from "@vercel/speed-insights/astro";
     />
     <meta
       property="og:description"
-      content="I write code and design sometimes."
+      content={description || "I write code and design sometimes."}
     />
-    <meta property="og:image" content="https://davidumoru.me/static/meta.jpg" />
+    <meta property="og:image" content={metaImage} />
     <meta property="og:image:alt" content="David Umoru profile picture" />
     <meta property="og:url" content="https://davidumoru.me" />
     <meta property="og:type" content="website" />
@@ -50,17 +54,14 @@ import SpeedInsights from "@vercel/speed-insights/astro";
     />
     <meta
       name="twitter:description"
-      content="I write code and design sometimes."
+      content={description || "I write code and design sometimes."}
     />
-    <meta
-      name="twitter:image"
-      content="https://davidumoru.me/static/meta.jpg"
-    />
+    <meta name="twitter:image" content={metaImage} />
     <meta name="twitter:image:alt" content="David Umoru profile picture" />
     <meta name="twitter:url" content="https://davidumoru.me" />
 
-    <title>{title && `${title} - `} David Umoru</title></head
-  >
+    <title>{title && `${title} - `} David Umoru</title>
+  </head>
 
   <body>
     <Header />
