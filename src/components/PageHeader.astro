@@ -15,13 +15,6 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
 ---
 
 <header class="page-header">
-  {
-    img && imgAlt && (
-      <div class="page-image">
-        <Picture img={img} imgAlt={imgAlt} />
-      </div>
-    )
-  }
   <h1 itemprop="name" class="page-title">
     {title}
   </h1>
@@ -32,6 +25,13 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
         <Icon icon="penNib" size="16" />
         Written {datePublished ? displayDate(datePublished) : "Unknown Date"}
       </span>
+    )
+  }
+  {
+    img && imgAlt && (
+      <div class="page-image">
+        <Picture img={img} imgAlt={imgAlt} />
+      </div>
     )
   }
 </header>
@@ -56,7 +56,7 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
     flex-direction: row;
     justify-content: center;
     overflow: hidden;
-    border-radius: var(--radius-m);
+    border-radius: 2%;
     margin-block-start: var(--space-m);
   }
 
