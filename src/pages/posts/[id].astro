@@ -25,15 +25,16 @@ const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
 
 const { data } = post;
-const { title, description, ogImage, datePublished, dateModified } = data;
 ---
 
 <PostLayout
-  title={title}
-  description={description}
-  ogImage={ogImage?.src}
-  datePublished={datePublished}
-  dateModified={dateModified}
+  title={data.title}
+  description={data.description}
+  img={data.img}
+  imgAlt={data.imgAlt}
+  ogImage={data.ogImage?.src}
+  datePublished={data.datePublished}
+  dateModified={data.dateModified}
 >
   <Content />
   <div class="pagination" slot="after-prose">

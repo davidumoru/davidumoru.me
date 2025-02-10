@@ -22,12 +22,8 @@ export const collections = {
         datePublished: z.date(),
         dateModified: z.date().optional(),
         writing: z.boolean(),
-        img: z
-          .object({
-            src: image(),
-            alt: z.string(),
-          })
-          .optional(),
+        img: image().array().optional(),
+        imgAlt: z.string().optional(),
         ogImage: image().optional(),
         features: z
           .object({
