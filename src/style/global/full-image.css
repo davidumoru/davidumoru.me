@@ -1,0 +1,28 @@
+.full-width-container {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70vw;
+    max-width: 100vw;
+    padding: 0.4rem;
+    border-radius: 1rem;
+    background-color: #aaa;
+}
+
+.full-width {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+}
+
+@media (max-width: 1080px) {
+    .full-width-container {
+        width: 90vw;
+        padding: 0.2rem;
+        border-radius: 0.4rem;
+    }
+    .full-width {
+        border-radius: 0.4rem;
+    }
+}
