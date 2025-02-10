@@ -8,7 +8,7 @@ interface Props {
 const { currentPage, hasNextPage, hasPrevPage } = Astro.props;
 ---
 
-<nav class="flex justify-between items-center mt-8 mb-12">
+<nav class="pagination">
   {
     hasPrevPage ? (
       <a
@@ -33,3 +33,23 @@ const { currentPage, hasNextPage, hasPrevPage } = Astro.props;
     )
   }
 </nav>
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+  }
+  .pagination a {
+    padding: 0.5rem 1rem;
+    background-color: #f3f4f6;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  .pagination a:hover {
+    background-color: #e5e7eb;
+  }
+</style>
