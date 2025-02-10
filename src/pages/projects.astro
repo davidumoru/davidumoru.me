@@ -8,7 +8,7 @@ const projects = (await getCollection('projects')).sort(
 )
 ---
 
-<BaseLayout title="Projects">
+<BaseLayout title="Projects" image="https://www.davidumoru.me/static/meta/projects-meta.webp">
 	<h1>Projects</h1>
 	<div class="region flow">
 		{projects.map((el) => <ProjectCard slug={el.slug} />)}
