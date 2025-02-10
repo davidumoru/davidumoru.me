@@ -28,6 +28,10 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [[externalize, { domain: "davidumoru.me" }]],
   },
-
+  redirects: {
+    "/blog": "/posts",
+    "/blog/[slug]": "/posts/[slug]",
+    "/live": "https://www.twitch.tv/thedavidumoru",
+  },
   adapter: vercel(),
 });
