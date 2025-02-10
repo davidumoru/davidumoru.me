@@ -6,12 +6,40 @@ interface Props {
 
 const { type, message } = Astro.props;
 
-const bgColor = type === "success" ? "bg-green-100" : "bg-red-100";
-const textColor = type === "success" ? "text-green-800" : "text-red-800";
+const bgColor = type === "success" ? "success-bg" : "error-bg";
+const textColor = type === "success" ? "success-text" : "error-text";
 const icon = type === "success" ? "✅" : "⚠️";
 ---
 
-<div class={`${bgColor} ${textColor} rounded-lg p-4 mb-6 flex items-center`}>
-  <span class="mr-2">{icon}</span>
-  <p class="font-medium">{message}</p>
+<div class={`alert ${bgColor} ${textColor}`}>
+  <span class="icon">{icon}</span>
+  <p class="message">{message}</p>
 </div>
+
+<style>
+  .alert {
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+  }
+  .success-bg {
+    background-color: #d1fae5;
+  }
+  .error-bg {
+    background-color: #fee2e2;
+  }
+  .success-text {
+    color: #065f46;
+  }
+  .error-text {
+    color: #991b1b;
+  }
+  .icon {
+    margin-right: 8px;
+  }
+  .message {
+    font-weight: 500;
+  }
+</style>

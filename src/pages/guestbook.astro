@@ -70,38 +70,40 @@ const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
 ---
 
-<BaseLayout title="Guestbook" image="https://www.davidumoru.me/static/meta/guestbook-meta.webp">
-  <main class="max-w-2xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Guestbook</h1>
+<BaseLayout
+  title="Guestbook"
+  image="https://www.davidumoru.me/static/meta/guestbook-meta.webp"
+>
+  <main class="container">
+    <h1>Guestbook</h1>
 
-    {
-      success && (
-        <AlertMessage type="success" message="Message added successfully!" />
-      )
-    }
+    <div class="alert-container">
+      {
+        success && (
+          <AlertMessage type="success" message="Message added successfully!" />
+        )
+      }
+      {
+        error === "invalid_input" && (
+          <AlertMessage
+            type="error"
+            message="Invalid input. Ensure author and message are filled."
+          />
+        )
+      }
+      {
+        error === "invalid_link" && (
+          <AlertMessage type="error" message="Invalid URL format." />
+        )
+      }
+      {
+        error === "too_many_links" && (
+          <AlertMessage type="error" message="Too many links in message." />
+        )
+      }
+    </div>
 
-    {
-      error === "invalid_input" && (
-        <AlertMessage
-          type="error"
-          message="Invalid input. Ensure author and message are filled."
-        />
-      )
-    }
-
-    {
-      error === "invalid_link" && (
-        <AlertMessage type="error" message="Invalid URL format." />
-      )
-    }
-
-    {
-      error === "too_many_links" && (
-        <AlertMessage type="error" message="Too many links in message." />
-      )
-    }
-
-    <section class="mb-12">
+    <section class="guestbook-entries">
       {guestBook.map((entry) => <GuestbookEntry {...entry} />)}
     </section>
 
@@ -114,3 +116,13 @@ const error = Astro.url.searchParams.get("error");
     <GuestbookForm />
   </main>
 </BaseLayout>
+
+<style>
+  .alert-container {
+    margin-bottom: 24px;
+  }
+
+  .guestbook-entries {
+    margin-bottom: 48px;
+  }
+</style>
