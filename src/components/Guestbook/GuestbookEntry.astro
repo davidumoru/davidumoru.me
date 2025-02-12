@@ -1,4 +1,5 @@
 ---
+import { Icon } from "../Icon/Icon";
 interface Props {
   author: string;
   link?: string;
@@ -15,7 +16,7 @@ const { author, link, content, timestamp } = Astro.props;
     {
       link && (
         <a href={link} target="_blank" rel="noopener noreferrer" class="link">
-          🔗 Website
+          <Icon icon="externalLink" size="20" />
         </a>
       )
     }
