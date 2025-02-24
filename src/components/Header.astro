@@ -14,7 +14,7 @@ const now = displayDate(new Date());
       <div>
         <a
           href="/about"
-          aria-current={Astro.url.pathname === "/about" ? "page" : false}
+          aria-current={Astro.url.pathname.includes("/about") ? "page" : false}
           class="">About</a
         >
       </div>
