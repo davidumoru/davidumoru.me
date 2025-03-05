@@ -1,5 +1,6 @@
 ---
 import { Icon } from "../Icon/Icon";
+import { displayDate } from "../../lib/mediumDate"
 interface Props {
   author: string;
   link?: string;
@@ -23,8 +24,8 @@ const { author, link, content, timestamp } = Astro.props;
   </header>
   <p class="content">{content}</p>
   <time datetime={timestamp.toISOString()} class="timestamp">
-    {new Date(timestamp).toLocaleString()}
-  </time>
+    {displayDate(new Date(timestamp))}
+  </time>  
 </article>
 
 <style>
