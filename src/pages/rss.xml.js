@@ -15,7 +15,7 @@ export async function GET(context) {
     stylesheet: "/rss/pretty-feed-v3.xsl",
     items: posts.map((post) => ({
       title: post.data.title,
-      pubDate: post.data.date,
+      pubDate: post.data.datePublished.toISOString(),
       description: post.data.description,
       link: `/posts/${post.id}/`,
       content: sanitizeHtml(parser.render(post.body), {
