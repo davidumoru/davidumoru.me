@@ -1,7 +1,7 @@
 ---
 title: Playlist Converter
 year: 2024
-description: Import your Youtube music playlists to Spotify
+description: A web app for seamlessly transferring playlists from YouTube Music to Spotify.
 highlight: true
 githubUrl: https://github.com/davidumoru/playlist-converter
 demoUrl: https://playlist-converter.umoru.tech
