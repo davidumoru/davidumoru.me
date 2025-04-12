@@ -106,30 +106,34 @@ const { timeline, roles, tech, website, repo, collaborators } = Astro.props;
     flex-direction: column;
     border: 1px solid var(--gray-5);
     border-radius: 0.5rem;
-    padding: var(--space-l);
+    padding: var(--space-m);
     gap: var(--space-s);
     margin-bottom: var(--space-l);
-    ul,
-    li {
-      all: unset;
-    }
+  }
 
-    ul {
-      display: flex;
-      flex-wrap: wrap;
-      column-gap: var(--space-2xs);
-    }
+  .project-info ul,
+  .project-info li {
+    all: unset;
+  }
 
-    li:not(:last-child)::after {
-      content: ",";
-      color: var(--gray-11);
-    }
+  .project-info ul {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-2xs);
+    row-gap: var(--space-2xs);
+  }
+
+  .project-info li:not(:last-child)::after {
+    content: ",";
+    color: var(--gray-11);
   }
 
   .collaborator {
-    display: inline;
-    padding-left: var(--space-l);
-    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    margin-bottom: var(--space-2xs);
+    padding: 0;
   }
 
   .avatar {
@@ -138,9 +142,23 @@ const { timeline, roles, tech, website, repo, collaborators } = Astro.props;
     height: var(--space-m);
     border-radius: 100%;
     line-height: 0;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+  }
+
+  @media (max-width: 480px) {
+    .project-info {
+      padding: var(--space-s);
+    }
+
+    [title="Collaborators"] ul {
+      flex-direction: column;
+    }
+
+    [title="Collaborators"] li:not(:last-child)::after {
+      content: "";
+    }
+
+    .collaborator {
+      margin-bottom: var(--space-3xs);
+    }
   }
 </style>
