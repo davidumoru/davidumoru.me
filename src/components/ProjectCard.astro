@@ -1,6 +1,5 @@
 ---
 import { getEntry } from "astro:content";
-import { makeRoute } from "../lib/routes";
 import { Icon } from "./Icon/Icon";
 
 export type Props = {
@@ -27,24 +26,29 @@ const url = demoUrl || githubUrl;
   <div class="icons">
     {
       githubUrl && (
-        <a href={githubUrl} class="icon" target="_blank">
-          <Icon icon="github" size="20" />
+        <a href={githubUrl} class="icon-link" target="_blank">
+          <div class="icon-container">
+            <Icon icon="github" size="20" />
+            <span class="icon-text">Code</span>
+          </div>
         </a>
       )
     }
     {
       demoUrl && (
-        <a href={demoUrl} class="icon" target="_blank">
-          <Icon icon="externalLink" size="20" />
+        <a href={demoUrl} class="icon-link" target="_blank">
+          <div class="icon-container">
+            <Icon icon="externalLink" size="20" />
+            <span class="icon-text">Demo</span>
+          </div>
         </a>
       )
     }
   </div>
 </article>
-
 <style>
   article {
-    max-inline-size: 66ch;
+    max-inline-size: 70ch;
   }
   article:not(:first-child) {
     margin-block: var(--space-m);
@@ -54,17 +58,24 @@ const url = demoUrl || githubUrl;
     align-items: last baseline;
     gap: var(--space-2xs);
   }
-
   p {
     margin-block: 0.3rem;
   }
   .icons {
     display: flex;
-    gap: var(--space-xs);
-    margin-block: 0.3rem;
+    gap: var(--space-s);
+    margin-block: 0.5rem;
   }
-  .icon {
-    width: 1.5rem;
-    height: 1.5rem;
+  .icon-container {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--color-border, #ddd);
+  .icon-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted, #555);
   }
 </style>
