@@ -1,0 +1,23 @@
+---
+import { getCollection } from "astro:content";
+import Webring from "../components/Webring.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const webrings = await getCollection("webrings");
+---
+
+<BaseLayout title="Webrings">
+  <section>
+    <div class="webrings">
+      {webrings.map((webring) => <Webring webring={webring} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .webrings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+</style>
