@@ -54,4 +54,15 @@ export const collections = {
         date: z.date(),
       }),
   }),
+  webrings: defineCollection({
+    type: "content",
+    schema: z.object({
+      title: z.string(),
+      description: z.string(),
+      url: z.string().url(),
+      prev: z.string().url(),
+      next: z.string().url(),
+      color: z.string(),
+    }),
+  }),
 };
