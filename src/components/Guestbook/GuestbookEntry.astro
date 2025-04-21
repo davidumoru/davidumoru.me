@@ -16,7 +16,7 @@ const { author, link, content, timestamp } = Astro.props;
     <h3 class="author">{author}</h3>
     {
       link && (
-        <a href={link} target="_blank" rel="noopener noreferrer" class="link">
+        <a href={link} target="_blank" rel="noopener" class="link">
           <Icon icon="externalLink" size="20" />
         </a>
       )
