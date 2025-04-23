@@ -2,11 +2,17 @@
 import { getCollection } from "astro:content";
 import Webring from "../components/Webring.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
 
 const webrings = await getCollection("webrings");
 ---
 
 <BaseLayout title="Webrings">
+  <PageHeader
+    title="Webrings"
+    description="Webrings let you browse related sites in one big loop. davidumoru.me is a proud member of the following:"
+    datePublished={new Date("2025-04-21")}
+  />
   <section>
     <div class="webrings">
       {webrings.map((webring) => <Webring webring={webring} />)}
