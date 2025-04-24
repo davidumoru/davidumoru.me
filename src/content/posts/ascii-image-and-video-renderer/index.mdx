@@ -4,9 +4,6 @@ description: Converting images and videos into ASCII art directly in your termin
 datePublished: 2024-09-07
 dateModified: 2024-09-07
 writing: true
-img: ["./ascii-renderer-meta.webp"]
-imgAlt: Build an ASCII Image and Video Renderer
-ogImage: ./ascii-renderer-meta.webp
 features:
    - name: Level Up Coding
      url: https://medium.com/gitconnected/build-an-ascii-image-and-video-renderer-with-python-c977070d45e7
@@ -31,7 +28,7 @@ import ProjectInfo from "../../../components/ProjectInfo.astro";
 />
 
 I recently made a project with Python that converts images and videos into ASCII art directly in your terminal.
-So I decided to write about it; I’ll explain what ASCII art is, how images work, and walk you through my code step by step.
+So I decided to write about it; I'll explain what ASCII art is, how images work, and walk you through my code step by step.
 
 ## What is ASCII Art?
 
@@ -89,11 +86,11 @@ imgs = []
 
 - **DEFAULT_CHARSET**: This is the set of characters that would be used to represent the different brightness levels in the ASCII art.
 - **DEFAULT_COLOR**: A flag to determine whether to use color in the ASCII art.
-- **IMG_SIZE**: This will hold the size of the terminal, which we’ll set later.
+- **IMG_SIZE**: This will hold the size of the terminal, which we'll set later.
 
 ### Getting the Terminal Size
 
-We need to know the size of the terminal to ensure the ASCII art fits nicely. Here’s the function we’ll use to get the terminal size:
+We need to know the size of the terminal to ensure the ASCII art fits nicely. Here's the function we'll use to get the terminal size:
 
 ```python
 def get_terminal_size():
@@ -102,7 +99,7 @@ def get_terminal_size():
 
 ### Converting Pixels to ASCII Characters
 
-This part of the code converts a pixel’s color value into a character from the `DEFAULT_CHARSET` based on its brightness:
+This part of the code converts a pixel's color value into a character from the `DEFAULT_CHARSET` based on its brightness:
 
 ```python
 def pix_to_code(i, img):
@@ -167,7 +164,7 @@ Finally, the constructed ASCII art is printed directly to the terminal.
 
 ### Handling Images and Videos
 
-The project can handle both images and videos. Here’s how image files are opened:
+The project can handle both images and videos. Here's how image files are opened:
 
 ```python
 def open_image(file):
@@ -240,13 +237,13 @@ if __name__ == "__main__":
 
 ### Flow of the Main Function
 
-To give you a clearer understanding of the control flow in this script, here’s a visual representation using a flowchart:
+To give you a clearer understanding of the control flow in this script, here's a visual representation using a flowchart:
 
 ![Flowchart](https://raw.githubusercontent.com/davidumoru/blog/main/public/static/images/ascii-render-flowchart.png)
 
 ## Example Usage
 
-To run the script, you need to provide the image or video file as an argument in the terminal. Here’s an example command:
+To run the script, you need to provide the image or video file as an argument in the terminal. Here's an example command:
 
 ```bash
 python ascii_art_converter.py your_image.png -c
