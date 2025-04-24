@@ -7,22 +7,25 @@
     padding: 0.4rem;
     border-radius: 1rem;
     background-color: #aaa;
-}
-
-.full-width {
+    margin: 2rem 0;
+  }
+  
+  .full-width-container img {
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 1rem;
-}
-
-@media (max-width: 1080px) {
+    border-radius: 0.6rem;
+    object-fit: cover;
+  }
+  
+  @media (max-width: 1080px) {
     .full-width-container {
-        width: 90vw;
-        padding: 0.2rem;
-        border-radius: 0.4rem;
+      width: 93vw;
+      padding: 0.2rem;
+      border-radius: 0.4rem;
     }
-    .full-width {
-        border-radius: 0.4rem;
+    
+    .full-width-container img {
+      border-radius: 0.2rem;
     }
-}
+  }
