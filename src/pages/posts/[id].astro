@@ -59,83 +59,94 @@ const { data } = post;
 
 <style>
   .pagination {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-m);
     margin-block-start: var(--space-3xl);
     margin-inline: auto;
-    width: min(800px, calc(100% - var(--space-xl) * 2));
-    gap: var(--space-m);
+    width: 100%;
+  }
 
-    a {
-      flex: 1;
-      display: grid;
-      column-gap: var(--space-m);
-      padding: var(--space-m);
-      border-radius: var(--radius-m);
-      border: 1px solid var(--gray-5);
-      line-height: 1.1;
-      align-items: center;
-      text-decoration: none;
-      transition:
-        background-color 0.2s ease-in-out,
-        border-color 0.2s ease-in-out;
+  .pagination a {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-m);
+    border-radius: var(--radius-m);
+    border: 1px solid var(--gray-5);
+    background-color: var(--gray-1);
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease-in-out,
+      border-color 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    min-height: 4rem;
+  }
 
-      &.prev {
-        grid-template-columns: auto 1fr;
-        grid-template-areas:
-          "arrow label"
-          "arrow title";
-      }
+  .pagination a.prev {
+    position: relative;
+    padding-left: calc(var(--space-m) * 2);
+  }
 
-      &.next {
-        grid-template-columns: 1fr auto;
-        grid-template-areas:
-          "label arrow"
-          "title arrow";
-        text-align: right;
-      }
+  .pagination a.next {
+    position: relative;
+    padding-right: calc(var(--space-m) * 2);
+    text-align: right;
+  }
 
-      &.prev::before,
-      &.next::after {
-        font-size: var(--step-1);
-        color: var(--gray-10);
-        transition: color 0.2s ease-in-out;
-        font-weight: var(--font-weight-normal);
-      }
+  .pagination a.prev::before,
+  .pagination a.next::after {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--step-1);
+    color: var(--gray-10);
+    transition: color 0.2s ease-in-out;
+  }
 
-      &.prev::before {
-        content: "←";
-        grid-area: arrow;
-      }
+  .pagination a.prev::before {
+    content: "←";
+    left: var(--space-s);
+  }
 
-      &.next::after {
-        content: "→";
-        grid-area: arrow;
-      }
+  .pagination a.next::after {
+    content: "→";
+    right: var(--space-s);
+  }
 
-      .label {
-        grid-area: label;
-        font-size: var(--step--1);
-        color: var(--gray-11);
-        transition: color 0.2s ease-in-out;
-        font-weight: var(--font-weight-normal);
-      }
+  .pagination .label {
+    display: block;
+    font-size: var(--step--1);
+    color: var(--gray-11);
+    margin-bottom: var(--space-2xs);
+    font-weight: var(--font-weight-normal);
+  }
 
-      .title {
-        grid-area: title;
-      }
+  .pagination .title {
+    display: block;
+    font-weight: var(--font-weight-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          color: var(--gray-12);
-          border-color: var(--gray-7);
+  @media (hover: hover) and (pointer: fine) {
+    .pagination a:hover {
+      background-color: var(--gray-2);
+      border-color: var(--gray-7);
+    }
 
-          &::before,
-          &::after {
-            color: var(--gray-12);
-          }
-        }
-      }
+    .pagination a:hover::before,
+    .pagination a:hover::after {
+      color: var(--gray-12);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .pagination {
+      grid-template-columns: 1fr;
     }
   }
 </style>
