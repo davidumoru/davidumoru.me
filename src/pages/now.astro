@@ -11,73 +11,82 @@ posts.sort(
 );
 ---
 
-<BaseLayout title="Now" image="https://www.davidumoru.me/static/meta/now-meta.webp">
+<BaseLayout
+  title="Now"
+  image="https://www.davidumoru.me/static/meta/now-meta.webp"
+>
   <CenteredLayout>
-  <div class="timeline">
-    {
-      posts.map((post) => (
-        <div class="timeline-post">
-          <div class="timeline-marker" />
-          <div class="post-content">
-            <p class="date">{displayDate(post.data.date)}</p>
-            <div class="content">{post.body}</div>
+    <div class="timeline">
+      {
+        posts.map((post) => (
+          <div class="timeline-post">
+            <div class="timeline-marker" />
+            <div class="post-content">
+              <p class="date">{displayDate(post.data.date)}</p>
+              <div class="content">{post.body}</div>
+            </div>
           </div>
-        </div>
-      ))
+        ))
+      }
+    </div>
+  </CenteredLayout>
+
+  <style>
+    .timeline-post {
+      display: flex;
+      margin-bottom: 2rem;
+      position: relative;
     }
-  </div>
 
+    .timeline-marker {
+      width: 2px;
+      background-color: var(--gray-8);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin-left: -1px;
+      transition: background-color 0.2s ease;
+    }
+
+    .timeline-marker::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: -6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--gray-1);
+      border: 2px solid var(--gray-8);
+      z-index: 1;
+      transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .post-content {
+      width: calc(100% - 0px);
+      padding-left: 20px;
+    }
+
+    .date {
+      font-size: 0.9rem;
+      color: var(--gray-11);
+      margin-bottom: 0.5rem;
+    }
+
+    .content {
+      line-height: 1.6;
+      color: var(--gray-12);
+    }
+
+    .timeline-post:hover .timeline-marker {
+      background-color: var(--gray-11);
+    }
+
+    .timeline-post:hover .timeline-marker::before {
+      border-color: var(--gray-11);
+    }
+  </style>
 </BaseLayout>
-
-<style>
-  .timeline-post {
-    display: flex;
-    margin-bottom: 2rem;
-    position: relative;
-  }
-
-  .timeline-marker {
-    width: 2px;
-    background-color: #ddd;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    margin-left: -1px;
-  }
-
-  .timeline-marker::before {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: -6px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #fff;
-    border: 2px solid #ddd;
-    z-index: 1;
-  }
-
-  .post-content {
-    width: calc(100% - 0px);
-    padding-left: 20px;
-  }
-
-  .date {
-    font-size: 0.9rem;
-    color: #777;
-    margin-bottom: 0.5rem;
-  }
-
-  .content {
-    line-height: 1.6;
-  }
-
-  .timeline-post:hover .timeline-marker {
-    background-color: #aaa;
-  }
-  .timeline-post:hover .timeline-marker::before {
-    border-color: #aaa;
-  }
-</style>
