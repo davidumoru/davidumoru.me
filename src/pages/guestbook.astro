@@ -22,6 +22,7 @@ if (Astro.request.method === "POST") {
   const author = (formData.get("author") as string)?.trim();
   const link = (formData.get("link") as string)?.trim();
   const content = (formData.get("content") as string)?.trim();
+  const country = (formData.get("country") as string)?.trim();
 
   const isValidUrl = (url: string): boolean => {
     try {
@@ -32,7 +33,7 @@ if (Astro.request.method === "POST") {
     }
   };
 
-  if (!author || !content || content.length > 140) {
+  if (!author || !content || !country || content.length > 140) {
     return Astro.redirect("/guestbook?error=invalid_input");
   }
   if (link && !isValidUrl(link)) {
@@ -46,6 +47,7 @@ if (Astro.request.method === "POST") {
     author,
     link,
     content,
+    country,
     timestamp: new Date(),
   });
   return Astro.redirect("/guestbook?success=message_added");
@@ -114,18 +116,30 @@ const error = Astro.url.searchParams.get("error");
 
     <section class="guestbook-entries">
       {
-        guestBook.map((entry, index) => {
-          const stamp = stampData[index % stampData.length];
+        guestBook.map((entry) => {
+          const matchingStamp = stampData.find(
+            (stamp) => stamp.country === entry.country
+          );
+
+          const displayCountry =
+            matchingStamp?.country || entry.country || "Unknown";
+          const displayImageUrl =
+            matchingStamp?.imageUrl || "/stamps/default.jpg";
+          const displayHue = matchingStamp?.hue || 210;
+          const displayImageAlt = matchingStamp
+            ? `Stamp from ${matchingStamp.country} for ${entry.author}'s entry`
+            : `Default stamp for ${entry.author}'s entry`;
+
           return (
             <GuestbookEntry
               name={entry.author}
               link={entry.link}
               message={entry.content}
               date={entry.timestamp}
-              country={stamp.country}
-              imageUrl={stamp.imageUrl}
-              imageAlt={`Stamp from ${stamp.country} for ${entry.author}'s entry`}
-              hue={stamp.hue}
+              country={displayCountry}
+              imageUrl={displayImageUrl}
+              imageAlt={displayImageAlt}
+              hue={displayHue}
             />
           );
         })
