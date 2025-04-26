@@ -37,6 +37,8 @@
 	--border-weight: 1px;
 
     --gray-1: hsl(0, 0%, 99%);
+	--gray-6: hsl(0, 0%, 85%);
+	--gray-8: hsl(0, 0%, 60%);
     --gray-11: hsl(0, 0%, 40%);
     --gray-12: hsl(0, 0%, 7%);
 	
@@ -45,6 +47,8 @@
 
 html[data-theme='dark'] {
     --gray-1: hsl(0, 0%, 7%);
+	--gray-6: hsl(0, 0%, 20%);
+	--gray-8: hsl(0, 0%, 40%);
     --gray-11: hsl(0, 0%, 65%);
     --gray-12: hsl(0, 0%, 98%);
 	
