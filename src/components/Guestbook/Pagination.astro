@@ -13,43 +13,144 @@ const { currentPage, hasNextPage, hasPrevPage } = Astro.props;
     hasPrevPage ? (
       <a
         href={`/guestbook?page=${currentPage - 1}`}
-        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+        class="pagination-link prev"
+        aria-label="Previous Page"
       >
-        ← Previous
+        &laquo; Prev
       </a>
     ) : (
-      <div />
+      <div class="placeholder" />
     )
   }
 
+  <span class="page-indicator">Page {currentPage}</span>
+
   {
-    hasNextPage && (
+    hasNextPage ? (
       <a
         href={`/guestbook?page=${currentPage + 1}`}
-        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+        class="pagination-link next"
+        aria-label="Next Page"
       >
-        Next →
+        Next &raquo;
       </a>
+    ) : (
+      <div class="placeholder" />
     )
   }
 </nav>
 
 <style>
   .pagination {
+    --hue: 210;
+    --primary-color: hsl(var(--hue), 70%, 45%);
+    --primary-color-hover: hsl(var(--hue), 65%, 50%);
+    --primary-border-color: hsla(var(--hue), 70%, 40%, 0.5);
+    --shadow-color-base: hsla(var(--hue), 50%, 20%, 0.3);
+    --shadow-color-inset: hsla(var(--hue), 70%, 60%, 0.5);
+    --shadow-color-hover: hsla(var(--hue), 50%, 20%, 0.3);
+    --shadow-color-active: hsla(var(--hue), 50%, 20%, 0.4);
+
+    --indicator-text-light: hsl(var(--hue), 15%, 55%);
+    --indicator-text-dark: hsl(var(--hue), 15%, 65%);
+    --indicator-text: var(--indicator-text-light);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin: 3rem auto 4rem;
+    max-width: 400px;
+    gap: 1rem;
   }
-  .pagination a {
-    padding: 0.5rem 1rem;
-    background-color: #f3f4f6;
-    border-radius: 0.5rem;
+
+  @media (prefers-color-scheme: dark) {
+    .pagination {
+      --indicator-text: var(--indicator-text-dark);
+    }
+    .pagination-link {
+      --shadow-color-base: hsla(var(--hue), 30%, 15%, 0.4);
+      --shadow-color-hover: hsla(var(--hue), 30%, 15%, 0.4);
+      --shadow-color-active: hsla(var(--hue), 30%, 15%, 0.5);
+    }
+  }
+
+  .pagination-link {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-border-color);
+    border-radius: 4px;
     text-decoration: none;
-    transition: background-color 0.2s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow:
+      1px 1px 3px var(--shadow-color-base),
+      inset 0 0 0 1px var(--shadow-color-inset);
+    transition: all 0.2s ease-out;
+    flex-shrink: 0;
+    min-width: 110px;
+    cursor: pointer;
   }
-  .pagination a:hover {
-    background-color: #e5e7eb;
+
+  .pagination-link:hover,
+  .pagination-link:focus-visible {
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-border-color);
+    color: white;
+    box-shadow:
+      2px 2px 5px var(--shadow-color-hover),
+      inset 0 0 0 1px var(--shadow-color-inset);
+    transform: translateY(-1px);
+  }
+
+  .pagination-link:active {
+    transform: translateY(1px);
+    box-shadow:
+      0 0 2px var(--shadow-color-active),
+      inset 0 0 0 1px var(--shadow-color-inset);
+  }
+
+  .pagination-link:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  .page-indicator {
+    font-size: 0.9rem;
+    color: var(--indicator-text);
+    font-weight: 500;
+    flex-shrink: 1;
+    text-align: center;
+  }
+
+  .placeholder {
+    min-width: 110px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 0.7rem 1.5rem;
+    border: 1px solid transparent;
+  }
+
+  @media (max-width: 480px) {
+    .pagination {
+      max-width: 100%;
+      gap: 0.5rem;
+    }
+    .pagination-link {
+      padding: 0.6rem 1rem;
+      min-width: 90px;
+      font-size: 0.85rem;
+    }
+    .placeholder {
+      min-width: 90px;
+      padding: 0.6rem 1rem;
+    }
+    .page-indicator {
+      font-size: 0.85rem;
+    }
   }
 </style>
