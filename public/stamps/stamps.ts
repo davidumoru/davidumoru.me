@@ -3,7 +3,7 @@ export const stampData = [
     country: "USA",
     imageUrl:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg/1280px-Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg",
-    hue: 30,
+    hue: 210,
   },
   {
     country: "Canada",
@@ -157,8 +157,7 @@ export const stampData = [
   },
   {
     country: "Nigeria",
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/National_monument%2C_The_Nigeria_Coat_of_Arm_in_Calabar%2C_Cross_River.jpg/1280px-National_monument%2C_The_Nigeria_Coat_of_Arm_in_Calabar%2C_Cross_River.jpg",
+    imageUrl: "https://dubawa.org/wp-content/uploads/2020/09/city-gate.jpg",
     hue: 35,
   },
 ];
