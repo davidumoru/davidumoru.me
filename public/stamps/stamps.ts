@@ -155,4 +155,10 @@ export const stampData = [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Vinson_Massif_from_North_Ridge.jpg/1024px-Vinson_Massif_from_North_Ridge.jpg",
     hue: 210,
   },
+  {
+    country: "Nigeria",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/National_monument%2C_The_Nigeria_Coat_of_Arm_in_Calabar%2C_Cross_River.jpg/1280px-National_monument%2C_The_Nigeria_Coat_of_Arm_in_Calabar%2C_Cross_River.jpg",
+    hue: 35,
+  },
 ];
