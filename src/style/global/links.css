@@ -1,4 +1,11 @@
-a:not([class]),
-.link {
-	color: var(--gray-11);
+a:not([class]), .link {
+	color: var(--gray-12);
+	text-decoration: underline wavy;
+	text-decoration-color: var(--gray-10);
+	transition: color 0.3s ease, text-decoration-color 0.3s ease;
+}
+  
+a:not([class]):hover, .link:hover {
+	text-shadow: 0 0 0.2px currentColor;
+	text-decoration-color: var(--gray-12);
 }
