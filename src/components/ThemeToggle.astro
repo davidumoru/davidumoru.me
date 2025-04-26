@@ -9,6 +9,7 @@
   aria-label="Switch to dark theme"
   aria-live="polite"
 >
+  <span class="toggle-icon"></span>
 </button>
 <script>
   const themeStorageKey = "theme-preference";
@@ -45,23 +46,46 @@
 <style>
   .theme-toggle-button {
     --toggle-size: 1em;
-    background-color: var(--toggle-bg-color);
-    border: 1px solid #000;
+    background: transparent;
+    border: none;
     padding: 0;
     margin: 0;
     cursor: pointer;
-    border-radius: 50%;
     display: inline-block;
     vertical-align: middle;
     width: var(--toggle-size);
     height: var(--toggle-size);
-    aspect-ratio: 1 / 1;
-    --toggle-bg-color: #000;
-    transition: background-color 0.3s ease;
+    transition: transform 0.2s ease;
   }
 
-  html[data-theme="dark"] .theme-toggle-button {
-    --toggle-bg-color: #fff;
+  .toggle-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    transform: rotate(0deg);
+    transition: transform 0.5s ease;
+  }
+
+  .toggle-icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #000 0%, #000 50%, #fff 50%, #fff 100%);
+    border-radius: 50%;
+    border: 1px solid #000;
+    box-sizing: border-box;
+  }
+
+  html[data-theme="dark"] .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  html[data-theme="dark"] .toggle-icon::before {
     border-color: #fff;
   }
 
