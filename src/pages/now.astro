@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import CenteredLayout from "../layouts/CenteredLayout.astro";
 import { displayDate } from "../lib/mediumDate";
 
 const posts = await getCollection("now");
@@ -11,6 +12,7 @@ posts.sort(
 ---
 
 <BaseLayout title="Now" image="https://www.davidumoru.me/static/meta/now-meta.webp">
+  <CenteredLayout>
   <div class="timeline">
     {
       posts.map((post) => (
@@ -24,6 +26,7 @@ posts.sort(
       ))
     }
   </div>
+
 </BaseLayout>
 
 <style>

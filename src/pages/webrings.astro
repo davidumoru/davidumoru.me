@@ -2,12 +2,14 @@
 import { getCollection } from "astro:content";
 import Webring from "../components/Webring.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import CenteredLayout from "../layouts/CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
 
 const webrings = await getCollection("webrings");
 ---
 
 <BaseLayout title="Webrings">
+  <CenteredLayout>
   <PageHeader
     title="Webrings"
     description="Webrings let you browse related sites in one big loop. This site is a proud member of the following:"
@@ -18,6 +20,7 @@ const webrings = await getCollection("webrings");
       {webrings.map((webring) => <Webring webring={webring} />)}
     </div>
   </section>
+</CenteredLayout>
 </BaseLayout>
 
 <style>

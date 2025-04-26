@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import CenteredLayout from "../layouts/CenteredLayout.astro";
 import { Icon } from "../components/Icon/Icon";
 import Spotify from "../components/Spotify.astro";
 ---
@@ -8,35 +9,37 @@ import Spotify from "../components/Spotify.astro";
   title="Hello"
   image="https://www.davidumoru.me/static/meta/meta-image.webp"
 >
-  <section class="flow">
-    <h1 class="fs-3">Hello, I'm David :)</h1>
-    <p>
-      I build things. I mess around with code a lot. Design too, when it feels
-      right or when the idea needs it.
-    </p>
-    <p>
-      <a
-        href="https://calendly.com/umorudavido/30min"
-        target="_blank"
-        class="link"
-        ><Icon icon="arrowRight" size="16" /> Let's grab a virtual coffee</a
-      >
-    </p>
+  <CenteredLayout>
+    <section class="flow">
+      <h1 class="fs-3">Hello, I'm David :)</h1>
+      <p>
+        I build things. I mess around with code a lot. Design too, when it feels
+        right or when the idea needs it.
+      </p>
+      <p>
+        <a
+          href="https://calendly.com/umorudavido/30min"
+          target="_blank"
+          class="link"
+          ><Icon icon="arrowRight" size="16" /> Let's grab a virtual coffee</a
+        >
+      </p>
 
-    <h2>Now</h2>
-    <p>
-      Turns out, I kind of love writing CSS. When I'm not doing that, I'm
-      probably watching way too much YouTube or daydreaming about travel.
-    </p>
+      <h2>Now</h2>
+      <p>
+        Turns out, I kind of love writing CSS. When I'm not doing that, I'm
+        probably watching way too much YouTube or daydreaming about travel.
+      </p>
 
-    <p>
-      <a href="/now" class="link"
-        ><Icon icon="arrowRight" size="16" /> See details</a
-      >
-    </p>
-  </section>
+      <p>
+        <a href="/now" class="link"
+          ><Icon icon="arrowRight" size="16" /> See details</a
+        >
+      </p>
+    </section>
 
-  <hr />
+    <hr />
 
-  <Spotify />
+    <Spotify />
+  </CenteredLayout>
 </BaseLayout>

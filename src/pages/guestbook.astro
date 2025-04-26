@@ -6,10 +6,12 @@ import GuestbookEntry from "../components/Guestbook/GuestbookEntry.astro";
 import AlertMessage from "../components/Guestbook/AlertMessage.astro";
 import Pagination from "../components/Guestbook/Pagination.astro";
 import GuestbookForm from "../components/Guestbook/GuestbookForm.astro";
+import PageHeader from "../components/PageHeader.astro";
 
-const PER_PAGE = 5;
+import { stampData } from "../../public/stamps/stamps.ts";
 
-// Handle form submission
+const PER_PAGE = 11;
+
 if (Astro.request.method === "POST") {
   const contentType = Astro.request.headers.get("content-type");
   if (!contentType || !contentType.includes("multipart/form-data")) {
@@ -20,6 +22,7 @@ if (Astro.request.method === "POST") {
   const author = (formData.get("author") as string)?.trim();
   const link = (formData.get("link") as string)?.trim();
   const content = (formData.get("content") as string)?.trim();
+  const country = (formData.get("country") as string)?.trim();
 
   const isValidUrl = (url: string): boolean => {
     try {
@@ -30,7 +33,7 @@ if (Astro.request.method === "POST") {
     }
   };
 
-  if (!author || !content || content.length > 140) {
+  if (!author || !content || !country || content.length > 140) {
     return Astro.redirect("/guestbook?error=invalid_input");
   }
   if (link && !isValidUrl(link)) {
@@ -44,12 +47,12 @@ if (Astro.request.method === "POST") {
     author,
     link,
     content,
+    country,
     timestamp: new Date(),
   });
   return Astro.redirect("/guestbook?success=message_added");
 }
 
-// Fetch guestbook entries
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const offset = (page - 1) * PER_PAGE;
 
@@ -65,7 +68,6 @@ const guestBook = await db
   .limit(PER_PAGE)
   .offset(offset);
 
-// Get alert message if any
 const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
 ---
@@ -75,36 +77,73 @@ const error = Astro.url.searchParams.get("error");
   image="https://www.davidumoru.me/static/meta/guestbook-meta.webp"
 >
   <main>
-    <h1>Guestbook</h1>
+    <section class="container">
+      <PageHeader
+        title="Guestbook"
+        description="Leave a message and get a travel stamp!"
+        datePublished={new Date("2025-04-21")}
+      />
 
-    <div class="alert-container">
-      {
-        success && (
-          <AlertMessage type="success" message="Message added successfully!" />
-        )
-      }
-      {
-        error === "invalid_input" && (
-          <AlertMessage
-            type="error"
-            message="Invalid input. Ensure author and message are filled."
-          />
-        )
-      }
-      {
-        error === "invalid_link" && (
-          <AlertMessage type="error" message="Invalid URL format." />
-        )
-      }
-      {
-        error === "too_many_links" && (
-          <AlertMessage type="error" message="Too many links in message." />
-        )
-      }
-    </div>
+      <div class="alert-container">
+        {
+          success && (
+            <AlertMessage
+              type="success"
+              message="Message added successfully!"
+            />
+          )
+        }
+        {
+          error === "invalid_input" && (
+            <AlertMessage
+              type="error"
+              message="Invalid input. Ensure author and message are filled."
+            />
+          )
+        }
+        {
+          error === "invalid_link" && (
+            <AlertMessage type="error" message="Invalid URL format." />
+          )
+        }
+        {
+          error === "too_many_links" && (
+            <AlertMessage type="error" message="Too many links in message." />
+          )
+        }
+      </div>
+    </section>
 
     <section class="guestbook-entries">
-      {guestBook.map((entry) => <GuestbookEntry {...entry} />)}
+      {
+        guestBook.map((entry) => {
+          const matchingStamp = stampData.find(
+            (stamp) => stamp.country === entry.country
+          );
+
+          const displayCountry =
+            matchingStamp?.country || entry.country || "Unknown";
+          const displayImageUrl =
+            matchingStamp?.imageUrl || "/stamps/default.jpg";
+          const displayHue = matchingStamp?.hue || 210;
+          const displayImageAlt = matchingStamp
+            ? `Stamp from ${matchingStamp.country} for ${entry.author}'s entry`
+            : `Default stamp for ${entry.author}'s entry`;
+
+          return (
+            <GuestbookEntry
+              name={entry.author}
+              link={entry.link}
+              message={entry.content}
+              date={entry.timestamp}
+              country={displayCountry}
+              imageUrl={displayImageUrl}
+              imageAlt={displayImageAlt}
+              hue={displayHue}
+            />
+          );
+        })
+      }
     </section>
 
     <Pagination
@@ -124,5 +163,6 @@ const error = Astro.url.searchParams.get("error");
 
   .guestbook-entries {
     margin-bottom: 48px;
+    text-align: center;
   }
 </style>

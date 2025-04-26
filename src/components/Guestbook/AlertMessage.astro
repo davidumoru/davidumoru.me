@@ -6,40 +6,80 @@ interface Props {
 
 const { type, message } = Astro.props;
 
-const bgColor = type === "success" ? "success-bg" : "error-bg";
-const textColor = type === "success" ? "success-text" : "error-text";
 const icon = type === "success" ? "✅" : "⚠️";
 ---
 
-<div class={`alert ${bgColor} ${textColor}`}>
-  <span class="icon">{icon}</span>
-  <p class="message">{message}</p>
+<div class="alert" data-type={type} role="alert">
+  <span class="icon" aria-hidden="true">{icon}</span>
+  <p class="message" id="alert-message">{message}</p>
 </div>
 
 <style>
   .alert {
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
+    --alert-success-bg-light: hsl(145, 63%, 90%);
+    --alert-success-text-light: hsl(145, 63%, 22%);
+    --alert-success-border-light: hsl(145, 50%, 78%);
+
+    --alert-error-bg-light: hsl(0, 84%, 94%);
+    --alert-error-text-light: hsl(0, 65%, 40%);
+    --alert-error-border-light: hsl(0, 74%, 85%);
+
+    --alert-success-bg-dark: hsl(145, 63%, 18%);
+    --alert-success-text-dark: hsl(145, 50%, 82%);
+    --alert-success-border-dark: hsl(145, 63%, 30%);
+
+    --alert-error-bg-dark: hsl(0, 65%, 22%);
+    --alert-error-text-dark: hsl(0, 74%, 80%);
+    --alert-error-border-dark: hsl(0, 65%, 35%);
+
+    --alert-bg: var(--alert-success-bg-light);
+    --alert-text: var(--alert-success-text-light);
+    --alert-border: var(--alert-success-border-light);
+
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.5rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    border: 1px solid var(--alert-border);
+    background-color: var(--alert-bg);
+    color: var(--alert-text);
   }
-  .success-bg {
-    background-color: #d1fae5;
+
+  .alert[data-type="success"] {
+    --alert-bg: var(--alert-success-bg-light);
+    --alert-text: var(--alert-success-text-light);
+    --alert-border: var(--alert-success-border-light);
   }
-  .error-bg {
-    background-color: #fee2e2;
+
+  .alert[data-type="error"] {
+    --alert-bg: var(--alert-error-bg-light);
+    --alert-text: var(--alert-error-text-light);
+    --alert-border: var(--alert-error-border-light);
   }
-  .success-text {
-    color: #065f46;
+
+  @media (prefers-color-scheme: dark) {
+    .alert[data-type="success"] {
+      --alert-bg: var(--alert-success-bg-dark);
+      --alert-text: var(--alert-success-text-dark);
+      --alert-border: var(--alert-success-border-dark);
+    }
+    .alert[data-type="error"] {
+      --alert-bg: var(--alert-error-bg-dark);
+      --alert-text: var(--alert-error-text-dark);
+      --alert-border: var(--alert-error-border-dark);
+    }
   }
-  .error-text {
-    color: #991b1b;
-  }
+
   .icon {
-    margin-right: 8px;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.1em;
   }
+
   .message {
     font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
   }
 </style>
