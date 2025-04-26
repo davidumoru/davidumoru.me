@@ -1,4 +1,4 @@
 a:not([class]),
 .link {
-	color: var(--blue-11);
+	color: var(--gray-11);
 }
