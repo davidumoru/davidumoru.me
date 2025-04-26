@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import PostCard from "../../components/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CenteredLayout from "../../layouts/CenteredLayout.astro";
 
 const posts = await getCollection("posts");
 
@@ -22,38 +23,43 @@ const notes = posts
   );
 ---
 
-<BaseLayout title="Posts" image="https://www.davidumoru.me/static/meta/posts-meta.webp">
-  <section>
-    <h1>Writings</h1>
-    <div class="region flow">
-      {
-        writings.map((post) => (
-          <PostCard
-            url={`posts/${post.id}`}
-            title={post.data.title}
-            description={post.data.description}
-            datePublished={post.data.datePublished}
-            features={post.data.features}
-          />
-        ))
-      }
-    </div>
-  </section>
+<BaseLayout
+  title="Posts"
+  image="https://www.davidumoru.me/static/meta/posts-meta.webp"
+>
+  <CenteredLayout>
+    <section>
+      <h1>Writings</h1>
+      <div class="region flow">
+        {
+          writings.map((post) => (
+            <PostCard
+              url={`posts/${post.id}`}
+              title={post.data.title}
+              description={post.data.description}
+              datePublished={post.data.datePublished}
+              features={post.data.features}
+            />
+          ))
+        }
+      </div>
+    </section>
 
-  <section>
-    <h1>Notes</h1>
-    <div class="region flow">
-      {
-        notes.map((post) => (
-          <PostCard
-            url={`posts/${post.id}`}
-            title={post.data.title}
-            description={post.data.description}
-            datePublished={post.data.datePublished}
-            features={post.data.features}
-          />
-        ))
-      }
-    </div>
-  </section>
+    <section>
+      <h1>Notes</h1>
+      <div class="region flow">
+        {
+          notes.map((post) => (
+            <PostCard
+              url={`posts/${post.id}`}
+              title={post.data.title}
+              description={post.data.description}
+              datePublished={post.data.datePublished}
+              features={post.data.features}
+            />
+          ))
+        }
+      </div>
+    </section>
+  </CenteredLayout>
 </BaseLayout>

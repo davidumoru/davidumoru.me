@@ -1,6 +1,7 @@
 ---
 import PageHeader from "../components/PageHeader.astro";
 import BaseLayout from "./BaseLayout.astro";
+import CenteredLayout from "./CenteredLayout.astro";
 import Disclaimer from "../components/Disclaimer.astro";
 
 interface Props {
@@ -27,18 +28,20 @@ const {
 ---
 
 <BaseLayout title={title} description={description} image={ogImage}>
-  <article itemscope itemtype="https://schema.org/BlogPosting">
-    <PageHeader
-      title={title}
-      description={description}
-      datePublished={datePublished}
-      img={img}
-      imgAlt={imgAlt}
-    />
-    <section itemprop="articleBody" class="prose">
-      <slot />
-    </section>
-    {!hideDisclaimer && <Disclaimer />}
-    <slot name="after-prose" />
-  </article>
+  <CenteredLayout>
+    <article itemscope itemtype="https://schema.org/BlogPosting">
+      <PageHeader
+        title={title}
+        description={description}
+        datePublished={datePublished}
+        img={img}
+        imgAlt={imgAlt}
+      />
+      <section itemprop="articleBody" class="prose">
+        <slot />
+      </section>
+      {!hideDisclaimer && <Disclaimer />}
+      <slot name="after-prose" />
+    </article>
+  </CenteredLayout>
 </BaseLayout>

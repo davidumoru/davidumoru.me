@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content'
 import ProjectCard from '../components/ProjectCard.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
+import CenteredLayout from '../layouts/CenteredLayout.astro'
 
 const projects = (await getCollection('projects')).sort(
 	(a, b) => b.data.year - a.data.year,
@@ -9,8 +10,10 @@ const projects = (await getCollection('projects')).sort(
 ---
 
 <BaseLayout title="Projects" image="https://www.davidumoru.me/static/meta/projects-meta.webp">
+	<CenteredLayout>
 	<h1>Projects</h1>
 	<div class="region flow">
 		{projects.map((el) => <ProjectCard slug={el.slug} />)}
 	</div>
+	<CenteredLayout>
 </BaseLayout>
