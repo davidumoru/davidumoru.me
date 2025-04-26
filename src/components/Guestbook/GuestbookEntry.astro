@@ -1,72 +1,639 @@
 ---
-import { Icon } from "../Icon/Icon";
-import { displayDate } from "../../lib/mediumDate"
+import { Image } from "astro:assets";
+
 interface Props {
-  author: string;
-  link?: string;
-  content: string;
-  timestamp: Date;
+  name: string;
+  message: string;
+  country: string;
+  imageUrl: ImageMetadata | string;
+  link?: string | null;
+  imageAlt?: string;
+  hue?: number;
+  date?: string | Date;
 }
 
-const { author, link, content, timestamp } = Astro.props;
+const {
+  name,
+  message,
+  country,
+  imageUrl,
+  link,
+  imageAlt = `Stamp representing a visit from ${country}`,
+  hue = Math.random() * 360,
+  date,
+} = Astro.props;
+
+let displayDate = "";
+if (date) {
+  if (date instanceof Date) {
+    displayDate = date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } else {
+    displayDate = date;
+  }
+}
+
+const primaryStampColor = `hsl(${hue}, 70%, 45%)`;
+const lightStampBg = `hsl(${hue}, 85%, 97%)`;
+const textBgOverlay = `hsla(${hue}, 95%, 98%, 0.82)`;
+const darkTextFixed = `hsl(${hue}, 60%, 20%)`;
+const midGreyFixed = `hsl(${hue}, 15%, 45%)`;
+const goldAccent = `hsl(45, 80%, 60%)`;
+const postmarkColorFixed = `hsla(${hue}, 40%, 30%, 0.8)`;
+const borderAccent = `hsl(${hue}, 50%, 40%)`;
+
+const isImageAsset = typeof imageUrl === "object" && "src" in imageUrl;
+
+const stampStyles = `
+  --hue: ${hue};
+  --primary-stamp-color: ${primaryStampColor};
+  --light-stamp-bg: ${lightStampBg};
+  --text-bg-overlay: ${textBgOverlay};
+  --dark-text-fixed: ${darkTextFixed};
+  --mid-grey-fixed: ${midGreyFixed};
+  --gold-accent: ${goldAccent};
+  --postmark-color-fixed: ${postmarkColorFixed};
+  --border-accent: ${borderAccent};
+  --rotate: ${Math.random() * 3 - 1.5}deg;
+`;
 ---
 
-<article class="card">
-  <header class="card-header">
-    <h3 class="author">{author}</h3>
+<div class="guestbook-stamp" style={stampStyles}>
+  <div class="stamp-frame">
     {
-      link && (
-        <a href={link} target="_blank" rel="noopener" class="link">
-          <Icon icon="externalLink" size="20" />
-        </a>
+      isImageAsset ? (
+        <Image
+          src={imageUrl}
+          alt={imageAlt}
+          class="stamp-bg-image"
+          widths={[300, 600]}
+          sizes="(max-width: 600px) 300px, 600px"
+          loading="lazy"
+          format="webp"
+        />
+      ) : (
+        <img
+          src={imageUrl}
+          alt={imageAlt}
+          class="stamp-bg-image"
+          loading="lazy"
+        />
       )
     }
-  </header>
-  <p class="content">{content}</p>
-  <time datetime={timestamp.toISOString()} class="timestamp">
-    {displayDate(new Date(timestamp))}
-  </time>  
-</article>
+  </div>
+
+  <div class="content-overlay">
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+  </div>
+
+  <div class="stamp-location-text">
+    <span class="country-label">VISIT FROM</span>
+    <span class="country">{country}</span>
+    <div class="country-underline"></div>
+  </div>
+
+  <div class="guestbook-content">
+    <div class="header-row">
+      {
+        link ? (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="entry-name entry-link"
+          >
+            <strong>{name}</strong>
+          </a>
+        ) : (
+          <strong class="entry-name">{name}</strong>
+        )
+      }
+
+      {
+        displayDate && (
+          <time
+            class="entry-date"
+            datetime={date instanceof Date ? date.toISOString() : date}
+          >
+            {displayDate}
+          </time>
+        )
+      }
+    </div>
+    <div class="message-container">
+      <p class="entry-message">{message}</p>
+    </div>
+  </div>
+
+  {
+    displayDate && (
+      <div class="postmark">
+        <div class="postmark-outer">
+          <div class="postmark-inner">
+            <span class="postmark-text">VISITED</span>
+            <span class="postmark-date">{displayDate}</span>
+          </div>
+        </div>
+        <div class="postmark-lines" />
+      </div>
+    )
+  }
+
+  <div class="stamp-value">✦</div>
+  <div class="stamp-decorative-line left"></div>
+  <div class="stamp-decorative-line right"></div>
+</div>
 
 <style>
-  .card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-    margin-bottom: 16px;
-    transition: box-shadow 0.3s ease;
+  .guestbook-stamp {
+    --stamp-width: 300px;
+    --perforation-size: 12px;
+    --inner-padding: 16px;
+    position: relative;
+    width: var(--stamp-width);
+    aspect-ratio: 4 / 5;
+    background-color: var(--light-stamp-bg);
+    padding: var(--perforation-size);
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 1.5rem;
+    display: inline-block;
+    box-shadow:
+      2px 3px 12px rgba(0, 0, 0, 0.15),
+      0 0 1px rgba(0, 0, 0, 0.1),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+    transform: rotate(var(--rotate));
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    border-radius: 2px;
   }
-  .card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  .guestbook-stamp::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(
+        circle at 12.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 37.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 62.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 12.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 37.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 62.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 12.5% 37.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 12.5% 62.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 37.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 62.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      );
+    background-size: 25% 25%;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+    z-index: 4;
+    pointer-events: none;
   }
-  .card-header {
+
+  .guestbook-stamp:hover {
+    transform: rotate(calc(var(--rotate) / 2)) scale(1.02);
+    box-shadow:
+      4px 6px 16px rgba(0, 0, 0, 0.2),
+      0 0 2px rgba(0, 0, 0, 0.15),
+      inset 0 0 30px rgba(255, 255, 255, 0.6);
+  }
+
+  .stamp-frame {
+    position: absolute;
+    top: var(--perforation-size);
+    left: var(--perforation-size);
+    right: var(--perforation-size);
+    bottom: var(--perforation-size);
+    overflow: hidden;
+    border-radius: 2px;
+    z-index: 1;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .stamp-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.45;
+    filter: contrast(1.1) saturate(1.1);
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
+  }
+
+  .guestbook-stamp:hover .stamp-bg-image {
+    opacity: 0.55;
+    filter: contrast(1.2) saturate(1.2);
+  }
+
+  .content-overlay {
+    position: absolute;
+    top: calc(var(--perforation-size) + 4px);
+    left: calc(var(--perforation-size) + 4px);
+    right: calc(var(--perforation-size) + 4px);
+    bottom: calc(var(--perforation-size) + 4px);
+    background-color: var(--text-bg-overlay);
+    z-index: 2;
+    border-radius: 3px;
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.8),
+      inset 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-style: solid;
+    border-color: var(--primary-stamp-color);
+    opacity: 0.7;
+  }
+
+  .top-left {
+    top: 4px;
+    left: 4px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .top-right {
+    top: 4px;
+    right: 4px;
+    border-width: 2px 2px 0 0;
+  }
+
+  .bottom-left {
+    bottom: 4px;
+    left: 4px;
+    border-width: 0 0 2px 2px;
+  }
+
+  .bottom-right {
+    bottom: 4px;
+    right: 4px;
+    border-width: 0 2px 2px 0;
+  }
+
+  .stamp-location-text {
+    bottom: calc(var(--perforation-size) + 8px);
+    left: var(--perforation-size);
+    right: var(--perforation-size);
+    text-align: center;
+    z-index: 3;
+    position: absolute;
+    padding: 0 12px;
+  }
+
+  .country-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--mid-grey-fixed);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .country {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-stamp-color);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+    line-height: 1.2;
+  }
+
+  .country-underline {
+    margin: 4px auto 0;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--primary-stamp-color),
+      var(--gold-accent),
+      var(--primary-stamp-color),
+      transparent
+    );
+  }
+
+  .guestbook-content {
+    top: calc(var(--perforation-size) + var(--inner-padding));
+    left: calc(var(--perforation-size) + var(--inner-padding));
+    right: calc(var(--perforation-size) + var(--inner-padding));
+    height: calc(
+      100% - 2 * var(--perforation-size) - 2 * var(--inner-padding) - 45px
+    );
+    position: absolute;
+    z-index: 3;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    flex-direction: column;
   }
-  .author {
-    font-weight: bold;
-    font-size: 1.125rem;
-    color: #333;
-  }
-  .link {
-    font-size: 0.875rem;
-    color: #1d4ed8;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  .link:hover {
-    color: #1e40af;
-  }
-  .content {
-    color: #4b5563;
-    line-height: 1.5;
+
+  .header-row {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 8px;
+    position: relative;
   }
-  .timestamp {
-    font-size: 0.875rem;
-    color: #6b7280;
+
+  .entry-name {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark-text-fixed);
+    line-height: 1.2;
+    width: fit-content;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .entry-link {
+    cursor: pointer;
+    text-decoration: none;
+    background-image: linear-gradient(
+      90deg,
+      var(--dark-text-fixed) 60%,
+      transparent 0
+    );
+    background-size: 6px 2px;
+    background-repeat: repeat-x;
+    background-position: left bottom 2px;
+    padding-bottom: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .entry-link:hover {
+    color: var(--primary-stamp-color);
+    background-image: linear-gradient(
+      90deg,
+      var(--primary-stamp-color) 60%,
+      transparent 0
+    );
+  }
+
+  .entry-link strong {
+    font-weight: 700;
+    color: inherit;
+  }
+
+  .entry-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--mid-grey-fixed);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .message-container {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    padding: 10px 12px;
+    margin-top: 4px;
+    flex-grow: 1;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.7);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .message-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(var(--hue), 70%, 80%, 0.3),
+      transparent
+    );
+  }
+
+  .entry-message {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--dark-text-fixed);
+    font-weight: 400;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .postmark {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 60px;
+    height: 60px;
+    z-index: 3;
+    transform: rotate(12deg);
+  }
+
+  .postmark-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px double var(--postmark-color-fixed);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .postmark-inner {
+    width: 80%;
+    height: 80%;
+    border: 1px dashed var(--postmark-color-fixed);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    color: var(--postmark-color-fixed);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .postmark-text {
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .postmark-date {
+    font-size: 0.5rem;
+  }
+
+  .postmark-lines {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    right: -20px;
+    height: 20px;
+    background-image: repeating-linear-gradient(
+      0deg,
+      var(--postmark-color-fixed),
+      var(--postmark-color-fixed) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+
+  .stamp-value {
+    position: absolute;
+    top: calc(var(--perforation-size) + 10px);
+    right: calc(var(--perforation-size) + 12px);
+    font-size: 1.2rem;
+    color: var(--gold-accent);
+    z-inde x: 3;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+    font-weight: bold;
+  }
+
+  .stamp-decorative-line {
+    position: absolute;
+    height: 85%;
+    width: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--border-accent),
+      var(--gold-accent),
+      var(--border-accent),
+      transparent
+    );
+    opacity: 0.3;
+    z-index: 3;
+  }
+
+  .stamp-decorative-line.left {
+    left: calc(var(--perforation-size) + 4px);
+  }
+
+  .stamp-decorative-line.right {
+    right: calc(var(--perforation-size) + 4px);
+  }
+
+  @media (max-width: 400px) {
+    .guestbook-stamp {
+      --stamp-width: 250px;
+      --perforation-size: 10px;
+      --inner-padding: 12px;
+    }
+
+    .entry-name {
+      font-size: 1.1rem;
+    }
+
+    .country {
+      font-size: 1rem;
+    }
+
+    .entry-message {
+      font-size: 0.85rem;
+      -webkit-line-clamp: 4;
+    }
   }
 </style>
