@@ -35,4 +35,18 @@
 	--space-3xl: clamp(6rem, 5.7391rem + 1.3043vw, 6.75rem);
 
 	--border-weight: 1px;
+
+    --gray-1: hsl(0, 0%, 99%);
+    --gray-11: hsl(0, 0%, 40%);
+    --gray-12: hsl(0, 0%, 7%);
+	
+	color-scheme: light;
+}
+
+html[data-theme='dark'] {
+    --gray-1: hsl(0, 0%, 7%);
+    --gray-11: hsl(0, 0%, 65%);
+    --gray-12: hsl(0, 0%, 98%);
+	
+	color-scheme: dark;
 }

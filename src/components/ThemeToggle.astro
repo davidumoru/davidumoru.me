@@ -1,0 +1,100 @@
+---
+
+---
+
+<button
+  id="theme-toggle"
+  class="theme-toggle-button"
+  title="Toggle light/dark theme"
+  aria-label="Switch to dark theme"
+  aria-live="polite"
+>
+  <span class="toggle-icon"></span>
+</button>
+<script>
+  const themeStorageKey = "theme-preference";
+  const toggleButton = document.getElementById("theme-toggle");
+  const htmlElement = document.documentElement;
+
+  const updateButtonState = (theme: string) => {
+    if (!toggleButton) return;
+    const isDark = theme === "dark";
+    toggleButton.setAttribute(
+      "aria-label",
+      isDark ? "Switch to light theme" : "Switch to dark theme"
+    );
+  };
+
+  const currentTheme = htmlElement.getAttribute("data-theme");
+  if (currentTheme) {
+    updateButtonState(currentTheme);
+  } else {
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    updateButtonState(prefersDark ? "dark" : "light");
+  }
+
+  toggleButton?.addEventListener("click", () => {
+    const currentTheme = htmlElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    htmlElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem(themeStorageKey, newTheme);
+    updateButtonState(newTheme);
+  });
+</script>
+<style>
+  .theme-toggle-button {
+    --toggle-size: 1em;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    width: var(--toggle-size);
+    height: var(--toggle-size);
+    transition: transform 0.2s ease;
+  }
+
+  .toggle-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    transform: rotate(0deg);
+    transition: transform 0.5s ease;
+  }
+
+  .toggle-icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #000 0%, #000 50%, #fff 50%, #fff 100%);
+    border-radius: 50%;
+    border: 1px solid #000;
+    box-sizing: border-box;
+  }
+
+  html[data-theme="dark"] .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  html[data-theme="dark"] .toggle-icon::before {
+    border-color: #fff;
+  }
+
+  .theme-toggle-button:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid #000;
+  }
+
+  html[data-theme="dark"] .theme-toggle-button:focus-visible {
+    outline: 2px solid #fff;
+  }
+</style>

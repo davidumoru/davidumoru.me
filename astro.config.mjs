@@ -16,15 +16,22 @@ export default defineConfig({
   prefetch: true,
   trailingSlash: "ignore",
   site: "https://davidumoru.me",
-  integrations: [expressiveCode({
-    defaultProps: {
-      wrap: true,
-      overridesByLang: {
-        "bash,ps,sh": { preserveIndent: false },
+  integrations: [
+    expressiveCode({
+      defaultProps: {
+        wrap: true,
+        overridesByLang: {
+          "bash,ps,sh": { preserveIndent: false },
+        },
       },
-    },
-    themes: ["rose-pine-dawn"],
-  }), mdx(), sitemap(), db(), react()],
+      themes: ["rose-pine-dawn", "rose-pine"],
+      useThemedSelectionColors: true,
+    }),
+    mdx(),
+    sitemap(),
+    db(),
+    react(),
+  ],
   markdown: {
     rehypePlugins: [[externalize, { domain: "davidumoru.me" }]],
   },

@@ -1,6 +1,6 @@
 ---
 import { displayDate } from "../lib/mediumDate";
-
+import ThemeToggle from "../components/ThemeToggle.astro";
 const now = displayDate(new Date());
 ---
 
@@ -36,13 +36,13 @@ const now = displayDate(new Date());
       </div>
     </nav>
   </div>
-  <div class="row">
-    <p class="fs--1">
+  <div class="row-with-toggle">
+    <p class="fs--1 date-info">
       This site was updated on {now}.
     </p>
+    <ThemeToggle />
   </div>
 </header>
-
 <style>
   header {
     display: flex;
@@ -52,14 +52,12 @@ const now = displayDate(new Date());
     flex-grow: 1;
     padding-inline: 0 !important;
   }
-
   .row {
     display: flex;
     flex-wrap: wrap;
     gap: var(--border-weight);
     background: currentColor;
   }
-
   :where(.row, nav) > *:not(nav) {
     padding-block: var(--space-2xs);
     padding-inline: var(--space-xs);
@@ -68,11 +66,9 @@ const now = displayDate(new Date());
     display: grid;
     align-content: center;
   }
-
   .row > [data-bendo="full"] {
     flex-grow: 99999;
   }
-
   nav {
     display: flex;
     inline-size: 100%;
@@ -87,8 +83,23 @@ const now = displayDate(new Date());
     justify-content: space-between;
     gap: var(--space-xs);
   }
-
   nav [aria-current="page"]::after {
     content: "←";
+  }
+  .row-with-toggle {
+    display: flex;
+    align-items: center;
+    background-color: var(--gray-1);
+    padding: var(--space-2xs) var(--space-xs);
+    position: relative;
+  }
+  .date-info {
+    flex-grow: 1;
+  }
+  :global(.theme-toggle-button) {
+    position: absolute;
+    right: var(--space-xs);
+    top: 50%;
+    transform: translateY(-50%);
   }
 </style>

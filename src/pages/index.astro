@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Icon } from "../components/Icon/Icon";
+import Spotify from "../components/Spotify.astro";
 ---
 
 <BaseLayout
@@ -37,14 +38,5 @@ import { Icon } from "../components/Icon/Icon";
 
   <hr />
 
-  <iframe
-    style="border-radius:12px"
-    src="https://open.spotify.com/embed/playlist/57ZdpbE7DrZ1Y3wjjiQPsO?utm_source=generator"
-    title="David's Spotify Playlist"
-    width="100%"
-    height="352"
-    frameborder="0"
-    allowfullscreen=""
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-    loading="eager"></iframe>
+  <Spotify />
 </BaseLayout>
