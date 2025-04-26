@@ -6,10 +6,12 @@ import GuestbookEntry from "../components/Guestbook/GuestbookEntry.astro";
 import AlertMessage from "../components/Guestbook/AlertMessage.astro";
 import Pagination from "../components/Guestbook/Pagination.astro";
 import GuestbookForm from "../components/Guestbook/GuestbookForm.astro";
+import PageHeader from "../components/PageHeader.astro";
 
-const PER_PAGE = 5;
+import { stampData } from "../../public/stamps.ts";
 
-// Handle form submission
+const PER_PAGE = 11;
+
 if (Astro.request.method === "POST") {
   const contentType = Astro.request.headers.get("content-type");
   if (!contentType || !contentType.includes("multipart/form-data")) {
@@ -49,7 +51,6 @@ if (Astro.request.method === "POST") {
   return Astro.redirect("/guestbook?success=message_added");
 }
 
-// Fetch guestbook entries
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const offset = (page - 1) * PER_PAGE;
 
@@ -65,7 +66,6 @@ const guestBook = await db
   .limit(PER_PAGE)
   .offset(offset);
 
-// Get alert message if any
 const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
 ---
@@ -75,36 +75,61 @@ const error = Astro.url.searchParams.get("error");
   image="https://www.davidumoru.me/static/meta/guestbook-meta.webp"
 >
   <main>
-    <h1>Guestbook</h1>
+    <section class="container">
+      <PageHeader
+        title="Guestbook"
+        description="Leave a message and get a travel stamp!"
+        datePublished={new Date("2025-04-21")}
+      />
 
-    <div class="alert-container">
-      {
-        success && (
-          <AlertMessage type="success" message="Message added successfully!" />
-        )
-      }
-      {
-        error === "invalid_input" && (
-          <AlertMessage
-            type="error"
-            message="Invalid input. Ensure author and message are filled."
-          />
-        )
-      }
-      {
-        error === "invalid_link" && (
-          <AlertMessage type="error" message="Invalid URL format." />
-        )
-      }
-      {
-        error === "too_many_links" && (
-          <AlertMessage type="error" message="Too many links in message." />
-        )
-      }
-    </div>
+      <div class="alert-container">
+        {
+          success && (
+            <AlertMessage
+              type="success"
+              message="Message added successfully!"
+            />
+          )
+        }
+        {
+          error === "invalid_input" && (
+            <AlertMessage
+              type="error"
+              message="Invalid input. Ensure author and message are filled."
+            />
+          )
+        }
+        {
+          error === "invalid_link" && (
+            <AlertMessage type="error" message="Invalid URL format." />
+          )
+        }
+        {
+          error === "too_many_links" && (
+            <AlertMessage type="error" message="Too many links in message." />
+          )
+        }
+      </div>
+    </section>
 
     <section class="guestbook-entries">
-      {guestBook.map((entry) => <GuestbookEntry {...entry} />)}
+      {
+        guestBook.map((entry, index) => {
+          const stamp = stampData[index % stampData.length];
+          return (
+            <GuestbookEntry
+              name={entry.author}
+              link={entry.link}
+              message={entry.content}
+              date={entry.timestamp}
+              country={stamp.country}
+              imageUrl={stamp.imageUrl}
+              imageAlt={`Stamp from ${stamp.country} for ${entry.author}'s entry`}
+              hue={stamp.hue}
+            />
+          );
+        })
+      }
     </section>
 
     <Pagination
@@ -124,5 +149,6 @@ const error = Astro.url.searchParams.get("error");
 
   .guestbook-entries {
     margin-bottom: 48px;
+    text-align: center;
   }
 </style>
