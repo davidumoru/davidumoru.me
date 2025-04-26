@@ -6,6 +6,7 @@ import classNames from "classnames";
 export type IconType =
   | "arrowLeft"
   | "arrowRight"
+  | "arrowRightUp"
   | "code"
   | "download"
   | "externalLink"
@@ -54,6 +55,11 @@ const iconData: Record<IconType, { line: string; filled: string }> = {
   arrowRight: {
     line: "M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z",
     filled: "M12 13H4V11H12V4L20 12L12 20V13Z",
+  },
+  arrowRightUp: {
+    line: "M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z",
+    filled:
+      "M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z", // Same as line for now, unless you have a specific filled version
   },
   code: {
     line: "M23 11.9998L15.9289 19.0708L14.5147 17.6566L20.1716 11.9998L14.5147 6.34292L15.9289 4.92871L23 11.9998ZM3.82843 11.9998L9.48528 17.6566L8.07107 19.0708L1 11.9998L8.07107 4.92871L9.48528 6.34292L3.82843 11.9998Z",
@@ -160,7 +166,7 @@ export const Icon = ({ icon, variant, size, className }: IconProps) => {
       className={classNames(
         "icon",
         { small: size === "20", extraSmall: size === "16" },
-        className,
+        className
       )}
       aria-hidden="true"
     >

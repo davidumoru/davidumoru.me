@@ -21,7 +21,7 @@ import Spotify from "../components/Spotify.astro";
           href="https://calendly.com/umorudavido/30min"
           target="_blank"
           class="link"
-          ><Icon icon="arrowRight" size="16" /> Let's grab a virtual coffee</a
+          ><Icon icon="arrowRightUp" size="20" /> Let's grab a virtual coffee</a
         >
       </p>
 
@@ -33,7 +33,7 @@ import Spotify from "../components/Spotify.astro";
 
       <p>
         <a href="/now" class="link"
-          ><Icon icon="arrowRight" size="16" /> See details</a
+          ><Icon icon="arrowRightUp" size="20" /> See details</a
         >
       </p>
     </section>
@@ -43,3 +43,11 @@ import Spotify from "../components/Spotify.astro";
     <Spotify />
   </CenteredLayout>
 </BaseLayout>
+
+<style>
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+  }
+</style>
