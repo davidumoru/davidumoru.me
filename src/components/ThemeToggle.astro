@@ -1,0 +1,76 @@
+---
+
+---
+
+<button
+  id="theme-toggle"
+  class="theme-toggle-button"
+  title="Toggle light/dark theme"
+  aria-label="Switch to dark theme"
+  aria-live="polite"
+>
+</button>
+<script>
+  const themeStorageKey = "theme-preference";
+  const toggleButton = document.getElementById("theme-toggle");
+  const htmlElement = document.documentElement;
+
+  const updateButtonState = (theme: string) => {
+    if (!toggleButton) return;
+    const isDark = theme === "dark";
+    toggleButton.setAttribute(
+      "aria-label",
+      isDark ? "Switch to light theme" : "Switch to dark theme"
+    );
+  };
+
+  const currentTheme = htmlElement.getAttribute("data-theme");
+  if (currentTheme) {
+    updateButtonState(currentTheme);
+  } else {
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    updateButtonState(prefersDark ? "dark" : "light");
+  }
+
+  toggleButton?.addEventListener("click", () => {
+    const currentTheme = htmlElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    htmlElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem(themeStorageKey, newTheme);
+    updateButtonState(newTheme);
+  });
+</script>
+<style>
+  .theme-toggle-button {
+    --toggle-size: 1em;
+    background-color: var(--toggle-bg-color);
+    border: 1px solid #000;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    width: var(--toggle-size);
+    height: var(--toggle-size);
+    aspect-ratio: 1 / 1;
+    --toggle-bg-color: #000;
+    transition: background-color 0.3s ease;
+  }
+
+  html[data-theme="dark"] .theme-toggle-button {
+    --toggle-bg-color: #fff;
+    border-color: #fff;
+  }
+
+  .theme-toggle-button:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid #000;
+  }
+
+  html[data-theme="dark"] .theme-toggle-button:focus-visible {
+    outline: 2px solid #fff;
+  }
+</style>
