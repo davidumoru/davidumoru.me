@@ -1,94 +1,652 @@
 ---
+import { stampData } from "../../../public/stamps.ts";
+const countries = [...new Set(stampData.map((stamp) => stamp.country))].sort();
 
+const formHue = 210;
+const lightStampBg = `hsl(${formHue}, 85%, 97%)`;
+const primaryStampColor = `hsl(${formHue}, 70%, 45%)`;
+const darkTextFixed = `hsl(${formHue}, 60%, 20%)`;
+const midGreyFixed = `hsl(${formHue}, 20%, 35%)`;
+const goldAccent = `hsl(45, 80%, 60%)`;
+const textBgOverlay = `hsla(${formHue}, 95%, 98%, 0.82)`;
+const borderAccent = `hsl(${formHue}, 50%, 40%)`;
+const postmarkColorFixed = `hsla(${formHue}, 40%, 30%, 0.8)`;
+const inputBg = `hsla(${formHue}, 80%, 98%, 0.7)`;
 ---
 
-<form method="POST" enctype="multipart/form-data" class="form-container">
-  <div class="form-group">
-    <label for="author" class="label">Author</label>
-    <input type="text" name="author" id="author" required class="input" />
+<form
+  method="POST"
+  enctype="multipart/form-data"
+  class="guestbook-stamp form-stamp"
+  style={`
+    --hue: ${formHue};
+    --primary-stamp-color: ${primaryStampColor};
+    --light-stamp-bg: ${lightStampBg};
+    --text-bg-overlay: ${textBgOverlay};
+    --dark-text-fixed: ${darkTextFixed};
+    --mid-grey-fixed: ${midGreyFixed};
+    --gold-accent: ${goldAccent};
+    --postmark-color-fixed: ${postmarkColorFixed};
+    --border-accent: ${borderAccent};
+    --input-bg: ${inputBg};
+    --rotate: -1deg;
+  `}
+>
+  <div class="stamp-frame">
+    <div class="stamp-bg-solid"></div>
   </div>
 
-  <div class="form-group">
-    <label for="link" class="label">Link (optional)</label>
-    <input type="url" name="link" id="link" class="input" />
+  <div class="content-overlay">
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
   </div>
 
-  <div class="form-group">
-    <label for="content" class="label">Message (max 140 chars)</label>
-    <textarea
-      name="content"
-      id="content"
-      required
-      maxlength="140"
-      rows="3"
-      class="textarea"></textarea>
+  <div class="form-content">
+    <h3 class="form-title">Leave Your Mark</h3>
+
+    <div class="form-row">
+      <div class="form-group half-width">
+        <label for="author" class="label">Name</label>
+        <input
+          type="text"
+          name="author"
+          id="author"
+          required
+          class="input"
+          placeholder="Your Name"
+          maxlength="50"
+        />
+      </div>
+      <div class="form-group half-width">
+        <label for="link" class="label">Link (optional)</label>
+        <input
+          type="url"
+          name="link"
+          id="link"
+          class="input"
+          placeholder="https://..."
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="country" class="label">Country (for stamp)</label>
+      <select name="country" id="country" required class="select">
+        <option value="" disabled selected>Select your country</option>
+        {countries.map((country) => <option value={country}>{country}</option>)}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="content" class="label">Message (max 135 chars)</label>
+      <textarea
+        name="content"
+        id="content"
+        required
+        maxlength="135"
+        rows="3"
+        class="textarea"
+        placeholder="Write your message here..."></textarea>
+    </div>
+
+    <div class="form-footer">
+      <div class="stamp-value">✦</div>
+      <button type="submit" class="submit-button">Post Stamp</button>
+    </div>
   </div>
 
-  <div class="button-group">
-    <a href="/guestbook" class="cancel-button">Cancel</a>
-    <button type="submit" class="submit-button">Leave your mark</button>
+  <div class="stamp-location-text">
+    <span class="country-label">GUESTBOOK</span>
+    <span class="country">ENTRY</span>
+    <div class="country-underline"></div>
   </div>
+
+  <div class="postmark">
+    <div class="postmark-outer">
+      <div class="postmark-inner">
+        <span class="postmark-text">NEW</span>
+        <span class="postmark-date">STAMP</span>
+      </div>
+    </div>
+    <div class="postmark-lines"></div>
+  </div>
+
+  <div class="stamp-decorative-line left"></div>
+  <div class="stamp-decorative-line right"></div>
 </form>
 
-
 <style>
-  .form-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 16px;
+  .guestbook-stamp.form-stamp {
+    --stamp-width: clamp(300px, 90vw, 480px);
+    --perforation-size: 12px;
+    --inner-padding: 16px;
+    position: relative;
+    width: var(--stamp-width);
+    aspect-ratio: 5 / 5;
+    background-color: var(--light-stamp-bg);
+    padding: var(--perforation-size);
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 2rem auto;
+    display: block;
+    box-shadow:
+      2px 3px 12px rgba(0, 0, 0, 0.15),
+      0 0 1px rgba(0, 0, 0, 0.1),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+    transform: rotate(var(--rotate));
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    border-radius: 2px;
   }
+
+  .guestbook-stamp.form-stamp::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(
+        circle at 12.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 37.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 62.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 12.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 12.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 37.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 62.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 87.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 12.5% 37.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 12.5% 62.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 37.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 87.5% 62.5%,
+        transparent 12px,
+        var(--border-accent) 12px,
+        var(--border-accent) 13px,
+        transparent 13px
+      );
+    background-size: 25% 25%;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .guestbook-stamp.form-stamp:hover {
+    transform: rotate(calc(var(--rotate) / 2)) scale(1.01);
+    box-shadow:
+      4px 6px 16px rgba(0, 0, 0, 0.2),
+      0 0 2px rgba(0, 0, 0, 0.15),
+      inset 0 0 30px rgba(255, 255, 255, 0.6);
+  }
+
+  .stamp-frame {
+    position: absolute;
+    top: var(--perforation-size);
+    left: var(--perforation-size);
+    right: var(--perforation-size);
+    bottom: var(--perforation-size);
+    overflow: hidden;
+    border-radius: 2px;
+    z-index: 1;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .stamp-bg-solid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      hsla(var(--hue), 85%, 97%, 0.9),
+      hsla(var(--hue), 85%, 90%, 0.7)
+    );
+    opacity: 0.3;
+  }
+
+  .content-overlay {
+    position: absolute;
+    top: calc(var(--perforation-size) + 4px);
+    left: calc(var(--perforation-size) + 4px);
+    right: calc(var(--perforation-size) + 4px);
+    bottom: calc(var(--perforation-size) + 4px);
+    background-color: var(--text-bg-overlay);
+    z-index: 2;
+    border-radius: 3px;
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.8),
+      inset 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-style: solid;
+    border-color: var(--primary-stamp-color);
+    opacity: 0.7;
+  }
+
+  .top-left {
+    top: 4px;
+    left: 4px;
+    border-width: 2px 0 0 2px;
+  }
+  .top-right {
+    top: 4px;
+    right: 4px;
+    border-width: 2px 2px 0 0;
+  }
+  .bottom-left {
+    bottom: 4px;
+    left: 4px;
+    border-width: 0 0 2px 2px;
+  }
+  .bottom-right {
+    bottom: 4px;
+    right: 4px;
+    border-width: 0 2px 2px 0;
+  }
+
+  .form-content {
+    position: absolute;
+    top: calc(var(--perforation-size) + 16px);
+    left: calc(var(--perforation-size) + 16px);
+    right: calc(var(--perforation-size) + 16px);
+    bottom: calc(var(--perforation-size) + 60px);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-title {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--primary-stamp-color);
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+  }
+
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
+    flex-grow: 1;
   }
+
+  .form-group.half-width {
+    flex-basis: calc(50% - 0.5rem);
+    min-width: 120px;
+  }
+
   .label {
     display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--mid-grey-fixed);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
+
   .input,
-  .textarea {
+  .textarea,
+  .select {
     width: 100%;
-    padding: 8px 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
+    padding: 0.7rem 0.9rem;
+    background-color: var(--input-bg);
+    color: var(--dark-text-fixed);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    font-family: inherit;
   }
+
+  .input::placeholder,
+  .textarea::placeholder {
+    color: var(--mid-grey-fixed);
+    opacity: 0.8;
+  }
+
+  .select {
+    appearance: none;
+    background-image: linear-gradient(
+        45deg,
+        transparent 50%,
+        var(--mid-grey-fixed) 50%
+      ),
+      linear-gradient(135deg, var(--mid-grey-fixed) 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px);
+    background-size:
+      5px 5px,
+      5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 2.5rem;
+  }
+
+  select:required:invalid {
+    color: var(--mid-grey-fixed);
+    opacity: 0.8;
+  }
+  option[value=""][disabled] {
+    display: none;
+  }
+  option {
+    color: var(--dark-text-fixed);
+    background-color: white;
+  }
+
   .input:focus,
-  .textarea:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  .textarea:focus,
+  .select:focus {
+    outline: none;
+    border-color: var(--primary-stamp-color);
+    box-shadow:
+      inset 0 0 0 1px var(--primary-stamp-color),
+      inset 0 0 5px rgba(255, 255, 255, 0.7);
+    background-color: hsla(var(--hue), 90%, 99%, 0.8);
   }
-  .button-group {
+
+  .form-footer {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
   }
-  .cancel-button {
-    padding: 8px 16px;
-    background: #f3f4f6;
-    color: #374151;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-    text-decoration: none;
-  }
-  .cancel-button:hover {
-    background: #e5e7eb;
-  }
+
   .submit-button {
-    padding: 8px 16px;
-    background: #2563eb;
+    padding: 0.7rem 1.5rem;
+    background-color: var(--primary-stamp-color);
     color: white;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-    border: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    border: 1px solid hsla(var(--hue), 70%, 40%, 0.5);
     cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow:
+      1px 1px 3px hsla(var(--hue), 50%, 20%, 0.3),
+      inset 0 0 0 1px hsla(var(--hue), 70%, 60%, 0.5);
   }
+
   .submit-button:hover {
-    background: #1e40af;
+    background-color: hsl(var(--hue), 65%, 50%);
+    transform: translateY(-1px);
+    box-shadow:
+      2px 2px 5px hsla(var(--hue), 50%, 20%, 0.3),
+      inset 0 0 0 1px hsla(var(--hue), 70%, 60%, 0.5);
+  }
+
+  .submit-button:active {
+    transform: translateY(1px);
+    box-shadow:
+      0 0 2px hsla(var(--hue), 50%, 20%, 0.4),
+      inset 0 0 0 1px hsla(var(--hue), 70%, 60%, 0.5);
+  }
+
+  .stamp-location-text {
+    position: absolute;
+    bottom: calc(var(--perforation-size) + 8px);
+    left: var(--perforation-size);
+    right: var(--perforation-size);
+    text-align: center;
+    z-index: 3;
+    padding: 0 12px;
+  }
+
+  .country-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--mid-grey-fixed);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .country {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-stamp-color);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+    line-height: 1.2;
+  }
+
+  .country-underline {
+    margin: 4px auto 0;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--primary-stamp-color),
+      var(--gold-accent),
+      var(--primary-stamp-color),
+      transparent
+    );
+  }
+
+  .postmark {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 60px;
+    height: 60px;
+    z-index: 3;
+    transform: rotate(12deg);
+  }
+
+  .postmark-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px double var(--postmark-color-fixed);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .postmark-inner {
+    width: 80%;
+    height: 80%;
+    border: 1px dashed var(--postmark-color-fixed);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    color: var(--postmark-color-fixed);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .postmark-text {
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .postmark-date {
+    font-size: 0.5rem;
+  }
+
+  .postmark-lines {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    right: -20px;
+    height: 20px;
+    background-image: repeating-linear-gradient(
+      0deg,
+      var(--postmark-color-fixed),
+      var(--postmark-color-fixed) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+
+  .stamp-value {
+    font-size: 1.2rem;
+    color: var(--gold-accent);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+    font-weight: bold;
+  }
+
+  .stamp-decorative-line {
+    position: absolute;
+    height: 85%;
+    width: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--border-accent),
+      var(--gold-accent),
+      var(--border-accent),
+      transparent
+    );
+    opacity: 0.3;
+    z-index: 3;
+  }
+
+  .stamp-decorative-line.left {
+    left: calc(var(--perforation-size) + 4px);
+  }
+  .stamp-decorative-line.right {
+    right: calc(var(--perforation-size) + 4px);
+  }
+
+  @media (max-width: 600px) {
+    .form-row {
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .form-group.half-width {
+      flex-basis: 100%;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .guestbook-stamp.form-stamp {
+      --perforation-size: 10px;
+      --inner-padding: 12px;
+    }
+
+    .form-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .input,
+    .textarea,
+    .select {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .submit-button {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+    }
   }
 </style>
