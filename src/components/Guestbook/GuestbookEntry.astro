@@ -38,7 +38,7 @@ if (date) {
 
 const primaryStampColor = `hsl(${hue}, 70%, 45%)`;
 const lightStampBg = `hsl(${hue}, 85%, 97%)`;
-const textBgOverlay = `hsla(${hue}, 95%, 98%, 0.82)`;
+const textBgOverlay = `hsla(${hue}, 95%, 98%, 0.5)`;
 const darkTextFixed = `hsl(${hue}, 60%, 20%)`;
 const midGreyFixed = `hsl(${hue}, 15%, 45%)`;
 const goldAccent = `hsl(45, 80%, 60%)`;
@@ -468,7 +468,8 @@ const stampStyles = `
 
   .entry-date {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    font-weight: bold;
     color: var(--mid-grey-fixed);
     font-style: italic;
     margin-top: 2px;
@@ -502,7 +503,7 @@ const stampStyles = `
   }
 
   .entry-message {
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1.5;
     color: var(--dark-text-fixed);
     font-weight: 400;
@@ -632,7 +633,7 @@ const stampStyles = `
     }
 
     .entry-message {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       -webkit-line-clamp: 4;
     }
   }
