@@ -1,9 +1,9 @@
 a:not([class]), .link {
 	color: var(--gray-12);
 	text-decoration: underline;
-	text-decoration-style: wavy;
+	text-decoration-style: dotted;
 	text-decoration-color: var(--gray-10);
-	text-decoration-thickness: 1px;
+	text-decoration-thickness: 2px;
 	transition: color 0.3s ease, text-decoration-color 0.3s ease;
   }
   
