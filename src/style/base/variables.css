@@ -1,7 +1,5 @@
 @import '@radix-ui/colors/gray.css';
 @import '@radix-ui/colors/blue.css';
-@import '@radix-ui/colors/gray.css';
-@import '@radix-ui/colors/blue.css';
 @import '@radix-ui/colors/green.css';
 @import '@radix-ui/colors/red.css';
 @import '@radix-ui/colors/purple.css';
@@ -14,6 +12,7 @@
 @import '@radix-ui/colors/lime.css';
 @import '@radix-ui/colors/yellow.css';
 @import '@radix-ui/colors/amber.css';
+@import '@radix-ui/colors/tomato.css';
 
 :root {
 	--fs--2: clamp(0.6944rem, 0.6856rem + 0.0444vw, 0.72rem);
