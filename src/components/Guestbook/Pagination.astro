@@ -1,4 +1,6 @@
 ---
+import { Icon } from "../Icon/Icon";
+
 interface Props {
   currentPage: number;
   hasNextPage: boolean;
@@ -6,20 +8,23 @@ interface Props {
 }
 
 const { currentPage, hasNextPage, hasPrevPage } = Astro.props;
+
+const baseUrl = "/guestbook";
 ---
 
-<nav class="pagination">
+<nav class="pagination-simple" aria-label="Pagination">
   {
     hasPrevPage ? (
       <a
-        href={`/guestbook?page=${currentPage - 1}`}
-        class="pagination-link prev"
+        href={`${baseUrl}?page=${currentPage - 1}`}
+        class="pagination-arrow prev"
         aria-label="Previous Page"
+        title="Previous Page"
       >
-        &laquo; Prev
+        <Icon icon="arrowLeft" size="24" />
       </a>
     ) : (
-      <div class="placeholder" />
+      <div class="placeholder-arrow" aria-hidden="true" />
     )
   }
 
@@ -28,129 +33,93 @@ const { currentPage, hasNextPage, hasPrevPage } = Astro.props;
   {
     hasNextPage ? (
       <a
-        href={`/guestbook?page=${currentPage + 1}`}
-        class="pagination-link next"
+        href={`${baseUrl}?page=${currentPage + 1}`}
+        class="pagination-arrow next"
         aria-label="Next Page"
+        title="Next Page"
       >
-        Next &raquo;
+        <Icon icon="arrowRight" size="24" />
       </a>
     ) : (
-      <div class="placeholder" />
+      <div class="placeholder-arrow" aria-hidden="true" />
     )
   }
 </nav>
 
 <style>
-  .pagination {
-    --hue: 210;
-    --primary-color: hsl(var(--hue), 70%, 45%);
-    --primary-color-hover: hsl(var(--hue), 65%, 50%);
-    --primary-border-color: hsla(var(--hue), 70%, 40%, 0.5);
-    --shadow-color-base: hsla(var(--hue), 50%, 20%, 0.3);
-    --shadow-color-inset: hsla(var(--hue), 70%, 60%, 0.5);
-    --shadow-color-hover: hsla(var(--hue), 50%, 20%, 0.3);
-    --shadow-color-active: hsla(var(--hue), 50%, 20%, 0.4);
-
-    --indicator-text-light: hsl(var(--hue), 15%, 55%);
-    --indicator-text-dark: hsl(var(--hue), 15%, 65%);
+  .pagination-simple {
+    --indicator-text-light: hsl(0, 0%, 55%);
+    --indicator-text-dark: hsl(0, 0%, 65%);
     --indicator-text: var(--indicator-text-light);
 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 3rem auto 4rem;
-    max-width: 400px;
+    margin: 2rem auto 3rem;
+    max-width: 300px;
     gap: 1rem;
+    font-size: 0.9rem;
   }
 
   @media (prefers-color-scheme: dark) {
-    .pagination {
+    .pagination-simple {
       --indicator-text: var(--indicator-text-dark);
     }
-    .pagination-link {
-      --shadow-color-base: hsla(var(--hue), 30%, 15%, 0.4);
-      --shadow-color-hover: hsla(var(--hue), 30%, 15%, 0.4);
-      --shadow-color-active: hsla(var(--hue), 30%, 15%, 0.5);
-    }
   }
 
-  .pagination-link {
-    display: inline-block;
-    padding: 0.7rem 1.5rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: 1px solid var(--primary-border-color);
-    border-radius: 4px;
+  .pagination-arrow {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--gray-12);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow:
-      1px 1px 3px var(--shadow-color-base),
-      inset 0 0 0 1px var(--shadow-color-inset);
-    transition: all 0.2s ease-out;
+    border-radius: 4px;
+    transition: color 0.2s ease-out;
     flex-shrink: 0;
-    min-width: 110px;
-    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    box-sizing: border-box;
   }
 
-  .pagination-link:hover,
-  .pagination-link:focus-visible {
-    background-color: var(--primary-color-hover);
-    border-color: var(--primary-border-color);
-    color: white;
-    box-shadow:
-      2px 2px 5px var(--shadow-color-hover),
-      inset 0 0 0 1px var(--shadow-color-inset);
-    transform: translateY(-1px);
+  .pagination-arrow:hover,
+  .pagination-arrow:focus-visible {
+    color: var(--gray-11);
   }
 
-  .pagination-link:active {
-    transform: translateY(1px);
-    box-shadow:
-      0 0 2px var(--shadow-color-active),
-      inset 0 0 0 1px var(--shadow-color-inset);
-  }
-
-  .pagination-link:focus-visible {
-    outline: 2px solid var(--primary-color);
+  .pagination-arrow:focus-visible {
+    outline: 2px solid var(--gray-11);
     outline-offset: 2px;
   }
 
   .page-indicator {
-    font-size: 0.9rem;
     color: var(--indicator-text);
     font-weight: 500;
     flex-shrink: 1;
     text-align: center;
+    white-space: nowrap;
   }
 
-  .placeholder {
-    min-width: 110px;
+  .placeholder-arrow {
     flex-shrink: 0;
+    width: 36px;
+    height: 36px;
     box-sizing: border-box;
-    padding: 0.7rem 1.5rem;
-    border: 1px solid transparent;
   }
 
   @media (max-width: 480px) {
-    .pagination {
-      max-width: 100%;
+    .pagination-simple {
+      max-width: 60%;
       gap: 0.5rem;
-    }
-    .pagination-link {
-      padding: 0.6rem 1rem;
-      min-width: 90px;
       font-size: 0.85rem;
     }
-    .placeholder {
-      min-width: 90px;
-      padding: 0.6rem 1rem;
+    .pagination-arrow,
+    .placeholder-arrow {
+      width: 32px;
+      height: 32px;
     }
-    .page-indicator {
-      font-size: 0.85rem;
+    .pagination-arrow svg {
+      width: 20px;
+      height: 20px;
     }
   }
 </style>
