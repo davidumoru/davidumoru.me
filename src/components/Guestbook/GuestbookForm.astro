@@ -111,10 +111,11 @@ const inputBg = `hsla(${formHue}, 80%, 98%, 0.7)`;
     width: var(--stamp-width);
     aspect-ratio: auto;
     min-height: 480px;
+    height: auto;
     background-color: var(--light-stamp-bg);
     padding: var(--perforation-size);
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
     margin: 2rem auto;
     display: block;
     box-shadow:
@@ -297,11 +298,12 @@ const inputBg = `hsla(${formHue}, 80%, 98%, 0.7)`;
     border-width: 0 2px 2px 0;
   }
   .form-content {
-    position: absolute;
-    top: calc(var(--perforation-size) + 16px);
-    left: calc(var(--perforation-size) + 16px);
-    right: calc(var(--perforation-size) + 16px);
-    bottom: calc(var(--perforation-size) + 16px);
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: calc(var(--perforation-size) + 16px);
     z-index: 4;
     display: flex;
     flex-direction: column;
@@ -543,20 +545,50 @@ const inputBg = `hsla(${formHue}, 80%, 98%, 0.7)`;
       --perforation-size: 10px;
       --inner-padding: 12px;
       width: 95vw;
+      min-height: auto;
+      margin: 1rem auto;
     }
+
+    .form-content {
+      margin: calc(var(--perforation-size) + 10px);
+    }
+
     .form-title {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
     }
+
+    .label {
+      font-size: 0.7rem;
+      margin-bottom: 0.2rem;
+    }
+
     .input,
     .textarea,
     .select {
-      padding: 0.6rem 0.8rem;
-      font-size: 0.9rem;
+      padding: 0.5rem 0.7rem;
+      font-size: 0.85rem;
     }
+
     .submit-button {
-      padding: 0.6rem 1.2rem;
-      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .form-footer {
+      padding-top: 0.5rem;
+    }
+
+    .stamp-value {
+      font-size: 1rem;
+    }
+
+    .postmark {
+      width: 45px;
+      height: 45px;
+      top: 8%;
+      right: 8%;
     }
   }
 </style>
