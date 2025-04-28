@@ -1,124 +1,149 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const pageMessages = [
+  "Looks like this page got lost in the digital void.",
+  "We searched high and low, but this page is nowhere to be found.",
+  "Oops! It seems the map led you astray.",
+  "This path doesn't exist. Maybe try another?",
+  "Error 404: The requested content decided to go on an adventure.",
+  "Are you sure you typed that correctly? This page isn't here.",
+  "This link seems to lead to a digital dead end.",
+  "Maybe this page is just playing hide and seek?",
+  "We couldn't find what you were looking for.",
+  "This corner of the internet appears to be empty.",
+];
+
+const randomMessage =
+  pageMessages[Math.floor(Math.random() * pageMessages.length)];
 ---
 
-<BaseLayout title="404: Not Found" hideFooter={true}>
-  <div class="scanlines"></div>
-  <div class="glitchContainer">
-    <div class="text">
-      <h1 class="title">404</h1>
-      <div class="subtitle">Not Found</div>
-      <div class="textClip">
-        <h1 class="title">404</h1>
-        <div class="subtitle">Not Found</div>
+<BaseLayout title="404: Page Not Found" hideFooter={true}>
+  <div class="error-page-container">
+    <div class="error-content">
+      <h1 class="error-code">404</h1>
+      <p class="error-message">
+        {randomMessage}
+      </p>
+      <div class="gif-container">
+        <img
+          id="error-gif"
+          src=""
+          alt="Animated GIF related to being lost or confused"
+          width="300"
+          height="250"
+          loading="lazy"
+        />
       </div>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  @keyframes text-offset {
-    0% {
-      clip-path: polygon(0 110%, 100% 110%, 100% 160%, 0 160%);
-    }
+  .error-page-container {
+    --text-color: var(--gray-12);
+    --text-secondary: var(--gray-11);
+    --bg-subtle: var(--gray-6);
+    background-color: var(--gray-1);
 
-    100% {
-      clip-path: polygon(0 -90%, 100% -90%, 100% -10%, 0 -10%);
-    }
-  }
-
-  @keyframes scanline {
-    0% {
-      transform: translate3d(0, 100vh, 0);
-    }
-
-    50% {
-      transform: translate3d(0, -6px, 0);
-    }
-  }
-
-  @keyframes flicker {
-    0% {
-      opacity: 0.95;
-    }
-
-    100% {
-      opacity: 1;
-    }
-  }
-
-  .glitchContainer {
-    position: absolute;
-    inset: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
-    overflow: hidden;
-    z-index: -1;
-    animation: flicker 20ms infinite;
-  }
-
-  .scanlines {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAGCAYAAAD37n+BAAAALElEQVQYV2NkYGD4/x9IMAIxAxoDmzhIHfU0gCxFB9S1AacfsFmNJQzAoQIAH84j/OCkeYUAAAAASUVORK5CYII=");
-    background-size: 12px 6px;
-    opacity: 0.05;
-  }
-
-  .scanlines::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    background: var(--white-a12);
-    opacity: 1;
-    height: 6px;
-    animation: scanline 5s linear infinite;
-  }
-
-  .textClip {
-    position: absolute;
-    top: 0;
-    left: -0.3em;
-    text-shadow:
-      -1.5px 0 0 blue,
-      1.5px 0 0 red,
-      0 1.5px 0 lime,
-      0.4em 0 0 var(--gray-1),
-      4px 4px 0 var(--gray-1);
-    animation: text-offset 8s linear infinite;
-  }
-
-  .subtitle {
-    font-size: clamp(60px, 10vw, 96px);
-    font-weight: var(--font-weight-bold);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-loose);
-    white-space: nowrap;
-  }
-
-  .text {
-    font-family: var(--font-sans);
-    position: relative;
-    z-index: -1;
-    line-height: 0.7;
-    letter-spacing: 0.02em;
-    pointer-events: none;
-    user-select: none;
+    align-items: center;
+    justify-content: flex-start;
     text-align: center;
-    text-shadow:
-      -1.5px 0 0 blue,
-      1.5px 0 0 red,
-      0 1.5px 0 green;
-    filter: blur(1.5px);
+    min-height: 80vh;
+    padding: 5rem 1rem 2rem;
+    box-sizing: border-box;
+    color: var(--text-color);
   }
 
-  .title {
-    font-family: var(--font-sans);
-    font-size: clamp(180px, 30vw, 280px);
-    font-weight: var(--font-weight-bold);
+  .error-content {
+    max-width: 550px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .error-code {
+    font-size: clamp(4rem, 18vw, 7rem);
+    font-weight: 800;
+    line-height: 1;
+    margin: 0 0 0.5rem;
+    color: var(--text-color);
+  }
+
+  .error-message {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin: 0 auto 2rem;
+    color: var(--text-secondary);
+    max-width: 450px;
+  }
+
+  .gif-container {
+    margin: 0 auto 2.5rem;
+    max-width: 350px;
+    width: 100%;
+    background-color: var(--bg-subtle);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.08);
+    min-height: 150px;
+  }
+
+  [data-theme="dark"] .gif-container {
+    box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.2);
+  }
+
+  [data-theme="dark"] .gif-container img {
+    filter: brightness(0.9) contrast(1.1);
+  }
+
+  .gif-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+  }
+
+  @media (max-width: 480px) {
+    .error-page-container {
+      padding-top: 3rem;
+      min-height: 70vh;
+    }
+    .error-code {
+      font-size: 4rem;
+    }
+    .error-message {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .gif-container {
+      margin-bottom: 2rem;
+      max-width: 300px;
+    }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const gifElement = document.getElementById("error-gif") as HTMLImageElement;
+    if (!gifElement) return;
+
+    const gifUrls = [
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTRiMndqbzZ4Y2cweDh4bXU5b2Z2OHNoOXdjMmM2YXdubTF3NHkwcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1EmBoG0IL50VIJLWTs/giphy.gif",
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTRiMndqbzZ4Y2cweDh4bXU5b2Z2OHNoOXdjMmM2YXdubTF3NHkwcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/mxXPuScIwPwK2oyD6i/giphy.gif",
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTRiMndqbzZ4Y2cweDh4bXU5b2Z2OHNoOXdjMmM2YXdubTF3NHkwcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/mPytjcsG3XS4o/giphy.gif",
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTRiMndqbzZ4Y2cweDh4bXU5b2Z2OHNoOXdjMmM2YXdubTF3NHkwcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/gKsJUddjnpPG0/giphy.gif",
+      "https://media.giphy.com/media/EAREoXJx2hrs3SAMD9/giphy.gif?cid=ecf05e47qio3v7npvza0mpgs4dddlumyl8nlfqr52mnq58nu&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+      "https://media.giphy.com/media/Bp3dFfoqpCKFyXuSzP/giphy.gif?cid=ecf05e47m7w7oujrjhv32shfew6a6f9k47p9r1ucqub2zwn3&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+    ];
+
+    const randomIndex = Math.floor(Math.random() * gifUrls.length);
+    const randomGifUrl = gifUrls[randomIndex];
+
+    gifElement.src = randomGifUrl;
+  });
+</script>
