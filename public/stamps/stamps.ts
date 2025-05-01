@@ -86,7 +86,7 @@ export const stampData = [
   {
     country: "Italy",
     imageUrl:
-      "https://hips.hearstapps.com/hmg-prod/images/0c046e25-e5d9-4f84-8b4b-289bcda989f8.jpeg?crop=0.999xw:1xh;0xw,0xh&resize=980:*",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg",
     hue: 110,
   },
   {
