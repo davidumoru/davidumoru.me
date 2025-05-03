@@ -251,4 +251,10 @@ export const stampData = [
       "https://hips.hearstapps.com/hmg-prod/images/1133bb5a-d0eb-40f9-a3db-ba83a0e1e5bf.jpeg?crop=1xw:1xh;0xw,0xh&resize=980:*",
     hue: 215,
   },
+  {
+    country: "Cameroon",
+    imageUrl:
+      "https://images.pexels.com/photos/17290979/pexels-photo-17290979/free-photo-of-roundabout-in-yaounde.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    hue: 100,
+  },
 ];
