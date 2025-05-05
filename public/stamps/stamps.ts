@@ -287,4 +287,8 @@ export const stampData = [
       "https://media.istockphoto.com/id/96064783/photo/constantine-adventure.jpg?s=612x612&w=0&k=20&c=ar7vbGkK7YBKy8qhDQYWyMgRHt4MIFXFj05hVlsbx2U=",
     hue: 35,
   },
+  {
+    country: "Other",
+    hue: 360
+  },
 ];
