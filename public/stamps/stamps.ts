@@ -255,6 +255,6 @@ export const stampData = [
     country: "Cameroon",
     imageUrl:
       "https://images.pexels.com/photos/17290979/pexels-photo-17290979/free-photo-of-roundabout-in-yaounde.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    hue: 100,
+    hue: 60,
   },
 ];
