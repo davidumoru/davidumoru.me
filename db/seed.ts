@@ -255,5 +255,41 @@ export default async function seed() {
       content: "Grüezi! Signing from Switzerland.",
       country: "Switzerland",
     },
+    {
+      author: "Cameroon Explorer",
+      link: "https://example.com/cameroon",
+      content: "Bonjour! Signing in from Cameroon.",
+      country: "Cameroon",
+    },
+    {
+      author: "Safari Enthusiast",
+      link: "",
+      content: "Jambo! Greetings from beautiful Kenya.",
+      country: "Kenya",
+    },
+    {
+      author: "Accra Visitor",
+      link: "https://example.com/ghana",
+      content: "Akwaaba! Enjoying my time in Ghana.",
+      country: "Ghana",
+    },
+    {
+      author: "Lalibela Admirer",
+      link: "",
+      content: "Selam! Sending greetings from Ethiopia.",
+      country: "Ethiopia",
+    },
+    {
+      author: "Dakar Resident",
+      link: "https://example.com/senegal",
+      content: "Salam! Greetings from Senegal.",
+      country: "Senegal",
+    },
+    {
+      author: "Algerian Friend",
+      link: "",
+      content: "As-salamu alaykum! Visiting from Algeria.",
+      country: "Algeria",
+    },
   ]);
 }

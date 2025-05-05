@@ -2,7 +2,7 @@ export const stampData = [
   {
     country: "United States",
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg/1280px-Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg",
+      "https://cdn.britannica.com/61/93061-050-99147DCE/Statue-of-Liberty-Island-New-York-Bay.jpg",
     hue: 210,
   },
   {
@@ -256,5 +256,35 @@ export const stampData = [
     imageUrl:
       "https://images.pexels.com/photos/17290979/pexels-photo-17290979/free-photo-of-roundabout-in-yaounde.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     hue: 60,
+  },
+  {
+    country: "Kenya",
+    imageUrl:
+      "https://media-cdn.tripadvisor.com/media/photo-s/17/72/7a/16/the-beautiful-city-of.jpg",
+    hue: 40,
+  },
+  {
+    country: "Ghana",
+    imageUrl:
+      "https://images.goway.com/production/styles/wide/s3/hero_image/AdobeStock_341274506.jpeg?VersionId=q9f54FWaZfIN2994NjK5e36WyP7kPMXr&itok=vCy37sMw",
+    hue: 210,
+  },
+  {
+    country: "Ethiopia",
+    imageUrl:
+      "https://cloudfront.safaribookings.com/blog/2023/08/04-20_of_the_Best_and_Most_Beautiful_Cities_in_Africa-BW-1600px.jpg",
+    hue: 25,
+  },
+  {
+    country: "Senegal",
+    imageUrl:
+      "https://thumbs.dreamstime.com/b/overview-dakar-aerial-view-to-shore-atlantic-ocean-senegal-africa-62895866.jpg",
+    hue: 220,
+  },
+  {
+    country: "Algeria",
+    imageUrl:
+      "https://media.istockphoto.com/id/96064783/photo/constantine-adventure.jpg?s=612x612&w=0&k=20&c=ar7vbGkK7YBKy8qhDQYWyMgRHt4MIFXFj05hVlsbx2U=",
+    hue: 35,
   },
 ];
