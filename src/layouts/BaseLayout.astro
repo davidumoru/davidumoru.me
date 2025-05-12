@@ -2,6 +2,10 @@
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import "../style/index.css";
+import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
+import { ClientRouter } from "astro:transitions";
+
 export type Props = {
   title?: string;
   description?: string;
@@ -9,8 +13,6 @@ export type Props = {
   image?: string;
 };
 const { title, description, hideFooter, image } = Astro.props;
-import Analytics from "@vercel/analytics/astro";
-import SpeedInsights from "@vercel/speed-insights/astro";
 
 const defaultImage = "https://www.davidumoru.me/static/meta/meta-image.webp";
 const metaImage = image || defaultImage;
@@ -24,7 +26,6 @@ const metaImage = image || defaultImage;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Meta description -->
     <meta
       name="description"
       content={description
@@ -32,7 +33,6 @@ const metaImage = image || defaultImage;
         : "David Umoru is a software engineer and designer who writes code and designs impactful digital experiences."}
     />
 
-    <!-- Open Graph meta tags -->
     <meta
       property="og:title"
       content={title ? `${title} - David Umoru` : "David Umoru"}
@@ -46,7 +46,6 @@ const metaImage = image || defaultImage;
     <meta property="og:url" content="https://davidumoru.me" />
     <meta property="og:type" content="website" />
 
-    <!-- Twitter Card meta tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
@@ -80,6 +79,8 @@ const metaImage = image || defaultImage;
         document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
+
+    <ClientRouter />
   </head>
 
   <body>
