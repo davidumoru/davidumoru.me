@@ -12,35 +12,88 @@
   <span class="toggle-icon"></span>
 </button>
 <script>
-  const themeStorageKey = "theme-preference";
-  const toggleButton = document.getElementById("theme-toggle");
+  const THEME_STORAGE_KEY = "theme-preference";
   const htmlElement = document.documentElement;
 
-  const updateButtonState = (theme: string) => {
-    if (!toggleButton) return;
+  const updateButtonAriaLabel = (
+    buttonElement: HTMLButtonElement,
+    theme: "light" | "dark"
+  ) => {
     const isDark = theme === "dark";
-    toggleButton.setAttribute(
+    buttonElement.setAttribute(
       "aria-label",
       isDark ? "Switch to light theme" : "Switch to dark theme"
     );
   };
 
-  const currentTheme = htmlElement.getAttribute("data-theme");
-  if (currentTheme) {
-    updateButtonState(currentTheme);
-  } else {
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    updateButtonState(prefersDark ? "dark" : "light");
+  const handleThemeChange = (
+    buttonElement: HTMLButtonElement,
+    newTheme: "light" | "dark"
+  ) => {
+    htmlElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    updateButtonAriaLabel(buttonElement, newTheme);
+  };
+
+  function initializeThemeToggleButton(buttonElement: HTMLButtonElement) {
+    const currentThemeOnLoadAttr = htmlElement.getAttribute("data-theme");
+    if (
+      currentThemeOnLoadAttr === "light" ||
+      currentThemeOnLoadAttr === "dark"
+    ) {
+      updateButtonAriaLabel(buttonElement, currentThemeOnLoadAttr);
+    } else {
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      updateButtonAriaLabel(buttonElement, prefersDark ? "dark" : "light");
+    }
+
+    const clickHandler = () => {
+      const currentThemeAttr = htmlElement.getAttribute("data-theme");
+      const currentTheme: "light" | "dark" =
+        currentThemeAttr === "light" || currentThemeAttr === "dark"
+          ? currentThemeAttr
+          : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+      const newTheme: "light" | "dark" =
+        currentTheme === "dark" ? "light" : "dark";
+      handleThemeChange(buttonElement, newTheme);
+    };
+
+    if ((buttonElement as any)._themeToggleClickListener) {
+      buttonElement.removeEventListener(
+        "click",
+        (buttonElement as any)._themeToggleClickListener
+      );
+    }
+    (buttonElement as any)._themeToggleClickListener = clickHandler;
+    buttonElement.addEventListener("click", clickHandler);
   }
 
-  toggleButton?.addEventListener("click", () => {
-    const currentTheme = htmlElement.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    htmlElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem(themeStorageKey, newTheme);
-    updateButtonState(newTheme);
+  document.addEventListener("astro:page-load", () => {
+    const toggleButton = document.getElementById(
+      "theme-toggle"
+    ) as HTMLButtonElement | null;
+    if (toggleButton) {
+      initializeThemeToggleButton(toggleButton);
+    }
+  });
+
+  document.addEventListener("themeapplied", (event: Event) => {
+    const customEvent = event as CustomEvent<{ theme: "light" | "dark" }>;
+    const toggleButton = document.getElementById(
+      "theme-toggle"
+    ) as HTMLButtonElement | null;
+    if (
+      toggleButton &&
+      customEvent.detail &&
+      (customEvent.detail.theme === "light" ||
+        customEvent.detail.theme === "dark")
+    ) {
+      updateButtonAriaLabel(toggleButton, customEvent.detail.theme);
+    }
   });
 </script>
 <style>

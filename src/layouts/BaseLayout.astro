@@ -95,5 +95,32 @@ const metaImage = image || defaultImage;
     {!hideFooter && <Footer />}
     <Analytics />
     <SpeedInsights />
+
+    {/* handle theme persistence with View Transitions */}
+    <script>
+      const THEME_STORAGE_KEY = "theme-preference";
+
+      function getThemePreference() {
+        const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        if (storedTheme === "light" || storedTheme === "dark") {
+          return storedTheme;
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      function applyThemeToDocument(theme: "light" | "dark") {
+        document.documentElement.setAttribute("data-theme", theme);
+        document.dispatchEvent(
+          new CustomEvent("themeapplied", { detail: { theme } })
+        );
+      }
+
+      document.addEventListener("astro:after-swap", () => {
+        const preferredTheme = getThemePreference();
+        applyThemeToDocument(preferredTheme);
+      });
+    </script>
   </body>
 </html>
