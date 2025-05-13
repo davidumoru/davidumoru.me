@@ -40,11 +40,12 @@ const projects = (await getCollection("projects")).sort(
             <div class="expanded-content">
               <div class="image-slider">
                 <div class="image-wrapper">
-                  {[1, 2, 3].map((num) => (
+                  {[1, 2, 3, 4, 5].map((num) => (
                     <div class="project-image">
                       <img
                         src={`https://placehold.co/1200x800/EEE/31343C?text=Project+Image+${num}`}
                         alt={`${project.data.title} preview ${num}`}
+                        draggable="false"
                       />
                     </div>
                   ))}
@@ -57,11 +58,11 @@ const projects = (await getCollection("projects")).sort(
                 </div>
                 <div class="info-section">
                   <h3>ROLE</h3>
-                  <p>{project.data.role || "DESIGN ENGINEER"}</p>
+                  <p>{project.data.role || "Design Engineer"}</p>
                 </div>
                 <div class="info-section">
                   <h3>TECHNOLOGIES</h3>
-                  <p>{project.data.technologies || "JAVASCRIPT\nTYPESCRIPT"}</p>
+                  <p>{project.data.technologies || "TypeScript"}</p>
                 </div>
               </div>
             </div>
@@ -71,6 +72,7 @@ const projects = (await getCollection("projects")).sort(
     </div>
   </CenteredLayout>
 </BaseLayout>
+
 <style>
   .project-list {
     display: flex;
@@ -82,7 +84,6 @@ const projects = (await getCollection("projects")).sort(
   .project-card {
     border-top: 1px solid var(--gray-6);
     padding: 1.5rem 0;
-    cursor: pointer;
   }
 
   .project-card:last-child {
@@ -94,6 +95,7 @@ const projects = (await getCollection("projects")).sort(
     grid-template-columns: 1fr auto auto;
     gap: 1rem;
     align-items: center;
+    cursor: pointer;
   }
 
   .project-meta {
@@ -130,27 +132,38 @@ const projects = (await getCollection("projects")).sort(
 
   .image-slider {
     width: 100%;
+    height: clamp(350px, 50vh, 500px);
     overflow-x: auto;
     margin-bottom: 2rem;
     position: relative;
+    cursor: grab;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .image-slider::-webkit-scrollbar {
+    display: none;
   }
 
   .image-wrapper {
     display: flex;
     gap: 1rem;
+    height: 100%;
   }
 
   .project-image {
     flex: 0 0 auto;
-    width: 33.333%;
-    max-width: 500px;
+    width: clamp(280px, 60%, 650px);
+    height: 100%;
   }
 
   .project-image img {
     width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
+    height: 100%;
     object-fit: cover;
+    border-radius: 0.5rem;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
   }
 
   .project-info {
@@ -173,14 +186,26 @@ const projects = (await getCollection("projects")).sort(
     white-space: pre-line;
   }
 
+  :global(.cursor-tooltip) {
+    position: absolute;
+    background-color: var(--gray-2);
+    color: var(--gray-8);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    z-index: 10000;
+    display: none;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
   @media (max-width: 1024px) {
     .project-info {
       grid-template-columns: 1fr 1fr;
     }
-
     .project-image {
-      width: 45%;
-      max-width: 450px;
+      width: clamp(250px, 70%, 600px);
     }
   }
 
@@ -190,55 +215,261 @@ const projects = (await getCollection("projects")).sort(
       justify-self: flex-start;
       text-align: left;
     }
-
+    .project-row {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
     .project-info {
       grid-template-columns: 1fr;
     }
-
     .project-image {
-      width: 80%;
-      max-width: 400px;
+      width: clamp(200px, 85%, 500px);
     }
   }
 </style>
+
 <script>
+  interface SliderControl {
+    imageSlider: HTMLElement;
+    imageWrapper: HTMLElement;
+    animationFrameId: number | null;
+    scrollSpeed: number;
+    isHoveringSlider: boolean;
+    isDraggingSlider: boolean;
+    cloneImagesIfNeeded: (this: SliderControl) => void;
+    startAutoScroll: (this: SliderControl) => void;
+    stopAutoScroll: (this: SliderControl) => void;
+    initializeSlider: (this: SliderControl) => void;
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    let tooltipElem: HTMLDivElement | null = null;
+
+    function initTooltip(): void {
+      if (!tooltipElem) {
+        tooltipElem = document.createElement("div");
+        tooltipElem.classList.add("cursor-tooltip");
+        document.body.appendChild(tooltipElem);
+      }
+    }
+
+    function showProjectTooltip(event: MouseEvent, text: string): void {
+      initTooltip();
+      if (tooltipElem) {
+        tooltipElem.textContent = text;
+        tooltipElem.style.left = `${event.pageX + 15}px`;
+        tooltipElem.style.top = `${event.pageY + 15}px`;
+        tooltipElem.style.display = "block";
+      }
+    }
+
+    function hideProjectTooltip(): void {
+      if (tooltipElem) {
+        tooltipElem.style.display = "none";
+      }
+    }
+
+    const sliderControls = new WeakMap<HTMLElement, SliderControl>();
+    let currentDraggingSlider: HTMLElement | null = null;
+    let globalDragStartX: number = 0;
+    let globalDragScrollLeft: number = 0;
+
+    function handleDocumentMouseMove(e: MouseEvent): void {
+      if (!currentDraggingSlider) return;
+      const C = sliderControls.get(currentDraggingSlider);
+      if (!C || !C.isDraggingSlider) return;
+
+      e.preventDefault();
+      const x = e.pageX - currentDraggingSlider.offsetLeft;
+      const walk = (x - globalDragStartX) * 1.5;
+      currentDraggingSlider.scrollLeft = globalDragScrollLeft - walk;
+    }
+
+    function handleDocumentMouseUp(): void {
+      if (!currentDraggingSlider) return;
+      const C = sliderControls.get(currentDraggingSlider);
+      if (C) {
+        C.isDraggingSlider = false;
+        currentDraggingSlider.style.cursor = "grab";
+      }
+      document.removeEventListener("mousemove", handleDocumentMouseMove);
+      document.removeEventListener("mouseup", handleDocumentMouseUp);
+      currentDraggingSlider = null;
+    }
+
     const projectCards =
       document.querySelectorAll<HTMLElement>(".project-card");
-    projectCards.forEach((card) => {
+
+    projectCards.forEach((card: HTMLElement) => {
       const projectRow = card.querySelector<HTMLElement>(".project-row");
       const expandedContent =
         card.querySelector<HTMLElement>(".expanded-content");
+      const imageSlider = card.querySelector<HTMLElement>(".image-slider");
+      const imageWrapper = card.querySelector<HTMLElement>(".image-wrapper");
+
+      if (imageSlider && imageWrapper) {
+        const controls: SliderControl = {
+          imageSlider,
+          imageWrapper,
+          animationFrameId: null,
+          scrollSpeed: 0.5,
+          isHoveringSlider: false,
+          isDraggingSlider: false,
+
+          cloneImagesIfNeeded: function (this: SliderControl) {
+            if (
+              this.imageWrapper.dataset.cloned === "true" ||
+              this.imageWrapper.children.length === 0
+            )
+              return;
+            const originalChildren = Array.from(this.imageWrapper.children);
+            originalChildren.forEach((child) => {
+              this.imageWrapper.appendChild(child.cloneNode(true));
+            });
+            this.imageWrapper.dataset.cloned = "true";
+          },
+
+          startAutoScroll: function (this: SliderControl) {
+            this.stopAutoScroll();
+            if (this.imageWrapper.children.length === 0) return;
+            this.cloneImagesIfNeeded();
+
+            const scrollTick = () => {
+              if (
+                !this.isHoveringSlider &&
+                !this.isDraggingSlider &&
+                card.classList.contains("expanded")
+              ) {
+                const scrollableWidth = this.imageWrapper.scrollWidth / 2;
+                if (scrollableWidth > 0) {
+                  this.imageSlider.scrollLeft -= this.scrollSpeed;
+                  if (this.imageSlider.scrollLeft <= 0.1) {
+                    this.imageSlider.scrollLeft += scrollableWidth;
+                  }
+                }
+              }
+              this.animationFrameId = requestAnimationFrame(scrollTick);
+            };
+            this.animationFrameId = requestAnimationFrame(scrollTick);
+          },
+
+          stopAutoScroll: function (this: SliderControl) {
+            if (this.animationFrameId) {
+              cancelAnimationFrame(this.animationFrameId);
+              this.animationFrameId = null;
+            }
+          },
+
+          initializeSlider: function (this: SliderControl) {
+            if (this.imageSlider.dataset.initialized === "true") return;
+            this.cloneImagesIfNeeded();
+            this.imageSlider.dataset.initialized = "true";
+            const scrollableWidth = this.imageWrapper.scrollWidth / 2;
+            if (scrollableWidth > 0 && this.imageWrapper.children.length > 0) {
+              this.imageSlider.scrollLeft = scrollableWidth;
+            } else {
+              this.imageSlider.scrollLeft = 0;
+            }
+          },
+        };
+        sliderControls.set(imageSlider, controls);
+
+        imageSlider.addEventListener("mouseenter", () => {
+          controls.isHoveringSlider = true;
+        });
+
+        imageSlider.addEventListener("mouseleave", () => {
+          controls.isHoveringSlider = false;
+        });
+
+        imageSlider.addEventListener("mousedown", (e: MouseEvent) => {
+          if (e.button !== 0) return;
+          controls.isDraggingSlider = true;
+          currentDraggingSlider = imageSlider;
+          globalDragStartX = e.pageX - imageSlider.offsetLeft;
+          globalDragScrollLeft = imageSlider.scrollLeft;
+          imageSlider.style.cursor = "grabbing";
+
+          document.addEventListener("mousemove", handleDocumentMouseMove);
+          document.addEventListener("mouseup", handleDocumentMouseUp);
+        });
+      }
+
       if (projectRow && expandedContent) {
+        projectRow.addEventListener("mouseenter", (e: MouseEvent) => {
+          if ((e.target as HTMLElement)?.closest?.(".live-site-link")) return;
+          const isExpanded = card.classList.contains("expanded");
+          showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
+        });
+        projectRow.addEventListener("mousemove", (e: MouseEvent) => {
+          const liveSiteLink = (e.target as HTMLElement)?.closest?.(
+            ".live-site-link"
+          );
+          if (liveSiteLink) {
+            hideProjectTooltip();
+            return;
+          }
+          if (tooltipElem && tooltipElem.style.display === "block") {
+            tooltipElem.style.left = `${e.pageX + 15}px`;
+            tooltipElem.style.top = `${e.pageY + 15}px`;
+          } else {
+            const isExpanded = card.classList.contains("expanded");
+            showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
+          }
+        });
+        projectRow.addEventListener("mouseleave", () => {
+          hideProjectTooltip();
+        });
+
         projectRow.addEventListener("click", (e: MouseEvent) => {
           if ((e.target as HTMLElement)?.closest?.(".live-site-link")) {
             return;
           }
-          projectCards.forEach((otherCard) => {
+
+          const isCurrentlyExpanded = card.classList.contains("expanded");
+
+          projectCards.forEach((otherCard: HTMLElement) => {
             if (otherCard !== card) {
-              const otherContent = otherCard.querySelector(".expanded-content");
-              if (
-                otherContent &&
-                (otherContent as HTMLElement).style.display === "block"
-              ) {
-                (otherContent as HTMLElement).style.display = "none";
+              const otherContent =
+                otherCard.querySelector<HTMLElement>(".expanded-content");
+              if (otherContent && otherContent.style.display === "block") {
+                otherContent.style.display = "none";
                 otherCard.classList.remove("expanded");
+                const otherSlider =
+                  otherCard.querySelector<HTMLElement>(".image-slider");
+                if (otherSlider) {
+                  const C = sliderControls.get(otherSlider);
+                  if (C) C.stopAutoScroll();
+                }
               }
             }
           });
-          const isExpanded =
-            (expandedContent as HTMLElement).style.display === "block";
-          (expandedContent as HTMLElement).style.display = isExpanded
-            ? "none"
-            : "block";
-          if (!isExpanded) {
+
+          if (!isCurrentlyExpanded) {
+            expandedContent.style.display = "block";
             card.classList.add("expanded");
+            if (imageSlider) {
+              const C = sliderControls.get(imageSlider);
+              if (C) {
+                C.initializeSlider();
+                C.isHoveringSlider = false;
+                C.isDraggingSlider = false;
+                C.startAutoScroll();
+              }
+            }
             setTimeout(() => {
-              card.scrollIntoView({ behavior: "smooth", block: "start" });
+              card.scrollIntoView({ behavior: "smooth", block: "nearest" });
             }, 100);
           } else {
+            expandedContent.style.display = "none";
             card.classList.remove("expanded");
+            if (imageSlider) {
+              const C = sliderControls.get(imageSlider);
+              if (C) C.stopAutoScroll();
+            }
           }
+          const isNowExpanded = card.classList.contains("expanded");
+          showProjectTooltip(e, isNowExpanded ? "COLLAPSE" : "EXPAND");
         });
       }
     });
