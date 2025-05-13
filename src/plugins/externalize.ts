@@ -1,19 +1,36 @@
 import type { RehypePlugin } from "@astrojs/markdown-remark";
 import { visit } from "unist-util-visit";
+import type { Element } from "hast";
 
-const externalize: RehypePlugin = (options: { domain: string }) => {
+interface ExternalizeOptions {
+  domain: string;
+}
+
+const externalize: RehypePlugin<[ExternalizeOptions?]> = (options) => {
+  const { domain } = options || {};
+
+  if (!domain) {
+    console.warn("Externalize plugin: Missing 'domain' option.");
+    return;
+  }
+
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type != "element") {
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName !== "a" || !node.properties || !node.properties.href) {
         return;
       }
 
-      const href = node?.properties?.href as string | undefined;
-      if (!(node.tagName == "a" && !!href)) {
+      const href = String(node.properties.href);
+
+      if (
+        href.startsWith("/") ||
+        href.startsWith(".") ||
+        href.startsWith("#")
+      ) {
         return;
       }
 
-      if (!href.includes(options.domain)) {
+      if (!href.includes(domain)) {
         node.properties["target"] = "_blank";
       }
     });
