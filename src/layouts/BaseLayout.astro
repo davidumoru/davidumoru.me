@@ -23,6 +23,7 @@ const metaImage = image || defaultImage;
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="canonical" href={Astro.url.href} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
@@ -30,20 +31,21 @@ const metaImage = image || defaultImage;
       name="description"
       content={description
         ? description
-        : "David Umoru is a software engineer and designer who writes code and designs impactful digital experiences."}
+        : "David Umoru: I build things, mostly with code and sometimes design. Currently enjoying CSS. See what I'm up to."}
     />
 
     <meta
       property="og:title"
       content={title ? `${title} - David Umoru` : "David Umoru"}
     />
+    <meta property="og:site_name" content="David Umoru" />
     <meta
       property="og:description"
-      content={description || "I write code and design sometimes."}
+      content={description || "Designer who writes code."}
     />
     <meta property="og:image" content={metaImage} />
     <meta property="og:image:alt" content="David Umoru profile picture" />
-    <meta property="og:url" content="https://davidumoru.me" />
+    <meta property="og:url" content={Astro.url.href} />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -53,11 +55,13 @@ const metaImage = image || defaultImage;
     />
     <meta
       name="twitter:description"
-      content={description || "I write code and design sometimes."}
+      content={description || "Designer who writes code."}
     />
     <meta name="twitter:image" content={metaImage} />
     <meta name="twitter:image:alt" content="David Umoru profile picture" />
-    <meta name="twitter:url" content="https://davidumoru.me" />
+    <meta name="twitter:url" content={Astro.url.href} />
+    <meta name="twitter:site" content="@theumoru" />
+    <meta name="twitter:creator" content="@theumoru" />
 
     <title>{title && `${title} - `} David Umoru</title>
 
