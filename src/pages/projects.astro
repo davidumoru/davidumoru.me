@@ -1,19 +1,246 @@
 ---
-import { getCollection } from 'astro:content'
-import ProjectCard from '../components/ProjectCard.astro'
-import BaseLayout from '../layouts/BaseLayout.astro'
-import CenteredLayout from '../layouts/CenteredLayout.astro'
-
-const projects = (await getCollection('projects')).sort(
-	(a, b) => b.data.year - a.data.year,
-)
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CenteredLayout from "../layouts/CenteredLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.year - a.data.year
+);
 ---
 
-<BaseLayout title="Projects" image="https://www.davidumoru.me/static/meta/projects-meta.webp">
-	<CenteredLayout>
-	<h1>Projects</h1>
-	<div class="region flow">
-		{projects.map((el) => <ProjectCard slug={el.slug} />)}
-	</div>
-	<CenteredLayout>
+<BaseLayout title="Projects">
+  <CenteredLayout>
+    <PageHeader
+      title=`Projects`
+      description=`Some of my selected work (${projects.length})`
+    />
+
+    <div class="project-list">
+      {
+        projects.map((project) => (
+          <div class="project-card" data-project-slug={project.slug}>
+            <div class="project-row">
+              <h2 class="project-title">{project.data.title}</h2>
+              <div class="project-meta">
+                <div class="project-dates">{`${project.data.year}`}</div>
+                <div class="project-location">
+                  {project.data.location || ""}
+                </div>
+              </div>
+              <div class="project-actions">
+                <a
+                  href={project.data.demoUrl || project.data.githubUrl}
+                  target="_blank"
+                  class="live-site-link"
+                >
+                  Live site
+                </a>
+              </div>
+            </div>
+            <div class="expanded-content">
+              <div class="image-slider">
+                <div class="image-wrapper">
+                  {[1, 2, 3].map((num) => (
+                    <div class="project-image">
+                      <img
+                        src={`https://placehold.co/1200x800/EEE/31343C?text=Project+Image+${num}`}
+                        alt={`${project.data.title} preview ${num}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="project-info">
+                <div class="info-section">
+                  <h3>ABOUT</h3>
+                  <p>{project.data.description || ""}</p>
+                </div>
+                <div class="info-section">
+                  <h3>ROLE</h3>
+                  <p>{project.data.role || "DESIGN ENGINEER"}</p>
+                </div>
+                <div class="info-section">
+                  <h3>TECHNOLOGIES</h3>
+                  <p>{project.data.technologies || "JAVASCRIPT\nTYPESCRIPT"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </CenteredLayout>
 </BaseLayout>
+<style>
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    color: var(--gray-12);
+  }
+
+  .project-card {
+    border-top: 1px solid var(--gray-6);
+    padding: 1.5rem 0;
+    cursor: pointer;
+  }
+
+  .project-card:last-child {
+    border-bottom: 1px solid var(--gray-6);
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .project-meta {
+    text-align: right;
+    color: var(--gray-11);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
+
+  .project-dates {
+    margin-bottom: 0.25rem;
+  }
+
+  .live-site-link {
+    display: inline-block;
+    color: var(--gray-12);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--gray-8);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+  }
+
+  .live-site-link:hover {
+    background-color: var(--gray-6);
+  }
+
+  .expanded-content {
+    display: none;
+    margin-top: 2rem;
+    overflow: hidden;
+  }
+
+  .image-slider {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .image-wrapper {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .project-image {
+    flex: 0 0 auto;
+    width: 33.333%;
+    max-width: 500px;
+  }
+
+  .project-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    object-fit: cover;
+  }
+
+  .project-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .info-section h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: var(--gray-11);
+  }
+
+  .info-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  @media (max-width: 1024px) {
+    .project-info {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .project-image {
+      width: 45%;
+      max-width: 450px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .project-meta,
+    .project-actions {
+      justify-self: flex-start;
+      text-align: left;
+    }
+
+    .project-info {
+      grid-template-columns: 1fr;
+    }
+
+    .project-image {
+      width: 80%;
+      max-width: 400px;
+    }
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const projectCards =
+      document.querySelectorAll<HTMLElement>(".project-card");
+    projectCards.forEach((card) => {
+      const projectRow = card.querySelector<HTMLElement>(".project-row");
+      const expandedContent =
+        card.querySelector<HTMLElement>(".expanded-content");
+      if (projectRow && expandedContent) {
+        projectRow.addEventListener("click", (e: MouseEvent) => {
+          if ((e.target as HTMLElement)?.closest?.(".live-site-link")) {
+            return;
+          }
+          projectCards.forEach((otherCard) => {
+            if (otherCard !== card) {
+              const otherContent = otherCard.querySelector(".expanded-content");
+              if (
+                otherContent &&
+                (otherContent as HTMLElement).style.display === "block"
+              ) {
+                (otherContent as HTMLElement).style.display = "none";
+                otherCard.classList.remove("expanded");
+              }
+            }
+          });
+          const isExpanded =
+            (expandedContent as HTMLElement).style.display === "block";
+          (expandedContent as HTMLElement).style.display = isExpanded
+            ? "none"
+            : "block";
+          if (!isExpanded) {
+            card.classList.add("expanded");
+            setTimeout(() => {
+              card.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 100);
+          } else {
+            card.classList.remove("expanded");
+          }
+        });
+      }
+    });
+  });
+</script>
