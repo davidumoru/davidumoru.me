@@ -13,6 +13,14 @@ export const collections = {
       technologies: z.string().optional(),
       githubUrl: z.string().url().optional(),
       demoUrl: z.string().url().optional(),
+      images: z
+        .array(
+          z.object({
+            url: z.string(),
+            alt: z.string().optional(),
+          })
+        )
+        .optional(),
     }),
   }),
   posts: defineCollection({

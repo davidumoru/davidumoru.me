@@ -14,7 +14,6 @@ const projects = (await getCollection("projects")).sort(
       title=`Projects`
       description=`Some of my selected work (${projects.length})`
     />
-
     <div class="project-list">
       {
         projects.map((project) => (
@@ -28,29 +27,36 @@ const projects = (await getCollection("projects")).sort(
                 </div>
               </div>
               <div class="project-actions">
-                <a
-                  href={project.data.demoUrl || project.data.githubUrl}
-                  target="_blank"
-                  class="live-site-link"
-                >
-                  Live site
-                </a>
+                {project.data.demoUrl || project.data.githubUrl ? (
+                  <a
+                    href={project.data.demoUrl || project.data.githubUrl}
+                    target="_blank"
+                    class="action-button live-site-link"
+                  >
+                    Live site
+                  </a>
+                ) : null}
+                <button class="action-button toggle-button mobile-only">
+                  Expand
+                </button>
               </div>
             </div>
             <div class="expanded-content">
-              <div class="image-slider">
-                <div class="image-wrapper">
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <div class="project-image">
-                      <img
-                        src={`https://placehold.co/1200x800/EEE/31343C?text=Project+Image+${num}`}
-                        alt={`${project.data.title} preview ${num}`}
-                        draggable="false"
-                      />
-                    </div>
-                  ))}
+              {project.data.images && project.data.images.length > 0 && (
+                <div class="image-slider">
+                  <div class="image-wrapper">
+                    {project.data.images.map((image) => (
+                      <div class="project-image">
+                        <img
+                          src={image.url}
+                          alt={image.alt || `${project.data.title} preview`}
+                          draggable="false"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
               <div class="project-info">
                 <div class="info-section">
                   <h3>ABOUT</h3>
@@ -72,7 +78,6 @@ const projects = (await getCollection("projects")).sort(
     </div>
   </CenteredLayout>
 </BaseLayout>
-
 <style>
   .project-list {
     display: flex;
@@ -80,16 +85,13 @@ const projects = (await getCollection("projects")).sort(
     margin: 0 auto;
     color: var(--gray-12);
   }
-
   .project-card {
     border-top: 1px solid var(--gray-6);
     padding: 1.5rem 0;
   }
-
   .project-card:last-child {
     border-bottom: 1px solid var(--gray-6);
   }
-
   .project-row {
     display: grid;
     grid-template-columns: 1fr auto auto;
@@ -97,19 +99,16 @@ const projects = (await getCollection("projects")).sort(
     align-items: center;
     cursor: pointer;
   }
-
   .project-meta {
     text-align: right;
     color: var(--gray-11);
     font-size: 0.875rem;
     text-transform: uppercase;
   }
-
   .project-dates {
     margin-bottom: 0.25rem;
   }
-
-  .live-site-link {
+  .action-button {
     display: inline-block;
     color: var(--gray-12);
     text-decoration: none;
@@ -118,18 +117,24 @@ const projects = (await getCollection("projects")).sort(
     border-radius: 2rem;
     font-size: 0.875rem;
     transition: all 0.2s ease;
+    background-color: transparent;
+    cursor: pointer;
   }
-
-  .live-site-link:hover {
+  .action-button:hover {
     background-color: var(--gray-6);
   }
-
+  .mobile-only {
+    display: none;
+  }
+  .project-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
   .expanded-content {
     display: none;
     margin-top: 2rem;
     overflow: hidden;
   }
-
   .image-slider {
     width: 100%;
     height: clamp(350px, 50vh, 500px);
@@ -143,19 +148,16 @@ const projects = (await getCollection("projects")).sort(
   .image-slider::-webkit-scrollbar {
     display: none;
   }
-
   .image-wrapper {
     display: flex;
     gap: 1rem;
     height: 100%;
   }
-
   .project-image {
     flex: 0 0 auto;
     width: clamp(280px, 60%, 650px);
     height: 100%;
   }
-
   .project-image img {
     width: 100%;
     height: 100%;
@@ -165,13 +167,11 @@ const projects = (await getCollection("projects")).sort(
     -webkit-user-drag: none;
     pointer-events: none;
   }
-
   .project-info {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 2rem;
   }
-
   .info-section h3 {
     font-size: 0.875rem;
     font-weight: 500;
@@ -179,13 +179,11 @@ const projects = (await getCollection("projects")).sort(
     margin-bottom: 1rem;
     color: var(--gray-11);
   }
-
   .info-section p {
     font-size: 1rem;
     line-height: 1.6;
     white-space: pre-line;
   }
-
   :global(.cursor-tooltip) {
     position: absolute;
     background-color: var(--gray-2);
@@ -199,7 +197,6 @@ const projects = (await getCollection("projects")).sort(
     white-space: nowrap;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
-
   @media (max-width: 1024px) {
     .project-info {
       grid-template-columns: 1fr 1fr;
@@ -208,7 +205,6 @@ const projects = (await getCollection("projects")).sort(
       width: clamp(250px, 70%, 600px);
     }
   }
-
   @media (max-width: 768px) {
     .project-meta,
     .project-actions {
@@ -225,9 +221,11 @@ const projects = (await getCollection("projects")).sort(
     .project-image {
       width: clamp(200px, 85%, 500px);
     }
+    .mobile-only {
+      display: inline-block;
+    }
   }
 </style>
-
 <script>
   interface SliderControl {
     imageSlider: HTMLElement;
@@ -240,6 +238,11 @@ const projects = (await getCollection("projects")).sort(
     startAutoScroll: (this: SliderControl) => void;
     stopAutoScroll: (this: SliderControl) => void;
     initializeSlider: (this: SliderControl) => void;
+  }
+
+  interface ProjectImage {
+    url: string;
+    alt?: string;
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -278,7 +281,6 @@ const projects = (await getCollection("projects")).sort(
       if (!currentDraggingSlider) return;
       const C = sliderControls.get(currentDraggingSlider);
       if (!C || !C.isDraggingSlider) return;
-
       e.preventDefault();
       const x = e.pageX - currentDraggingSlider.offsetLeft;
       const walk = (x - globalDragStartX) * 1.5;
@@ -297,6 +299,85 @@ const projects = (await getCollection("projects")).sort(
       currentDraggingSlider = null;
     }
 
+    function toggleProject(card: HTMLElement, e?: MouseEvent): void {
+      const expandedContent =
+        card.querySelector<HTMLElement>(".expanded-content");
+      const imageSlider = card.querySelector<HTMLElement>(".image-slider");
+      const toggleButton =
+        card.querySelector<HTMLButtonElement>(".toggle-button");
+
+      if (!expandedContent) return;
+
+      const isCurrentlyExpanded = card.classList.contains("expanded");
+
+      const projectCards =
+        document.querySelectorAll<HTMLElement>(".project-card");
+      projectCards.forEach((otherCard: HTMLElement) => {
+        if (otherCard !== card) {
+          const otherContent =
+            otherCard.querySelector<HTMLElement>(".expanded-content");
+          const otherToggleButton =
+            otherCard.querySelector<HTMLButtonElement>(".toggle-button");
+
+          if (otherContent && otherContent.style.display === "block") {
+            otherContent.style.display = "none";
+            otherCard.classList.remove("expanded");
+
+            if (otherToggleButton) {
+              otherToggleButton.textContent = "Expand";
+            }
+
+            const otherSlider =
+              otherCard.querySelector<HTMLElement>(".image-slider");
+            if (otherSlider) {
+              const C = sliderControls.get(otherSlider);
+              if (C) C.stopAutoScroll();
+            }
+          }
+        }
+      });
+
+      if (!isCurrentlyExpanded) {
+        expandedContent.style.display = "block";
+        card.classList.add("expanded");
+
+        if (toggleButton) {
+          toggleButton.textContent = "Collapse";
+        }
+
+        if (imageSlider) {
+          const C = sliderControls.get(imageSlider);
+          if (C) {
+            C.initializeSlider();
+            C.isHoveringSlider = false;
+            C.isDraggingSlider = false;
+            C.startAutoScroll();
+          }
+        }
+
+        setTimeout(() => {
+          card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }, 100);
+      } else {
+        expandedContent.style.display = "none";
+        card.classList.remove("expanded");
+
+        if (toggleButton) {
+          toggleButton.textContent = "Expand";
+        }
+
+        if (imageSlider) {
+          const C = sliderControls.get(imageSlider);
+          if (C) C.stopAutoScroll();
+        }
+      }
+
+      if (e) {
+        const isNowExpanded = card.classList.contains("expanded");
+        showProjectTooltip(e, isNowExpanded ? "COLLAPSE" : "EXPAND");
+      }
+    }
+
     const projectCards =
       document.querySelectorAll<HTMLElement>(".project-card");
 
@@ -306,6 +387,15 @@ const projects = (await getCollection("projects")).sort(
         card.querySelector<HTMLElement>(".expanded-content");
       const imageSlider = card.querySelector<HTMLElement>(".image-slider");
       const imageWrapper = card.querySelector<HTMLElement>(".image-wrapper");
+      const toggleButton =
+        card.querySelector<HTMLButtonElement>(".toggle-button");
+
+      if (toggleButton) {
+        toggleButton.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleProject(card);
+        });
+      }
 
       if (imageSlider && imageWrapper) {
         const controls: SliderControl = {
@@ -322,6 +412,7 @@ const projects = (await getCollection("projects")).sort(
               this.imageWrapper.children.length === 0
             )
               return;
+
             const originalChildren = Array.from(this.imageWrapper.children);
             originalChildren.forEach((child) => {
               this.imageWrapper.appendChild(child.cloneNode(true));
@@ -350,6 +441,7 @@ const projects = (await getCollection("projects")).sort(
               }
               this.animationFrameId = requestAnimationFrame(scrollTick);
             };
+
             this.animationFrameId = requestAnimationFrame(scrollTick);
           },
 
@@ -364,6 +456,7 @@ const projects = (await getCollection("projects")).sort(
             if (this.imageSlider.dataset.initialized === "true") return;
             this.cloneImagesIfNeeded();
             this.imageSlider.dataset.initialized = "true";
+
             const scrollableWidth = this.imageWrapper.scrollWidth / 2;
             if (scrollableWidth > 0 && this.imageWrapper.children.length > 0) {
               this.imageSlider.scrollLeft = scrollableWidth;
@@ -372,6 +465,7 @@ const projects = (await getCollection("projects")).sort(
             }
           },
         };
+
         sliderControls.set(imageSlider, controls);
 
         imageSlider.addEventListener("mouseenter", () => {
@@ -389,7 +483,6 @@ const projects = (await getCollection("projects")).sort(
           globalDragStartX = e.pageX - imageSlider.offsetLeft;
           globalDragScrollLeft = imageSlider.scrollLeft;
           imageSlider.style.cursor = "grabbing";
-
           document.addEventListener("mousemove", handleDocumentMouseMove);
           document.addEventListener("mouseup", handleDocumentMouseUp);
         });
@@ -397,18 +490,21 @@ const projects = (await getCollection("projects")).sort(
 
       if (projectRow && expandedContent) {
         projectRow.addEventListener("mouseenter", (e: MouseEvent) => {
-          if ((e.target as HTMLElement)?.closest?.(".live-site-link")) return;
+          if ((e.target as HTMLElement)?.closest?.(".action-button")) return;
           const isExpanded = card.classList.contains("expanded");
           showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
         });
+
         projectRow.addEventListener("mousemove", (e: MouseEvent) => {
-          const liveSiteLink = (e.target as HTMLElement)?.closest?.(
-            ".live-site-link"
+          const actionButton = (e.target as HTMLElement)?.closest(
+            ".action-button"
           );
-          if (liveSiteLink) {
+
+          if (actionButton) {
             hideProjectTooltip();
             return;
           }
+
           if (tooltipElem && tooltipElem.style.display === "block") {
             tooltipElem.style.left = `${e.pageX + 15}px`;
             tooltipElem.style.top = `${e.pageY + 15}px`;
@@ -417,59 +513,17 @@ const projects = (await getCollection("projects")).sort(
             showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
           }
         });
+
         projectRow.addEventListener("mouseleave", () => {
           hideProjectTooltip();
         });
 
         projectRow.addEventListener("click", (e: MouseEvent) => {
-          if ((e.target as HTMLElement)?.closest?.(".live-site-link")) {
+          if ((e.target as HTMLElement)?.closest?.(".action-button")) {
             return;
           }
 
-          const isCurrentlyExpanded = card.classList.contains("expanded");
-
-          projectCards.forEach((otherCard: HTMLElement) => {
-            if (otherCard !== card) {
-              const otherContent =
-                otherCard.querySelector<HTMLElement>(".expanded-content");
-              if (otherContent && otherContent.style.display === "block") {
-                otherContent.style.display = "none";
-                otherCard.classList.remove("expanded");
-                const otherSlider =
-                  otherCard.querySelector<HTMLElement>(".image-slider");
-                if (otherSlider) {
-                  const C = sliderControls.get(otherSlider);
-                  if (C) C.stopAutoScroll();
-                }
-              }
-            }
-          });
-
-          if (!isCurrentlyExpanded) {
-            expandedContent.style.display = "block";
-            card.classList.add("expanded");
-            if (imageSlider) {
-              const C = sliderControls.get(imageSlider);
-              if (C) {
-                C.initializeSlider();
-                C.isHoveringSlider = false;
-                C.isDraggingSlider = false;
-                C.startAutoScroll();
-              }
-            }
-            setTimeout(() => {
-              card.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            }, 100);
-          } else {
-            expandedContent.style.display = "none";
-            card.classList.remove("expanded");
-            if (imageSlider) {
-              const C = sliderControls.get(imageSlider);
-              if (C) C.stopAutoScroll();
-            }
-          }
-          const isNowExpanded = card.classList.contains("expanded");
-          showProjectTooltip(e, isNowExpanded ? "COLLAPSE" : "EXPAND");
+          toggleProject(card, e);
         });
       }
     });
