@@ -245,11 +245,14 @@ const projects = (await getCollection("projects")).sort(
     alt?: string;
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function initializeProjectPageInteractions() {
     let tooltipElem: HTMLDivElement | null = null;
 
     function initTooltip(): void {
-      if (!tooltipElem) {
+      const existingTooltip = document.body.querySelector<HTMLDivElement>(".cursor-tooltip");
+      if (existingTooltip) {
+        tooltipElem = existingTooltip;
+      } else {
         tooltipElem = document.createElement("div");
         tooltipElem.classList.add("cursor-tooltip");
         document.body.appendChild(tooltipElem);
@@ -257,7 +260,9 @@ const projects = (await getCollection("projects")).sort(
     }
 
     function showProjectTooltip(event: MouseEvent, text: string): void {
-      initTooltip();
+      if (!tooltipElem) {
+        initTooltip();
+      }
       if (tooltipElem) {
         tooltipElem.textContent = text;
         tooltipElem.style.left = `${event.pageX + 15}px`;
@@ -310,17 +315,17 @@ const projects = (await getCollection("projects")).sort(
 
       const isCurrentlyExpanded = card.classList.contains("expanded");
 
-      const projectCards =
+      const projectCardsList =
         document.querySelectorAll<HTMLElement>(".project-card");
-      projectCards.forEach((otherCard: HTMLElement) => {
+      projectCardsList.forEach((otherCard: HTMLElement) => {
         if (otherCard !== card) {
           const otherContent =
             otherCard.querySelector<HTMLElement>(".expanded-content");
           const otherToggleButton =
             otherCard.querySelector<HTMLButtonElement>(".toggle-button");
 
-          if (otherContent && otherContent.style.display === "block") {
-            otherContent.style.display = "none";
+          if (otherCard.classList.contains("expanded")) {
+            if (otherContent) otherContent.style.display = "none";
             otherCard.classList.remove("expanded");
 
             if (otherToggleButton) {
@@ -378,23 +383,31 @@ const projects = (await getCollection("projects")).sort(
       }
     }
 
+    initTooltip();
+
     const projectCards =
       document.querySelectorAll<HTMLElement>(".project-card");
 
+    if (projectCards.length === 0 && !document.querySelector(".project-list")) {
+        return;
+    }
+
     projectCards.forEach((card: HTMLElement) => {
       const projectRow = card.querySelector<HTMLElement>(".project-row");
-      const expandedContent =
-        card.querySelector<HTMLElement>(".expanded-content");
       const imageSlider = card.querySelector<HTMLElement>(".image-slider");
       const imageWrapper = card.querySelector<HTMLElement>(".image-wrapper");
       const toggleButton =
         card.querySelector<HTMLButtonElement>(".toggle-button");
 
       if (toggleButton) {
-        toggleButton.addEventListener("click", (e) => {
-          e.stopPropagation();
+        const clickHandler = (ev: MouseEvent) => {
+          ev.stopPropagation();
           toggleProject(card);
-        });
+        };
+        if (!(toggleButton as any).__clickHandlerAttached) {
+            toggleButton.addEventListener("click", clickHandler);
+            (toggleButton as any).__clickHandlerAttached = true;
+        }
       }
 
       if (imageSlider && imageWrapper) {
@@ -453,9 +466,17 @@ const projects = (await getCollection("projects")).sort(
           },
 
           initializeSlider: function (this: SliderControl) {
-            if (this.imageSlider.dataset.initialized === "true") return;
+            if (this.imageSlider.dataset.sliderInitialized === "true" && this.imageWrapper.dataset.cloned === "true") {
+                 // Reset scroll position even if initialized, as it might have been hidden
+                const scrollableWidth = this.imageWrapper.scrollWidth / 2;
+                if (scrollableWidth > 0 && this.imageWrapper.children.length > 0) {
+                    this.imageSlider.scrollLeft = scrollableWidth;
+                } else {
+                    this.imageSlider.scrollLeft = 0;
+                }
+            }
             this.cloneImagesIfNeeded();
-            this.imageSlider.dataset.initialized = "true";
+            this.imageSlider.dataset.sliderInitialized = "true";
 
             const scrollableWidth = this.imageWrapper.scrollWidth / 2;
             if (scrollableWidth > 0 && this.imageWrapper.children.length > 0) {
@@ -468,14 +489,8 @@ const projects = (await getCollection("projects")).sort(
 
         sliderControls.set(imageSlider, controls);
 
-        imageSlider.addEventListener("mouseenter", () => {
-          controls.isHoveringSlider = true;
-        });
-
-        imageSlider.addEventListener("mouseleave", () => {
-          controls.isHoveringSlider = false;
-        });
-
+        imageSlider.addEventListener("mouseenter", () => { controls.isHoveringSlider = true; });
+        imageSlider.addEventListener("mouseleave", () => { controls.isHoveringSlider = false; });
         imageSlider.addEventListener("mousedown", (e: MouseEvent) => {
           if (e.button !== 0) return;
           controls.isDraggingSlider = true;
@@ -488,7 +503,7 @@ const projects = (await getCollection("projects")).sort(
         });
       }
 
-      if (projectRow && expandedContent) {
+      if (projectRow) {
         projectRow.addEventListener("mouseenter", (e: MouseEvent) => {
           if ((e.target as HTMLElement)?.closest?.(".action-button")) return;
           const isExpanded = card.classList.contains("expanded");
@@ -496,15 +511,11 @@ const projects = (await getCollection("projects")).sort(
         });
 
         projectRow.addEventListener("mousemove", (e: MouseEvent) => {
-          const actionButton = (e.target as HTMLElement)?.closest(
-            ".action-button"
-          );
-
+          const actionButton = (e.target as HTMLElement)?.closest?.(".action-button");
           if (actionButton) {
             hideProjectTooltip();
             return;
           }
-
           if (tooltipElem && tooltipElem.style.display === "block") {
             tooltipElem.style.left = `${e.pageX + 15}px`;
             tooltipElem.style.top = `${e.pageY + 15}px`;
@@ -518,14 +529,25 @@ const projects = (await getCollection("projects")).sort(
           hideProjectTooltip();
         });
 
-        projectRow.addEventListener("click", (e: MouseEvent) => {
-          if ((e.target as HTMLElement)?.closest?.(".action-button")) {
-            return;
-          }
-
-          toggleProject(card, e);
-        });
+        const rowClickHandler = (e: MouseEvent) => {
+            if ((e.target as HTMLElement)?.closest?.(".action-button")) {
+                return;
+            }
+            toggleProject(card, e);
+        };
+        if (!(projectRow as any).__rowClickHandlerAttached) {
+            projectRow.addEventListener("click", rowClickHandler);
+            (projectRow as any).__rowClickHandlerAttached = true;
+        }
       }
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeProjectPageInteractions);
+  } else {
+    initializeProjectPageInteractions();
+  }
+
+  document.addEventListener("astro:after-swap", initializeProjectPageInteractions);
 </script>
