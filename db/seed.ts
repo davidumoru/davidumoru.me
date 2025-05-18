@@ -291,5 +291,11 @@ export default async function seed() {
       content: "As-salamu alaykum! Visiting from Algeria.",
       country: "Algeria",
     },
+    {
+      author: "Ali",
+      link: "",
+      content: "Sa'adt bi liqa'ak",
+      country: "United Arab Emirates",
+    },
   ]);
 }
