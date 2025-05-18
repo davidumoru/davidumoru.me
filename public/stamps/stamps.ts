@@ -287,6 +287,12 @@ export const stampData = [
       "http://res.cloudinary.com/deha0jqdf/image/upload/v1747352581/Algeria_esqqmn.jpg",
     hue: 35,
   },
+    {
+    country: "United Arab Emirates",
+    imageUrl:
+      "https://res.cloudinary.com/deha0jqdf/image/upload/v1747584871/United_Arab_Emirates_dmcaiv.jpg",
+    hue: 21,
+  },
   {
     country: "Other",
     hue: 360,
