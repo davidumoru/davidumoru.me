@@ -38,8 +38,17 @@ const projects = (await getCollection("projects")).sort(
                   </a>
                 ) : null}
                 <button class="action-button toggle-button mobile-only">
-                  Expand
-                  <Icon icon="arrowDownLine" size="20" />
+                  <span class="button-text">Expand</span>
+                  <Icon
+                    icon="arrowDownLine"
+                    size="20"
+                    className="icon-expand"
+                  />
+                  <Icon
+                    icon="arrowUpLine"
+                    size="20"
+                    className="icon-collapse"
+                  />
                 </button>
               </div>
             </div>
@@ -129,7 +138,6 @@ const projects = (await getCollection("projects")).sort(
     display: none;
   }
   .action-button.toggle-button.mobile-only {
-    display: inline-flex;
     align-items: center;
     gap: 0.4em;
   }
@@ -231,6 +239,9 @@ const projects = (await getCollection("projects")).sort(
     .mobile-only {
       display: inline-block;
     }
+    .action-button.toggle-button.mobile-only {
+      display: inline-flex;
+    }
   }
 </style>
 <script>
@@ -246,15 +257,21 @@ const projects = (await getCollection("projects")).sort(
     stopAutoScroll: (this: SliderControl) => void;
     initializeSlider: (this: SliderControl) => void;
   }
-
   interface ProjectImage {
     url: string;
     alt?: string;
   }
-
   function initializeProjectPageInteractions() {
-    let tooltipElem: HTMLDivElement | null = null;
+    document.querySelectorAll(".project-card").forEach((card) => {
+      if (!card.classList.contains("expanded")) {
+        const collapseIcon = card.querySelector(".icon-collapse");
+        const expandIcon = card.querySelector(".icon-expand");
+        if (collapseIcon) (collapseIcon as HTMLElement).style.display = "none";
+        if (expandIcon) (expandIcon as HTMLElement).style.display = "inline";
+      }
+    });
 
+    let tooltipElem: HTMLDivElement | null = null;
     function initTooltip(): void {
       const existingTooltip =
         document.body.querySelector<HTMLDivElement>(".cursor-tooltip");
@@ -266,7 +283,6 @@ const projects = (await getCollection("projects")).sort(
         document.body.appendChild(tooltipElem);
       }
     }
-
     function showProjectTooltip(event: MouseEvent, text: string): void {
       if (!tooltipElem) {
         initTooltip();
@@ -278,18 +294,15 @@ const projects = (await getCollection("projects")).sort(
         tooltipElem.style.display = "block";
       }
     }
-
     function hideProjectTooltip(): void {
       if (tooltipElem) {
         tooltipElem.style.display = "none";
       }
     }
-
     const sliderControls = new WeakMap<HTMLElement, SliderControl>();
     let currentDraggingSlider: HTMLElement | null = null;
     let globalDragStartX: number = 0;
     let globalDragScrollLeft: number = 0;
-
     function handleDocumentMouseMove(e: MouseEvent): void {
       if (!currentDraggingSlider) return;
       const C = sliderControls.get(currentDraggingSlider);
@@ -299,7 +312,6 @@ const projects = (await getCollection("projects")).sort(
       const walk = (x - globalDragStartX) * 1.5;
       currentDraggingSlider.scrollLeft = globalDragScrollLeft - walk;
     }
-
     function handleDocumentMouseUp(): void {
       if (!currentDraggingSlider) return;
       const C = sliderControls.get(currentDraggingSlider);
@@ -311,18 +323,14 @@ const projects = (await getCollection("projects")).sort(
       document.removeEventListener("mouseup", handleDocumentMouseUp);
       currentDraggingSlider = null;
     }
-
     function toggleProject(card: HTMLElement, e?: MouseEvent): void {
       const expandedContent =
         card.querySelector<HTMLElement>(".expanded-content");
       const imageSlider = card.querySelector<HTMLElement>(".image-slider");
       const toggleButton =
         card.querySelector<HTMLButtonElement>(".toggle-button");
-
       if (!expandedContent) return;
-
       const isCurrentlyExpanded = card.classList.contains("expanded");
-
       const projectCardsList =
         document.querySelectorAll<HTMLElement>(".project-card");
       projectCardsList.forEach((otherCard: HTMLElement) => {
@@ -331,15 +339,22 @@ const projects = (await getCollection("projects")).sort(
             otherCard.querySelector<HTMLElement>(".expanded-content");
           const otherToggleButton =
             otherCard.querySelector<HTMLButtonElement>(".toggle-button");
-
           if (otherCard.classList.contains("expanded")) {
             if (otherContent) otherContent.style.display = "none";
             otherCard.classList.remove("expanded");
-
             if (otherToggleButton) {
-              otherToggleButton.textContent = "Expand";
+              const otherButtonText =
+                otherToggleButton.querySelector<HTMLSpanElement>(
+                  ".button-text"
+                );
+              const otherIconExpand =
+                otherToggleButton.querySelector<HTMLElement>(".icon-expand");
+              const otherIconCollapse =
+                otherToggleButton.querySelector<HTMLElement>(".icon-collapse");
+              if (otherButtonText) otherButtonText.textContent = "Expand";
+              if (otherIconExpand) otherIconExpand.style.display = "inline";
+              if (otherIconCollapse) otherIconCollapse.style.display = "none";
             }
-
             const otherSlider =
               otherCard.querySelector<HTMLElement>(".image-slider");
             if (otherSlider) {
@@ -349,15 +364,21 @@ const projects = (await getCollection("projects")).sort(
           }
         }
       });
-
+      const buttonText = toggleButton
+        ? toggleButton.querySelector<HTMLSpanElement>(".button-text")
+        : null;
+      const iconExpand = toggleButton
+        ? toggleButton.querySelector<HTMLElement>(".icon-expand")
+        : null;
+      const iconCollapse = toggleButton
+        ? toggleButton.querySelector<HTMLElement>(".icon-collapse")
+        : null;
       if (!isCurrentlyExpanded) {
         expandedContent.style.display = "block";
         card.classList.add("expanded");
-
-        if (toggleButton) {
-          toggleButton.textContent = "Collapse";
-        }
-
+        if (buttonText) buttonText.textContent = "Collapse";
+        if (iconExpand) iconExpand.style.display = "none";
+        if (iconCollapse) iconCollapse.style.display = "inline";
         if (imageSlider) {
           const C = sliderControls.get(imageSlider);
           if (C) {
@@ -367,46 +388,37 @@ const projects = (await getCollection("projects")).sort(
             C.startAutoScroll();
           }
         }
-
         setTimeout(() => {
           card.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }, 100);
       } else {
         expandedContent.style.display = "none";
         card.classList.remove("expanded");
-
-        if (toggleButton) {
-          toggleButton.textContent = "Expand";
-        }
-
+        if (buttonText) buttonText.textContent = "Expand";
+        if (iconExpand) iconExpand.style.display = "inline";
+        if (iconCollapse) iconCollapse.style.display = "none";
         if (imageSlider) {
           const C = sliderControls.get(imageSlider);
           if (C) C.stopAutoScroll();
         }
       }
-
       if (e) {
         const isNowExpanded = card.classList.contains("expanded");
         showProjectTooltip(e, isNowExpanded ? "COLLAPSE" : "EXPAND");
       }
     }
-
     initTooltip();
-
     const projectCards =
       document.querySelectorAll<HTMLElement>(".project-card");
-
     if (projectCards.length === 0 && !document.querySelector(".project-list")) {
       return;
     }
-
     projectCards.forEach((card: HTMLElement) => {
       const projectRow = card.querySelector<HTMLElement>(".project-row");
       const imageSlider = card.querySelector<HTMLElement>(".image-slider");
       const imageWrapper = card.querySelector<HTMLElement>(".image-wrapper");
       const toggleButton =
         card.querySelector<HTMLButtonElement>(".toggle-button");
-
       if (toggleButton) {
         const clickHandler = (ev: MouseEvent) => {
           ev.stopPropagation();
@@ -417,7 +429,6 @@ const projects = (await getCollection("projects")).sort(
           (toggleButton as any).__clickHandlerAttached = true;
         }
       }
-
       if (imageSlider && imageWrapper) {
         const controls: SliderControl = {
           imageSlider,
@@ -426,26 +437,22 @@ const projects = (await getCollection("projects")).sort(
           scrollSpeed: 0.5,
           isHoveringSlider: false,
           isDraggingSlider: false,
-
           cloneImagesIfNeeded: function (this: SliderControl) {
             if (
               this.imageWrapper.dataset.cloned === "true" ||
               this.imageWrapper.children.length === 0
             )
               return;
-
             const originalChildren = Array.from(this.imageWrapper.children);
             originalChildren.forEach((child) => {
               this.imageWrapper.appendChild(child.cloneNode(true));
             });
             this.imageWrapper.dataset.cloned = "true";
           },
-
           startAutoScroll: function (this: SliderControl) {
             this.stopAutoScroll();
             if (this.imageWrapper.children.length === 0) return;
             this.cloneImagesIfNeeded();
-
             const scrollTick = () => {
               if (
                 !this.isHoveringSlider &&
@@ -462,17 +469,14 @@ const projects = (await getCollection("projects")).sort(
               }
               this.animationFrameId = requestAnimationFrame(scrollTick);
             };
-
             this.animationFrameId = requestAnimationFrame(scrollTick);
           },
-
           stopAutoScroll: function (this: SliderControl) {
             if (this.animationFrameId) {
               cancelAnimationFrame(this.animationFrameId);
               this.animationFrameId = null;
             }
           },
-
           initializeSlider: function (this: SliderControl) {
             if (
               this.imageSlider.dataset.sliderInitialized === "true" &&
@@ -490,7 +494,6 @@ const projects = (await getCollection("projects")).sort(
             }
             this.cloneImagesIfNeeded();
             this.imageSlider.dataset.sliderInitialized = "true";
-
             const scrollableWidth = this.imageWrapper.scrollWidth / 2;
             if (scrollableWidth > 0 && this.imageWrapper.children.length > 0) {
               this.imageSlider.scrollLeft = scrollableWidth;
@@ -499,9 +502,7 @@ const projects = (await getCollection("projects")).sort(
             }
           },
         };
-
         sliderControls.set(imageSlider, controls);
-
         imageSlider.addEventListener("mouseenter", () => {
           controls.isHoveringSlider = true;
         });
@@ -519,14 +520,12 @@ const projects = (await getCollection("projects")).sort(
           document.addEventListener("mouseup", handleDocumentMouseUp);
         });
       }
-
       if (projectRow) {
         projectRow.addEventListener("mouseenter", (e: MouseEvent) => {
           if ((e.target as HTMLElement)?.closest?.(".action-button")) return;
           const isExpanded = card.classList.contains("expanded");
           showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
         });
-
         projectRow.addEventListener("mousemove", (e: MouseEvent) => {
           const actionButton = (e.target as HTMLElement)?.closest?.(
             ".action-button"
@@ -543,11 +542,9 @@ const projects = (await getCollection("projects")).sort(
             showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
           }
         });
-
         projectRow.addEventListener("mouseleave", () => {
           hideProjectTooltip();
         });
-
         const rowClickHandler = (e: MouseEvent) => {
           if ((e.target as HTMLElement)?.closest?.(".action-button")) {
             return;
@@ -561,7 +558,6 @@ const projects = (await getCollection("projects")).sort(
       }
     });
   }
-
   if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
@@ -570,7 +566,6 @@ const projects = (await getCollection("projects")).sort(
   } else {
     initializeProjectPageInteractions();
   }
-
   document.addEventListener(
     "astro:after-swap",
     initializeProjectPageInteractions
