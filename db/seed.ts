@@ -297,5 +297,19 @@ export default async function seed() {
       content: "Sa'adt bi liqa'ak",
       country: "United Arab Emirates",
     },
+    {
+      author: "Taiwanese Visitor",
+      link: "https://example.com/taiwan",
+      content:
+        "你好 (Nǐ hǎo)! This guestbook is as impressive as the view from Taipei 101.",
+      country: "Taiwan",
+    },
+    {
+      author: "Peruvian Visitor",
+      link: "https://example.com/peru",
+      content:
+        "¡Hola! A pleasure to sign your guestbook. As breathtaking as the sight of Machu Picchu.",
+      country: "Peru",
+    },
   ]);
 }
