@@ -8,9 +8,19 @@ export const collections = {
       title: z.string(),
       year: z.number(),
       description: z.string(),
+      role: z.string().optional(),
+      location: z.string().optional(),
+      technologies: z.string().optional(),
       githubUrl: z.string().url().optional(),
       demoUrl: z.string().url().optional(),
-      highlight: z.boolean().optional(),
+      images: z
+        .array(
+          z.object({
+            url: z.string(),
+            alt: z.string().optional(),
+          })
+        )
+        .optional(),
     }),
   }),
   posts: defineCollection({

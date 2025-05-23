@@ -297,7 +297,7 @@ export const stampData = [
     country: "Taiwan",
     imageUrl:
       "https://res.cloudinary.com/deha0jqdf/image/upload/v1748022435/Taiwan_k9ww99.webp",
-    hue: 0,
+    hue: 1,
   },
   {
     country: "Peru",
