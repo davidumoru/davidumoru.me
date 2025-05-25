@@ -7,10 +7,22 @@ import AlertMessage from "../components/Guestbook/AlertMessage.astro";
 import Pagination from "../components/Guestbook/Pagination.astro";
 import GuestbookForm from "../components/Guestbook/GuestbookForm.astro";
 import PageHeader from "../components/PageHeader.astro";
-
 import { stampData } from "../../public/stamps/stamps.ts";
+import defaultStampAsset from "../../public/stamps/default.jpg";
+
+const stampDataMap = new Map(stampData.map((stamp) => [stamp.country, stamp]));
 
 const PER_PAGE = 11;
+
+const generateOptimizedCloudinaryUrl = (url: string) => {
+  const uploadMarker = "/image/upload/";
+  const index = url.indexOf(uploadMarker);
+  if (index === -1) return url;
+  const baseUrl = url.substring(0, index + uploadMarker.length);
+  const imagePath = url.substring(index + uploadMarker.length);
+  const transformation = "w_300,h_375,c_fill,f_auto,q_auto/";
+  return `${baseUrl}${transformation}${imagePath}`;
+};
 
 if (Astro.request.method === "POST") {
   const contentType = Astro.request.headers.get("content-type");
@@ -116,14 +128,14 @@ const error = Astro.url.searchParams.get("error");
     <section class="guestbook-entries">
       {
         guestBook.map((entry) => {
-          const matchingStamp = stampData.find(
-            (stamp) => stamp.country === entry.country
-          );
+          const matchingStamp = stampDataMap.get(entry.country);
+
+          const imageAssetForEntry = matchingStamp?.imageUrl
+            ? generateOptimizedCloudinaryUrl(matchingStamp.imageUrl)
+            : defaultStampAsset;
 
           const displayCountry =
             matchingStamp?.country || entry.country || "Unknown";
-          const displayImageUrl =
-            matchingStamp?.imageUrl || "/stamps/default.jpg";
           const displayHue = matchingStamp?.hue || 210;
           const displayImageAlt = matchingStamp
             ? `Stamp from ${matchingStamp.country} for ${entry.author}'s entry`
@@ -136,7 +148,7 @@ const error = Astro.url.searchParams.get("error");
               message={entry.content}
               date={entry.timestamp}
               country={displayCountry}
-              imageUrl={displayImageUrl}
+              imageUrl={imageAssetForEntry}
               imageAlt={displayImageAlt}
               hue={displayHue}
             />

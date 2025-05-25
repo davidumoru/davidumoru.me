@@ -80,6 +80,8 @@ const stampStyles = `
           alt={imageAlt}
           class="stamp-bg-image"
           loading="lazy"
+          width="300"
+          height="375"
         />
       )
     }
@@ -173,6 +175,8 @@ const stampStyles = `
       transform 0.3s ease,
       box-shadow 0.3s ease;
     border-radius: 2px;
+    content-visibility: auto;
+    contain-intrinsic-size: 300px 375px;
   }
 
   .guestbook-stamp::before {
