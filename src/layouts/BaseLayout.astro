@@ -5,6 +5,8 @@ import "../style/index.css";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { ClientRouter } from "astro:transitions";
+import type { TransitionAnimationPair } from "astro";
+import LoadingIndicator from "astro-loading-indicator/component";
 
 export type Props = {
   title?: string;
@@ -16,9 +18,46 @@ const { title, description, hideFooter, image } = Astro.props;
 
 const defaultImage = "https://www.davidumoru.me/static/meta/meta-image.webp";
 const metaImage = image || defaultImage;
+
+const forwards: TransitionAnimationPair = {
+  old: {
+    name: "fadeOutUp",
+    duration: "0.2s",
+    easing: "ease-in",
+    fillMode: "forwards",
+  },
+  new: {
+    name: "fadeInUp",
+    duration: "0.3s",
+    delay: "0.1s",
+    easing: "ease-out",
+    fillMode: "backwards",
+  },
+};
+
+const backwards: TransitionAnimationPair = {
+  old: {
+    name: "fadeOutDown",
+    duration: "0.2s",
+    easing: "ease-in",
+    fillMode: "forwards",
+  },
+  new: {
+    name: "fadeInDown",
+    duration: "0.3s",
+    delay: "0.1s",
+    easing: "ease-out",
+    fillMode: "backwards",
+  },
+};
+
+const viewTransition = {
+  forwards,
+  backwards,
+};
 ---
 
-<html lang="en">
+<html lang="en" transition:animate="none">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
@@ -83,11 +122,12 @@ const metaImage = image || defaultImage;
     </script>
 
     <ClientRouter />
+    <LoadingIndicator color="var(--gray-12)" height="2px" threshold={400} />
   </head>
 
   <body>
     <Header transition:persist />
-    <main class="flow">
+    <main class="flow" transition:animate={viewTransition}>
       <slot />
     </main>
     {!hideFooter && <Footer />}
@@ -102,3 +142,49 @@ const metaImage = image || defaultImage;
     </script>
   </body>
 </html>
+
+<style is:global>
+  @keyframes fadeOutUp {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOutDown {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -1560,6 +1560,11 @@ astro-expressive-code@^0.40.1:
   dependencies:
     rehype-expressive-code "^0.40.1"
 
+astro-loading-indicator@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/astro-loading-indicator/-/astro-loading-indicator-0.7.0.tgz#920289a8b8f2e82cecea6299994e36612a40c7aa"
+  integrity sha512-oNSUYbHq8Aaol0zcVuBzGz+qrqKsviOvKl1xaaKo3DLkEef7HCzHQAgTgWv4lB1iYFWa5GaieQvlxBO4KjzKZg==
+
 astro@5.7.13:
   version "5.7.13"
   resolved "https://registry.yarnpkg.com/astro/-/astro-5.7.13.tgz#48d15f9949659baf9a328b9838a715ce6e268ade"
