@@ -66,29 +66,27 @@ const metaImage = image || defaultImage;
     <title>{title && `${title} - `} David Umoru</title>
 
     <script is:inline>
-      (function () {
-        const themeStorageKey = "theme-preference";
-
-        const getInitialTheme = () => {
+      const themeStorageKey = "theme-preference";
+      const getThemePreference = () => {
+        if (typeof localStorage !== "undefined") {
           const storedTheme = localStorage.getItem(themeStorageKey);
           if (storedTheme === "light" || storedTheme === "dark") {
             return storedTheme;
           }
-          return window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-        };
-
-        const theme = getInitialTheme();
-        document.documentElement.setAttribute("data-theme", theme);
-      })();
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+      const theme = getThemePreference();
+      document.documentElement.setAttribute("data-theme", theme);
     </script>
 
     <ClientRouter />
   </head>
 
   <body>
-    <Header />
+    <Header transition:persist />
     <main class="flow">
       <slot />
     </main>
@@ -96,30 +94,10 @@ const metaImage = image || defaultImage;
     <Analytics />
     <SpeedInsights />
 
-    {/* handle theme persistence with View Transitions */}
-    <script>
-      const THEME_STORAGE_KEY = "theme-preference";
-
-      function getThemePreference() {
-        const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-        if (storedTheme === "light" || storedTheme === "dark") {
-          return storedTheme;
-        }
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      }
-
-      function applyThemeToDocument(theme: "light" | "dark") {
-        document.documentElement.setAttribute("data-theme", theme);
-        document.dispatchEvent(
-          new CustomEvent("themeapplied", { detail: { theme } })
-        );
-      }
-
-      document.addEventListener("astro:after-swap", () => {
-        const preferredTheme = getThemePreference();
-        applyThemeToDocument(preferredTheme);
+    <script is:inline>
+      document.addEventListener("astro:before-swap", (event) => {
+        const theme = getThemePreference();
+        event.newDocument.documentElement.setAttribute("data-theme", theme);
       });
     </script>
   </body>
