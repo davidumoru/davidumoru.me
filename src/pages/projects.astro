@@ -262,6 +262,8 @@ const projects = (await getCollection("projects")).sort(
     alt?: string;
   }
   function initializeProjectPageInteractions() {
+    const isDesktopView = () => window.innerWidth > 768;
+
     document.querySelectorAll(".project-card").forEach((card) => {
       if (!card.classList.contains("expanded")) {
         const collapseIcon = card.querySelector(".icon-collapse");
@@ -273,6 +275,7 @@ const projects = (await getCollection("projects")).sort(
 
     let tooltipElem: HTMLDivElement | null = null;
     function initTooltip(): void {
+      if (!isDesktopView()) return;
       const existingTooltip =
         document.body.querySelector<HTMLDivElement>(".cursor-tooltip");
       if (existingTooltip) {
@@ -284,6 +287,10 @@ const projects = (await getCollection("projects")).sort(
       }
     }
     function showProjectTooltip(event: MouseEvent, text: string): void {
+      if (!isDesktopView()) {
+        hideProjectTooltip();
+        return;
+      }
       if (!tooltipElem) {
         initTooltip();
       }
@@ -403,11 +410,19 @@ const projects = (await getCollection("projects")).sort(
         }
       }
       if (e) {
-        const isNowExpanded = card.classList.contains("expanded");
-        showProjectTooltip(e, isNowExpanded ? "COLLAPSE" : "EXPAND");
+        if (isDesktopView()) {
+          const isNowExpanded = card.classList.contains("expanded");
+          showProjectTooltip(e, isNowExpanded ? "COLLAPSE" : "EXPAND");
+        } else {
+          hideProjectTooltip();
+        }
       }
     }
-    initTooltip();
+
+    if (isDesktopView()) {
+      initTooltip();
+    }
+
     const projectCards =
       document.querySelectorAll<HTMLElement>(".project-card");
     if (projectCards.length === 0 && !document.querySelector(".project-list")) {
@@ -522,11 +537,16 @@ const projects = (await getCollection("projects")).sort(
       }
       if (projectRow) {
         projectRow.addEventListener("mouseenter", (e: MouseEvent) => {
+          if (!isDesktopView()) return;
           if ((e.target as HTMLElement)?.closest?.(".action-button")) return;
           const isExpanded = card.classList.contains("expanded");
           showProjectTooltip(e, isExpanded ? "COLLAPSE" : "EXPAND");
         });
         projectRow.addEventListener("mousemove", (e: MouseEvent) => {
+          if (!isDesktopView()) {
+            hideProjectTooltip();
+            return;
+          }
           const actionButton = (e.target as HTMLElement)?.closest?.(
             ".action-button"
           );
