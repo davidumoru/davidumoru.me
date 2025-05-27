@@ -76,17 +76,16 @@ export const collections = {
     }),
   }),
   lab: defineCollection({
-    loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/lab" }),
-    schema: () =>
-      z.object({
-        title: z.string(),
-        description: z.string(),
-        datePublished: z.date(),
-        componentPath: z.string(),
-        coverImage: z.string().optional(),
-        coverAlt: z.string().optional(),
-        repositoryUrl: z.string().url().optional(),
-        draft: z.boolean().optional().default(false),
-      }),
+    type: "content",
+    schema: z.object({
+      title: z.string(),
+      description: z.string(),
+      datePublished: z.date(),
+      componentPath: z.string(),
+      coverImage: z.string().optional(),
+      coverAlt: z.string().optional(),
+      repositoryUrl: z.string().url().optional(),
+      draft: z.boolean().optional().default(false),
+    }),
   }),
 };
