@@ -1,0 +1,40 @@
+---
+import type { ComponentKey } from "./componentRegistry";
+
+interface Props {
+  componentKey: ComponentKey;
+  hydration: "load" | "idle" | "visible" | "none";
+}
+
+const { componentKey, hydration } = Astro.props;
+---
+
+<div class="experiment-showcase">
+
+</div>
+
+<style>
+  .experiment-showcase {
+    background-color: var(--gray-6);
+    border-radius: 12px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border: 1px solid var(--gray-8);
+  }
+
+  html[data-theme="dark"] .experiment-showcase {
+    background-color: var(--gray-6);
+    border-color: var(--gray-8);
+  }
+
+  html[data-theme="light"] .experiment-showcase {
+    background-color: hsl(0, 0%, 96%);
+    border: 1px solid var(--gray-6);
+  }
+
+  @media (max-width: 768px) {
+    .experiment-showcase {
+      padding: 1.5rem;
+    }
+  }
+</style>

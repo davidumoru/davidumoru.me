@@ -4,10 +4,7 @@ import CenteredLayout from "./CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import { Icon } from "../components/Icon/Icon";
 import type { CollectionEntry } from "astro:content";
-import {
-  componentRegistry,
-  type ComponentKey,
-} from "../components/Lab/componentRegistry";
+import Wrapper from "../components/Lab/Wrapper.astro";
 
 interface Props {
   entry: CollectionEntry<"lab">;
@@ -22,10 +19,6 @@ const {
   componentKey,
   hydration,
 } = entry.data;
-
-const LabExperimentComponent = componentKey
-  ? componentRegistry[componentKey as ComponentKey]
-  : null;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -36,13 +29,8 @@ const LabExperimentComponent = componentKey
       datePublished={datePublished}
     />
     {
-      LabExperimentComponent && (
-        <div class="experiment-showcase">
-          {hydration === "load" && <LabExperimentComponent client:load />}
-          {hydration === "idle" && <LabExperimentComponent client:idle />}
-          {hydration === "visible" && <LabExperimentComponent client:visible />}
-          {(hydration === "none" || !hydration) && <LabExperimentComponent />}
-        </div>
+      componentKey && (
+        <Wrapper componentKey={componentKey as any} hydration={hydration} />
       )
     }
 
@@ -62,7 +50,8 @@ const LabExperimentComponent = componentKey
             rel="noopener noreferrer"
             class="link"
           >
-            View Source <Icon icon="arrowRightUp" size="16" />
+                        View Source <Icon icon="arrowRightUp" size="16" />     
+               {" "}
           </a>
         )
       }
@@ -71,24 +60,6 @@ const LabExperimentComponent = componentKey
 </BaseLayout>
 
 <style>
-  .experiment-showcase {
-    background-color: var(--gray-6);
-    border-radius: 12px;
-    padding: 3rem;
-    margin-bottom: 3rem;
-    border: 1px solid var(--gray-8);
-  }
-
-  html[data-theme="dark"] .experiment-showcase {
-    background-color: var(--gray-6);
-    border-color: var(--gray-8);
-  }
-
-  html[data-theme="light"] .experiment-showcase {
-    background-color: hsl(0, 0%, 96%);
-    border: 1px solid var(--gray-6);
-  }
-
   .entry-content {
     max-width: 70ch;
     color: var(--gray-12);
@@ -141,17 +112,11 @@ const LabExperimentComponent = componentKey
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .link {
     display: inline-flex;
     align-items: center;
     gap: 0.2em;
     font-size: 0.875rem;
-  }
-
-  @media (max-width: 768px) {
-    .experiment-showcase {
-      padding: 1.5rem;
-    }
   }
 </style>
