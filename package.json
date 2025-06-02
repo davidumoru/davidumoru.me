@@ -27,6 +27,7 @@
     "astro-expressive-code": "^0.40.1",
     "astro-loading-indicator": "^0.7.0",
     "classnames": "^2.5.1",
+    "framer-motion": "^12.15.0",
     "markdown-it": "^14.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
