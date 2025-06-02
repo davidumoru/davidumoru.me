@@ -7,9 +7,22 @@ interface Props {
 }
 
 const { componentKey, hydration } = Astro.props;
+
+import AnimatedCardsCarousel from "./Experiments/animatedCardsCarousel";
 ---
 
-<div class="experiment-showcase"></div>
+<div class="experiment-showcase">
+  {
+    componentKey === "AnimatedCardsCarousel" && (
+      <>
+        {hydration === "load" && <AnimatedCardsCarousel client:load />}
+        {hydration === "idle" && <AnimatedCardsCarousel client:idle />}
+        {hydration === "visible" && <AnimatedCardsCarousel client:visible />}
+        {(hydration === "none" || !hydration) && <AnimatedCardsCarousel />}
+      </>
+    )
+  }
+</div>
 
 <style>
   .experiment-showcase {
