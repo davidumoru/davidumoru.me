@@ -9,7 +9,7 @@ body {
 	min-height: 100svh;
 	display: grid;
 	grid-template-rows: auto 1fr auto;
-	gap: var(--space-xl);
+	gap: var(--space-l);
 	-webkit-font-smoothing: antialiased;
 	font-size: var(--fs-0);
 	line-height: 1.4;
