@@ -1,0 +1,157 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import CenteredLayout from "./CenteredLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { Icon } from "../components/Icon/Icon";
+import type { CollectionEntry } from "astro:content";
+import {
+  componentRegistry,
+  type ComponentKey,
+} from "../components/Lab/componentRegistry";
+
+interface Props {
+  entry: CollectionEntry<"lab">;
+}
+
+const { entry } = Astro.props;
+const {
+  title,
+  description,
+  datePublished,
+  repositoryUrl,
+  componentKey,
+  hydration,
+} = entry.data;
+
+const LabExperimentComponent = componentKey
+  ? componentRegistry[componentKey as ComponentKey]
+  : null;
+---
+
+<BaseLayout title={title} description={description}>
+  <CenteredLayout>
+    <PageHeader
+      title={title}
+      description={description}
+      datePublished={datePublished}
+    />
+    {
+      LabExperimentComponent && (
+        <div class="experiment-showcase">
+          {hydration === "load" && <LabExperimentComponent client:load />}
+          {hydration === "idle" && <LabExperimentComponent client:idle />}
+          {hydration === "visible" && <LabExperimentComponent client:visible />}
+          {(hydration === "none" || !hydration) && <LabExperimentComponent />}
+        </div>
+      )
+    }
+
+    <div class="entry-content prose">
+      <slot />
+    </div>
+
+    <div class="navigation-footer">
+      <a href="/lab" class="link">
+        <Icon icon="arrowLeft" size="16" /> Back to Lab
+      </a>
+      {
+        repositoryUrl && (
+          <a
+            href={repositoryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link"
+          >
+            View Source <Icon icon="arrowRightUp" size="16" />
+          </a>
+        )
+      }
+    </div>
+  </CenteredLayout>
+</BaseLayout>
+
+<style>
+  .experiment-showcase {
+    background-color: var(--gray-6);
+    border-radius: 12px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border: 1px solid var(--gray-8);
+  }
+
+  html[data-theme="dark"] .experiment-showcase {
+    background-color: var(--gray-6);
+    border-color: var(--gray-8);
+  }
+
+  html[data-theme="light"] .experiment-showcase {
+    background-color: hsl(0, 0%, 96%);
+    border: 1px solid var(--gray-6);
+  }
+
+  .entry-content {
+    max-width: 70ch;
+    color: var(--gray-12);
+    line-height: 1.7;
+  }
+
+  .entry-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-12);
+    margin: 2rem 0 1rem 0;
+  }
+
+  .entry-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-12);
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .entry-content :global(p) {
+    margin: 1rem 0;
+  }
+
+  .entry-content :global(ul) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .entry-content :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .entry-content :global(a) {
+    color: var(--gray-12);
+    text-decoration: underline;
+    text-decoration-color: var(--gray-8);
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .entry-content :global(a:hover) {
+    text-decoration-color: var(--gray-11);
+  }
+
+  .navigation-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 768px) {
+    .experiment-showcase {
+      padding: 1.5rem;
+    }
+  }
+</style>
