@@ -9,27 +9,22 @@ interface Props {
 const { componentKey, hydration } = Astro.props;
 ---
 
-<div class="experiment-showcase">
-
-</div>
+<div class="experiment-showcase"></div>
 
 <style>
   .experiment-showcase {
-    background-color: var(--gray-6);
     border-radius: 12px;
     padding: 3rem;
     margin-bottom: 3rem;
     border: 1px solid var(--gray-8);
+    overflow: hidden;
   }
-
-  html[data-theme="dark"] .experiment-showcase {
-    background-color: var(--gray-6);
-    border-color: var(--gray-8);
-  }
-
   html[data-theme="light"] .experiment-showcase {
-    background-color: hsl(0, 0%, 96%);
-    border: 1px solid var(--gray-6);
+    background-color: hsl(0, 0%, 97%);
+    border-color: var(--gray-6);
+  }
+  html[data-theme="dark"] .experiment-showcase {
+    background-color: hsl(0, 0%, 9%);
   }
 
   @media (max-width: 768px) {
