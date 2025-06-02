@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import LabLayout from "../../layouts/LabLayout.astro";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 export async function getStaticPaths() {
   const labEntries = await getCollection(
@@ -20,9 +21,24 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+
+let ContentComponent: AstroComponentFactory | null = null;
+
+if (entry.rendered) {
+  ContentComponent = entry.rendered.Content;
+} else {
+  console.error(
+    `Error: entry.rendered is undefined for lab entry with id: ${entry.id}. Cannot extract Content component. Ensure your MDX/Markdown content is processed correctly.`
+  );
+}
 ---
 
 <LabLayout entry={entry}>
-  <Content />
+  {
+    ContentComponent ? (
+      <ContentComponent />
+    ) : (
+      <p>Content could not be loaded for this lab entry.</p>
+    )
+  }
 </LabLayout>
