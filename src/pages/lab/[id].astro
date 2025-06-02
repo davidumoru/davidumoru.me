@@ -1,16 +1,14 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import LabLayout from "../../layouts/LabLayout.astro";
-import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 export async function getStaticPaths() {
   const labEntries = await getCollection(
     "lab",
     (entry: CollectionEntry<"lab">) => entry.data.draft !== true
   );
-
-  return labEntries.map((entry: CollectionEntry<"lab">) => ({
+  return labEntries.map((entry) => ({
     params: { id: entry.id },
     props: { entry },
   }));
@@ -21,24 +19,9 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-
-let ContentComponent: AstroComponentFactory | null = null;
-
-if (entry.rendered) {
-  ContentComponent = entry.rendered.Content;
-} else {
-  console.error(
-    `Error: entry.rendered is undefined for lab entry with id: ${entry.id}. Cannot extract Content component. Ensure your MDX/Markdown content is processed correctly.`
-  );
-}
+const { Content } = await render(entry);
 ---
 
 <LabLayout entry={entry}>
-  {
-    ContentComponent ? (
-      <ContentComponent />
-    ) : (
-      <p>Content could not be loaded for this lab entry.</p>
-    )
-  }
+  <Content />
 </LabLayout>
