@@ -1,0 +1,45 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CenteredLayout from "../../layouts/CenteredLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import LabCard from "../../components/Lab/LabCard.astro";
+
+const allLabEntries = await getCollection(
+  "lab",
+  (entry: CollectionEntry<"lab">) => entry.data.draft !== true
+);
+
+const sortedLabEntries = allLabEntries.sort(
+  (a, b) =>
+    new Date(b.data.datePublished).getTime() -
+    new Date(a.data.datePublished).getTime()
+);
+
+const title = "Lab";
+const description =
+  "Creative space for UI experiments, component explorations, and interaction design.";
+---
+
+<BaseLayout title={title} description={description}>
+  <CenteredLayout>
+    <PageHeader title={title} description={description} />
+    <div class="lab-grid">
+      {sortedLabEntries.map((entry) => <LabCard entry={entry} />)}
+    </div>
+  </CenteredLayout>
+</BaseLayout>
+
+<style>
+  .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .lab-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

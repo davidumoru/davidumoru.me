@@ -1,0 +1,97 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"lab">;
+}
+
+const { entry } = Astro.props;
+const { id, data } = entry;
+---
+
+<article class="lab-card">
+  <a href={`/lab/${id}`} class="card-link">
+    <div class="card-image-area">
+      {
+        data.coverImage ? (
+          <img
+            src={data.coverImage}
+            alt={data.coverAlt || `Preview for ${data.title}`}
+            class="preview-image"
+            loading="lazy"
+          />
+        ) : (
+          <div class="preview-placeholder" />
+        )
+      }
+    </div>
+    <p class="card-title">{data.title}</p>
+  </a>
+</article>
+
+<style>
+  .lab-card {
+    background-color: var(--gray-1);
+    border: 1px solid var(--gray-6);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  html[data-theme="dark"] .lab-card {
+    border-color: var(--gray-8);
+    background-color: var(--gray-1);
+  }
+
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    flex-grow: 1;
+    height: 100%;
+  }
+
+  .card-image-area {
+    width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+    background-color: var(--gray-6);
+    position: relative;
+    border-radius: 6px;
+    min-height: 150px;
+  }
+
+  html[data-theme="dark"] .card-image-area {
+    background-color: var(--gray-8);
+  }
+
+  .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .preview-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--gray-6) 0%, var(--gray-8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  html[data-theme="dark"] .preview-placeholder {
+    background: linear-gradient(135deg, var(--gray-8) 0%, var(--gray-11) 100%);
+  }
+
+  .card-title {
+    color: var(--gray-12);
+    margin: 0;
+    padding: 0.5rem 0 0;
+    font-size: 1rem;
+    text-align: center;
+  }
+</style>

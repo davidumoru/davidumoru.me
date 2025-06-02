@@ -1,0 +1,58 @@
+---
+import type { ComponentKey } from "./componentRegistry";
+
+interface Props {
+  componentKey: ComponentKey;
+  hydration: "load" | "idle" | "visible" | "none";
+}
+
+const { componentKey, hydration } = Astro.props;
+
+import AnimatedCardsCarousel from "./Experiments/animatedCardsCarousel";
+import HoveringProfiles from "./Experiments/hoveringProfiles";
+---
+
+<div class="experiment-showcase">
+  {
+    componentKey === "AnimatedCardsCarousel" && (
+      <>
+        {hydration === "load" && <AnimatedCardsCarousel client:load />}
+        {hydration === "idle" && <AnimatedCardsCarousel client:idle />}
+        {hydration === "visible" && <AnimatedCardsCarousel client:visible />}
+        {(hydration === "none" || !hydration) && <AnimatedCardsCarousel />}
+      </>
+    )
+  }
+  {
+    componentKey === "HoveringProfiles" && (
+      <>
+        {hydration === "load" && <HoveringProfiles client:load />}
+        {hydration === "idle" && <HoveringProfiles client:idle />}
+        {hydration === "visible" && <HoveringProfiles client:visible />}
+        {(hydration === "none" || !hydration) && <HoveringProfiles />}
+      </>
+    )
+  }
+</div>
+
+<style>
+  .experiment-showcase {
+    border-radius: 12px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border: 1px solid var(--gray-6);
+    overflow: hidden;
+  }
+  html[data-theme="light"] .experiment-showcase {
+    background-color: hsl(0, 0%, 97%);
+  }
+  html[data-theme="dark"] .experiment-showcase {
+    background-color: hsl(0, 0%, 9%);
+  }
+
+  @media (max-width: 768px) {
+    .experiment-showcase {
+      padding: 1.5rem;
+    }
+  }
+</style>
