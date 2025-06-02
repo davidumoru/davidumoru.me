@@ -9,6 +9,7 @@ interface Props {
 const { componentKey, hydration } = Astro.props;
 
 import AnimatedCardsCarousel from "./Experiments/animatedCardsCarousel";
+import HoveringProfiles from "./Experiments/hoveringProfiles";
 ---
 
 <div class="experiment-showcase">
@@ -19,6 +20,16 @@ import AnimatedCardsCarousel from "./Experiments/animatedCardsCarousel";
         {hydration === "idle" && <AnimatedCardsCarousel client:idle />}
         {hydration === "visible" && <AnimatedCardsCarousel client:visible />}
         {(hydration === "none" || !hydration) && <AnimatedCardsCarousel />}
+      </>
+    )
+  }
+  {
+    componentKey === "HoveringProfiles" && (
+      <>
+        {hydration === "load" && <HoveringProfiles client:load />}
+        {hydration === "idle" && <HoveringProfiles client:idle />}
+        {hydration === "visible" && <HoveringProfiles client:visible />}
+        {(hydration === "none" || !hydration) && <HoveringProfiles />}
       </>
     )
   }
