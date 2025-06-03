@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import PostLayout from "../../layouts/PostLayout.astro";
+import { Icon } from "../../components/Icon/Icon";
 
 export interface Props {
   post: CollectionEntry<"posts">;
@@ -16,8 +17,8 @@ export async function getStaticPaths() {
     params: { id: post.id },
     props: {
       post,
-      prev: posts[index - 1] ?? posts[posts.length - 1],
-      next: posts[index + 1] ?? posts[0],
+      prev: posts[index - 1] ?? null,
+      next: posts[index + 1] ?? null,
     },
   }));
 }
@@ -25,32 +26,33 @@ const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
 
 const { data } = post;
+const { title, description, ogImage, datePublished, dateModified } = data;
 ---
 
 <PostLayout
-  title={data.title}
-  description={data.description}
-  img={data.img}
-  imgAlt={data.imgAlt}
-  ogImage={data.ogImage?.src}
-  datePublished={data.datePublished}
-  dateModified={data.dateModified}
+  title={title}
+  description={description}
+  ogImage={ogImage?.src}
+  datePublished={datePublished}
+  dateModified={dateModified}
 >
   <Content />
   <div class="pagination" slot="after-prose">
     {
       prev && (
-        <a href={prev.id} class="prev">
-          <span class="label">Previous</span>
-          <span class="title">{prev.data.title}</span>
+        <a href={`/posts/${prev.id}`} class="prev-post-link">
+          <Icon icon="arrowLeft" size="16" />
+          <span class="link-label shade">Previous</span>
+          <span class="link-title">{prev.data.title}</span>
         </a>
       )
     }
     {
       next && (
-        <a href={next.id} class="next">
-          <span class="label">Next</span>
-          <span class="title">{next.data.title}</span>
+        <a href={`/posts/${next.id}`} class="next-post-link">
+          <span class="link-label shade">Next</span>
+          <span class="link-title">{next.data.title}</span>
+          <Icon icon="arrowRight" size="16" />
         </a>
       )
     }
@@ -58,95 +60,93 @@ const { data } = post;
 </PostLayout>
 
 <style>
+  .shade {
+    color: var(--gray-11);
+  }
+
+  :global(.dark-mode) .shade {
+    color: var(--gray-8);
+  }
+
   .pagination {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-m);
+    display: flex;
+    flex-direction: column;
     margin-block-start: var(--space-3xl);
-    margin-inline: auto;
+    margin-inline: 0;
     width: 100%;
+    gap: var(--space-m);
   }
 
   .pagination a {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-m);
-    border-radius: var(--radius-m);
+    flex: 1;
+    display: grid;
+    column-gap: var(--space-m);
+    padding: var(--space-s);
+    border-radius: 0.5rem;
     border: 1px solid var(--gray-5);
-    background-color: var(--gray-1);
+    line-height: 1.1;
+    align-items: center;
     text-decoration: none;
+    background-color: var(--gray-1);
+    color: var(--gray-12);
     transition:
       background-color 0.2s ease-in-out,
       border-color 0.2s ease-in-out;
-    position: relative;
-    overflow: hidden;
-    min-height: 4rem;
   }
 
-  .pagination a.prev {
-    position: relative;
-    padding-left: calc(var(--space-m) * 2);
+  :global(.dark-mode) .pagination a {
+    border-color: var(--gray-6);
+    background-color: var(--gray-3);
+    color: var(--gray-1);
   }
 
-  .pagination a.next {
-    position: relative;
-    padding-right: calc(var(--space-m) * 2);
+  .pagination .prev-post-link {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon label"
+      "icon title";
+  }
+
+  .pagination .next-post-link {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "label icon"
+      "title icon";
     text-align: right;
   }
 
-  .pagination a.prev::before,
-  .pagination a.next::after {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: var(--step-1);
+  .pagination .icon {
+    grid-area: icon;
     color: var(--gray-10);
-    transition: color 0.2s ease-in-out;
   }
 
-  .pagination a.prev::before {
-    content: "←";
-    left: var(--space-s);
+  .pagination .link-label {
+    grid-area: label;
   }
 
-  .pagination a.next::after {
-    content: "→";
-    right: var(--space-s);
-  }
-
-  .pagination .label {
-    display: block;
-    font-size: var(--step--1);
-    color: var(--gray-11);
-    margin-bottom: var(--space-2xs);
-    font-weight: var(--font-weight-normal);
-  }
-
-  .pagination .title {
-    display: block;
-    font-weight: var(--font-weight-medium);
+  .pagination .link-title {
+    grid-area: title;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .pagination a:hover {
       background-color: var(--gray-2);
-      border-color: var(--gray-7);
+      border-color: var(--gray-5);
     }
 
-    .pagination a:hover::before,
-    .pagination a:hover::after {
-      color: var(--gray-12);
+    :global(.dark-mode) .pagination a:hover {
+      background-color: var(--gray-1);
+      border-color: var(--gray-12);
     }
   }
 
-  @media (max-width: 640px) {
+  @media (min-width: 641px) {
     .pagination {
-      grid-template-columns: 1fr;
+      flex-direction: row;
+      gap: var(--space-m);
     }
   }
 </style>
