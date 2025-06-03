@@ -76,18 +76,22 @@ const {
 
   .subscribe-input {
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--gray-8);
+    border: 1px solid var(--gray-7);
     background-color: var(--gray-1);
     color: var(--gray-12);
     border-radius: 0.25rem;
     font-size: 1rem;
     width: 100%;
     flex-grow: 1;
+    transition:
+      border-color 0.2s ease-out,
+      outline 0.2s ease-out;
   }
 
   .subscribe-input:focus-visible {
-    outline: 2px solid var(--gray-12);
+    outline: 2px solid var(--gray-10);
     outline-offset: 2px;
+    border-color: var(--gray-10);
   }
 
   .subscribe-button {
@@ -102,11 +106,19 @@ const {
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
-    transition: background-color 0.2s ease-out;
+    transition:
+      background-color 0.2s ease-out,
+      transform 0.1s ease-out;
   }
 
   .subscribe-button:hover {
     background-color: var(--gray-11);
+    transform: translateY(-1px);
+  }
+
+  .subscribe-button:active {
+    background-color: var(--gray-10);
+    transform: translateY(0);
   }
 
   .button-text {
