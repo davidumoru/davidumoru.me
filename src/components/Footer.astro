@@ -4,33 +4,38 @@ import SubscribeForm from "./SubscribeForm.astro";
 
 <footer>
   <div class="container">
-  <div class="content">
-    <div class="links">
-      <a href="/now">Now</a>
-      <a href="/list-100">List 100</a>
-      <a href="/guestbook">Guestbook</a>
-      <a href="/webrings">Webrings</a>
-      <a href="/rss.xml" target="_blank">RSS</a>
+    <div class="content">
+      <div class="links">
+        <a href="/now">Now</a>
+        <a href="/list-100">List 100</a>
+        <a href="/guestbook">Guestbook</a>
+        <a href="/webrings">Webrings</a>
+        <a href="/rss.xml" target="_blank">RSS</a>
+      </div>
+      <div class="links">
+        <a href="mailto:hey@davidumoru.me" target="_blank">Mail</a>
+        <a href="https://github.com/davidumoru" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/david-umoru/" target="_blank"
+          >LinkedIn</a
+        >
+        <a href="https://x.com/theumoru" target="_blank">X (Twitter)</a>
+        <a href="https://www.instagram.com/theumoru/" target="_blank"
+          >Instagram</a
+        >
+      </div>
+      <div class="banner">
+        <span class="emoji">💙</span>
+        <a
+          href="https://www.who.int/health-topics/mental-health"
+          target="_blank"
+        >
+          Take care of your mind.
+        </a>
+      </div>
+      <div class="subscribe">
+        <SubscribeForm />
+      </div>
     </div>
-    <div class="links">
-      <a href="mailto:hey@davidumoru.me" target="_blank">Mail</a>
-      <a href="https://github.com/davidumoru" target="_blank">GitHub</a>
-      <a href="https://linkedin.com/in/david-umoru/" target="_blank">LinkedIn</a
-      >
-      <a href="https://x.com/theumoru" target="_blank">X (Twitter)</a>
-      <a href="https://www.instagram.com/theumoru/" target="_blank">Instagram</a
-      >
-    </div>
-    <div class="banner">
-      <span class="emoji">💙</span>
-      <a href="https://www.who.int/health-topics/mental-health" target="_blank">
-        Take care of your mind.
-      </a>
-    </div>
-    <div class="subscribe">
-      <SubscribeForm />
-    </div>
-  </div>
   </div>
 </footer>
 
@@ -93,8 +98,7 @@ import SubscribeForm from "./SubscribeForm.astro";
     }
 
     a:hover {
-        color: var(--gray-12);
-      }
+      color: var(--gray-12);
     }
   }
 </style>
