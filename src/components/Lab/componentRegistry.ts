@@ -1,5 +1,5 @@
 import AnimatedCardsCarousel from "./Experiments/animatedCardsCarousel";
-import HoveringProfiles from "./Experiments/hoveringProfiles";
+import HoveringProfiles from "./Experiments/HoveringProfiles";
 
 export const componentRegistry = {
   AnimatedCardsCarousel,
