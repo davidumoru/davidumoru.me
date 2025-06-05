@@ -41,26 +41,14 @@ export default function AnimatedCardsCarousel() {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    const updateTheme = () => {
-      const currentTheme =
-        document.documentElement.getAttribute("data-theme") ||
-        (window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light");
-      setTheme(currentTheme);
-    };
+    const currentTheme =
+      document.documentElement.getAttribute("data-theme") || "light";
+    setTheme(currentTheme);
 
-    updateTheme();
-
-    const observer = new MutationObserver((mutationsList) => {
-      for (let mutation of mutationsList) {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "data-theme"
-        ) {
-          updateTheme();
-        }
-      }
+    const observer = new MutationObserver(() => {
+      const newTheme =
+        document.documentElement.getAttribute("data-theme") || "light";
+      if (newTheme !== theme) setTheme(newTheme);
     });
 
     observer.observe(document.documentElement, {
@@ -68,30 +56,23 @@ export default function AnimatedCardsCarousel() {
       attributeFilter: ["data-theme"],
     });
 
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => {
-      if (!document.documentElement.hasAttribute("data-theme")) {
-        setTheme(mediaQuery.matches ? "dark" : "light");
-      }
-    };
-    mediaQuery.addEventListener("change", handleChange);
+    return () => observer.disconnect();
+  }, [theme]);
 
-    return () => {
-      observer.disconnect();
-      mediaQuery.removeEventListener("change", handleChange);
-    };
-  }, []);
+  const itemBgColor = theme === "dark" ? "#292524" : "rgba(229, 231, 235, 0.6)";
+  const buttonBgColor = theme === "dark" ? "#292524" : "#e5e7eb";
+  const buttonTextColor = "#a8a29e";
 
   return (
     <div className="relative flex h-[200px] w-full flex-col items-center justify-center">
-      <div className="absolute top-[-96px] flex flex-col items-center justify-center">
+      <div className="absolute -top-24 flex flex-col items-center justify-center">
         <motion.div
           initial={false}
           className="flex justify-start gap-4"
           animate={{ x: -currentIndex * (200 + 16) + 432 }}
           transition={transition}
         >
-          {ITEMS.map(({ image, name }, index) => (
+          {ITEMS.map(({ image }, index) => (
             <motion.div
               key={index}
               layout
@@ -105,26 +86,18 @@ export default function AnimatedCardsCarousel() {
                 scale: 1.05,
               }}
               transition={transition}
-              className={`h-[200px] w-[200px] overflow-hidden rounded-xl 
-                         ${
-                           theme === "dark" ? "bg-stone-700" : "bg-gray-200/60"
-                         } 
-                         ${
-                           currentIndex === index ? "shadow-2xl" : "shadow-md"
-                         }`}
+              className={`h-[200px] w-[200px] rounded-xl overflow-hidden ${
+                currentIndex === index
+                  ? "shadow-lg shadow-black/20"
+                  : "shadow-sm shadow-black/10"
+              }`}
+              style={{ backgroundColor: itemBgColor }}
             >
               <img
                 src={image}
-                alt={name}
+                alt=""
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-300 ease-in-out"
-                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = `https://placehold.co/200x200/${
-                    theme === "dark" ? "292524" : "E5E7EB"
-                  }/A8A29E?text=${name}`;
-                }}
               />
             </motion.div>
           ))}
@@ -136,23 +109,21 @@ export default function AnimatedCardsCarousel() {
               <motion.button
                 layout
                 initial={false}
-                className={`flex cursor-pointer select-none items-center justify-center rounded-full 
-                           text-sm font-medium border-none p-0
-                           ${
-                             theme === "dark"
-                               ? "bg-stone-700 text-stone-400"
-                               : "bg-gray-200 text-stone-400"
-                           }`}
+                className="flex cursor-pointer select-none items-center justify-center rounded-full text-sm border-none p-0"
+                style={{
+                  backgroundColor: buttonBgColor,
+                  color: buttonTextColor,
+                }}
                 animate={{
-                  width: currentIndex === index ? 68 : 12,
-                  height: currentIndex === index ? 26 : 12,
+                  width: currentIndex === index ? 80 : 12,
+                  height: currentIndex === index ? 32 : 12,
                 }}
                 transition={transition}
               >
                 <motion.span
                   layout
                   initial={false}
-                  className="block whitespace-nowrap px-3 py-1"
+                  className="block whitespace-nowrap px-4 py-2"
                   animate={{
                     opacity: currentIndex === index ? 1 : 0,
                     scale: currentIndex === index ? 1 : 0,
