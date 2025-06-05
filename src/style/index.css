@@ -1,7 +1,7 @@
-@import 'base/index.css';
-@import 'global/index.css';
-@import 'components/index.css';
-@import 'utilities/index.css';
+@import './base/index.css';
+@import './global/index.css';
+@import './components/index.css';
+@import './utilities/index.css';
 
 body {
 	padding-block: var(--space-m);

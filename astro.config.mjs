@@ -11,11 +11,14 @@ import db from "@astrojs/db";
 
 import react from "@astrojs/react";
 
+import tailwindcss from "@tailwindcss/vite";
+
 // https://astro.build/config
 export default defineConfig({
   prefetch: true,
   trailingSlash: "ignore",
   site: "https://davidumoru.me",
+
   integrations: [
     expressiveCode({
       defaultProps: {
@@ -32,13 +35,20 @@ export default defineConfig({
     db(),
     react(),
   ],
+
   markdown: {
     rehypePlugins: [[externalize, { domain: "davidumoru.me" }]],
   },
+
   redirects: {
     "/blog": "/posts",
     "/blog/[slug]": "/posts/[slug]",
     "/live": "https://www.twitch.tv/thedavidumoru",
   },
+
   adapter: vercel(),
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

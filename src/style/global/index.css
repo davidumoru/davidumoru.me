@@ -1,5 +1,5 @@
-@import 'links.css';
-@import 'headings.css';
-@import 'list.css';
-@import 'table.css';
-@import 'full-image.css';
+@import './links.css';
+@import './headings.css';
+@import './list.css';
+@import './table.css';
+@import './full-image.css';
