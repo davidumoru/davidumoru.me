@@ -109,21 +109,22 @@ export default function AnimatedCardsCarousel() {
               <motion.button
                 layout
                 initial={false}
-                className="flex cursor-pointer select-none items-center justify-center rounded-full text-sm border-none p-0"
+                className="flex cursor-pointer select-none items-center justify-center rounded-full border-none p-0"
                 style={{
                   backgroundColor: buttonBgColor,
                   color: buttonTextColor,
+                  fontSize: "13px",
                 }}
                 animate={{
-                  width: currentIndex === index ? 80 : 12,
-                  height: currentIndex === index ? 32 : 12,
+                  width: currentIndex === index ? 68 : 12,
+                  height: currentIndex === index ? 28 : 12,
                 }}
                 transition={transition}
               >
                 <motion.span
                   layout
                   initial={false}
-                  className="block whitespace-nowrap px-4 py-2"
+                  className="block whitespace-nowrap px-3 py-1"
                   animate={{
                     opacity: currentIndex === index ? 1 : 0,
                     scale: currentIndex === index ? 1 : 0,
