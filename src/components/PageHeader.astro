@@ -21,7 +21,7 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
   {description && <p class="shade">{description}</p>}
   {
     datePublished && (
-      <span class="fs--1 written-text">
+      <span class="fs--1 date">
         <Icon icon="penNib" size="16" />
         Written {datePublished ? displayDate(datePublished) : "Unknown Date"}
       </span>
@@ -38,7 +38,7 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
 
 <style>
   .page-header {
-    padding-block-end: var(--space-xl);
+    padding-block-end: var(--space-l);
   }
 
   .page-title {
@@ -60,7 +60,7 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
     margin-block-start: var(--space-m);
   }
 
-  .written-text {
+  .date {
     display: flex;
     align-items: center;
     gap: 10px;
