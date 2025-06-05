@@ -41,14 +41,26 @@ export default function AnimatedCardsCarousel() {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    const currentTheme =
-      document.documentElement.getAttribute("data-theme") || "light";
-    setTheme(currentTheme);
+    const updateTheme = () => {
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light");
+      setTheme(currentTheme);
+    };
 
-    const observer = new MutationObserver(() => {
-      const newTheme =
-        document.documentElement.getAttribute("data-theme") || "light";
-      if (newTheme !== theme) setTheme(newTheme);
+    updateTheme();
+
+    const observer = new MutationObserver((mutationsList) => {
+      for (let mutation of mutationsList) {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-theme"
+        ) {
+          updateTheme();
+        }
+      }
     });
 
     observer.observe(document.documentElement, {
@@ -56,46 +68,30 @@ export default function AnimatedCardsCarousel() {
       attributeFilter: ["data-theme"],
     });
 
-    return () => observer.disconnect();
-  }, [theme]);
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (!document.documentElement.hasAttribute("data-theme")) {
+        setTheme(mediaQuery.matches ? "dark" : "light");
+      }
+    };
+    mediaQuery.addEventListener("change", handleChange);
 
-  const itemBgColor = theme === "dark" ? "#292524" : "rgba(229, 231, 235, 0.6)";
-  const buttonBgColor = theme === "dark" ? "#292524" : "#e5e7eb";
-  const buttonTextColor = "#a8a29e";
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        display: "flex",
-        height: "200px",
-        width: "100%",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: "-96px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+    <div className="relative flex h-[200px] w-full flex-col items-center justify-center">
+      <div className="absolute top-[-96px] flex flex-col items-center justify-center">
         <motion.div
           initial={false}
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            gap: "16px",
-          }}
+          className="flex justify-start gap-4"
           animate={{ x: -currentIndex * (200 + 16) + 432 }}
           transition={transition}
         >
-          {ITEMS.map(({ image }, index) => (
+          {ITEMS.map(({ image, name }, index) => (
             <motion.div
               key={index}
               layout
@@ -109,61 +105,44 @@ export default function AnimatedCardsCarousel() {
                 scale: 1.05,
               }}
               transition={transition}
-              style={{
-                height: "200px",
-                width: "200px",
-                borderRadius: "12px",
-                overflow: "hidden",
-                backgroundColor: itemBgColor,
-                boxShadow:
-                  currentIndex === index
-                    ? "0 8px 24px rgba(0,0,0,0.2)"
-                    : "0 2px 10px rgba(0,0,0,0.1)",
-              }}
+              className={`h-[200px] w-[200px] overflow-hidden rounded-xl 
+                         ${
+                           theme === "dark" ? "bg-stone-700" : "bg-gray-200/60"
+                         } 
+                         ${
+                           currentIndex === index ? "shadow-2xl" : "shadow-md"
+                         }`}
             >
               <img
                 src={image}
-                alt=""
+                alt={name}
                 loading="lazy"
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  objectFit: "cover",
-                  transition: "transform 0.3s ease",
+                className="h-full w-full object-cover transition-transform duration-300 ease-in-out"
+                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = `https://placehold.co/200x200/${
+                    theme === "dark" ? "292524" : "E5E7EB"
+                  }/A8A29E?text=${name}`;
                 }}
               />
             </motion.div>
           ))}
         </motion.div>
 
-        <div
-          style={{
-            marginTop: "32px",
-            display: "flex",
-            height: "32px",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
-        >
+        <div className="mt-8 flex h-8 items-center justify-center gap-2">
           {ITEMS.map(({ name }, index) => (
             <div key={index} onClick={() => setCurrentIndex(index)}>
               <motion.button
                 layout
                 initial={false}
-                style={{
-                  display: "flex",
-                  cursor: "pointer",
-                  userSelect: "none",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "9999px",
-                  backgroundColor: buttonBgColor,
-                  fontSize: "0.875rem",
-                  color: buttonTextColor,
-                  border: "none",
-                  padding: "0",
-                }}
+                className={`flex cursor-pointer select-none items-center justify-center rounded-full 
+                           text-sm font-medium border-none p-0
+                           ${
+                             theme === "dark"
+                               ? "bg-stone-700 text-stone-400"
+                               : "bg-gray-200 text-stone-400"
+                           }`}
                 animate={{
                   width: currentIndex === index ? 68 : 12,
                   height: currentIndex === index ? 26 : 12,
@@ -173,11 +152,7 @@ export default function AnimatedCardsCarousel() {
                 <motion.span
                   layout
                   initial={false}
-                  style={{
-                    display: "block",
-                    whiteSpace: "nowrap",
-                    padding: "4px 12px",
-                  }}
+                  className="block whitespace-nowrap px-3 py-1"
                   animate={{
                     opacity: currentIndex === index ? 1 : 0,
                     scale: currentIndex === index ? 1 : 0,

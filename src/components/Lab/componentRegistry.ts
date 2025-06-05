@@ -1,4 +1,4 @@
-import AnimatedCardsCarousel from "./Experiments/animatedCardsCarousel";
+import AnimatedCardsCarousel from "./Experiments/AnimatedCardsCarousel";
 import HoveringProfiles from "./Experiments/HoveringProfiles";
 
 export const componentRegistry = {
