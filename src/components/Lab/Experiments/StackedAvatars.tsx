@@ -28,19 +28,19 @@ const StackedAvatars: React.FC = () => {
     },
     {
       id: "3",
-      src: "https://i.pravatar.cc/100?u=3",
+      src: "https://i.pravatar.cc/100?u=13",
       alt: "Jane Smith",
       name: "Jane Smith",
     },
     {
       id: "4",
-      src: "https://i.pravatar.cc/100?u=4",
+      src: "https://i.pravatar.cc/100?u=24",
       alt: "Mike Wilson",
       name: "Mike Wilson",
     },
     {
       id: "5",
-      src: "https://i.pravatar.cc/100?u=5",
+      src: "https://i.pravatar.cc/100?u=52",
       alt: "Sarah Connor",
       name: "Sarah Connor",
     },
