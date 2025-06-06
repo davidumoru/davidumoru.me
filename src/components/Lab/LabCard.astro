@@ -38,6 +38,7 @@ const { id, data } = entry;
     display: flex;
     flex-direction: column;
     padding: 0.5rem;
+    height: 220px;
   }
 
   html[data-theme="dark"] .lab-card {
@@ -50,18 +51,17 @@ const { id, data } = entry;
     flex-direction: column;
     text-decoration: none;
     color: inherit;
-    flex-grow: 1;
     height: 100%;
   }
 
   .card-image-area {
     width: 100%;
-    flex-grow: 1;
+    flex: 1;
     overflow: hidden;
     background-color: var(--gray-6);
     position: relative;
     border-radius: 6px;
-    min-height: 150px;
+    min-height: 0;
   }
 
   html[data-theme="dark"] .card-image-area {
@@ -93,5 +93,6 @@ const { id, data } = entry;
     padding: 0.5rem 0 0;
     font-size: 1rem;
     text-align: center;
+    flex-shrink: 0;
   }
 </style>
