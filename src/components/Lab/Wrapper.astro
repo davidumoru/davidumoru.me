@@ -11,6 +11,7 @@ const { componentKey, hydration } = Astro.props;
 import "../../style/lab/index.css";
 import AnimatedCardsCarousel from "./Experiments/AnimatedCardsCarousel";
 import HoveringProfiles from "./Experiments/HoveringProfiles";
+import StackedAvatars from "./Experiments/StackedAvatars";
 ---
 
 <div class="experiment-showcase">
@@ -34,10 +35,23 @@ import HoveringProfiles from "./Experiments/HoveringProfiles";
       </>
     )
   }
+  {
+    componentKey === "StackedAvatars" && (
+      <>
+        {hydration === "load" && <StackedAvatars client:load />}
+        {hydration === "idle" && <StackedAvatars client:idle />}
+        {hydration === "visible" && <StackedAvatars client:visible />}
+        {(hydration === "none" || !hydration) && <StackedAvatars />}
+      </>
+    )
+  }
 </div>
 
 <style>
   .experiment-showcase {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 12px;
     padding: 3rem;
     margin-bottom: 3rem;
