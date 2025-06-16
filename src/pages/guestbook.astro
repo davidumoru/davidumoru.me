@@ -45,7 +45,7 @@ if (Astro.request.method === "POST") {
     }
   };
 
-  if (!author || !content || !country || content.length > 140) {
+  if (!author || !content || !country || content.length > 150) {
     return Astro.redirect("/guestbook?error=invalid_input");
   }
   if (link && !isValidUrl(link)) {
