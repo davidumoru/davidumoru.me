@@ -8,6 +8,11 @@ const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 const NOW_PLAYING_ENDPOINT = `https://api.spotify.com/v1/me/player/currently-playing`;
 const RECENTLY_PLAYED_ENDPOINT = `https://api.spotify.com/v1/me/player/recently-played?limit=1`;
 
+const NO_CACHE_HEADERS = {
+  "Content-Type": "application/json",
+  "Cache-Control": "no-store, max-age=0",
+};
+
 interface SpotifyImage {
   url: string;
 }
@@ -93,7 +98,7 @@ export const GET: APIRoute = async () => {
       JSON.stringify({
         error: "Server environment variables for Spotify are not set.",
       }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: NO_CACHE_HEADERS }
     );
   }
 
@@ -101,7 +106,7 @@ export const GET: APIRoute = async () => {
   if (!accessToken) {
     return new Response(
       JSON.stringify({ error: "Could not get Spotify access token." }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: NO_CACHE_HEADERS }
     );
   }
 
@@ -119,7 +124,7 @@ export const GET: APIRoute = async () => {
       };
       return new Response(JSON.stringify(songData), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: NO_CACHE_HEADERS,
       });
     }
   }
@@ -139,13 +144,13 @@ export const GET: APIRoute = async () => {
       };
       return new Response(JSON.stringify(songData), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: NO_CACHE_HEADERS,
       });
     }
   }
 
   return new Response(JSON.stringify({ error: "No track data found." }), {
     status: 404,
-    headers: { "Content-Type": "application/json" },
+    headers: NO_CACHE_HEADERS,
   });
 };
