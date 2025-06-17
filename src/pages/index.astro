@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CenteredLayout from "../layouts/CenteredLayout.astro";
 import { Icon } from "../components/Icon/Icon";
-import Spotify from "../components/Spotify.astro";
+import MusicWidget from "../components/MusicWidget.tsx";
 ---
 
 <BaseLayout
@@ -11,7 +11,6 @@ import Spotify from "../components/Spotify.astro";
 >
   <CenteredLayout>
     <section class="flow">
-      <h1 class="fs-2">Hello, I'm David :)</h1>
       <p>
         I build things, mess around with code a lot. Design too, when it feels
         right or when the idea needs it.
@@ -37,9 +36,7 @@ import Spotify from "../components/Spotify.astro";
       </p>
     </section>
 
-    <hr />
-
-    <Spotify />
+    <div><MusicWidget client:visible /></div>
   </CenteredLayout>
 </BaseLayout>
 
@@ -48,5 +45,9 @@ import Spotify from "../components/Spotify.astro";
     display: inline-flex;
     align-items: center;
     gap: 0.2em;
+  }
+
+  div {
+    margin-top: 2em;
   }
 </style>
