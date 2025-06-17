@@ -49,17 +49,20 @@ const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
 );
 
 const MusicWidgetSkeleton: FC = () => (
-  <div className="w-full rounded-xl bg-[var(--gray-3)] p-1 font-sans">
-    <div className="flex w-full animate-pulse items-center gap-x-4 rounded-lg border border-[var(--gray-5)] bg-[var(--gray-2)] p-3 shadow-sm">
-      <div className="h-[60px] w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-6)]"></div>
+  // Changed background from gray-3 to gray-4
+  <div className="w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
+    {/* Changed border from gray-5 to gray-6 */}
+    <div className="flex w-full animate-pulse items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3 shadow-sm">
+      {/* Changed placeholder from gray-6 to gray-7 */}
+      <div className="h-[60px] w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
       <div className="min-w-0 flex-1">
-        <div className="mb-2 h-5 w-3/4 rounded bg-[var(--gray-6)]"></div>
-        <div className="h-4 w-1/2 rounded bg-[var(--gray-6)]"></div>
+        <div className="mb-2 h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
+        <div className="h-4 w-1/2 rounded bg-[var(--gray-7)]"></div>
       </div>
     </div>
     <div className="flex items-center gap-x-2 px-3 py-1.5">
-      <div className="h-4 w-4 rounded bg-[var(--gray-6)]"></div>
-      <div className="h-3 w-28 rounded bg-[var(--gray-6)]"></div>
+      <div className="h-4 w-4 rounded bg-[var(--gray-7)]"></div>
+      <div className="h-3 w-28 rounded bg-[var(--gray-7)]"></div>
     </div>
   </div>
 );
@@ -77,8 +80,10 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
 );
 
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full rounded-xl bg-[var(--gray-3)] p-1 font-sans shadow-md shadow-black/5">
-    <div className="flex w-full items-center gap-x-4 rounded-lg border border-[var(--gray-5)] bg-[var(--gray-2)] p-3">
+  // Changed background from gray-3 to gray-4
+  <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans shadow-md shadow-black/5">
+    {/* Changed border from gray-5 to gray-6 */}
+    <div className="flex w-full items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3">
       <img
         src={song.albumArtUrl}
         alt={`Album art for ${song.title}`}
