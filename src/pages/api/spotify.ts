@@ -34,6 +34,11 @@ interface SpotifyTrack {
   };
 }
 
+interface SpotifyNowPlayingResponse {
+  item: SpotifyTrack | null;
+  is_playing: boolean;
+}
+
 async function getAccessToken(): Promise<string | null> {
   const response = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
@@ -115,8 +120,8 @@ export const GET: APIRoute = async () => {
   });
 
   if (nowPlayingResponse.status === 200) {
-    const data = await nowPlayingResponse.json();
-    if (data && data.item) {
+    const data: SpotifyNowPlayingResponse = await nowPlayingResponse.json();
+    if (data && data.item && data.is_playing) {
       const songData = {
         ...formatTrackData(data.item),
         isPlaying: true,
