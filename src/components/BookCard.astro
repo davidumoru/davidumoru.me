@@ -1,0 +1,76 @@
+---
+export interface Book {
+  title: string;
+  author: string;
+  coverUrl: string;
+  reviewUrl?: string | null;
+}
+
+interface Props {
+  book: Book;
+}
+
+const { book } = Astro.props;
+---
+
+<a
+  href={book.reviewUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  class:list={["book-card", { "no-link": !book.reviewUrl }]}
+  aria-label={book.reviewUrl
+    ? `Read review for ${book.title}`
+    : `Cover for ${book.title}`}
+>
+  <div class="cover-frame">
+    <img
+      src={book.coverUrl}
+      alt={`Cover of ${book.title}`}
+      width="200"
+      height="300"
+      loading="lazy"
+      class="cover-image"
+    />
+  </div>
+  <p class="title">{book.title}</p>
+</a>
+
+<style>
+  .book-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease-out;
+  }
+
+  .book-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .book-card.no-link {
+    pointer-events: none;
+  }
+
+  .cover-frame {
+    background-color: var(--gray-4);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .cover-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+  }
+
+  .title {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--gray-11);
+    text-align: center;
+    padding: 0 0.25rem;
+  }
+</style>

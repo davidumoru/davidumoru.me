@@ -93,4 +93,13 @@ export const collections = {
         draft: z.boolean().optional().default(false),
       }),
   }),
+  books: defineCollection({
+    type: "data",
+    schema: z.object({
+      title: z.string(),
+      author: z.string(),
+      coverUrl: z.string().url(),
+      reviewUrl: z.string().url().optional(),
+    }),
+  }),
 };
