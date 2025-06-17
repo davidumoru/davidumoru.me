@@ -24,6 +24,8 @@ import MusicWidget from "../components/MusicWidget.tsx";
         >
       </p>
 
+      <div><MusicWidget client:visible /></div>
+
       <h2>Now</h2>
       <p>
         Writing CSS. Probably watching way too much YouTube. Also playing around
@@ -35,8 +37,6 @@ import MusicWidget from "../components/MusicWidget.tsx";
         >
       </p>
     </section>
-
-    <div><MusicWidget client:visible /></div>
   </CenteredLayout>
 </BaseLayout>
 
@@ -48,6 +48,6 @@ import MusicWidget from "../components/MusicWidget.tsx";
   }
 
   div {
-    margin-top: 2em;
+    margin-top: 1.5em;
   }
 </style>
