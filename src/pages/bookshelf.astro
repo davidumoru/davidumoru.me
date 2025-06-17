@@ -15,7 +15,7 @@ const allBooks = bookEntries.map((entry) => entry.data);
 >
   <CenteredLayout>
     <PageHeader
-      title="My Bookshelf"
+      title="Bookshelf"
       description="Books I'm reading, have read, and plan to read"
     />
   </CenteredLayout>
@@ -42,17 +42,8 @@ const allBooks = bookEntries.map((entry) => entry.data);
 
   @media (min-width: 640px) {
     .bookshelf-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  @media (min-width: 768px) {
-    .bookshelf-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  @media (min-width: 1024px) {
-    .bookshelf-grid {
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(auto-fit, 220px);
+      justify-content: center;
     }
   }
 </style>
