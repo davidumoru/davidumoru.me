@@ -86,7 +86,7 @@ const AudioVisualization: FC = () => {
   const heightClass = isMobile ? "h-10" : "h-14";
   return (
     <div
-      className={`flex items-center justify-center w-24 sm:w-32 ${heightClass}`}
+      className={`flex items-center justify-center w-full max-w-[8rem] ${heightClass}`}
     >
       <style>
         {`
@@ -101,7 +101,7 @@ const AudioVisualization: FC = () => {
       <svg
         viewBox="0 0 240 100"
         className="w-full h-full"
-        style={{ display: "block" }}
+        style={{ display: "block", maxWidth: "100%" }}
       >
         {bars.map(([x, baseHeight, amplitude], i) => (
           <rect
@@ -152,14 +152,14 @@ const AudioVisualization: FC = () => {
   );
 };
 const MusicWidgetSkeleton: FC = () => (
-  <div className="w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
+  <div className="w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
       <div className="h-12 w-12 sm:h-[60px] sm:w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
       <div className="min-w-0 flex-1">
         <div className="mb-2 h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
         <div className="h-4 w-1/2 rounded bg-[var(--gray-7)]"></div>
       </div>
-      <div className="flex items-center ml-2 min-w-[60px] h-12 sm:h-[60px] sm:min-w-[80px] md:min-w-[110px] justify-end" />
+      <div className="flex items-center ml-2 min-w-0 h-12 sm:h-[60px] justify-end w-full max-w-[80px]" />
     </div>
     <div className="flex items-center gap-x-2 px-3 py-1.5">
       <div className="h-3 w-3 rounded-full bg-[var(--gray-7)]"></div>
@@ -168,7 +168,7 @@ const MusicWidgetSkeleton: FC = () => (
   </div>
 );
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
-  <div className="w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 font-sans text-sm text-[var(--red-11)]">
+  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 font-sans text-sm text-[var(--red-11)] overflow-x-auto">
     <div className="flex items-center gap-x-3">
       <ErrorIcon className="h-5 w-5 flex-shrink-0" />
       <div>
@@ -201,7 +201,7 @@ const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
   );
 };
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
+  <div className="group w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
       <AlbumArt
         src={song.albumArtUrl}
@@ -220,7 +220,7 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
         </a>
         <p className="truncate text-sm text-[var(--gray-11)]">{song.artists}</p>
       </div>
-      <div className="flex items-center ml-2 min-w-[60px] h-12 sm:h-[60px] sm:min-w-[80px] md:min-w-[110px] justify-end">
+      <div className="flex items-center ml-2 min-w-0 h-12 sm:h-[60px] justify-end w-full max-w-[8rem]">
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
@@ -257,7 +257,6 @@ const MusicWidget: FC = () => {
           err instanceof Error
             ? err.message
             : "An unexpected error occurred while fetching your music data.";
-        console.error("Failed to fetch Spotify data:", err);
         setError(message);
       } finally {
         setIsLoading(false);
