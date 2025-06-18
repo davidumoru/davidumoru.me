@@ -13,11 +13,10 @@ const { title, description, url, prev, next, color } = data;
 <div
   class="webring"
   style={`
-    --webring-bg: var(--${color}-4); 
+    --webring-bg: var(--${color}-4);
     --webring-text: var(--${color}-12);
-    --webring-hover: var(--${color}-5); 
+    --webring-hover: var(--${color}-5);
     --webring-border: var(--${color}-6);
-    --webring-shadow: var(--${color}-7);
   `}
 >
   <a
@@ -30,17 +29,19 @@ const { title, description, url, prev, next, color } = data;
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="32px"
-      height="32px"
+      width="28"
+      height="28"
       fill="currentColor"
       class="nav-icon"
     >
       <path d="M7 18V6H9V18H7ZM11 12 17 6V18L11 12Z"></path>
     </svg>
   </a>
-  <a class="main" href={url} rel="external">
-    <h2>{title}</h2>
-    <span>{description}</span>
+  <a class="main" href={url} rel="external" tabindex="0">
+    <div class="main-content">
+      <h2>{title}</h2>
+      <span>{description}</span>
+    </div>
   </a>
   <a
     rel="external"
@@ -52,8 +53,8 @@ const { title, description, url, prev, next, color } = data;
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="32px"
-      height="32px"
+      width="28"
+      height="28"
       fill="currentColor"
       class="nav-icon"
     >
@@ -65,61 +66,75 @@ const { title, description, url, prev, next, color } = data;
 <style>
   .webring {
     display: flex;
-    flex-wrap: nowrap;
+    align-items: stretch;
     background: var(--webring-bg);
     color: var(--webring-text);
-    border-radius: var(--radius-m);
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: 1.5px solid var(--webring-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     overflow: hidden;
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .webring:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 6px 12px rgba(0, 0, 0, 0.12),
-      0 3px 6px rgba(0, 0, 0, 0.14);
+    min-width: 0;
+    transition: border-color 0.18s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .main {
+    display: flex;
+    align-items: center;
     flex: 1;
+    min-width: 0;
     text-align: center;
-    padding: var(--space-m);
-    transition: background-color 0.2s ease;
-    border-left: 1px solid var(--webring-border);
-    border-right: 1px solid var(--webring-border);
+    padding: 0;
+    position: relative;
+    background: transparent;
+    border-left: 1.5px solid var(--webring-border);
+    outline: none;
+    transition: background 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .main:focus-visible,
+  .main:hover {
+    background: var(--webring-hover);
+    z-index: 1;
+  }
+
+  .main-content {
+    padding: 1.1rem 1.5rem;
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.3em;
   }
 
   .main h2 {
     margin: 0;
-    font-size: var(--step-1);
+    font-size: 1.15rem;
+    font-family: "JetBrains Mono", "Fira Mono", "Menlo", monospace;
     font-weight: 600;
     letter-spacing: -0.01em;
-    text-decoration: dotted underline;
+    line-height: 1.2;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .main span {
-    display: block;
-    margin-block-start: var(--space-2xs);
-    line-height: var(--line-height-tight);
-    text-wrap: balance;
-    opacity: 0.9;
-  }
-
-  @media (width < 700px) {
-    .main span {
-      font-size: var(--step--1);
-    }
+    font-size: 0.98rem;
+    line-height: 1.4;
+    opacity: 0.85;
+    color: inherit;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   a {
-    text-align: center;
     text-decoration: none;
     color: inherit;
+    outline: none;
   }
 
   .nav-button {
@@ -127,58 +142,78 @@ const { title, description, url, prev, next, color } = data;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 56px;
+    width: 48px;
+    background: transparent;
+    border: none;
     transition:
-      background 0.2s ease,
-      transform 0.15s ease;
+      background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    outline: none;
+  }
+
+  .nav-button:focus-visible,
+  .nav-button:hover {
+    background: var(--webring-hover);
+    color: var(--webring-text);
   }
 
   .nav-icon {
-    transition: transform 0.15s ease;
+    transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .prev:hover .nav-icon,
+  .prev:focus-visible .nav-icon {
+    transform: translateX(-1.5px);
+  }
+
+  .next:hover .nav-icon,
+  .next:focus-visible .nav-icon {
+    transform: translateX(1.5px);
   }
 
   .prev {
     order: -1;
   }
+  .next {
+    border-left: 1.5px solid var(--webring-border);
+  }
 
-  @media (hover: hover) {
-    .main:hover {
-      background: var(--webring-hover);
+  @media (max-width: 700px) {
+    .main-content {
+      padding: 0.8rem 1rem;
     }
-
-    .nav-button:hover {
-      background: var(--webring-hover);
+    .main h2 {
+      font-size: 1rem;
     }
-
-    .prev:hover .nav-icon {
-      transform: translateX(-2px);
+    .main span {
+      font-size: 0.92rem;
     }
-
-    .next:hover .nav-icon {
-      transform: translateX(2px);
+    .nav-button {
+      width: 38px;
+    }
+    .nav-icon {
+      width: 22px;
+      height: 22px;
     }
   }
 
   @media (max-width: 480px) {
-    .webring {
-      align-items: center;
+    .main-content {
+      padding: 0.7rem 0.7rem;
     }
-
-    .main {
-      padding: var(--space-xs);
-    }
-
     .main h2 {
-      font-size: var(--step-0);
+      font-size: 0.98rem;
     }
-
+    .main span {
+      font-size: 0.88rem;
+    }
     .nav-button {
-      width: 40px;
+      width: 32px;
     }
-
     .nav-icon {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
     }
   }
 </style>
