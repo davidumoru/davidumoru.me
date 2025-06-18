@@ -77,7 +77,7 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
 );
 
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans shadow-md shadow-black/5">
+  <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
     <div className="flex w-full items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3">
       <img
         src={song.albumArtUrl}
