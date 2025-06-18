@@ -1,6 +1,5 @@
 import { useState, useEffect, type FC } from "react";
 import "../style/tailwind/index.css";
-
 interface SongData {
   albumArtUrl: string;
   songUrl: string;
@@ -9,7 +8,6 @@ interface SongData {
   lastPlayed: string;
   isPlaying: boolean;
 }
-
 const HistoryIcon: FC<{ className?: string }> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +26,6 @@ const HistoryIcon: FC<{ className?: string }> = ({ className }) => (
     <path d="M12 7v5l4 2" />
   </svg>
 );
-
 const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -47,23 +44,129 @@ const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
     <path d="M12 17h.01" />
   </svg>
 );
-
+const BAR_CONFIG_DESKTOP = [
+  [10, 13, 8],
+  [25, 22, 14],
+  [40, 35, 19],
+  [55, 48, 24],
+  [70, 64, 29],
+  [85, 74, 32],
+  [100, 80, 35],
+  [115, 74, 32],
+  [130, 64, 29],
+  [145, 48, 24],
+  [160, 35, 19],
+  [175, 22, 14],
+  [190, 13, 8],
+  [205, 10, 6],
+  [220, 7, 4],
+];
+const BAR_CONFIG_MOBILE = [
+  [20, 13, 8],
+  [40, 22, 14],
+  [60, 35, 19],
+  [80, 48, 24],
+  [100, 64, 29],
+  [120, 74, 32],
+  [140, 80, 35],
+  [160, 74, 32],
+  [180, 64, 29],
+  [200, 48, 24],
+  [220, 35, 19],
+];
+const AudioVisualization: FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  const bars = isMobile ? BAR_CONFIG_MOBILE : BAR_CONFIG_DESKTOP;
+  const heightClass = isMobile ? "h-10" : "h-14";
+  return (
+    <div
+      className={`flex items-center justify-center w-24 sm:w-32 ${heightClass}`}
+    >
+      <style>
+        {`
+          :root {
+            --audio-bar-color: var(--gray-11);
+          }
+          html[data-theme='dark'] {
+            --audio-bar-color: var(--gray-10);
+          }
+        `}
+      </style>
+      <svg
+        viewBox="0 0 240 100"
+        className="w-full h-full"
+        style={{ display: "block" }}
+      >
+        {bars.map(([x, baseHeight, amplitude], i) => (
+          <rect
+            key={i}
+            x={x}
+            y={50 - baseHeight / 2}
+            width={10}
+            height={baseHeight}
+            rx={5}
+            fill="var(--audio-bar-color)"
+            style={{
+              transformOrigin: "50% 50%",
+              animation: "audio-bar-bounce 1.2s ease-in-out infinite",
+              animationDelay: `${(i * 0.08).toFixed(2)}s`,
+              ["--bar-base" as any]: `${baseHeight}px`,
+              ["--bar-amp" as any]: `${amplitude}px`,
+            }}
+          />
+        ))}
+        <style>
+          {`
+            @keyframes audio-bar-bounce {
+              0%, 100% {
+                height: var(--bar-base, 40px);
+                y: calc(50px - var(--bar-base, 40px) / 2);
+              }
+              20% {
+                height: calc(var(--bar-base, 40px) + var(--bar-amp, 20px));
+                y: calc(50px - (var(--bar-base, 40px) + var(--bar-amp, 20px)) / 2);
+              }
+              40% {
+                height: var(--bar-base, 40px);
+                y: calc(50px - var(--bar-base, 40px) / 2);
+              }
+              60% {
+                height: calc(var(--bar-base, 40px) - var(--bar-amp, 20px) * 0.5);
+                y: calc(50px - (var(--bar-base, 40px) - var(--bar-amp, 20px) * 0.5) / 2);
+              }
+              80% {
+                height: var(--bar-base, 40px);
+                y: calc(50px - var(--bar-base, 40px) / 2);
+              }
+            }
+          `}
+        </style>
+      </svg>
+    </div>
+  );
+};
 const MusicWidgetSkeleton: FC = () => (
   <div className="w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
-    <div className="flex w-full animate-pulse items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3 shadow-sm">
-      <div className="h-[60px] w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
+    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
+      <div className="h-12 w-12 sm:h-[60px] sm:w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
       <div className="min-w-0 flex-1">
         <div className="mb-2 h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
         <div className="h-4 w-1/2 rounded bg-[var(--gray-7)]"></div>
       </div>
+      <div className="flex items-center ml-2 min-w-[60px] h-12 sm:h-[60px] sm:min-w-[80px] md:min-w-[110px] justify-end" />
     </div>
     <div className="flex items-center gap-x-2 px-3 py-1.5">
-      <div className="h-4 w-4 rounded bg-[var(--gray-7)]"></div>
+      <div className="h-3 w-3 rounded-full bg-[var(--gray-7)]"></div>
       <div className="h-3 w-28 rounded bg-[var(--gray-7)]"></div>
     </div>
   </div>
 );
-
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
   <div className="w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 font-sans text-sm text-[var(--red-11)]">
     <div className="flex items-center gap-x-3">
@@ -75,16 +178,34 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
     </div>
   </div>
 );
-
-const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
-    <div className="flex w-full items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3">
+const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative h-12 w-12 sm:h-[60px] sm:w-[60px] flex-shrink-0">
+      {!loaded && (
+        <div className="absolute inset-0 rounded-md bg-[var(--gray-7)] animate-pulse" />
+      )}
       <img
-        src={song.albumArtUrl}
-        alt={`Album artwork for ${song.title} by ${song.artists}`}
+        src={src}
+        alt={alt}
         width={60}
         height={60}
-        className="h-[60px] w-[60px] flex-shrink-0 rounded-md object-cover shadow-lg shadow-black/10 transition-transform duration-300 ease-in-out group-hover:scale-105"
+        className={`h-12 w-12 sm:h-[60px] sm:w-[60px] rounded-md object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
+        style={{ position: "absolute", inset: 0 }}
+        onLoad={() => setLoaded(true)}
+        draggable={false}
+      />
+    </div>
+  );
+};
+const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
+  <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
+    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
+      <AlbumArt
+        src={song.albumArtUrl}
+        alt={`Album artwork for ${song.title} by ${song.artists}`}
       />
       <div className="min-w-0 flex-1">
         <a
@@ -99,28 +220,24 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
         </a>
         <p className="truncate text-sm text-[var(--gray-11)]">{song.artists}</p>
       </div>
+      <div className="flex items-center ml-2 min-w-[60px] h-12 sm:h-[60px] sm:min-w-[80px] md:min-w-[110px] justify-end">
+        {song.isPlaying && <AudioVisualization />}
+      </div>
     </div>
-    <div className="flex items-center gap-x-2 px-3 py-1.5 text-xs text-[var(--gray-11)]">
-      {song.isPlaying ? (
-        <div className="flex h-4 w-4 items-end justify-center gap-px">
-          <span className="h-full w-0.5 animate-[wave_1.2s_ease-in-out_infinite] rounded-full bg-[var(--green-9)] [animation-delay:-0.4s]"></span>
-          <span className="h-2/3 w-0.5 animate-[wave_1.2s_ease-in-out_infinite] rounded-full bg-[var(--green-9)] [animation-delay:-0.2s]"></span>
-          <span className="h-full w-0.5 animate-[wave_1.2s_ease-in-out_infinite] rounded-full bg-[var(--green-9)] [animation-delay:-0.6s]"></span>
-          <span className="h-1/2 w-0.5 animate-[wave_1.2s_ease-in-out_infinite] rounded-full bg-[var(--green-9)]"></span>
-        </div>
-      ) : (
-        <HistoryIcon className="h-3.5 w-3.5 flex-shrink-0" />
-      )}
+    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-[var(--gray-11)]">
+      <div
+        className={`h-3 w-3 flex-shrink-0 rounded-full ${
+          song.isPlaying ? "bg-[var(--green-9)]" : "bg-[var(--gray-8)]"
+        }`}
+      ></div>
       <div className="truncate">{song.lastPlayed}</div>
     </div>
   </div>
 );
-
 const MusicWidget: FC = () => {
   const [songData, setSongData] = useState<SongData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchSpotifyData = async () => {
       try {
@@ -146,35 +263,18 @@ const MusicWidget: FC = () => {
         setIsLoading(false);
       }
     };
-
     fetchSpotifyData();
-
     const interval = setInterval(fetchSpotifyData, 45000);
-
-    const style = document.createElement("style");
-    style.innerHTML = `
-      @keyframes wave {
-        0%, 100% { transform: scaleY(0.2); }
-        50% { transform: scaleY(1); }
-      }
-    `;
-    document.head.appendChild(style);
-
     return () => {
       clearInterval(interval);
-      document.head.removeChild(style);
     };
   }, []);
-
   if (isLoading) {
     return <MusicWidgetSkeleton />;
   }
-
   if (error || !songData) {
     return <MusicWidgetError message={error || "No music data available."} />;
   }
-
   return <MusicWidgetContent song={songData} />;
 };
-
 export default MusicWidget;

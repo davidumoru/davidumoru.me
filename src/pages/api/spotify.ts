@@ -155,7 +155,7 @@ export const GET: APIRoute = async () => {
       const songData = {
         ...formatTrackData(data.item),
         isPlaying: true,
-        lastPlayed: "Currently listening to this track",
+        lastPlayed: "Listening now",
       };
       return new Response(JSON.stringify(songData), {
         status: 200,
