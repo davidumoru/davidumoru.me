@@ -8,9 +8,10 @@ const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 const NOW_PLAYING_ENDPOINT = `https://api.spotify.com/v1/me/player/currently-playing`;
 const RECENTLY_PLAYED_ENDPOINT = `https://api.spotify.com/v1/me/player/recently-played?limit=1`;
 
-const NO_CACHE_HEADERS = {
+const MUSIC_CACHE_HEADERS = {
   "Content-Type": "application/json",
-  "Cache-Control": "no-store, max-age=0",
+  "Cache-Control": "max-age=0",
+  "Vercel-CDN-Cache-Control": "s-maxage=30, stale-while-revalidate=60",
 };
 
 interface SpotifyImage {
@@ -65,27 +66,52 @@ async function getAccessToken(): Promise<string | null> {
 function formatPlayedAt(dateString: string): string {
   const playedAt = new Date(dateString);
   const now = new Date();
+  const diffMs = now.getTime() - playedAt.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
   const isToday = playedAt.toDateString() === now.toDateString();
   const isYesterday =
-    new Date(now.setDate(now.getDate() - 1)).toDateString() ===
+    new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString() ===
     playedAt.toDateString();
 
-  const day = isToday
-    ? "Today"
-    : isYesterday
-    ? "Yesterday"
-    : playedAt.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-      });
-
-  const time = playedAt.toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-
-  return `${day} at ${time}`;
+  if (diffMinutes < 1) {
+    return "Last listened just now";
+  } else if (diffMinutes < 60) {
+    return `Last listened ${diffMinutes} minute${
+      diffMinutes === 1 ? "" : "s"
+    } ago`;
+  } else if (isToday) {
+    if (diffHours === 1) {
+      return "Last listened 1 hour ago";
+    } else {
+      return `Last listened ${diffHours} hours ago`;
+    }
+  } else if (isYesterday) {
+    const time = playedAt.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `Last listened yesterday at ${time}`;
+  } else if (diffDays < 7) {
+    const dayName = playedAt.toLocaleDateString(undefined, { weekday: "long" });
+    const time = playedAt.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `Last listened ${dayName} at ${time}`;
+  } else {
+    const date = playedAt.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
+    const time = playedAt.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `Last listened ${date} at ${time}`;
+  }
 }
 
 function formatTrackData(track: SpotifyTrack) {
@@ -101,17 +127,21 @@ export const GET: APIRoute = async () => {
   if (!client_id || !client_secret || !refresh_token) {
     return new Response(
       JSON.stringify({
-        error: "Server environment variables for Spotify are not set.",
+        error:
+          "Server environment variables for Spotify are not configured properly.",
       }),
-      { status: 500, headers: NO_CACHE_HEADERS }
+      { status: 500, headers: MUSIC_CACHE_HEADERS }
     );
   }
 
   const accessToken = await getAccessToken();
   if (!accessToken) {
     return new Response(
-      JSON.stringify({ error: "Could not get Spotify access token." }),
-      { status: 500, headers: NO_CACHE_HEADERS }
+      JSON.stringify({
+        error:
+          "Unable to authenticate with Spotify. Please check your credentials.",
+      }),
+      { status: 500, headers: MUSIC_CACHE_HEADERS }
     );
   }
 
@@ -125,11 +155,11 @@ export const GET: APIRoute = async () => {
       const songData = {
         ...formatTrackData(data.item),
         isPlaying: true,
-        lastPlayed: "Listening now",
+        lastPlayed: "Currently listening to this track",
       };
       return new Response(JSON.stringify(songData), {
         status: 200,
-        headers: NO_CACHE_HEADERS,
+        headers: MUSIC_CACHE_HEADERS,
       });
     }
   }
@@ -149,13 +179,18 @@ export const GET: APIRoute = async () => {
       };
       return new Response(JSON.stringify(songData), {
         status: 200,
-        headers: NO_CACHE_HEADERS,
+        headers: MUSIC_CACHE_HEADERS,
       });
     }
   }
 
-  return new Response(JSON.stringify({ error: "No track data found." }), {
-    status: 404,
-    headers: NO_CACHE_HEADERS,
-  });
+  return new Response(
+    JSON.stringify({
+      error: "No music activity found in your Spotify account.",
+    }),
+    {
+      status: 404,
+      headers: MUSIC_CACHE_HEADERS,
+    }
+  );
 };

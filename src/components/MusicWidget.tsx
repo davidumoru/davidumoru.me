@@ -49,11 +49,8 @@ const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
 );
 
 const MusicWidgetSkeleton: FC = () => (
-  // Changed background from gray-3 to gray-4
   <div className="w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans">
-    {/* Changed border from gray-5 to gray-6 */}
     <div className="flex w-full animate-pulse items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3 shadow-sm">
-      {/* Changed placeholder from gray-6 to gray-7 */}
       <div className="h-[60px] w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
       <div className="min-w-0 flex-1">
         <div className="mb-2 h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
@@ -72,7 +69,7 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
     <div className="flex items-center gap-x-3">
       <ErrorIcon className="h-5 w-5 flex-shrink-0" />
       <div>
-        <p className="font-semibold">Error loading music data</p>
+        <p className="font-semibold">Unable to load music activity</p>
         <p className="mt-1 text-xs text-[var(--red-10)]">{message}</p>
       </div>
     </div>
@@ -80,13 +77,11 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
 );
 
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  // Changed background from gray-3 to gray-4
   <div className="group w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans shadow-md shadow-black/5">
-    {/* Changed border from gray-5 to gray-6 */}
     <div className="flex w-full items-center gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-3">
       <img
         src={song.albumArtUrl}
-        alt={`Album art for ${song.title}`}
+        alt={`Album artwork for ${song.title} by ${song.artists}`}
         width={60}
         height={60}
         className="h-[60px] w-[60px] flex-shrink-0 rounded-md object-cover shadow-lg shadow-black/10 transition-transform duration-300 ease-in-out group-hover:scale-105"
@@ -105,7 +100,6 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
         <p className="truncate text-sm text-[var(--gray-11)]">{song.artists}</p>
       </div>
     </div>
-
     <div className="flex items-center gap-x-2 px-3 py-1.5 text-xs text-[var(--gray-11)]">
       {song.isPlaying ? (
         <div className="flex h-4 w-4 items-end justify-center gap-px">
@@ -130,18 +124,22 @@ const MusicWidget: FC = () => {
   useEffect(() => {
     const fetchSpotifyData = async () => {
       try {
-        const response = await fetch("/api/spotify");
+        const timestamp = Date.now();
+        const response = await fetch(`/api/spotify?t=${timestamp}`);
         if (!response.ok) {
           const errData = await response.json();
           throw new Error(
-            errData.error || `API request failed: ${response.status}`
+            errData.error || `Failed to fetch music data (${response.status})`
           );
         }
         const data: SongData = await response.json();
         setSongData(data);
+        setError(null);
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : "An unknown error occurred.";
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred while fetching your music data.";
         console.error("Failed to fetch Spotify data:", err);
         setError(message);
       } finally {
@@ -150,6 +148,9 @@ const MusicWidget: FC = () => {
     };
 
     fetchSpotifyData();
+
+    const interval = setInterval(fetchSpotifyData, 45000);
+
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes wave {
@@ -160,6 +161,7 @@ const MusicWidget: FC = () => {
     document.head.appendChild(style);
 
     return () => {
+      clearInterval(interval);
       document.head.removeChild(style);
     };
   }, []);
@@ -169,7 +171,7 @@ const MusicWidget: FC = () => {
   }
 
   if (error || !songData) {
-    return <MusicWidgetError message={error || "No data available."} />;
+    return <MusicWidgetError message={error || "No music data available."} />;
   }
 
   return <MusicWidgetContent song={songData} />;
