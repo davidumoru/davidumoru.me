@@ -10,8 +10,9 @@ const RECENTLY_PLAYED_ENDPOINT = `https://api.spotify.com/v1/me/player/recently-
 
 const MUSIC_CACHE_HEADERS = {
   "Content-Type": "application/json",
-  "Cache-Control": "max-age=0",
-  "Vercel-CDN-Cache-Control": "s-maxage=30, stale-while-revalidate=60",
+  "Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
+  "Access-Control-Allow-Origin": "*",
 };
 
 interface SpotifyImage {
