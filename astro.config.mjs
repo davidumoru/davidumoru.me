@@ -42,7 +42,6 @@ export default defineConfig({
 
   redirects: {
     "/blog": "/posts",
-    "/blog/[slug]": "/posts/[slug]",
     "/live": "https://www.twitch.tv/thedavidumoru",
   },
 
