@@ -1,6 +1,11 @@
 .icon {
     display: inline-block;
     flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+}
+  
+.icon.large {
     width: 24px;
     height: 24px;
 }
