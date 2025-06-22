@@ -12,30 +12,30 @@ import MusicWidget from "../components/MusicWidget.tsx";
   <CenteredLayout>
     <section class="flow">
       <p>
-        I build things, mess around with code a lot. Design too, when it feels
-        right or when the idea needs it.
+        I'm a developer and designer. I spend my days writing code, designing
+        when it’s needed, and figuring out how to make ideas work better on the
+        web.
       </p>
+      <div class="widget"><MusicWidget client:visible /></div>
+
+      <h2>Now</h2>
       <p>
+        I'm mostly focused on learning deeply, building useful things, and
+        helping out with a few community projects. Sometimes I write about what
+        I’m learning. Sometimes I just write.
+      </p>
+
+      <div class="contact">
+        <a href="/lab" class="link"
+          ><Icon icon="arrowRightUp" size="22" /> Explore my Lab</a
+        >
         <a
           href="https://calendly.com/umorudavido/30min"
           target="_blank"
           class="link"
-          ><Icon icon="arrowRightUp" size="20" /> Book a quick call</a
+          ><Icon icon="arrowRightUp" size="22" /> Book a quick call</a
         >
-      </p>
-
-      <div><MusicWidget client:visible /></div>
-
-      <h2>Now</h2>
-      <p>
-        Writing CSS. Probably watching way too much YouTube. Also playing around
-        with new ideas.
-      </p>
-      <p>
-        <a href="/lab" class="link"
-          ><Icon icon="arrowRightUp" size="20" /> Explore my Lab</a
-        >
-      </p>
+      </div>
     </section>
   </CenteredLayout>
 </BaseLayout>
@@ -47,7 +47,14 @@ import MusicWidget from "../components/MusicWidget.tsx";
     gap: 0.2em;
   }
 
-  div {
+  .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin-top: 1.5em;
+  }
+
+  .widget {
     margin-top: 1.5em;
   }
 </style>
