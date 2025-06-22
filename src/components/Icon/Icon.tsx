@@ -44,7 +44,7 @@ export interface IconProps {
    * Icon size in px
    * @default "24"
    */
-  size?: "16" | "20" | "24";
+  size?: "16" | "20" | "22" | "24";
 
   className?: string;
 }
