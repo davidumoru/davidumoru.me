@@ -1,0 +1,4 @@
+del {
+  text-decoration: line-through;
+  color: var(--gray-9);
+}
