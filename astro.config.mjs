@@ -22,7 +22,7 @@ export default defineConfig({
   integrations: [
     expressiveCode({
       defaultProps: {
-        wrap: true,
+        wrap: false,
         overridesByLang: {
           "bash,ps,sh": { preserveIndent: false },
         },
