@@ -12,6 +12,7 @@ import "../../style/tailwind/index.css";
 import AnimatedCardsCarousel from "./Experiments/AnimatedCardsCarousel";
 import HoveringProfiles from "./Experiments/HoveringProfiles";
 import StackedAvatars from "./Experiments/StackedAvatars";
+import PillButton from "./Experiments/PillButton";
 ---
 
 <div class="experiment-showcase">
@@ -42,6 +43,16 @@ import StackedAvatars from "./Experiments/StackedAvatars";
         {hydration === "idle" && <StackedAvatars client:idle />}
         {hydration === "visible" && <StackedAvatars client:visible />}
         {(hydration === "none" || !hydration) && <StackedAvatars />}
+      </>
+    )
+  }
+  {
+    componentKey === "PillButton" && (
+      <>
+        {hydration === "load" && <PillButton client:load />}
+        {hydration === "idle" && <PillButton client:idle />}
+        {hydration === "visible" && <PillButton client:visible />}
+        {(hydration === "none" || !hydration) && <PillButton />}
       </>
     )
   }
