@@ -1,3 +1,5 @@
+export const prerender = false;
+
 import type { APIRoute } from "astro";
 
 const client_id = import.meta.env.SPOTIFY_CLIENT_ID;
