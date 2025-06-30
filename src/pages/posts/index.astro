@@ -6,8 +6,8 @@ import CenteredLayout from "../../layouts/CenteredLayout.astro";
 
 const posts = await getCollection("posts");
 
-const writings = posts
-  .filter((post) => post.data.writing === true)
+const articles = posts
+  .filter((post) => post.data.article === true)
   .sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
@@ -15,7 +15,7 @@ const writings = posts
   );
 
 const notes = posts
-  .filter((post) => post.data.writing === false)
+  .filter((post) => post.data.article === false)
   .sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
@@ -29,10 +29,10 @@ const notes = posts
 >
   <CenteredLayout>
     <section>
-      <h1 class="fs-3">Writings</h1>
+      <h1 class="fs-3">Articles</h1>
       <div class="region flow">
         {
-          writings.map((post) => (
+          articles.map((post) => (
             <PostCard
               url={`posts/${post.id}`}
               title={post.data.title}
