@@ -1,105 +1,114 @@
 ---
-import { displayDate } from "../lib/mediumDate";
 import ThemeToggle from "../components/ThemeToggle.astro";
-const now = displayDate(new Date());
 ---
 
-<header class="container">
-  <div class="row">
-    <div class="flow" data-bendo="full">
-      <a href="/" class="h1">davidumoru.me</a>
-      <p>Designer who writes code</p>
-    </div>
-    <nav>
-      <div>
+<header class="site-header container">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="header-main">
+    <a href="/" class="h1 fs-2">xD</a>
+    <div class="header-actions">
+      <nav class="nav-links">
         <a
           href="/about"
-          aria-current={Astro.url.pathname.includes("/about") ? "page" : false}
-          class="">About</a
+          font-family:
+          "Pixelify
+          Sans",
+          sans-serif;
+          aria-current={Astro.url.pathname.includes("/about")
+            ? "page"
+            : undefined}>About</a
         >
-      </div>
-      <div>
         <a
           href="/posts"
-          aria-current={Astro.url.pathname.includes("/posts") ? "page" : false}
-          class="">Posts</a
+          aria-current={Astro.url.pathname.includes("/posts")
+            ? "page"
+            : undefined}>Posts</a
         >
-      </div>
-      <div>
         <a
           href="/projects"
           aria-current={Astro.url.pathname.includes("/projects")
             ? "page"
-            : false}
-          class="">Projects</a
+            : undefined}>Projects</a
         >
-      </div>
-    </nav>
-  </div>
-  <div class="row-with-toggle">
-    <p class="fs--1 date-info">
-      This site was updated on {now}.
-    </p>
-    <ThemeToggle />
+      </nav>
+      <ThemeToggle />
+    </div>
   </div>
 </header>
+
 <style>
-  header {
+  .h1 {
+    font-family: "Pixelify Sans", sans-serif;
+  }
+
+  .site-header {
     display: flex;
     flex-direction: column;
-    background: currentColor;
-    gap: var(--border-weight);
-    flex-grow: 1;
     padding-inline: 0 !important;
+    border-bottom: 1px solid var(--gray-7);
   }
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--border-weight);
-    background: currentColor;
-  }
-  :where(.row, nav) > *:not(nav) {
-    padding-block: var(--space-2xs);
-    padding-inline: var(--space-xs);
-    flex-grow: 1;
-    background-color: var(--gray-1);
-    display: grid;
-    align-content: center;
-  }
-  .row > [data-bendo="full"] {
-    flex-grow: 99999;
-  }
-  nav {
-    display: flex;
-    inline-size: 100%;
-    gap: var(--border-weight);
-    @media (width > 40rem) {
-      flex-direction: column;
-      inline-size: unset;
-    }
-  }
-  nav a {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-xs);
-  }
-  nav [aria-current="page"] {
-    font-weight: bold;
-  }
-  .row-with-toggle {
+
+  .header-main {
+    width: 100%;
+    padding: 0 var(--space-xs);
     display: flex;
     align-items: center;
-    background-color: var(--gray-1);
-    padding: var(--space-2xs) var(--space-xs);
-    position: relative;
+    justify-content: space-between;
+    min-height: 3rem;
   }
-  .date-info {
-    flex-grow: 1;
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    flex-shrink: 0;
   }
-  :global(.theme-toggle-button) {
-    position: absolute;
-    right: var(--space-xs);
-    top: 50%;
-    transform: translateY(-50%);
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-l);
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .nav-links a[aria-current="page"] {
+    font-weight: bold;
+  }
+
+  @media (max-width: 40rem) {
+    .header-main {
+      padding: 0 var(--space-xs);
+      min-height: 3.5rem;
+    }
+
+    .nav-links {
+      gap: var(--space-m);
+    }
+
+    .header-actions {
+      gap: var(--space-s);
+    }
+  }
+
+  @media (max-width: 25rem) {
+    .header-main {
+      padding: 0 var(--space-xs);
+    }
+
+    .header-actions {
+      gap: var(--space-xs);
+    }
   }
 </style>
