@@ -102,4 +102,13 @@ export const collections = {
       reviewUrl: z.string().url().optional(),
     }),
   }),
+  films: defineCollection({
+    type: "data",
+    schema: z.object({
+      title: z.string(),
+      director: z.string(),
+      posterUrl: z.string().url(),
+      reviewUrl: z.string().url().optional(),
+    }),
+  }),
 };
