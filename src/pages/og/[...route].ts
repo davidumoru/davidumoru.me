@@ -46,6 +46,10 @@ export const { getStaticPaths, GET } = OGImageRoute({
     title: page.title,
     description: "davidumoru.me",
     bgGradient: [[255, 255, 255]],
+    logo: {
+      path: "./public/static/signature/umoru.png",
+      size: [534, 100],
+    },
     font: {
       title: {
         color: [0, 0, 0],
