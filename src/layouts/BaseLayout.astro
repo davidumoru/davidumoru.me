@@ -12,12 +12,14 @@ export type Props = {
   title?: string;
   description?: string;
   hideFooter?: boolean;
-  image?: string;
 };
-const { title, description, hideFooter, image } = Astro.props;
+const { title, description, hideFooter } = Astro.props;
 
-const defaultImage = "https://www.davidumoru.me/static/meta/meta-image.webp";
-const metaImage = image || defaultImage;
+const pagePath = new URL(Astro.url.pathname, Astro.site).pathname.replace(
+  /\/$/,
+  ""
+);
+const ogImageUrl = `https://www.davidumoru.me/og${pagePath}.png`;
 
 const forwards: TransitionAnimationPair = {
   old: {
@@ -82,8 +84,8 @@ const viewTransition = {
       property="og:description"
       content={description || "Designer who writes code."}
     />
-    <meta property="og:image" content={metaImage} />
-    <meta property="og:image:alt" content="David Umoru profile picture" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content={title || "Page Preview"} />
     <meta property="og:url" content={Astro.url.href} />
     <meta property="og:type" content="website" />
 
@@ -96,8 +98,8 @@ const viewTransition = {
       name="twitter:description"
       content={description || "Designer who writes code."}
     />
-    <meta name="twitter:image" content={metaImage} />
-    <meta name="twitter:image:alt" content="David Umoru profile picture" />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={title || "Page Preview"} />
     <meta name="twitter:url" content={Astro.url.href} />
     <meta name="twitter:site" content="@theumoru" />
     <meta name="twitter:creator" content="@theumoru" />
