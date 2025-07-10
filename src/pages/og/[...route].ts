@@ -32,7 +32,20 @@ const staticPages = {
   },
 };
 
-const collectionPages = [...postEntries, ...labEntries, ...pageEntries];
+const collectionPages = [
+  ...postEntries.map((entry) => ({
+    id: `posts/${entry.id}`,
+    data: entry.data,
+  })),
+  ...labEntries.map((entry) => ({
+    id: `lab/${entry.id}`,
+    data: entry.data,
+  })),
+  ...pageEntries.map((entry) => ({
+    id: entry.id,
+    data: entry.data,
+  })),
+];
 
 const pages = {
   ...Object.fromEntries(collectionPages.map(({ id, data }) => [id, data])),
