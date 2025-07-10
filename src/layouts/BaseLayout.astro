@@ -15,10 +15,12 @@ export type Props = {
 };
 const { title, description, hideFooter } = Astro.props;
 
-const pagePath = new URL(Astro.url.pathname, Astro.site).pathname.replace(
+const rawPath = new URL(Astro.url.pathname, Astro.site).pathname.replace(
   /\/$/,
   ""
 );
+const pagePath = rawPath === "" ? "/index" : rawPath;
+
 const ogImageUrl = `https://www.davidumoru.me/og${pagePath}.png`;
 
 const forwards: TransitionAnimationPair = {
