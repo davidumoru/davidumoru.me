@@ -26,13 +26,12 @@ const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
 
 const { data } = post;
-const { title, description, ogImage, datePublished, dateModified } = data;
+const { title, description, datePublished, dateModified } = data;
 ---
 
 <PostLayout
   title={title}
   description={description}
-  ogImage={ogImage?.src}
   datePublished={datePublished}
   dateModified={dateModified}
 >

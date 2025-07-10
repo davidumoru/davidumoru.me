@@ -34,7 +34,6 @@ export const collections = {
         article: z.boolean(),
         img: image().array().optional(),
         imgAlt: z.string().optional(),
-        ogImage: image().optional(),
         features: z
           .object({
             name: z.string(),
@@ -54,7 +53,6 @@ export const collections = {
         dateModified: z.date().optional(),
         img: image().array().optional(),
         imgAlt: z.string().optional(),
-        ogImage: image().optional(),
       }),
   }),
   now: defineCollection({
