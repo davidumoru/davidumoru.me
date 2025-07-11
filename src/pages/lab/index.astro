@@ -15,15 +15,17 @@ const sortedLabEntries = allLabEntries.sort(
     new Date(b.data.datePublished).getTime() -
     new Date(a.data.datePublished).getTime()
 );
-
-const title = "Lab";
-const description =
-  "Space for UI experiments and interactive design";
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title="Lab"
+  description="An experimental space for prototypes, design systems, and interface concepts."
+>
   <CenteredLayout>
-    <PageHeader title={title} description={description} />
+    <PageHeader
+      title="Lab"
+      description="UI experiments and interactive design"
+    />
     <div class="lab-grid">
       {sortedLabEntries.map((entry) => <LabCard entry={entry} />)}
     </div>

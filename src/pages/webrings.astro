@@ -8,19 +8,22 @@ import PageHeader from "../components/PageHeader.astro";
 const webrings = await getCollection("webrings");
 ---
 
-<BaseLayout title="Webrings">
+<BaseLayout
+  title="Webrings"
+  description="A curated collection of interconnected personal sites I belong to"
+>
   <CenteredLayout>
-  <PageHeader
-    title="Webrings"
-    description="Webrings connect related sites in a loop. I'm part of these:"
-    datePublished={new Date("2025-04-21")}
-  />
-  <section>
-    <div class="webrings">
-      {webrings.map((webring) => <Webring webring={webring} />)}
-    </div>
-  </section>
-</CenteredLayout>
+    <PageHeader
+      title="Webrings"
+      description="Webrings I belong to"
+      datePublished={new Date("2025-04-21")}
+    />
+    <section>
+      <div class="webrings">
+        {webrings.map((webring) => <Webring webring={webring} />)}
+      </div>
+    </section>
+  </CenteredLayout>
 </BaseLayout>
 
 <style>
