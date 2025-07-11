@@ -6,7 +6,7 @@ const GuestBook = defineTable({
     author: column.text(),
     link: column.text(),
     content: column.text(),
-    country: column.text({ default: "Unknown" }),
+    country: column.text(),
     timestamp: column.date({ default: NOW }),
   },
 });
