@@ -4,7 +4,8 @@
 @import './utilities/index.css';
 
 body {
-	padding-block: var(--space-m);
+	margin: 0.2em 0;
+	padding-block-end: var(--space-m);
 	min-height: 100vh;
 	min-height: 100svh;
 	display: grid;
