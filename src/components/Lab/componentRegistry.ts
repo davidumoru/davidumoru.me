@@ -3,6 +3,7 @@ import HoveringProfiles from "./Experiments/HoveringProfiles";
 import StackedAvatars from "./Experiments/StackedAvatars";
 import PillButton from "./Experiments/PillButton";
 import SwipeableCardStack from "./Experiments/SwipeableCardStack";
+import AnimatedTabs from "./Experiments/AnimatedTabs"
 
 export const componentRegistry = {
   AnimatedCardsCarousel,
@@ -10,6 +11,7 @@ export const componentRegistry = {
   StackedAvatars,
   PillButton,
   SwipeableCardStack,
+  AnimatedTabs,
 } as const;
 
 export type ComponentKey = keyof typeof componentRegistry;

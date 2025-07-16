@@ -14,6 +14,7 @@ import HoveringProfiles from "./Experiments/HoveringProfiles";
 import StackedAvatars from "./Experiments/StackedAvatars";
 import PillButton from "./Experiments/PillButton";
 import SwipeableCardStack from "./Experiments/SwipeableCardStack";
+import AnimatedTabs from "./Experiments/AnimatedTabs";
 ---
 
 <div class="experiment-showcase">
@@ -64,6 +65,16 @@ import SwipeableCardStack from "./Experiments/SwipeableCardStack";
         {hydration === "idle" && <SwipeableCardStack client:idle />}
         {hydration === "visible" && <SwipeableCardStack client:visible />}
         {(hydration === "none" || !hydration) && <SwipeableCardStack />}
+      </>
+    )
+  }
+  {
+    componentKey === "AnimatedTabs" && (
+      <>
+        {hydration === "load" && <AnimatedTabs client:load />}
+        {hydration === "idle" && <AnimatedTabs client:idle />}
+        {hydration === "visible" && <AnimatedTabs client:visible />}
+        {(hydration === "none" || !hydration) && <AnimatedTabs />}
       </>
     )
   }
