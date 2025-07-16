@@ -17,23 +17,25 @@ interface Props {
 const { url, title, description, datePublished, features } = Astro.props;
 ---
 
-<article class="flow">
-  <div class="fs--1 shade">
+<article>
+  <p class="fs--1 shade">
     {datePublished ? displayDate(datePublished) : "Unknown Date"}
-  </div>
-  <a href={url} class="underline heading">
+  </p>
+  <a href={url}>
     <h3>{title}</h3>
   </a>
-  <div>{description}</div>
+  <p>{description}</p>
   {
     features && (
-      <div class="fs--1 shade">
+      <p class="fs--1 shade">
         Featured on{" "}
         {features.map(({ name, url }, i) => [
           i > 0 && ", ",
-          <a href={url} target="_blank">{name}</a>,
+          <a href={url} target="_blank">
+            {name}
+          </a>,
         ])}
-      </div>
+      </p>
     )
   }
 </article>
@@ -46,7 +48,7 @@ const { url, title, description, datePublished, features } = Astro.props;
   article:not(:first-child) {
     margin-block: var(--space-m);
   }
-  div {
+  p {
     margin-block: 0.3rem;
   }
 </style>
