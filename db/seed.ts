@@ -317,5 +317,132 @@ export default async function seed() {
       content: "Greetings from Serbia!",
       country: "Serbia",
     },
+    {
+      author: "Greek Nomad",
+      link: "https://example.com/greece",
+      content:
+        "From the Aegean with admiration. Your guestbook feels like a quiet Santorini evening.",
+      country: "Greece",
+    },
+    {
+      author: "Thai Traveler",
+      link: "https://example.com/thailand",
+      content:
+        "Warm regards from Bangkok. This site radiates the serenity of a Thai sunrise.",
+      country: "Thailand",
+    },
+    {
+      author: "Singapore Soul",
+      link: "https://example.com/singapore",
+      content:
+        "Tidy, bright, efficient—your site reminds me of Orchard Road at its best.",
+      country: "Singapore",
+    },
+    {
+      author: "Hungarian Guest",
+      link: "https://example.com/hungary",
+      content:
+        "As delightful as a stroll by the Danube. Greetings from Budapest.",
+      country: "Hungary",
+    },
+    {
+      author: "Belgian Friend",
+      link: "https://example.com/belgium",
+      content: "Waffles, art, and this website—Belgium approves.",
+      country: "Belgium",
+    },
+    {
+      author: "Austrian Visitor",
+      link: "https://example.com/austria",
+      content:
+        "Greetings from Vienna. This site has more harmony than a Mozart concerto.",
+      country: "Austria",
+    },
+    {
+      author: "Kiwi Coder",
+      link: "https://example.com/nz",
+      content:
+        "Kia ora from Aotearoa. Minimal and clear—like the Southern Alps.",
+      country: "New Zealand",
+    },
+    {
+      author: "South Sudanese Voice",
+      link: "https://example.com/southsudan",
+      content: "From Juba to your guestbook—connection feels good.",
+      country: "South Sudan",
+    },
+    {
+      author: "Israeli Wanderer",
+      link: "https://example.com/israel",
+      content: "Shalom from Tel Aviv. This site flows like hummus and pita.",
+      country: "Israel",
+    },
+    {
+      author: "Czech Visitor",
+      link: "https://example.com/czech",
+      content: "From Prague’s quiet corners to your digital one—cheers.",
+      country: "Czech Republic",
+    },
+    {
+      author: "Finnish Observer",
+      link: "https://example.com/finland",
+      content: "Calm, focused, refined. Your guestbook is a Lapland breeze.",
+      country: "Finland",
+    },
+    {
+      author: "Iraqi Reader",
+      link: "https://example.com/iraq",
+      content: "Peace from Baghdad. You've built something thoughtful here.",
+      country: "Iraq",
+    },
+    {
+      author: "Slovak Guest",
+      link: "https://example.com/slovakia",
+      content: "Simple. Clear. Good work from Bratislava.",
+      country: "Slovakia",
+    },
+    {
+      author: "Romanian Coder",
+      link: "https://example.com/romania",
+      content: "Salutări din România. Compact and smooth—nice touch.",
+      country: "Romania",
+    },
+    {
+      author: "Lebanese Wanderer",
+      link: "https://example.com/lebanon",
+      content: "From the Cedars to the code—this place has soul.",
+      country: "Lebanon",
+    },
+    {
+      author: "Sri Lankan Mind",
+      link: "https://example.com/srilanka",
+      content: "Your site feels like a walk near Sigiriya at dawn. Peaceful.",
+      country: "Sri Lanka",
+    },
+    {
+      author: "Nepali Visitor",
+      link: "https://example.com/nepal",
+      content: "From Kathmandu with respect. This guestbook has good spirit.",
+      country: "Nepal",
+    },
+    {
+      author: "Jordanian Friend",
+      link: "https://example.com/jordan",
+      content: "Greetings from Amman. Simple things done well—like mansaf.",
+      country: "Jordan",
+    },
+    {
+      author: "Zimbabwean Guest",
+      link: "https://example.com/zimbabwe",
+      content: "From the lands of Vic Falls—your site speaks quietly but well.",
+      country: "Zimbabwe",
+    },
+    {
+      author: "Palestinian Visitor",
+      link: "https://example.com/palestine",
+      content:
+        "From Ramallah to your world—thanks for making a space worth pausing in.",
+      country: "Palestine",
+    },
   ]);
 }

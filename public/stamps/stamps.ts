@@ -287,7 +287,7 @@ export const stampData = [
       "http://res.cloudinary.com/deha0jqdf/image/upload/v1747352581/Algeria_esqqmn.jpg",
     hue: 35,
   },
-    {
+  {
     country: "United Arab Emirates",
     imageUrl:
       "https://res.cloudinary.com/deha0jqdf/image/upload/v1747584871/United_Arab_Emirates_dmcaiv.jpg",
@@ -308,7 +308,107 @@ export const stampData = [
   {
     country: "Serbia",
     imageUrl:
-    "https://res.cloudinary.com/deha0jqdf/image/upload/v1752708804/Serbia_mm6ah9.jpg",
+      "https://res.cloudinary.com/deha0jqdf/image/upload/v1752708804/Serbia_mm6ah9.jpg",
+    hue: 355,
+  },
+  {
+    country: "Greece",
+    imageUrl: "",
+    hue: 210,
+  },
+  {
+    country: "Thailand",
+    imageUrl: "",
+    hue: 50,
+  },
+  {
+    country: "Singapore",
+    imageUrl: "",
+    hue: 5,
+  },
+  {
+    country: "Hungary",
+    imageUrl: "",
+    hue: 355,
+  },
+  {
+    country: "Belgium",
+    imageUrl: "",
+    hue: 45,
+  },
+  {
+    country: "Austria",
+    imageUrl: "",
+    hue: 0,
+  },
+  {
+    country: "New Zealand",
+    imageUrl: "",
+    hue: 215,
+  },
+  {
+    country: "South Sudan",
+    imageUrl: "",
+    hue: 120,
+  },
+  {
+    country: "Israel",
+    imageUrl: "",
+    hue: 200,
+  },
+  {
+    country: "Czech Republic",
+    imageUrl: "",
+    hue: 5,
+  },
+  {
+    country: "Finland",
+    imageUrl: "",
+    hue: 210,
+  },
+  {
+    country: "Iraq",
+    imageUrl: "",
+    hue: 10,
+  },
+  {
+    country: "Slovakia",
+    imageUrl: "",
+    hue: 5,
+  },
+  {
+    country: "Romania",
+    imageUrl: "",
+    hue: 30,
+  },
+  {
+    country: "Lebanon",
+    imageUrl: "",
+    hue: 350,
+  },
+  {
+    country: "Sri Lanka",
+    imageUrl: "",
+    hue: 35,
+  },
+  {
+    country: "Nepal",
+    imageUrl: "",
+    hue: 5,
+  },
+  {
+    country: "Jordan",
+    imageUrl: "",
+    hue: 10,
+  },
+  {
+    country: "Zimbabwe",
+    imageUrl: "",
+    hue: 45,
+  },
+  {
+    country: "Palestine",
+    imageUrl: "",
     hue: 355,
   },
   {
