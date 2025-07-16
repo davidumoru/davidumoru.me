@@ -14,8 +14,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	font-size: var(--fs-0);
 	line-height: 1.4;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-		'Liberation Mono', 'Courier New', monospace;
+	font-family: "Geist Mono", monospace;
 	background: var(--gray-1);
 	color: var(--gray-12);
 }
