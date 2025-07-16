@@ -28,8 +28,8 @@ const notes = posts
   description="Essays, notes, and writings on development, design, tools, and personal reflection."
 >
   <CenteredLayout>
-    <section>
-      <h1 class="fs-3">Articles</h1>
+    <section id="articles" class="flow">
+      <h1>Articles</h1>
       <div class="region flow">
         {
           articles.map((post) => (
@@ -45,8 +45,8 @@ const notes = posts
       </div>
     </section>
 
-    <section>
-      <h1 class="fs-3">Notes</h1>
+    <section id="notes" class="flow">
+      <h1>Notes</h1>
       <div class="region flow">
         {
           notes.map((post) => (
