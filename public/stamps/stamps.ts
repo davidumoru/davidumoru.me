@@ -306,6 +306,12 @@ export const stampData = [
     hue: 350,
   },
   {
+    country: "Serbia",
+    imageUrl:
+    "https://res.cloudinary.com/deha0jqdf/image/upload/v1752708804/Serbia_mm6ah9.jpg",
+    hue: 355,
+  },
+  {
     country: "Other",
     hue: 360,
   },

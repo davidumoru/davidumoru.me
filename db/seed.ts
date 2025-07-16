@@ -311,5 +311,11 @@ export default async function seed() {
         "¡Hola! A pleasure to sign your guestbook. As breathtaking as the sight of Machu Picchu.",
       country: "Peru",
     },
+    {
+      author: "Serbian Guest",
+      link: "https://example.com/serbia",
+      content: "Greetings from Serbia!",
+      country: "Serbia",
+    },
   ]);
 }
