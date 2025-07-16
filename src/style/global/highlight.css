@@ -1,0 +1,17 @@
+::selection {
+  background-color: #ff0;
+  color: #333333;
+}
+::-moz-selection {
+  background-color: #ff0;
+  color: #333333;
+}
+
+html[data-theme="dark"] ::selection {
+  background-color: blue;
+  color: #ffffff;
+}
+html[data-theme="dark"] ::-moz-selection {
+  background-color: blue;
+  color: #ffffff;
+}

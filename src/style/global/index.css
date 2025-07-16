@@ -6,3 +6,5 @@
 @import './blockquote.css';
 @import './inline-code.css';
 @import './code.css';
+@import './highlight.css';
+@import './strikethrough.css';
