@@ -2,26 +2,142 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 import LabLayout from "../../layouts/LabLayout.astro";
+import { Icon } from "../../components/Icon/Icon";
 
 export async function getStaticPaths() {
-  const labEntries = await getCollection(
-    "lab",
-    (entry: CollectionEntry<"lab">) => entry.data.draft !== true
-  );
-  return labEntries.map((entry) => ({
+  const labEntries = (
+    await getCollection("lab", (entry) => entry.data.draft !== true)
+  ).sort((a, b) => {
+    return (
+      new Date(b.data.datePublished).getTime() -
+      new Date(a.data.datePublished).getTime()
+    );
+  });
+
+  return labEntries.map((entry, index) => ({
     params: { id: entry.id },
-    props: { entry },
+    props: {
+      entry,
+      prev: labEntries[index - 1] ?? null,
+      next: labEntries[index + 1] ?? null,
+    },
   }));
 }
 
 interface Props {
   entry: CollectionEntry<"lab">;
+  prev: CollectionEntry<"lab"> | null;
+  next: CollectionEntry<"lab"> | null;
 }
 
-const { entry } = Astro.props;
+const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
 ---
 
 <LabLayout entry={entry}>
   <Content />
+  <div class="pagination">
+    {
+      prev && (
+        <a href={`/lab/${prev.id}`} class="prev-post-link">
+          <Icon icon="arrowLeft" size="16" />
+          <span class="link-label shade">Previous</span>
+          <span class="link-title">{prev.data.title}</span>
+        </a>
+      )
+    }
+    {
+      next && (
+        <a href={`/lab/${next.id}`} class="next-post-link">
+          <span class="link-label shade">Next</span>
+          <span class="link-title">{next.data.title}</span>
+          <Icon icon="arrowRight" size="16" />
+        </a>
+      )
+    }
+  </div>
 </LabLayout>
+
+<style>
+  .pagination {
+    display: flex;
+    flex-direction: column;
+    margin-block-start: var(--space-xl);
+    margin-inline: 0;
+    width: 100%;
+    gap: var(--space-m);
+  }
+
+  .pagination a {
+    flex: 1;
+    display: grid;
+    column-gap: var(--space-m);
+    padding: var(--space-s);
+    border-radius: 0.5rem;
+    border: 1px solid var(--gray-5);
+    line-height: 1.1;
+    align-items: center;
+    text-decoration: none;
+    background-color: var(--gray-1);
+    color: var(--gray-12);
+    transition:
+      background-color 0.2s ease-in-out,
+      border-color 0.2s ease-in-out;
+  }
+
+  :global(.dark-mode) .pagination a {
+    border-color: var(--gray-6);
+    background-color: var(--gray-3);
+    color: var(--gray-1);
+  }
+
+  .pagination .prev-post-link {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon label"
+      "icon title";
+  }
+
+  .pagination .next-post-link {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "label icon"
+      "title icon";
+    text-align: right;
+  }
+
+  .pagination .icon {
+    grid-area: icon;
+    color: var(--gray-10);
+  }
+
+  .pagination .link-label {
+    grid-area: label;
+  }
+
+  .pagination .link-title {
+    grid-area: title;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pagination a:hover {
+      background-color: var(--gray-2);
+      border-color: var(--gray-5);
+    }
+
+    :global(.dark-mode) .pagination a:hover {
+      background-color: var(--gray-1);
+      border-color: var(--gray-12);
+    }
+  }
+
+  @media (min-width: 641px) {
+    .pagination {
+      flex-direction: row;
+      gap: var(--space-m);
+    }
+  }
+</style>
