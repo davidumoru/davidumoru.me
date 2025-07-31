@@ -12,7 +12,7 @@ import defaultStampAsset from "../../public/stamps/default.jpg";
 
 const stampDataMap = new Map(stampData.map((stamp) => [stamp.country, stamp]));
 
-const PER_PAGE = 11;
+const PER_PAGE = 19;
 
 const generateOptimizedCloudinaryUrl = (url: string) => {
   const uploadMarker = "/image/upload/";
@@ -173,7 +173,7 @@ const error = Astro.url.searchParams.get("error");
   }
 
   .guestbook-entries {
-    max-width: 90rem;
+    max-width: 120rem;
     margin: 0 auto 48px;
     text-align: center;
   }
