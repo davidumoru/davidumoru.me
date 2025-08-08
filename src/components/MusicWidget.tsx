@@ -1,5 +1,6 @@
 import { useState, useEffect, type FC } from "react";
 import "../style/tailwind/index.css";
+
 interface SongData {
   albumArtUrl: string;
   songUrl: string;
@@ -8,6 +9,7 @@ interface SongData {
   lastPlayed: string;
   isPlaying: boolean;
 }
+
 const HistoryIcon: FC<{ className?: string }> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -26,6 +28,7 @@ const HistoryIcon: FC<{ className?: string }> = ({ className }) => (
     <path d="M12 7v5l4 2" />
   </svg>
 );
+
 const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -44,6 +47,7 @@ const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
     <path d="M12 17h.01" />
   </svg>
 );
+
 const BAR_CONFIG_DESKTOP = [
   [10, 13, 8],
   [25, 22, 14],
@@ -61,6 +65,7 @@ const BAR_CONFIG_DESKTOP = [
   [205, 10, 6],
   [220, 7, 4],
 ];
+
 const BAR_CONFIG_MOBILE = [
   [20, 13, 8],
   [40, 22, 14],
@@ -74,16 +79,20 @@ const BAR_CONFIG_MOBILE = [
   [200, 48, 24],
   [220, 35, 19],
 ];
+
 const AudioVisualization: FC = () => {
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
   const bars = isMobile ? BAR_CONFIG_MOBILE : BAR_CONFIG_DESKTOP;
   const heightClass = isMobile ? "h-10" : "h-14";
+
   return (
     <div
       className={`flex items-center justify-center w-full max-w-[8rem] ${heightClass}`}
@@ -151,15 +160,16 @@ const AudioVisualization: FC = () => {
     </div>
   );
 };
+
 const MusicWidgetSkeleton: FC = () => (
-  <div className="w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans overflow-x-auto">
+  <div className="w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
-      <div className="h-12 w-12 sm:h-[60px] sm:w-[60px] flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
-      <div className="min-w-0 flex-1">
-        <div className="mb-2 h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
-        <div className="h-4 w-1/2 rounded bg-[var(--gray-7)]"></div>
+      <div className="h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
+      <div className="min-w-0 flex-1 space-y-2">
+        <div className="h-5 sm:h-6 w-3/4 rounded bg-[var(--gray-7)]"></div>
+        <div className="h-4 sm:h-5 w-1/2 rounded bg-[var(--gray-7)]"></div>
       </div>
-      <div className="flex items-center ml-2 min-w-0 h-12 sm:h-[60px] justify-end w-full max-w-[80px]" />
+      <div className="flex items-center ml-2 min-w-0 h-16 sm:h-20 justify-end w-full max-w-[80px]" />
     </div>
     <div className="flex items-center gap-x-2 px-3 py-1.5">
       <div className="h-3 w-3 rounded-full bg-[var(--gray-7)]"></div>
@@ -167,8 +177,9 @@ const MusicWidgetSkeleton: FC = () => (
     </div>
   </div>
 );
+
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
-  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 font-sans text-sm text-[var(--red-11)] overflow-x-auto">
+  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] overflow-x-auto">
     <div className="flex items-center gap-x-3">
       <ErrorIcon className="h-5 w-5 flex-shrink-0" />
       <div>
@@ -178,19 +189,20 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
     </div>
   </div>
 );
+
 const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="relative h-12 w-12 sm:h-[60px] sm:w-[60px] flex-shrink-0">
+    <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0">
       {!loaded && (
         <div className="absolute inset-0 rounded-md bg-[var(--gray-7)] animate-pulse" />
       )}
       <img
         src={src}
         alt={alt}
-        width={60}
-        height={60}
-        className={`h-12 w-12 sm:h-[60px] sm:w-[60px] rounded-md object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 ${
+        width={80}
+        height={80}
+        className={`h-16 w-16 sm:h-20 sm:w-20 rounded-md object-cover ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
         style={{ position: "absolute", inset: 0 }}
@@ -200,27 +212,30 @@ const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
     </div>
   );
 };
+
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 font-sans overflow-x-auto">
+  <div className="group w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
       <AlbumArt
         src={song.albumArtUrl}
         alt={`Album artwork for ${song.title} by ${song.artists}`}
       />
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 space-y-1">
         <a
           href={song.songUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"
         >
-          <p className="truncate font-semibold text-[var(--gray-12)]">
+          <p className="truncate text-lg sm:text-xl font-semibold text-[var(--gray-12)] leading-tight">
             {song.title}
           </p>
         </a>
-        <p className="truncate text-sm text-[var(--gray-11)]">{song.artists}</p>
+        <p className="truncate text-base sm:text-lg text-[var(--gray-11)]">
+          {song.artists}
+        </p>
       </div>
-      <div className="flex items-center ml-2 min-w-0 h-12 sm:h-[60px] justify-end w-full max-w-[8rem]">
+      <div className="flex items-center ml-2 min-w-0 h-16 sm:h-20 justify-end w-full max-w-[8rem]">
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
@@ -234,10 +249,12 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
     </div>
   </div>
 );
+
 const MusicWidget: FC = () => {
   const [songData, setSongData] = useState<SongData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchSpotifyData = async () => {
       try {
@@ -262,18 +279,24 @@ const MusicWidget: FC = () => {
         setIsLoading(false);
       }
     };
+
     fetchSpotifyData();
     const interval = setInterval(fetchSpotifyData, 45000);
+
     return () => {
       clearInterval(interval);
     };
   }, []);
+
   if (isLoading) {
     return <MusicWidgetSkeleton />;
   }
+
   if (error || !songData) {
     return <MusicWidgetError message={error || "No music data available."} />;
   }
+
   return <MusicWidgetContent song={songData} />;
 };
+
 export default MusicWidget;
