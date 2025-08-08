@@ -10,25 +10,6 @@ interface SongData {
   isPlaying: boolean;
 }
 
-const HistoryIcon: FC<{ className?: string }> = ({ className }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-    <path d="M3 3v5h5" />
-    <path d="M12 7v5l4 2" />
-  </svg>
-);
-
 const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -48,40 +29,15 @@ const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-const BAR_CONFIG_DESKTOP = [
-  [10, 13, 8],
-  [25, 22, 14],
-  [40, 35, 19],
-  [55, 48, 24],
-  [70, 64, 29],
-  [85, 74, 32],
-  [100, 80, 35],
-  [115, 74, 32],
-  [130, 64, 29],
-  [145, 48, 24],
-  [160, 35, 19],
-  [175, 22, 14],
-  [190, 13, 8],
-  [205, 10, 6],
-  [220, 7, 4],
-];
-
-const BAR_CONFIG_MOBILE = [
-  [20, 13, 8],
-  [40, 22, 14],
-  [60, 35, 19],
-  [80, 48, 24],
-  [100, 64, 29],
-  [120, 74, 32],
-  [140, 80, 35],
-  [160, 74, 32],
-  [180, 64, 29],
-  [200, 48, 24],
-  [220, 35, 19],
-];
+interface Bar {
+  x: number;
+  height: number;
+  targetHeight: number;
+}
 
 const AudioVisualization: FC = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [bars, setBars] = useState<Bar[]>([]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -90,72 +46,67 @@ const AudioVisualization: FC = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const bars = isMobile ? BAR_CONFIG_MOBILE : BAR_CONFIG_DESKTOP;
+  useEffect(() => {
+    const barCount = isMobile ? 11 : 15;
+    const spacing = isMobile ? 20 : 15;
+    const initialBars = Array.from({ length: barCount }, (_, i) => ({
+      x: i * spacing + 10,
+      height: 20,
+      targetHeight: 20,
+    }));
+    setBars(initialBars);
+  }, [isMobile]);
+
+  useEffect(() => {
+    let animationFrame: number;
+    const animate = () => {
+      setBars((prev) =>
+        prev.map((bar) => {
+          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.2;
+          if (Math.random() < 0.05) {
+            return {
+              ...bar,
+              height: newHeight,
+              targetHeight: 10 + Math.random() * 60,
+            };
+          }
+          return { ...bar, height: newHeight };
+        })
+      );
+      animationFrame = requestAnimationFrame(animate);
+    };
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
+
   const heightClass = isMobile ? "h-10" : "h-14";
 
   return (
     <div
       className={`flex items-center justify-center w-full max-w-[8rem] ${heightClass}`}
     >
-      <style>
-        {`
-          :root {
-            --audio-bar-color: var(--gray-11);
-          }
-          html[data-theme='dark'] {
-            --audio-bar-color: var(--gray-10);
-          }
-        `}
-      </style>
       <svg
         viewBox="0 0 240 100"
         className="w-full h-full"
         style={{ display: "block", maxWidth: "100%" }}
       >
-        {bars.map(([x, baseHeight, amplitude], i) => (
+        <defs>
+          <linearGradient id="audioGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--green-9)" />
+            <stop offset="100%" stopColor="var(--blue-9)" />
+          </linearGradient>
+        </defs>
+        {bars.map((bar, i) => (
           <rect
             key={i}
-            x={x}
-            y={50 - baseHeight / 2}
-            width={10}
-            height={baseHeight}
-            rx={5}
-            fill="var(--audio-bar-color)"
-            style={{
-              transformOrigin: "50% 50%",
-              animation: "audio-bar-bounce 1.2s ease-in-out infinite",
-              animationDelay: `${(i * 0.08).toFixed(2)}s`,
-              ["--bar-base" as any]: `${baseHeight}px`,
-              ["--bar-amp" as any]: `${amplitude}px`,
-            }}
+            x={bar.x}
+            y={50 - bar.height / 2}
+            width={8}
+            height={bar.height}
+            rx={4}
+            fill="url(#audioGradient)"
           />
         ))}
-        <style>
-          {`
-            @keyframes audio-bar-bounce {
-              0%, 100% {
-                height: var(--bar-base, 40px);
-                y: calc(50px - var(--bar-base, 40px) / 2);
-              }
-              20% {
-                height: calc(var(--bar-base, 40px) + var(--bar-amp, 20px));
-                y: calc(50px - (var(--bar-base, 40px) + var(--bar-amp, 20px)) / 2);
-              }
-              40% {
-                height: var(--bar-base, 40px);
-                y: calc(50px - var(--bar-base, 40px) / 2);
-              }
-              60% {
-                height: calc(var(--bar-base, 40px) - var(--bar-amp, 20px) * 0.5);
-                y: calc(50px - (var(--bar-base, 40px) - var(--bar-amp, 20px) * 0.5) / 2);
-              }
-              80% {
-                height: var(--bar-base, 40px);
-                y: calc(50px - var(--bar-base, 40px) / 2);
-              }
-            }
-          `}
-        </style>
       </svg>
     </div>
   );
@@ -282,7 +233,6 @@ const MusicWidget: FC = () => {
 
     fetchSpotifyData();
     const interval = setInterval(fetchSpotifyData, 45000);
-
     return () => {
       clearInterval(interval);
     };
