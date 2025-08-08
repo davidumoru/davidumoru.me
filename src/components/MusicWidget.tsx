@@ -166,8 +166,8 @@ const MusicWidgetSkeleton: FC = () => (
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
       <div className="h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
       <div className="min-w-0 flex-1 space-y-2">
-        <div className="h-5 sm:h-6 w-3/4 rounded bg-[var(--gray-7)]"></div>
-        <div className="h-4 sm:h-5 w-1/2 rounded bg-[var(--gray-7)]"></div>
+        <div className="h-4 sm:h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
+        <div className="h-3 sm:h-4 w-1/2 rounded bg-[var(--gray-7)]"></div>
       </div>
       <div className="flex items-center ml-2 min-w-0 h-16 sm:h-20 justify-end w-full max-w-[80px]" />
     </div>
@@ -179,7 +179,7 @@ const MusicWidgetSkeleton: FC = () => (
 );
 
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
-  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] overflow-x-auto">
+  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] font-sans overflow-x-auto">
     <div className="flex items-center gap-x-3">
       <ErrorIcon className="h-5 w-5 flex-shrink-0" />
       <div>
@@ -227,11 +227,11 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
           rel="noopener noreferrer"
           className="hover:underline"
         >
-          <p className="truncate text-lg sm:text-xl font-semibold text-[var(--gray-12)] leading-tight">
+          <p className="truncate text-base sm:text-lg font-semibold font-sans text-[var(--gray-12)] leading-tight">
             {song.title}
           </p>
         </a>
-        <p className="truncate text-base sm:text-lg text-[var(--gray-11)]">
+        <p className="truncate text-sm sm:text-base font-sans text-[var(--gray-11)]">
           {song.artists}
         </p>
       </div>
@@ -239,7 +239,7 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
-    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-[var(--gray-11)]">
+    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm font-sans text-[var(--gray-11)]">
       <div
         className={`h-3 w-3 flex-shrink-0 rounded-full ${
           song.isPlaying ? "bg-[var(--green-9)]" : "bg-[var(--gray-8)]"
