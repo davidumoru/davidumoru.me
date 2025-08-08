@@ -21,9 +21,9 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
   {description && <p class="shade fs-2">{description}</p>}
   {
     datePublished && (
-      <span class="fs-0 shade underline date">
+      <span class="fs--1 shade date">
         <Icon icon="penNib" size="16" />
-        Written {datePublished ? displayDate(datePublished) : "Unknown Date"}
+        {datePublished ? displayDate(datePublished) : "Unknown Date"}
       </span>
     )
   }
@@ -50,6 +50,6 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding-top: 10px;
+    padding-top: 5px;
   }
 </style>
