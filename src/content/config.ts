@@ -92,7 +92,7 @@ export const collections = {
       }),
   }),
   books: defineCollection({
-    type: "data",
+    loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/books" }),
     schema: z.object({
       title: z.string(),
       author: z.string(),
