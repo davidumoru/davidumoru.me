@@ -7,7 +7,6 @@ import {
   MotionValue,
 } from "framer-motion";
 import * as React from "react";
-
 const { useState, Children, useMemo } = React;
 
 const springConfig = {
@@ -49,10 +48,11 @@ function SwipeableCardItem({
   xInput: MotionValue<number>;
   moveToEnd: () => void;
 }) {
-  const x = useMemo(() => 20 * i, [i]);
+  const x = useMemo(() => 15 * i, [i]);
+  const y = useMemo(() => 0, [i]);
   const scale = useMemo(() => 1 - i * 0.1, [i]);
   const zIndex = useMemo(() => 2 - i, [i]);
-  const rotate = useMemo(() => i * -3, [i]);
+  const rotate = useMemo(() => i * -2.5, [i]);
 
   const scaleInput = useTransform(xInput, (latest: number) => {
     const distance = Math.min(Math.abs(latest), 120) / 120;
@@ -64,8 +64,8 @@ function SwipeableCardItem({
 
   const rotateInput = useTransform(xInput, (latest: number) => {
     const distance = Math.min(Math.abs(latest), 100) / 100;
-    const start = i * -3;
-    const end = start + 3;
+    const start = i * -2.5;
+    const end = start + 2.5;
     const progress = Math.min(distance, 1);
     return lerp(start, end, Math.pow(progress, i));
   });
@@ -96,9 +96,11 @@ function SwipeableCardItem({
         gridRow: "1",
         scale: scaleVal,
         rotate: rotateVal,
+        transformOrigin: "center center",
       }}
       animate={{
         x,
+        y,
         zIndex,
         scale,
         rotate,
@@ -135,17 +137,19 @@ function SwipeableCardStack({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LayoutGroup>
-      {cards.map((card: React.ReactElement, i) => (
-        <SwipeableCardItem
-          key={card.key}
-          card={card}
-          i={i}
-          xInput={xInput}
-          moveToEnd={moveToEnd}
-        />
-      ))}
-    </LayoutGroup>
+    <div className="grid">
+      <LayoutGroup>
+        {cards.map((card: React.ReactElement, i) => (
+          <SwipeableCardItem
+            key={card.key}
+            card={card}
+            i={i}
+            xInput={xInput}
+            moveToEnd={moveToEnd}
+          />
+        ))}
+      </LayoutGroup>
+    </div>
   );
 }
 
