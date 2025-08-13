@@ -49,7 +49,7 @@ export const collections = {
       z.object({
         title: z.string(),
         description: z.string(),
-        datePublished: z.date(),
+        datePublished: z.date().optional(),
         dateModified: z.date().optional(),
         img: image().array().optional(),
         imgAlt: z.string().optional(),
