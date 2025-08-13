@@ -1,6 +1,6 @@
 h1,
 .h1 {
-  font-size: var(--fs-5);
+  font-size: var(--fs-4);
   font-weight: 700;
   line-height: 1.2;
   --flow-space: var(--space-l);
