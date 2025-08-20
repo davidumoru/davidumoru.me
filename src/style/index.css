@@ -13,8 +13,11 @@ body {
 	gap: var(--space-l);
 	-webkit-font-smoothing: antialiased;
 	font-size: var(--fs-0);
-	line-height: 1.4;
 	font-family: "Geist Mono", monospace;
 	background: var(--gray-1);
 	color: var(--gray-12);
+
+	@media (max-width: 480px) {
+        font-size: var(--fs--1);
+    }
 }
