@@ -49,6 +49,11 @@
   resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.6.1.tgz#87d0f5dbe4bdc2b61c6409672b921bca193abad6"
   integrity sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==
 
+"@astrojs/internal-helpers@0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.7.1.tgz#50ce657c415b18b88369e9c6eeb12da208783905"
+  integrity sha512-7dwEVigz9vUWDw3nRwLQ/yH/xYovlUA0ZD86xoeKEBmkz9O6iELG1yri67PgAPW6VLL/xInA4t7H0CK6VmtkKQ==
+
 "@astrojs/language-server@^2.15.0":
   version "2.15.4"
   resolved "https://registry.yarnpkg.com/@astrojs/language-server/-/language-server-2.15.4.tgz#9c2eeb64e4b9df9a52f19c6bfdce5397b8dba094"
@@ -94,6 +99,33 @@
     remark-smartypants "^3.0.2"
     shiki "^3.2.1"
     smol-toml "^1.3.1"
+    unified "^11.0.5"
+    unist-util-remove-position "^5.0.0"
+    unist-util-visit "^5.0.0"
+    unist-util-visit-parents "^6.0.1"
+    vfile "^6.0.3"
+
+"@astrojs/markdown-remark@6.3.5":
+  version "6.3.5"
+  resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-6.3.5.tgz#4049142d402cd5de28b2dbc7cf3cb8d25df866d3"
+  integrity sha512-MiR92CkE2BcyWf3b86cBBw/1dKiOH0qhLgXH2OXA6cScrrmmks1Rr4Tl0p/lFpvmgQQrP54Pd1uidJfmxGrpWQ==
+  dependencies:
+    "@astrojs/internal-helpers" "0.7.1"
+    "@astrojs/prism" "3.3.0"
+    github-slugger "^2.0.0"
+    hast-util-from-html "^2.0.3"
+    hast-util-to-text "^4.0.2"
+    import-meta-resolve "^4.1.0"
+    js-yaml "^4.1.0"
+    mdast-util-definitions "^6.0.0"
+    rehype-raw "^7.0.0"
+    rehype-stringify "^10.0.1"
+    remark-gfm "^4.0.1"
+    remark-parse "^11.0.0"
+    remark-rehype "^11.1.2"
+    remark-smartypants "^3.0.2"
+    shiki "^3.2.1"
+    smol-toml "^1.3.4"
     unified "^11.0.5"
     unist-util-remove-position "^5.0.0"
     unist-util-visit "^5.0.0"
@@ -1633,14 +1665,14 @@ astro-og-canvas@^0.7.0:
     deterministic-object-hash "^2.0.2"
     entities "^4.4.0"
 
-astro@^5.10.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-5.10.0.tgz#13f1202453ecc6fb1fe2dab09d244961fe5db307"
-  integrity sha512-g/t54kVzQnFVijs+GbbbX/NBAFTl/3yNAEA/AQYq4FumLLVv7n4BIF+jKhcPGn9iFGyT1Cjvr7KB/qYyNvHEIg==
+astro@^5.12.8:
+  version "5.12.8"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-5.12.8.tgz#ddccb1e1b9ffc07bbfa3eb512cfded8bf0f319b4"
+  integrity sha512-KkJ7FR+c2SyZYlpakm48XBiuQcRsrVtdjG5LN5an0givI/tLik+ePJ4/g3qrAVhYMjJOxBA2YgFQxANPiWB+Mw==
   dependencies:
     "@astrojs/compiler" "^2.12.2"
-    "@astrojs/internal-helpers" "0.6.1"
-    "@astrojs/markdown-remark" "6.3.2"
+    "@astrojs/internal-helpers" "0.7.1"
+    "@astrojs/markdown-remark" "6.3.5"
     "@astrojs/telemetry" "3.3.0"
     "@capsizecss/unpack" "^2.4.0"
     "@oslojs/encoding" "^1.1.0"
@@ -1683,6 +1715,7 @@ astro@^5.10.0:
     rehype "^13.0.2"
     semver "^7.7.1"
     shiki "^3.2.1"
+    smol-toml "^1.3.4"
     tinyexec "^0.3.2"
     tinyglobby "^0.2.12"
     tsconfck "^3.1.5"
@@ -1696,7 +1729,7 @@ astro@^5.10.0:
     xxhash-wasm "^1.1.0"
     yargs-parser "^21.1.1"
     yocto-spinner "^0.2.1"
-    zod "^3.24.2"
+    zod "^3.24.4"
     zod-to-json-schema "^3.24.5"
     zod-to-ts "^1.2.0"
   optionalDependencies:
@@ -4476,10 +4509,10 @@ sitemap@^8.0.0:
     arg "^5.0.0"
     sax "^1.2.4"
 
-smol-toml@^1.3.1:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/smol-toml/-/smol-toml-1.3.4.tgz#4ec76e0e709f586bc50ba30eb79024173c2b2221"
-  integrity sha512-UOPtVuYkzYGee0Bd2Szz8d2G3RfMfJ2t3qVdZUAozZyAk+a0Sxa+QKix0YCwjL/A1RR0ar44nCxaoN9FxdJGwA==
+smol-toml@^1.3.1, smol-toml@^1.3.4:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/smol-toml/-/smol-toml-1.4.2.tgz#46c4dcc71f982040085ee54b22377c96a4597ce3"
+  integrity sha512-rInDH6lCNiEyn3+hH8KVGFdbjc099j47+OSgbMrfDYX1CmXLfdKd7qi6IfcWj2wFxvSVkuI46M+wPGYfEOEj6g==
 
 source-map-js@^1.0.1, source-map-js@^1.2.0, source-map-js@^1.2.1:
   version "1.2.1"
@@ -5223,10 +5256,10 @@ zod-to-ts@^1.2.0:
   resolved "https://registry.yarnpkg.com/zod-to-ts/-/zod-to-ts-1.2.0.tgz#873a2fd8242d7b649237be97e0c64d7954ae0c51"
   integrity sha512-x30XE43V+InwGpvTySRNz9kB7qFU8DlyEy7BsSTCHPH1R0QasMmHWZDCzYm6bVXtj/9NNJAZF3jW8rzFvH5OFA==
 
-zod@^3.24.2:
-  version "3.25.67"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.67.tgz#62987e4078e2ab0f63b491ef0c4f33df24236da8"
-  integrity sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==
+zod@^3.24.2, zod@^3.24.4:
+  version "3.25.76"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.76.tgz#26841c3f6fd22a6a2760e7ccb719179768471e34"
+  integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==
 
 zwitch@^2.0.0, zwitch@^2.0.4:
   version "2.0.4"
