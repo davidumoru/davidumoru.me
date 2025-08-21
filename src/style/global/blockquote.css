@@ -1,7 +1,16 @@
 blockquote {
   border-left: 3px solid var(--gray-8);
-  background: var(--gray-3);
+  background: var(--gray-2);
   color: var(--gray-11);
   margin: var(--space-m) 0;
   padding: var(--space-xs) var(--space-m);
+  font-style: italic;
+}
+
+.prose blockquote p {
+  margin-bottom: 0;
+}
+
+.prose blockquote a {
+  color: var(--gray-11);
 }
