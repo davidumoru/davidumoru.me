@@ -24,7 +24,7 @@
     "@types/react-dom": "^19.0.3",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
-    "astro": "^5.12.8",
+    "astro": "^5.13.1",
     "astro-expressive-code": "^0.41.2",
     "astro-loading-indicator": "^0.7.0",
     "astro-og-canvas": "^0.7.0",
