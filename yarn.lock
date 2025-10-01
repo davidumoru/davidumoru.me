@@ -1665,6 +1665,11 @@ astro-og-canvas@^0.7.0:
     deterministic-object-hash "^2.0.2"
     entities "^4.4.0"
 
+astro-webrings@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/astro-webrings/-/astro-webrings-0.1.2.tgz#5fe01d7da85c0ef73db985ecabbf3578ed256494"
+  integrity sha512-WWaTnvLRJ9HGPqCnN2QHsFYTXq3tDIUF29v+ufAcix9YyPvWecsOfxSqru1rsC8HSlRN3Un3HNdab4Xt+BO0Ng==
+
 astro@^5.13.1:
   version "5.13.1"
   resolved "https://registry.yarnpkg.com/astro/-/astro-5.13.1.tgz#38f7a441abc95cedcff9c1259e95a6f99444d5c9"
