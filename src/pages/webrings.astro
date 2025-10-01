@@ -4,6 +4,7 @@ import Webring from "../components/Webring.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CenteredLayout from "../layouts/CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
+import WebringBadge from "astro-webrings/badge";
 
 const webrings = await getCollection("webrings");
 ---
@@ -15,11 +16,15 @@ const webrings = await getCollection("webrings");
   <CenteredLayout>
     <PageHeader
       title="Webrings"
-      description="Webrings I belong to"
+      description="Webrings this site belong to"
     />
     <section>
       <div class="webrings">
         {webrings.map((webring) => <Webring webring={webring} />)}
+      </div>
+      <div class="badges">
+        <WebringBadge site="davidumoru.me" ring="built-with-astro" />
+        <WebringBadge site={"davidumoru.me"} ring="friends-of-houston" animated />
       </div>
     </section>
   </CenteredLayout>
@@ -30,5 +35,13 @@ const webrings = await getCollection("webrings");
     display: flex;
     flex-direction: column;
     gap: var(--space-m);
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-top: var(--space-m);
+    justify-content: center;
   }
 </style>
