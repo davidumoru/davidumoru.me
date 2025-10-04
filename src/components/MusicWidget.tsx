@@ -62,8 +62,8 @@ const AudioVisualization: FC = () => {
     const animate = () => {
       setBars((prev) =>
         prev.map((bar) => {
-          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.2;
-          if (Math.random() < 0.05) {
+          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.1;
+          if (Math.random() < 0.03) {
             return {
               ...bar,
               height: newHeight,
@@ -92,8 +92,8 @@ const AudioVisualization: FC = () => {
       >
         <defs>
           <linearGradient id="audioGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--green-9)" />
-            <stop offset="100%" stopColor="var(--blue-9)" />
+            <stop offset="0%" stopColor="var(--tomato-8)" />
+            <stop offset="100%" stopColor="var(--tomato-10)" />
           </linearGradient>
         </defs>
         {bars.map((bar, i) => (
@@ -130,7 +130,7 @@ const MusicWidgetSkeleton: FC = () => (
 );
 
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
-  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] font-sans overflow-x-auto">
+  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] overflow-x-auto">
     <div className="flex items-center gap-x-3">
       <ErrorIcon className="h-5 w-5 flex-shrink-0" />
       <div>
@@ -178,11 +178,11 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
           rel="noopener noreferrer"
           className="hover:underline"
         >
-          <p className="truncate text-base sm:text-lg font-semibold font-sans text-[var(--gray-12)] leading-tight">
+          <p className="truncate text-base sm:text-lg font-semibold text-[var(--gray-12)] leading-tight">
             {song.title}
           </p>
         </a>
-        <p className="truncate text-sm sm:text-base font-sans text-[var(--gray-11)]">
+        <p className="truncate text-sm sm:text-base text-[var(--gray-11)]">
           {song.artists}
         </p>
       </div>
@@ -190,10 +190,10 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
-    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm font-sans text-[var(--gray-11)]">
+    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-[var(--gray-11)]">
       <div
         className={`h-3 w-3 flex-shrink-0 rounded-full ${
-          song.isPlaying ? "bg-[var(--green-9)]" : "bg-[var(--gray-8)]"
+          song.isPlaying ? "bg-[var(--tomato-9)]" : "bg-[var(--gray-8)]"
         }`}
       ></div>
       <div className="truncate">{song.lastPlayed}</div>
