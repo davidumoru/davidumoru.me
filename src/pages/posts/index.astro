@@ -7,8 +7,8 @@ import PageHeader from "../../components/PageHeader.astro";
 
 const posts = await getCollection("posts");
 
-const articles = posts
-  .filter((post) => post.data.article === true)
+const essays = posts
+  .filter((post) => post.data.essay === true)
   .sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
@@ -16,7 +16,7 @@ const articles = posts
   );
 
 const notes = posts
-  .filter((post) => post.data.article === false)
+  .filter((post) => post.data.essay === false)
   .sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
@@ -29,14 +29,14 @@ const notes = posts
   description="Essays, notes, and writings on development, design, tools, and personal reflection."
 >
   <CenteredLayout>
-    <section id="articles" class="flow">
+    <section id="essays" class="flow">
       <PageHeader
-        title="Articles"
+        title="Essays"
         description="Opinionated, longform narrative writing"
       />
       <div>
         {
-          articles.map((post) => (
+          essays.map((post) => (
             <PostCard
               url={`posts/${post.id}`}
               title={post.data.title}
