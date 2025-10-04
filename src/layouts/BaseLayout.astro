@@ -77,7 +77,6 @@ const viewTransition = {
       href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap"
       rel="stylesheet"
     />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta
@@ -117,7 +116,7 @@ const viewTransition = {
     <meta name="twitter:creator" content="@theumoru" />
 
     <title>{title && `${title} - `} David Umoru</title>
-
+  
     <script is:inline>
       const themeStorageKey = "theme-preference";
       const getThemePreference = () => {
@@ -132,7 +131,12 @@ const viewTransition = {
           : "light";
       };
       const theme = getThemePreference();
-      document.documentElement.setAttribute("data-theme", theme);
+      
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     </script>
 
     <ClientRouter />
@@ -151,7 +155,12 @@ const viewTransition = {
     <script is:inline>
       document.addEventListener("astro:before-swap", (event) => {
         const theme = getThemePreference();
-        event.newDocument.documentElement.setAttribute("data-theme", theme);
+        
+        if (theme === "dark") {
+          event.newDocument.documentElement.classList.add("dark");
+        } else {
+          event.newDocument.documentElement.classList.remove("dark");
+        }
       });
     </script>
   </body>
