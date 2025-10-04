@@ -19,111 +19,48 @@ const randomMessage =
 ---
 
 <BaseLayout title="404: Page Not Found" hideFooter={true}>
-  <div class="error-page-container">
-    <div class="error-content">
+    <div class="error-container">
       <h1 class="error-code">404</h1>
       <p class="error-message">
         {randomMessage}
       </p>
-      <div class="gif-container">
-        <img
-          id="error-gif"
-          src=""
-          alt="Animated GIF related to being lost or confused"
-          width="300"
-          height="250"
-          loading="lazy"
+      <img
+        id="error-gif"
+        src=""
+        alt="Animated GIF related to being lost or confused"
+        width="300"
+        height="250"
+        loading="lazy"
         />
-      </div>
     </div>
-  </div>
 </BaseLayout>
 
 <style>
-  .error-page-container {
-    --text-color: var(--gray-12);
-    --text-secondary: var(--gray-11);
-    --bg-subtle: var(--gray-6);
-    background-color: var(--gray-1);
-
+  .error-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+    min-height: 70vh;
     text-align: center;
-    min-height: 80vh;
-    padding: 5rem 1rem 2rem;
-    box-sizing: border-box;
-    color: var(--text-color);
-  }
-
-  .error-content {
-    max-width: 550px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   .error-code {
-    font-size: clamp(4rem, 18vw, 7rem);
-    font-weight: 800;
-    line-height: 1;
-    margin: 0 0 0.5rem;
-    color: var(--text-color);
+    font-size: 10rem;
+    margin: 2rem 0;
+  }
+  @media (max-width: 768px) {
+    .error-code {
+      font-size: 8rem;
+      margin: 1rem 0;
+    }
+    .error-container {
+      min-height: 55vh;
+    } 
   }
 
   .error-message {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin: 0 auto 2rem;
-    color: var(--text-secondary);
-    max-width: 450px;
-  }
-
-  .gif-container {
-    margin: 0 auto 2.5rem;
-    max-width: 350px;
-    width: 100%;
-    background-color: var(--bg-subtle);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.08);
-    min-height: 150px;
-  }
-
-  [data-theme="dark"] .gif-container {
-    box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.2);
-  }
-
-  [data-theme="dark"] .gif-container img {
-    filter: brightness(0.9) contrast(1.1);
-  }
-
-  .gif-container img {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-height: 300px;
-    object-fit: contain;
-  }
-
-  @media (max-width: 480px) {
-    .error-page-container {
-      padding-top: 3rem;
-      min-height: 70vh;
-    }
-    .error-code {
-      font-size: 4rem;
-    }
-    .error-message {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .gif-container {
-      margin-bottom: 2rem;
-      max-width: 300px;
-    }
+    margin: 2rem 0;
   }
 </style>
 
