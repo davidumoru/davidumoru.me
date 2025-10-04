@@ -10,9 +10,14 @@
     height: 24px;
 }
   
-.icon.small {
+.icon.medium {
     width: 20px;
     height: 20px;
+}
+
+.icon.small {
+    width: 18px;
+    height: 18px;
 }
   
 .icon.extraSmall {

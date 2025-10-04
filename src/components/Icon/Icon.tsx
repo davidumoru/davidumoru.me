@@ -44,7 +44,7 @@ export interface IconProps {
    * Icon size in px
    * @default "24"
    */
-  size?: "16" | "20" | "22" | "24";
+  size?: "16" | "18" | "20" | "22" | "24";
 
   className?: string;
 }
@@ -177,7 +177,7 @@ export const Icon = ({ icon, variant, size, className }: IconProps) => {
       height="24"
       className={classNames(
         "icon",
-        { small: size === "20", extraSmall: size === "16" },
+        { extraSmall: size === "16", small: size === "18", medium: size === "20", large: size === "24" },
         className
       )}
       aria-hidden="true"
