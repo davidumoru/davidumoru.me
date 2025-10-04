@@ -1,8 +1,9 @@
 ---
 import { getCollection } from "astro:content";
-import PostCard from "../../components/PostCard.astro";
+import PostCard from "../../components/PostItem.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CenteredLayout from "../../layouts/CenteredLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
 
 const posts = await getCollection("posts");
 
@@ -29,8 +30,11 @@ const notes = posts
 >
   <CenteredLayout>
     <section id="articles" class="flow">
-      <h1>Articles</h1>
-      <div class="region flow">
+      <PageHeader
+        title="Articles"
+        description="Opinionated, longform narrative writing"
+      />
+      <div>
         {
           articles.map((post) => (
             <PostCard
@@ -45,9 +49,14 @@ const notes = posts
       </div>
     </section>
 
+    <hr>
+
     <section id="notes" class="flow">
-      <h1>Notes</h1>
-      <div class="region flow">
+      <PageHeader
+        title="Notes"
+        description="Loose, unopinionated notes on things I don't entirely understand yet. "
+      />
+      <div>
         {
           notes.map((post) => (
             <PostCard

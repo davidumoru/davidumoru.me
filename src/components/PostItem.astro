@@ -18,16 +18,16 @@ const { url, title, description, datePublished, features } = Astro.props;
 ---
 
 <article>
-  <p class="fs--1 shade">
+  <p class="fs-0">
     {datePublished ? displayDate(datePublished) : "Unknown Date"}
   </p>
   <a href={url}>
-    <h3>{title}</h3>
+    <p id="title">{title}</p>
   </a>
   <p>{description}</p>
   {
     features && (
-      <p class="fs--1 shade">
+      <p class="fs--0 feature">
         Featured on{" "}
         {features.map(({ name, url }, i) => [
           i > 0 && ", ",
@@ -48,7 +48,25 @@ const { url, title, description, datePublished, features } = Astro.props;
   article:not(:first-child) {
     margin-block: var(--space-m);
   }
-  p {
-    margin-block: 0.3rem;
+
+
+  #title {
+    font-family: 'Inter', sans-serif;
+    font-size: var(--fs-2);
+    font-weight: 500;
+    color: var(--gray-12);
+  }
+
+  a:has(#title) {
+    text-decoration: none;
+  }
+  a:has(#title):hover #title {
+    color: var(--tomato-9);
+    transition: color 0.3s ease;
+  }
+
+  .feature {
+    color: var(--gray-12);
+    font-weight: 300;
   }
 </style>
