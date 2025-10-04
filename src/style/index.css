@@ -11,13 +11,9 @@ body {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	gap: var(--space-l);
-	-webkit-font-smoothing: antialiased;
-	font-size: var(--fs-0);
-	font-family: "Geist Mono", monospace;
+	font-size: var(--fs-1);
+	font-family: "Inter", sans-serif;
+	font-weight: 400;
 	background: var(--gray-1);
-	color: var(--gray-12);
-
-	@media (max-width: 480px) {
-        font-size: var(--fs--1);
-    }
+	color: var(--gray-11);
 }
