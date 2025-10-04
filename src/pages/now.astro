@@ -24,7 +24,7 @@ posts.sort(
           <div class="timeline-post">
             <div class="timeline-marker" />
             <div class="post-content">
-              <p class="date">{displayDate(post.data.date)}</p>
+              <h4>{displayDate(post.data.date)}</h4>
               <div class="content">{post.body}</div>
             </div>
           </div>
@@ -34,48 +34,44 @@ posts.sort(
   </CenteredLayout>
 
   <style>
-    .timeline-post {
-      display: flex;
-      margin-bottom: 2rem;
+    .timeline {
       position: relative;
     }
 
-    .timeline-marker {
-      width: 2px;
-      background-color: var(--gray-8);
+    .timeline::before {
+      content: "";
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 0;
-      margin-left: -1px;
-      transition: background-color 0.2s ease;
+      left: 5px;
+      width: 2px;
+      background-color: var(--tomato-9);
+    }
+
+    .timeline-post {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-post:last-child {
+      margin-bottom: 0;
     }
 
     .timeline-marker::before {
       content: "";
       position: absolute;
-      top: 10px;
-      left: -6px;
+      top:5px;
       width: 12px;
       height: 12px;
-      border-radius: 50%;
-      background-color: var(--gray-1);
-      border: 2px solid var(--gray-8);
-      z-index: 1;
-      transition:
-        border-color 0.2s ease,
-        background-color 0.2s ease;
+      background-color: var(--tomato-9);
     }
 
     .post-content {
-      width: calc(100% - 0px);
-      padding-left: 20px;
+      padding-left: var(--space-l);
     }
 
-    .date {
-      font-size: 0.9rem;
-      color: var(--gray-11);
-      margin-bottom: 0.5rem;
+    .content {
+      margin: var(--space-3xs) 0;
     }
   </style>
 </BaseLayout>
