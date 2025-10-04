@@ -51,4 +51,14 @@
   --space-xl: 3rem;
   --space-2xl: 4rem;
   --space-3xl: 6rem;
+
+  --lh--2: 1rem;
+  --lh--1: 1.25rem;
+  --lh-0: 1.5rem;
+  --lh-1: 1.625rem;
+  --lh-2: 1.75rem;
+  --lh-3: 1.875rem;
+  --lh-4: 2.25rem;
+  --lh-5: 2.5rem;
+  --lh-6: 3.75rem;
 }
