@@ -24,7 +24,7 @@ posts.sort(
           <div class="timeline-post">
             <div class="timeline-marker" />
             <div class="post-content">
-              <h4>{displayDate(post.data.date)}</h4>
+              <p id="date">{displayDate(post.data.date)}</p>
               <div class="content">{post.body}</div>
             </div>
           </div>
@@ -72,6 +72,11 @@ posts.sort(
 
     .content {
       margin: var(--space-3xs) 0;
+    }
+
+    #date {
+      color: var(--gray-12);
+      font-weight: 500;
     }
   </style>
 </BaseLayout>
