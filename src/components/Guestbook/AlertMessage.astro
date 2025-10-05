@@ -1,4 +1,6 @@
 ---
+import { Icon } from "../Icon/Icon";
+
 interface Props {
   type: "success" | "error";
   message: string;
@@ -6,11 +8,13 @@ interface Props {
 
 const { type, message } = Astro.props;
 
-const icon = type === "success" ? "✅" : "⚠️";
+const iconName = type === "success" ? "check" : "alert";
 ---
 
 <div class="alert" data-type={type} role="alert">
-  <span class="icon" aria-hidden="true">{icon}</span>
+  <span class="icon" aria-hidden="true">
+    <Icon icon={iconName} size="22" />
+  </span>
   <p class="message" id="alert-message">{message}</p>
 </div>
 
