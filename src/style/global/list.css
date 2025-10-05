@@ -1,4 +1,4 @@
-ul {
+ul, ol {
 	padding-inline-start: 0.9ch;
 }
 li {
@@ -7,6 +7,6 @@ li {
 		margin-block-start: var(--space-3xs);
 	}
 	&::marker {
-		color: var(--gray-11);
+		color: var(--tomato-9);
 	}
 }
