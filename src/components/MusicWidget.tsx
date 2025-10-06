@@ -92,8 +92,8 @@ const AudioVisualization: FC = () => {
       >
         <defs>
           <linearGradient id="audioGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--tomato-8)" />
-            <stop offset="100%" stopColor="var(--tomato-10)" />
+            <stop offset="0%" stopColor="var(--tomato-9)" />
+            <stop offset="100%" stopColor="var(--tomato-11)" />
           </linearGradient>
         </defs>
         {bars.map((bar, i) => (
