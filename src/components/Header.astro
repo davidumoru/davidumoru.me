@@ -11,9 +11,10 @@ const navItems = [
 ];
 
 const currentPath = Astro.url.pathname;
+const isGuestbook = currentPath === "/guestbook" || currentPath.startsWith("/guestbook/");
 ---
 
-<header class="site-header">
+<header class={`site-header ${isGuestbook ? 'site-header--static' : ''}`}>
   <ThemeToggle />
   <nav aria-label="Primary navigation">
     <ul class="nav-links">
@@ -82,6 +83,16 @@ const currentPath = Astro.url.pathname;
     .site-header {
       position: static;
       padding: var(--space-m);
+    }
+
+    .site-header--static {
+      position: static;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .site-header--static {
+      position: absolute;
     }
   }
 </style>
