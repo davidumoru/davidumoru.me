@@ -1,5 +1,6 @@
 ul, ol {
 	padding-inline-start: 0.9ch;
+	list-style: revert;
 }
 li {
 	padding-inline-start: var(--space-2xs);
