@@ -11,22 +11,24 @@ const navItems = [
 ];
 
 const currentPath = Astro.url.pathname;
-const isGuestbook = currentPath === "/guestbook" || currentPath.startsWith("/guestbook/");
+const isGuestbook =
+  currentPath === "/guestbook" || currentPath.startsWith("/guestbook/");
 ---
 
-<header class={`site-header ${isGuestbook ? 'site-header--static' : ''}`}>
+<header class={`site-header ${isGuestbook ? "site-header--static" : ""}`}>
   <ThemeToggle />
   <nav aria-label="Primary navigation">
     <ul class="nav-links">
       {navItems.map(({ href, label }) => {
-        const isActive = href === "/" 
-          ? currentPath === "/" 
-          : currentPath.startsWith(href);
-        
+        const isActive =
+          href === "/"
+            ? currentPath === "/"
+            : currentPath.startsWith(href);
+
         return (
           <li>
-            <a 
-              href={href} 
+            <a
+              href={href}
               aria-current={isActive ? "page" : undefined}
             >
               {label}
@@ -61,7 +63,7 @@ const isGuestbook = currentPath === "/guestbook" || currentPath.startsWith("/gue
     display: block;
     text-decoration: none;
     color: var(--gray-12);
-    transition: 
+    transition:
       color 0.2s ease,
       text-decoration-color 0.2s ease;
   }
@@ -83,6 +85,16 @@ const isGuestbook = currentPath === "/guestbook" || currentPath.startsWith("/gue
     .site-header {
       position: static;
       padding: var(--space-m);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-s);
+    }
+
+    .nav-links {
+      flex-direction: column;
+      padding: var(--space-m) 0 0;
+      gap: var(--space-3xs);
     }
 
     .site-header--static {
