@@ -165,6 +165,15 @@ const error = Astro.url.searchParams.get("error");
 
     <GuestbookForm />
   </main>
+
+  <button 
+    id="scrollToFormBtn" 
+    class="floating-btn"
+    aria-label="Scroll to guestbook form"
+    title="Add your message"
+  >
+    +
+  </button>
 </BaseLayout>
 
 <style>
@@ -177,4 +186,73 @@ const error = Astro.url.searchParams.get("error");
     margin: 0 auto 48px;
     text-align: center;
   }
+
+  .floating-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent, #3b82f6);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .floating-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .floating-btn:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    .floating-btn {
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 48px;
+      height: 48px;
+      font-size: 1.75rem;
+    }
+  }
 </style>
+
+<script>
+  const scrollBtn = document.getElementById('scrollToFormBtn');
+  const form = document.querySelector('form');
+  
+  scrollBtn?.addEventListener('click', () => {
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (scrollBtn) {
+        if (entry.isIntersecting) {
+          scrollBtn.style.opacity = '0';
+          scrollBtn.style.pointerEvents = 'none';
+        } else {
+          scrollBtn.style.opacity = '1';
+          scrollBtn.style.pointerEvents = 'auto';
+        }
+      }
+    });
+  }, {
+    threshold: 0.1
+  });
+
+  if (form) {
+    observer.observe(form);
+  }
+</script>
