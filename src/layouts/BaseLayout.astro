@@ -1,22 +1,25 @@
 ---
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import TableOfContents from "../components/TableOfContents.tsx";
 import "../style/index.css";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { ClientRouter } from "astro:transitions";
 import type { TransitionAnimationPair } from "astro";
+import type { MarkdownHeading } from "astro";
 import LoadingIndicator from "astro-loading-indicator/component";
 
 export type Props = {
   title?: string;
   description?: string;
   hideFooter?: boolean;
+  headings?: MarkdownHeading[];
 };
-const { title, description, hideFooter } = Astro.props;
+const { title, description, hideFooter, headings } = Astro.props;
 
 const rawPath = new URL(Astro.url.pathname, Astro.site).pathname.replace(
-  /\/$/,
+  /\/*$/,
   ""
 );
 const pagePath = rawPath === "" ? "/index" : rawPath;
@@ -70,8 +73,11 @@ const viewTransition = {
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta
@@ -111,7 +117,7 @@ const viewTransition = {
     <meta name="twitter:creator" content="@theumoru" />
 
     <title>{title && `${title} - `} David Umoru</title>
-  
+
     <script is:inline>
       const themeStorageKey = "theme-preference";
       const getThemePreference = () => {
@@ -126,7 +132,7 @@ const viewTransition = {
           : "light";
       };
       const theme = getThemePreference();
-      
+
       if (theme === "dark") {
         document.documentElement.classList.add("dark");
       } else {
@@ -143,6 +149,11 @@ const viewTransition = {
     <main class="flow" transition:animate={viewTransition}>
       <slot />
     </main>
+    {headings && headings.length > 0 && (
+      <aside class="toc-sidebar-global">
+        <TableOfContents client:load />
+      </aside>
+    )}
     {!hideFooter && <Footer />}
     <Analytics />
     <SpeedInsights />
@@ -150,7 +161,7 @@ const viewTransition = {
     <script is:inline>
       document.addEventListener("astro:before-swap", (event) => {
         const theme = getThemePreference();
-        
+
         if (theme === "dark") {
           event.newDocument.documentElement.classList.add("dark");
         } else {
@@ -164,10 +175,34 @@ const viewTransition = {
 <style is:global>
   main {
     margin-top: 6rem;
+    min-height: 80vh;
   }
   @media (max-width: 768px) {
     main {
       margin-top: 0;
+    }
+  }
+
+  .toc-sidebar-global {
+    position: fixed;
+    top: 6rem;
+    right: 6rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    z-index: 30;
+  }
+
+  @media (max-width: 1536px) {
+    .toc-sidebar-global {
+      top: 5rem;
+      right: 3rem;
+      max-height: calc(100vh - 7rem);
+    }
+  }
+
+  @media (max-width: 1280px) {
+    .toc-sidebar-global {
+      display: none;
     }
   }
 
