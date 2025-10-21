@@ -1,14 +1,13 @@
 hr {
-  border: 0;
-  margin-block: var(--space-l);
-  --flow-space: var(--space-l);
+  margin: var(--space-xl) auto;
   white-space: nowrap;
-  overflow: hidden;
-  font-weight: 100;
-  font-size: var(--fs-1);
+  font-weight: 300;
+  font-size: var(--fs-2);
   text-align: center;
+  height: 1.5em;
 }
 
 hr::before {
   content: "***";
+  color: var(--tomato-9);
 }
