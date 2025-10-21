@@ -21,13 +21,13 @@ const projects = (await getCollection("projects")).sort(
 
     <div class="project-list-wrapper">
       <div class="revamp-overlay">
-      <p>
-        I’m rebuilding this section to better reflect my current direction — more UI-heavy, more experimental.  
-        While it’s in progress, you can browse <a href="https://davidumoru.me/lab">Lab</a>, explore my
-        <a href="https://playground.davidumoru.me/" target="_blank" rel="noopener noreferrer">Playground</a>,
-        or check my <a href="https://github.com/davidumoru/" target="_blank" rel="noopener noreferrer">GitHub</a>
-        for live work.
-      </p>
+        <p>
+          I’m rebuilding this section to better reflect my current direction; more UI-heavy, more experimental.  
+          While it’s in progress, you can browse <a href="https://davidumoru.me/lab">Lab</a>, explore my
+          <a href="https://playground.davidumoru.me/" target="_blank" rel="noopener noreferrer">Playground</a>,
+          or check my <a href="https://github.com/davidumoru/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          for live work.
+        </p>
       </div>
 
       <div class="project-list blurred">
@@ -111,6 +111,14 @@ const projects = (await getCollection("projects")).sort(
   }
 
   .revamp-overlay {
+    background-color: #ffc;
+    border: 1px solid #e0e0e0;
+    padding: 1.5rem;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    width: 90%;
+    
     position: absolute;
     top: 50%;
     left: 50%;
@@ -118,6 +126,12 @@ const projects = (await getCollection("projects")).sort(
     z-index: 10;
     text-align: center;
     font-weight: 600;
+  }
+  .revamp-overlay p {
+    color: #1a1a1a;
+  }
+  .revamp-overlay a {
+    color: #a04000;
   }
 
   .project-list {
@@ -128,10 +142,10 @@ const projects = (await getCollection("projects")).sort(
   }
 
   .project-list.blurred {
-    filter: blur(4px);
+    filter: blur(2px);
     pointer-events: none;
     user-select: none;
-    opacity: 0.5;
+    opacity: 0.7;
   }
 
   .project-card {
