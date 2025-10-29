@@ -240,9 +240,23 @@ const MusicWidget: FC = () => {
     };
 
     fetchSpotifyData();
-    const interval = setInterval(fetchSpotifyData, 45000);
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        fetchSpotifyData();
+      }
+    }, 45000);
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchSpotifyData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
       clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

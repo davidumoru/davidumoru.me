@@ -17,6 +17,13 @@ const MUSIC_CACHE_HEADERS = {
   "Access-Control-Allow-Origin": "*",
 };
 
+let cache: {
+  data: any;
+  timestamp: number;
+} | null = null;
+
+const CACHE_TTL = 30000;
+
 interface SpotifyImage {
   url: string;
 }
@@ -127,6 +134,13 @@ function formatTrackData(track: SpotifyTrack) {
 }
 
 export const GET: APIRoute = async () => {
+  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
+    return new Response(JSON.stringify(cache.data), {
+      status: 200,
+      headers: MUSIC_CACHE_HEADERS,
+    });
+  }
+
   if (!client_id || !client_secret || !refresh_token) {
     return new Response(
       JSON.stringify({
@@ -160,6 +174,9 @@ export const GET: APIRoute = async () => {
         isPlaying: true,
         lastPlayed: "Listening now",
       };
+      
+      cache = { data: songData, timestamp: Date.now() };
+      
       return new Response(JSON.stringify(songData), {
         status: 200,
         headers: MUSIC_CACHE_HEADERS,
@@ -180,6 +197,9 @@ export const GET: APIRoute = async () => {
         isPlaying: false,
         lastPlayed: formatPlayedAt(lastTrack.played_at),
       };
+      
+      cache = { data: songData, timestamp: Date.now() };
+      
       return new Response(JSON.stringify(songData), {
         status: 200,
         headers: MUSIC_CACHE_HEADERS,
