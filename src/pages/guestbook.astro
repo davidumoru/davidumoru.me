@@ -55,13 +55,18 @@ if (Astro.request.method === "POST") {
     return Astro.redirect("/guestbook?error=too_many_links");
   }
 
-  await db.insert(GuestBook).values({
+  const insertData: any = {
     author,
-    link,
     content,
     country,
     timestamp: new Date(),
-  });
+  };
+
+  if (link) {
+    insertData.link = link;
+  }
+
+  await db.insert(GuestBook).values(insertData);
   return Astro.redirect("/guestbook?success=message_added");
 }
 
