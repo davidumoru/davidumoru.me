@@ -9,6 +9,9 @@ const GuestBook = defineTable({
     country: column.text(),
     timestamp: column.date({ default: NOW }),
   },
+  indexes: {
+    timestamp_idx: { on: ["timestamp"], unique: false },
+  },
 });
 
 // https://astro.build/db/config

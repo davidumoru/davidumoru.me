@@ -20,7 +20,7 @@ const generateOptimizedCloudinaryUrl = (url: string) => {
   if (index === -1) return url;
   const baseUrl = url.substring(0, index + uploadMarker.length);
   const imagePath = url.substring(index + uploadMarker.length);
-  const transformation = "w_300,h_375,c_fill,f_auto,q_auto/";
+  const transformation = "w_300,h_375,c_fill,f_auto,q_auto:eco,dpr_auto/";
   return `${baseUrl}${transformation}${imagePath}`;
 };
 
@@ -73,17 +73,19 @@ if (Astro.request.method === "POST") {
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const offset = (page - 1) * PER_PAGE;
 
-const totalEntriesResult = await db
-  .select({ count: sql`count(*)` })
-  .from(GuestBook);
-const totalEntries = totalEntriesResult[0].count as number;
+const [guestBook, totalEntriesResult] = await Promise.all([
+  db
+    .select()
+    .from(GuestBook)
+    .orderBy(desc(GuestBook.timestamp))
+    .limit(PER_PAGE)
+    .offset(offset),
+  db
+    .select({ count: sql`count(*)` })
+    .from(GuestBook)
+]);
 
-const guestBook = await db
-  .select()
-  .from(GuestBook)
-  .orderBy(desc(GuestBook.timestamp))
-  .limit(PER_PAGE)
-  .offset(offset);
+const totalEntries = totalEntriesResult[0].count as number;
 
 const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
