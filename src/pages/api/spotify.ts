@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
+import { kv } from "@vercel/kv";
 
 const client_id = import.meta.env.SPOTIFY_CLIENT_ID;
 const client_secret = import.meta.env.SPOTIFY_CLIENT_SECRET;
@@ -16,13 +17,6 @@ const MUSIC_CACHE_HEADERS = {
   "Vercel-CDN-Cache-Control": "no-store",
   "Access-Control-Allow-Origin": "*",
 };
-
-let cache: {
-  data: any;
-  timestamp: number;
-} | null = null;
-
-const CACHE_TTL = 30000;
 
 interface SpotifyImage {
   url: string;
@@ -134,11 +128,15 @@ function formatTrackData(track: SpotifyTrack) {
 }
 
 export const GET: APIRoute = async () => {
-  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
-    return new Response(JSON.stringify(cache.data), {
-      status: 200,
-      headers: MUSIC_CACHE_HEADERS,
-    });
+  try {
+    const cachedData = await kv.get("spotify-music");
+    if (cachedData) {
+      return new Response(JSON.stringify(cachedData), {
+        status: 200,
+        headers: MUSIC_CACHE_HEADERS,
+      });
+    }
+  } catch (e) {
   }
 
   if (!client_id || !client_secret || !refresh_token) {
@@ -174,9 +172,12 @@ export const GET: APIRoute = async () => {
         isPlaying: true,
         lastPlayed: "Listening now",
       };
-      
-      cache = { data: songData, timestamp: Date.now() };
-      
+
+      try {
+        await kv.set("spotify-music", songData, { ex: 45 });
+      } catch (e) {
+      }
+
       return new Response(JSON.stringify(songData), {
         status: 200,
         headers: MUSIC_CACHE_HEADERS,
@@ -197,9 +198,12 @@ export const GET: APIRoute = async () => {
         isPlaying: false,
         lastPlayed: formatPlayedAt(lastTrack.played_at),
       };
-      
-      cache = { data: songData, timestamp: Date.now() };
-      
+
+      try {
+        await kv.set("spotify-music", songData, { ex: 45 });
+      } catch (e) {
+      }
+
       return new Response(JSON.stringify(songData), {
         status: 200,
         headers: MUSIC_CACHE_HEADERS,

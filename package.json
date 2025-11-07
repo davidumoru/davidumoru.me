@@ -23,6 +23,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vercel/analytics": "^1.4.1",
+    "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.1.0",
     "astro": "^5.13.1",
     "astro-expressive-code": "^0.41.2",
