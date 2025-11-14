@@ -81,28 +81,32 @@ const isGuestbook =
     text-underline-offset: 0.25em;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
     .site-header {
       position: static;
       padding: var(--space-m);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-s);
+      max-inline-size: clamp(min(100%, 20rem), 90vw, 48rem);
+      inline-size: 100%;
+      margin-inline: auto;
+      padding-inline: var(--space-xs);
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding-inline: 0;
+      }
     }
 
     .nav-links {
-      flex-direction: column;
-      padding: var(--space-m) 0 0;
-      gap: var(--space-3xs);
-    }
-
-    .site-header--static {
-      position: static;
+      padding: var(--space-s) 0 0;
     }
   }
 
-  @media (min-width: 1025px) {
+  .site-header--static {
+    position: static;
+  }
+
+  @media (min-width: 1201px) {
     .site-header--static {
       position: absolute;
     }
