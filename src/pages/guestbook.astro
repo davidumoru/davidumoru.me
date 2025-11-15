@@ -1,16 +1,13 @@
 ---
 export const prerender = false;
-import { db, GuestBook, desc, sql } from "astro:db";
+import { db, GuestBook, Stamps, desc, sql, eq } from "astro:db";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GuestbookEntry from "../components/Guestbook/GuestbookEntry.astro";
 import AlertMessage from "../components/Guestbook/AlertMessage.astro";
 import Pagination from "../components/Guestbook/Pagination.astro";
 import GuestbookForm from "../components/Guestbook/GuestbookForm.astro";
 import PageHeader from "../components/PageHeader.astro";
-import { stampData } from "../../public/stamps/stamps.ts";
 import defaultStampAsset from "../../public/stamps/default.jpg";
-
-const stampDataMap = new Map(stampData.map((stamp) => [stamp.country, stamp]));
 
 const PER_PAGE = 19;
 
@@ -75,8 +72,17 @@ const offset = (page - 1) * PER_PAGE;
 
 const [guestBook, totalEntriesResult] = await Promise.all([
   db
-    .select()
+    .select({
+      author: GuestBook.author,
+      link: GuestBook.link,
+      content: GuestBook.content,
+      country: GuestBook.country,
+      timestamp: GuestBook.timestamp,
+      stampImageUrl: Stamps.imageUrl,
+      stampHue: Stamps.hue,
+    })
     .from(GuestBook)
+    .leftJoin(Stamps, eq(GuestBook.country, Stamps.country))
     .orderBy(desc(GuestBook.timestamp))
     .limit(PER_PAGE)
     .offset(offset),
@@ -135,17 +141,14 @@ const error = Astro.url.searchParams.get("error");
     <section class="guestbook-entries">
       {
         guestBook.map((entry) => {
-          const matchingStamp = stampDataMap.get(entry.country);
-
-          const imageAssetForEntry = matchingStamp?.imageUrl
-            ? generateOptimizedCloudinaryUrl(matchingStamp.imageUrl)
+          const imageAssetForEntry = entry.stampImageUrl
+            ? generateOptimizedCloudinaryUrl(entry.stampImageUrl)
             : defaultStampAsset;
 
-          const displayCountry =
-            matchingStamp?.country || entry.country || "Unknown";
-          const displayHue = matchingStamp?.hue || 210;
-          const displayImageAlt = matchingStamp
-            ? `Stamp from ${matchingStamp.country} for ${entry.author}'s entry`
+          const displayCountry = entry.country || "Unknown";
+          const displayHue = entry.stampHue || 210;
+          const displayImageAlt = entry.stampImageUrl
+            ? `Stamp from ${entry.country} for ${entry.author}'s entry`
             : `Default stamp for ${entry.author}'s entry`;
 
           return (
@@ -173,8 +176,8 @@ const error = Astro.url.searchParams.get("error");
     <GuestbookForm />
   </main>
 
-  <button 
-    id="scrollToFormBtn" 
+  <button  
+    id="scrollToFormBtn"  
     class="floating-btn"
     aria-label="Scroll to guestbook form"
     title="Add your message"

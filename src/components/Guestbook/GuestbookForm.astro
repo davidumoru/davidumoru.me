@@ -1,6 +1,12 @@
 ---
-import { stampData } from "../../../public/stamps/stamps.ts";
-const countries = [...new Set(stampData.map((stamp) => stamp.country))].sort();
+import { db, Stamps, asc } from "astro:db";
+
+const stampCountries = await db
+  .select({ country: Stamps.country })
+  .from(Stamps)
+  .orderBy(asc(Stamps.country));
+
+const countries = stampCountries.map((stamp) => stamp.country);
 const formHue = 210;
 const lightStampBg = `hsl(${formHue}, 85%, 97%)`;
 const primaryStampColor = `hsl(${formHue}, 70%, 45%)`;

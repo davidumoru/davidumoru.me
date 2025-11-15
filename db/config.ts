@@ -14,7 +14,14 @@ const GuestBook = defineTable({
   },
 });
 
-// https://astro.build/db/config
+const Stamps = defineTable({
+  columns: {
+    country: column.text({ primaryKey: true }),
+    imageUrl: column.text(),
+    hue: column.number(),
+  },
+});
+
 export default defineDb({
-  tables: { GuestBook },
+  tables: { GuestBook, Stamps },
 });
