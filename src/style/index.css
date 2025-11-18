@@ -5,7 +5,6 @@
 
 body {
 	margin: 0.2em 0;
-	padding-block-end: var(--space-xl);
 	min-height: 100vh;
 	min-height: 100svh;
 	display: grid;

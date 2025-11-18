@@ -39,7 +39,8 @@ import SubscribeForm from "./SubscribeForm.astro";
 
 <style>
   footer {
-    padding-block: var(--space-l);
+    margin-top: var(--space-2xl);
+    padding-block: var(--space-xl);
     width: 100%;
     border-top: 1px solid var(--gray-7);
     margin-bottom: -7rem;
@@ -62,7 +63,7 @@ import SubscribeForm from "./SubscribeForm.astro";
     display: flex;
     flex-flow: column wrap;
     gap: var(--space-2xs);
-    
+
     a {
       font-family: 'EditorialNew', sans-serif;
       color: var(--gray-12);
@@ -78,7 +79,6 @@ import SubscribeForm from "./SubscribeForm.astro";
   }
 
   .banner {
-    font-size: var(--fs-0);
     grid-area: banner;
     display: flex;
     align-items: center;
@@ -86,7 +86,6 @@ import SubscribeForm from "./SubscribeForm.astro";
     transition: background-color 0.2s ease-in-out;
 
     .emoji {
-      font-size: var(--fs--1);
       padding: 0 2px 0 0;
     }
     a {
