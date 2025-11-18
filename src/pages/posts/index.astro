@@ -1,11 +1,17 @@
 ---
 import { getCollection } from "astro:content";
-import PostCard from "../../components/PostItem.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CenteredLayout from "../../layouts/CenteredLayout.astro";
 import PageHeader from "../../components/PageHeader.astro";
+import PostItem from "../../components/PostItem.astro";
 
 const posts = await getCollection("posts");
+
+const allPosts = posts.sort(
+  (a, b) =>
+    new Date(b.data.datePublished).getTime() -
+    new Date(a.data.datePublished).getTime()
+);
 
 const essays = posts
   .filter((post) => post.data.essay === true)
@@ -29,46 +35,112 @@ const notes = posts
   description="Essays, notes, and writings on development, design, tools, and personal reflection."
 >
   <CenteredLayout>
-    <section id="essays" class="flow">
-      <PageHeader
-        title="Essays"
-        description="Opinionated, longform narrative writing"
-      />
-      <div>
-        {
-          essays.map((post) => (
-            <PostCard
-              url={`posts/${post.id}`}
-              title={post.data.title}
-              description={post.data.description}
-              datePublished={post.data.datePublished}
-              features={post.data.features}
-            />
-          ))
-        }
-      </div>
-    </section>
+    <PageHeader
+      title="Posts"
+      description="Essays, notes, and writings on development, design, tools, and personal reflection."
+    />
 
-    <hr>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="essays">Essays</button>
+      <button class="filter-btn" data-filter="notes">Notes</button>
+    </div>
 
-    <section id="notes" class="flow">
-      <PageHeader
-        title="Notes"
-        description="Loose, unopinionated notes on things I don't entirely understand yet. "
-      />
-      <div>
-        {
-          notes.map((post) => (
-            <PostCard
-              url={`posts/${post.id}`}
-              title={post.data.title}
-              description={post.data.description}
-              datePublished={post.data.datePublished}
-              features={post.data.features}
-            />
-          ))
-        }
+    <div class="posts-container">
+      <div id="all-posts" class="posts-section active">
+        {allPosts.map((post) => <PostItem post={post} />)}
       </div>
-    </section>
+
+      <div id="essays-posts" class="posts-section">
+        {essays.map((post) => <PostItem post={post} />)}
+      </div>
+
+      <div id="notes-posts" class="posts-section">
+        {notes.map((post) => <PostItem post={post} />)}
+      </div>
+    </div>
   </CenteredLayout>
 </BaseLayout>
+
+<style>
+  .filters {
+    display: flex;
+    gap: var(--space-2xs);
+    margin: var(--space-m) 0 var(--space-l);
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background-color: var(--gray-3);
+    border: 1px solid var(--gray-5);
+    color: var(--gray-11);
+    font-family: "Inter", sans-serif;
+    font-size: var(--fs--2);
+    font-weight: 500;
+    cursor: pointer;
+    padding: 3px 10px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .filter-btn:hover {
+    background-color: var(--gray-4);
+    color: var(--gray-12);
+    border-color: var(--gray-6);
+  }
+
+  .filter-btn.active {
+    background-color: var(--tomato-9);
+    border-color: var(--tomato-9);
+    color: white;
+  }
+
+  .posts-section {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .posts-section.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  function initFilters() {
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const postsSections = document.querySelectorAll(".posts-section");
+
+    if (!filterButtons.length) return;
+
+    filterButtons.forEach((button) => {
+      const newButton = button.cloneNode(true) as Element;
+      button.parentNode?.replaceChild(newButton, button);
+
+      newButton.addEventListener("click", (e) => {
+        const clickedBtn = e.target as Element;
+        const filter = clickedBtn.getAttribute("data-filter");
+
+        const allBtns = document.querySelectorAll(".filter-btn");
+        allBtns.forEach((btn) => btn.classList.remove("active"));
+        clickedBtn.classList.add("active");
+
+        postsSections.forEach((section) => {
+          section.classList.remove("active");
+        });
+
+        const targetSection = document.getElementById(`${filter}-posts`);
+        if (targetSection) {
+          targetSection.classList.add("active");
+        }
+      });
+    });
+  }
+
+  initFilters();
+  document.addEventListener("astro:page-load", initFilters);
+</script>
