@@ -1,0 +1,192 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  before: {
+    src: ImageMetadata;
+    alt: string;
+  };
+  after: {
+    src: ImageMetadata;
+    alt: string;
+  };
+  beforeLabel?: string;
+  afterLabel?: string;
+}
+
+const { 
+  before, 
+  after,
+  beforeLabel = "Before",
+  afterLabel = "After"
+} = Astro.props;
+---
+
+<image-comparer>
+  <div class="container">
+    <Image src={after.src} alt={after.alt} class="image image-after" />
+    <Image src={before.src} alt={before.alt} class="image image-before" />
+    
+    <input
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+      class="slider"
+      aria-label="Percentage of before photo shown"
+    />
+    
+    <div class="slider-line"></div>
+    
+    <div class="slider-button" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </div>
+
+    <div class="label label-before">{beforeLabel}</div>
+    <div class="label label-after">{afterLabel}</div>
+  </div>
+</image-comparer>
+
+<script>
+  class ImageComparer extends HTMLElement {
+    constructor() {
+      super();
+
+      const container = this.querySelector(".container") as HTMLElement;
+      const slider = this.querySelector(".slider") as HTMLInputElement;
+
+      if (!container || !slider) return;
+
+      slider.addEventListener("input", (event) => {
+        const target = event.target as HTMLInputElement;
+        container.style.setProperty("--position", `${target.value}%`);
+      });
+    }
+  }
+
+  customElements.define("image-comparer", ImageComparer);
+</script>
+
+<style>
+  .container {
+    position: relative;
+    overflow: hidden;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    --position: 50%;
+  }
+
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    user-select: none;
+  }
+
+  .image-before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--position);
+  }
+
+  .slider-line {
+    position: absolute;
+    inset: 0;
+    width: 4px;
+    background-color: white;
+    z-index: 10;
+    left: var(--position);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .slider-button {
+    position: absolute;
+    background-color: white;
+    color: #333;
+    top: 50%;
+    left: var(--position);
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .slider-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .slider {
+    position: absolute;
+    inset: 0;
+    cursor: col-resize;
+    opacity: 0;
+    z-index: 30;
+    width: 100%;
+    height: 100%;
+  }
+
+  .slider:focus-visible ~ .slider-button {
+    outline: 3px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  .label {
+    position: absolute;
+    top: 16px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .label-before {
+    left: 16px;
+  }
+
+  .label-after {
+    right: 16px;
+  }
+</style>
