@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import "../style/tailwind/index.css";
 
 interface TocItem {
@@ -9,7 +9,6 @@ interface TocItem {
 
 interface TableOfContentsProps {
   className?: string;
-  hasComments?: boolean;
 }
 
 type TOCThumb = [top: number, height: number];
@@ -66,11 +65,11 @@ function TocThumb({
 }) {
   const thumbRef = useRef<HTMLDivElement>(null);
 
-  const onResize = () => {
+  const onResize = useCallback(() => {
     if (!containerRef.current || !thumbRef.current) return;
     const result = calc(containerRef.current, activeItems);
     update(thumbRef.current, result);
-  };
+  }, [containerRef, activeItems]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -84,12 +83,6 @@ function TocThumb({
       observer.disconnect();
     };
   }, [containerRef, onResize]);
-
-  useEffect(() => {
-    if (!containerRef.current || !thumbRef.current) return;
-    const result = calc(containerRef.current, activeItems);
-    update(thumbRef.current, result);
-  }, [activeItems, containerRef]);
 
   if (!containerRef.current) return null;
 
@@ -158,7 +151,6 @@ function TOCItem({
 
 export default function TableOfContents({
   className = "",
-  hasComments = false,
 }: TableOfContentsProps) {
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeItems, setActiveItems] = useState<string[]>([]);
@@ -196,16 +188,8 @@ export default function TableOfContents({
       });
     });
 
-    if (hasComments) {
-      tocItems.push({
-        id: "comments",
-        text: "Comments",
-        level: 2,
-      });
-    }
-
     setToc(tocItems);
-  }, [hasComments]);
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current || toc.length === 0) return;
