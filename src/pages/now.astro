@@ -1,14 +1,26 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CenteredLayout from "../layouts/CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
-import { displayDate } from "../lib/mediumDate";
+import { displayDate } from "../lib/longDate";
+import type { CollectionEntry } from "astro:content";
 
 const posts = await getCollection("now");
 
 posts.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const timelinePosts = await Promise.all(
+  posts.map(async (post: CollectionEntry<"now">) => {
+    const { Content } = await render(post);
+    
+    return {
+      date: post.data.date,
+      ContentComponent: Content,
+    };
+  })
 );
 ---
 
@@ -20,12 +32,14 @@ posts.sort(
     <PageHeader title="Now" description="What I'm up to right now" />
     <div class="timeline">
       {
-        posts.map((post) => (
+        timelinePosts.map((post) => (
           <div class="timeline-post">
             <div class="timeline-marker" />
             <div class="post-content">
-              <p id="date">{displayDate(post.data.date)}</p>
-              <div class="content">{post.body}</div>
+              <p id="date">{displayDate(post.date)}</p>
+              <div class="content">
+                <post.ContentComponent /> 
+              </div>
             </div>
           </div>
         ))
@@ -60,7 +74,7 @@ posts.sort(
     .timeline-marker::before {
       content: "";
       position: absolute;
-      top:5px;
+      top: 5px;
       width: 12px;
       height: 12px;
       background-color: var(--tomato-9);
@@ -72,6 +86,14 @@ posts.sort(
 
     .content {
       margin: var(--space-3xs) 0;
+    }
+
+    .content :global(p) {
+      margin-bottom: var(--space-s);
+    }
+    
+    .content :global(p:last-child) {
+      margin-bottom: 0;
     }
 
     #date {
