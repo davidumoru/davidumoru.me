@@ -54,6 +54,16 @@ function update(element: HTMLElement, info: TOCThumb): void {
   element.style.setProperty("--fd-height", `${info[1]}px`);
 }
 
+function getItemOffset(depth: number): number {
+  if (depth <= 2) return 14;
+  if (depth === 3) return 26;
+  return 36;
+}
+
+function getLineOffset(depth: number): number {
+  return depth >= 3 ? 10 : 0;
+}
+
 function TocThumb({
   containerRef,
   activeItems,
@@ -99,33 +109,15 @@ function TocThumb({
   );
 }
 
-function getItemOffset(depth: number): number {
-  if (depth <= 2) return 14;
-  if (depth === 3) return 26;
-  return 36;
-}
-
-function getLineOffset(depth: number): number {
-  return depth >= 3 ? 10 : 0;
-}
-
 function TOCItem({
   item,
-  upper = item.level,
-  lower = item.level,
   isActive = false,
   onClick,
 }: {
   item: TocItem;
-  upper?: number;
-  lower?: number;
   isActive?: boolean;
   onClick: () => void;
 }) {
-  const offset = getLineOffset(item.level);
-  const upperOffset = getLineOffset(upper);
-  const lowerOffset = getLineOffset(lower);
-
   return (
     <div className="relative">
       <a
@@ -134,13 +126,14 @@ function TOCItem({
           e.preventDefault();
           onClick();
         }}
-        className={`relative block py-1.5 text-sm transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 ${
+        className={`relative block py-1.5 text-sm transition-colors duration-200 ${
           isActive
-            ? "text-[var(--tomato-9)] dark:text-[var(--tomato-9)]"
-            : "text-neutral-600 dark:text-neutral-400"
+            ? "!text-[var(--tomato-9)]"
+            : "!text-[var(-gray-12)] hover:!text-[var(--gray-12)]"
         }`}
         style={{
           paddingLeft: `${getItemOffset(item.level)}px`,
+          color: isActive ? "var(--tomato-9)" : undefined,
         }}
       >
         {item.text}
@@ -192,6 +185,50 @@ export default function TableOfContents({
   }, []);
 
   useEffect(() => {
+    if (toc.length === 0) return;
+
+    const calculateActiveItems = () => {
+      const windowHeight = window.innerHeight;
+      const activeIds: string[] = [];
+
+      for (const item of toc) {
+        const element = document.getElementById(item.id);
+        if (!element) continue;
+        const rect = element.getBoundingClientRect();
+
+        if (rect.top < windowHeight && rect.bottom > 0) {
+          activeIds.push(item.id);
+        }
+      }
+
+      if (activeIds.length === 0) {
+        for (let i = toc.length - 1; i >= 0; i--) {
+          const element = document.getElementById(toc[i].id);
+          if (element && element.getBoundingClientRect().top <= 100) {
+            activeIds.push(toc[i].id);
+            break;
+          }
+        }
+      }
+
+      if (activeIds.length === 0 && toc.length > 0) {
+        activeIds.push(toc[0].id);
+      }
+
+      setActiveItems(activeIds);
+    };
+
+    const handleScroll = () => {
+      calculateActiveItems();
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    calculateActiveItems();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [toc]);
+
+  useEffect(() => {
     if (!containerRef.current || toc.length === 0) return;
     const container = containerRef.current;
 
@@ -200,7 +237,6 @@ export default function TableOfContents({
       let w = 0;
       let h = 0;
       const d: string[] = [];
-
       let cumulativeTop = 0;
 
       for (let i = 0; i < toc.length; i++) {
@@ -237,57 +273,7 @@ export default function TableOfContents({
     onResize();
     observer.observe(container);
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [toc]);
-
-  useEffect(() => {
-    if (toc.length === 0) return;
-
-    const calculateActiveItems = () => {
-      const windowHeight = window.innerHeight;
-      const activeIds: string[] = [];
-
-      for (const item of toc) {
-        const element = document.getElementById(item.id);
-        if (!element) continue;
-
-        const rect = element.getBoundingClientRect();
-
-        if (rect.top < windowHeight && rect.bottom > 0) {
-          activeIds.push(item.id);
-        }
-      }
-
-      if (activeIds.length === 0) {
-        for (let i = toc.length - 1; i >= 0; i--) {
-          const element = document.getElementById(toc[i].id);
-          if (
-            element &&
-            element.getBoundingClientRect().top <= windowHeight * 0.5
-          ) {
-            activeIds.push(toc[i].id);
-            break;
-          }
-        }
-      }
-
-      if (activeIds.length === 0 && toc.length > 0) {
-        activeIds.push(toc[0].id);
-      }
-
-      setActiveItems(activeIds);
-    };
-
-    const handleScroll = () => {
-      calculateActiveItems();
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    calculateActiveItems();
-
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => observer.disconnect();
   }, [toc]);
 
   const scrollToHeading = (id: string) => {
@@ -297,21 +283,16 @@ export default function TableOfContents({
       const y =
         element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
-      window.scrollTo({
-        top: y,
-        behavior: "smooth",
-      });
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
-  if (toc.length <= 1) {
-    return null;
-  }
+  if (toc.length <= 1) return null;
 
   return (
     <nav className={`table-of-contents ${className}`}>
       <div className="mb-3">
-        <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <p className="text-sm font-semibold !text-[var(--gray-12)]">
           On this page
         </p>
       </div>
@@ -328,8 +309,7 @@ export default function TableOfContents({
               )}")`,
             }}
           >
-            <div className="h-full bg-gray-300 dark:bg-gray-600" />
-
+            <div className="h-full bg-[var(--gray-8)]" />
             <TocThumb
               containerRef={containerRef}
               activeItems={activeItems}
@@ -343,16 +323,12 @@ export default function TableOfContents({
           data-toc-container
           className="flex flex-col overflow-y-auto"
         >
-          {toc.map((item, i) => (
+          {toc.map((item) => (
             <TOCItem
               key={item.id}
               item={item}
-              upper={toc[i - 1]?.level}
-              lower={toc[i + 1]?.level}
               isActive={activeItems.includes(item.id)}
-              onClick={() => {
-                scrollToHeading(item.id);
-              }}
+              onClick={() => scrollToHeading(item.id)}
             />
           ))}
         </div>
