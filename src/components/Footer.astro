@@ -3,12 +3,11 @@ import SubscribeForm from "./SubscribeForm.astro";
 ---
 
 <footer>
-  <div class="container">
-    <div class="content">
+    <div class="content container">
       <div class="links">
         <a href="/now">Now</a>
         <a href="/list-100">List 100</a>
-        <a href="/guestbook">Guestbook</a>
+        <a href="/bookshelf">Bookshelf</a>
         <a href="/webrings">Webrings</a>
         <a href="/rss.xml" target="_blank">RSS</a>
       </div>
@@ -24,24 +23,24 @@ import SubscribeForm from "./SubscribeForm.astro";
         >
       </div>
       <div class="banner">
-        <span class="emoji">💙</span>
+        <span class="emoji">🌱</span>
         <a
           href="https://www.who.int/health-topics/mental-health"
           target="_blank"
         >
-          Take care of your mind.
+          Take Care of Your Mind
         </a>
       </div>
       <div class="subscribe">
         <SubscribeForm />
       </div>
     </div>
-  </div>
 </footer>
 
 <style>
   footer {
-    padding-block: var(--space-l);
+    margin-top: var(--space-2xl);
+    padding-block: var(--space-xl);
     width: 100%;
     border-top: 1px solid var(--gray-7);
     margin-bottom: -7rem;
@@ -64,14 +63,15 @@ import SubscribeForm from "./SubscribeForm.astro";
     display: flex;
     flex-flow: column wrap;
     gap: var(--space-2xs);
-  }
 
-  .links:first-child {
-    grid-area: links1;
-  }
-
-  .links:last-child {
-    grid-area: links2;
+    a {
+      font-family: 'EditorialNew', sans-serif;
+      color: var(--gray-12);
+    }
+    a:hover {
+      color: var(--gray-12);
+      text-decoration-color: var(--gray-12);
+    }
   }
 
   .subscribe {
@@ -80,21 +80,18 @@ import SubscribeForm from "./SubscribeForm.astro";
 
   .banner {
     grid-area: banner;
-    color: var(--gray-11);
     display: flex;
     align-items: center;
     gap: var(--space-2xs);
     transition: background-color 0.2s ease-in-out;
 
+    .emoji {
+      padding: 0 2px 0 0;
+    }
     a {
       text-decoration: none;
       color: inherit;
     }
-
-    .emoji {
-      transform: scale(1.3) translateY(0.04em);
-    }
-
     a:hover {
       color: var(--gray-12);
     }

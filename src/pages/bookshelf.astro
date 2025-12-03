@@ -1,9 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import CenteredLayout from "../layouts/CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
-import BookCard from "../components/BookCard.astro";
+import BookCard from "../components/Book.astro";
 
 const bookEntries = await getCollection("books");
 const allBooks = bookEntries.map((entry) => entry.data);
@@ -13,17 +12,19 @@ const allBooks = bookEntries.map((entry) => entry.data);
   title="Bookshelf"
   description="A curated list of books that have shaped my thinking, sparked my curiosity, or provided a much-needed escape."
 >
-  <CenteredLayout>
-    <PageHeader
-      title="Bookshelf"
-      description="Books I'm reading, have read, and plan to read"
-    />
-  </CenteredLayout>
-  <div class="page-wrapper">
-    <div class="bookshelf-grid">
-      {allBooks.map((book) => <BookCard book={book} />)}
+  <main>
+    <div class="container">
+      <PageHeader
+        title="Bookshelf"
+        description="Books I've read and books I like the idea of having read."
+      />
     </div>
-  </div>
+    <div class="page-wrapper">
+      <div class="bookshelf-grid">
+        {allBooks.map((book) => <BookCard book={book} />)}
+      </div>
+    </div>
+  </main>
 </BaseLayout>
 
 <style>

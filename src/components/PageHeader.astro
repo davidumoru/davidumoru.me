@@ -1,7 +1,6 @@
 ---
-import { displayDate } from "../lib/mediumDate";
+import { displayDate } from "../lib/longDate";
 import Picture from "./Picture.astro";
-import { Icon } from "./Icon/Icon";
 
 interface Props {
   title: string;
@@ -15,14 +14,13 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
 ---
 
 <header class="page-header">
-  <h1 itemprop="name" class="page-title">
+  <h1>
     {title}
   </h1>
-  {description && <p class="shade fs-2">{description}</p>}
+  {description && <p class="sub">{description}</p>}
   {
     datePublished && (
-      <span class="fs--1 shade date">
-        <Icon icon="penNib" size="16" />
+      <span class="date">
         {datePublished ? displayDate(datePublished) : "Unknown Date"}
       </span>
     )
@@ -40,16 +38,23 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
   .page-header {
     padding-block-end: var(--space-l);
   }
+
+  .sub {
+    margin-block: var(--space-2xs);
+    color: var(--gray-12);
+    font-size: var(--fs-3);
+    font-weight: 400;
+    max-width: 34rem;
+  }
+    @media (width < 650px) {
+    .sub {
+      font-size: var(--fs-2);
+    }
+  }
+
   .page-image {
     overflow: hidden;
     border-radius: 0.3rem;
     margin-block-start: var(--space-l);
-  }
-
-  .date {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-top: 5px;
   }
 </style>

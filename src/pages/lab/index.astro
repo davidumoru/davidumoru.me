@@ -39,9 +39,27 @@ const sortedLabEntries = allLabEntries.sort(
     gap: 1.5rem;
   }
 
+  .lab-grid:hover :global(.lab-card) {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    transform: scale(0.98);
+  }
+
+  .lab-grid:hover :global(.lab-card:hover) {
+    opacity: 1;
+    filter: grayscale(0%);
+    transform: translateY(-4px) scale(1.02);
+  }
+
   @media (max-width: 768px) {
     .lab-grid {
       grid-template-columns: 1fr;
+    }
+    
+    .lab-grid:hover :global(.lab-card) {
+      opacity: 1;
+      filter: none;
+      transform: none;
     }
   }
 </style>

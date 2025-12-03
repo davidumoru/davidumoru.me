@@ -1,5 +1,6 @@
-ul {
+ul, ol {
 	padding-inline-start: 0.9ch;
+	list-style: revert;
 }
 li {
 	padding-inline-start: var(--space-2xs);
@@ -7,6 +8,6 @@ li {
 		margin-block-start: var(--space-3xs);
 	}
 	&::marker {
-		color: var(--gray-11);
+		color: var(--tomato-9);
 	}
 }

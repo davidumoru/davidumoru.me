@@ -1,4 +1,6 @@
 ---
+import { Icon } from "../Icon/Icon";
+
 interface Props {
   type: "success" | "error";
   message: string;
@@ -6,11 +8,13 @@ interface Props {
 
 const { type, message } = Astro.props;
 
-const icon = type === "success" ? "✅" : "⚠️";
+const iconName = type === "success" ? "check" : "alert";
 ---
 
 <div class="alert" data-type={type} role="alert">
-  <span class="icon" aria-hidden="true">{icon}</span>
+  <span class="icon" aria-hidden="true">
+    <Icon icon={iconName} size="22" />
+  </span>
   <p class="message" id="alert-message">{message}</p>
 </div>
 
@@ -40,7 +44,8 @@ const icon = type === "success" ? "✅" : "⚠️";
     padding: 0.8rem 1.2rem;
     margin-bottom: 1.5rem;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    gap: 0.75rem;
     border: 1px solid var(--alert-border);
     background-color: var(--alert-bg);
     color: var(--alert-text);
@@ -72,14 +77,17 @@ const icon = type === "success" ? "✅" : "⚠️";
   }
 
   .icon {
-    margin-right: 0.75rem;
     flex-shrink: 0;
-    margin-top: 0.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 
   .message {
     font-weight: 500;
     line-height: 1.5;
     margin: 0;
+    flex: 1;
   }
 </style>

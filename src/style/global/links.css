@@ -1,13 +1,13 @@
 a:not([class]), .link {
-	color: var(--gray-12);
-	text-decoration: underline;
-	text-decoration-style: dotted;
-	text-decoration-color: var(--gray-10);
-	text-decoration-thickness: 2px;
-	transition: color 0.3s ease, text-decoration-color 0.3s ease;
-  }
-  
+  color: var(--tomato-9);
+  text-decoration: underline;
+  text-decoration-color: var(--gray-6);
+  transition: 
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
 a:not([class]):hover, .link:hover {
-	text-shadow: 0 0 0.2px currentColor;
-	text-decoration-color: var(--gray-12);
+  color: var(--tomato-9);
+  text-decoration-color: var(--tomato-9);
 }

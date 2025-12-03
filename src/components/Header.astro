@@ -1,108 +1,114 @@
 ---
 import ThemeToggle from "../components/ThemeToggle.astro";
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/lab", label: "Lab" },
+  { href: "/posts", label: "Posts" },
+  { href: "/projects", label: "Projects" },
+  { href: "/guestbook", label: "Guestbook" },
+];
+
+const currentPath = Astro.url.pathname;
+const isGuestbook =
+  currentPath === "/guestbook" || currentPath.startsWith("/guestbook/");
 ---
 
-<header class="site-header container">
-  <div class="header-main">
-    <a href="/" class="h1 fs-3">xD</a>
-    <div class="header-actions">
-      <nav class="nav-links">
-        <a
-          href="/about"
-          font-family:
-          "Pixelify
-          Sans",
-          sans-serif;
-          aria-current={Astro.url.pathname.includes("/about")
-            ? "page"
-            : undefined}>About</a
-        >
-        <a
-          href="/posts"
-          aria-current={Astro.url.pathname.includes("/posts")
-            ? "page"
-            : undefined}>Posts</a
-        >
-        <a
-          href="/projects"
-          aria-current={Astro.url.pathname.includes("/projects")
-            ? "page"
-            : undefined}>Projects</a
-        >
-      </nav>
-      <ThemeToggle />
-    </div>
-  </div>
+<header class={`site-header ${isGuestbook ? "site-header--static" : ""}`}>
+  <ThemeToggle />
+  <nav aria-label="Primary navigation">
+    <ul class="nav-links">
+      {navItems.map(({ href, label }) => {
+        const isActive =
+          href === "/"
+            ? currentPath === "/"
+            : currentPath.startsWith(href);
+
+        return (
+          <li>
+            <a
+              href={href}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
 </header>
 
 <style>
-  .h1 {
-    font-family: "Pixelify Sans", sans-serif;
-  }
-
   .site-header {
-    display: flex;
-    flex-direction: column;
-    padding-inline: 0 !important;
-    border-bottom: 1px solid var(--gray-7);
-  }
-
-  .header-main {
-    width: 100%;
-    padding: 0 var(--space-xs);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 3rem;
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-m);
-    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: var(--space-2xl);
+    z-index: 100;
   }
 
   .nav-links {
     display: flex;
-    align-items: center;
-    gap: var(--space-l);
+    flex-direction: column;
+    gap: var(--space-3xs);
+    list-style: none;
+    padding: var(--space-m) 0 0;
+    margin: 0;
+    font-family: EditorialNew, serif;
   }
 
   .nav-links a {
-    font-size: var(--fs-0);
+    display: block;
     text-decoration: none;
-    color: inherit;
-    transition: background 0.15s;
-    white-space: nowrap;
+    color: var(--gray-12);
+    transition:
+      color 0.2s ease,
+      text-decoration-color 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--gray-12);
+    text-underline-offset: 0.25em;
   }
 
   .nav-links a[aria-current="page"] {
-    font-weight: bold;
+    color: var(--gray-12);
+    text-decoration: underline;
+    text-decoration-color: var(--tomato-9);
+    text-underline-offset: 0.25em;
   }
 
-  @media (max-width: 40rem) {
-    .header-main {
-      padding: 0 var(--space-xs);
-      min-height: 3.5rem;
+  @media (max-width: 1200px) {
+    .site-header {
+      position: static;
+      padding: var(--space-m);
+      max-inline-size: clamp(min(100%, 20rem), 90vw, 48rem);
+      inline-size: 100%;
+      margin-inline: auto;
+      padding-inline: var(--space-xs);
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding-inline: 0;
+      }
     }
 
     .nav-links {
-      gap: var(--space-m);
-    }
-
-    .header-actions {
-      gap: var(--space-s);
+      padding: var(--space-s) 0 0;
     }
   }
 
-  @media (max-width: 25rem) {
-    .header-main {
-      padding: 0 var(--space-xs);
-    }
+  .site-header--static {
+    position: static;
+  }
 
-    .header-actions {
-      gap: var(--space-xs);
+  @media (min-width: 1201px) {
+    .site-header--static {
+      position: absolute;
     }
   }
 </style>

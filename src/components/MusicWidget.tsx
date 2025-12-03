@@ -62,8 +62,8 @@ const AudioVisualization: FC = () => {
     const animate = () => {
       setBars((prev) =>
         prev.map((bar) => {
-          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.2;
-          if (Math.random() < 0.05) {
+          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.1;
+          if (Math.random() < 0.03) {
             return {
               ...bar,
               height: newHeight,
@@ -92,8 +92,8 @@ const AudioVisualization: FC = () => {
       >
         <defs>
           <linearGradient id="audioGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--green-9)" />
-            <stop offset="100%" stopColor="var(--blue-9)" />
+            <stop offset="0%" stopColor="var(--tomato-9)" />
+            <stop offset="100%" stopColor="var(--tomato-11)" />
           </linearGradient>
         </defs>
         {bars.map((bar, i) => (
@@ -114,7 +114,7 @@ const AudioVisualization: FC = () => {
 
 const MusicWidgetSkeleton: FC = () => (
   <div className="w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 overflow-x-auto">
-    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
+    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2">
       <div className="h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
       <div className="min-w-0 flex-1 space-y-2">
         <div className="h-4 sm:h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
@@ -130,7 +130,7 @@ const MusicWidgetSkeleton: FC = () => (
 );
 
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
-  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] font-sans overflow-x-auto">
+  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] overflow-x-auto">
     <div className="flex items-center gap-x-3">
       <ErrorIcon className="h-5 w-5 flex-shrink-0" />
       <div>
@@ -166,34 +166,42 @@ const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
 
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
   <div className="group w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 overflow-x-auto">
-    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2 sm:p-3">
+    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2">
       <AlbumArt
         src={song.albumArtUrl}
         alt={`Album artwork for ${song.title} by ${song.artists}`}
       />
-      <div className="min-w-0 flex-1 space-y-1">
+      <div className={`min-w-0 space-y-1 ${song.isPlaying ? 'flex-1' : 'flex-1 sm:mr-3'}`}>
         <a
           href={song.songUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"
         >
-          <p className="truncate text-base sm:text-lg font-semibold font-sans text-[var(--gray-12)] leading-tight">
-            {song.title}
-          </p>
+        <p
+          className="truncate text-base sm:text-lg font-semibold underline leading-tight text-[var(--gray-12)] transition-colors duration-300"
+          style={{
+            textDecorationColor: "var(--gray-8)",
+            transition: "text-decoration-color 0.3s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.textDecorationColor = "var(--gray-11)")}
+          onMouseLeave={(e) => (e.currentTarget.style.textDecorationColor = "var(--gray-8)")}
+        >
+          {song.title}
+        </p>
         </a>
-        <p className="truncate text-sm sm:text-base font-sans text-[var(--gray-11)]">
+        <p className="truncate text-sm sm:text-base text-[var(--gray-11)]">
           {song.artists}
         </p>
       </div>
-      <div className="flex items-center ml-2 min-w-0 h-16 sm:h-20 justify-end w-full max-w-[8rem]">
+      <div className={`flex items-center min-w-0 h-16 sm:h-20 justify-end w-full ${song.isPlaying ? 'max-w-[6rem] sm:max-w-[10rem]' : 'max-w-0'}`}>
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
-    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm font-sans text-[var(--gray-11)]">
+    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-[var(--gray-11)]">
       <div
         className={`h-3 w-3 flex-shrink-0 rounded-full ${
-          song.isPlaying ? "bg-[var(--green-9)]" : "bg-[var(--gray-8)]"
+          song.isPlaying ? "bg-[var(--tomato-9)]" : "bg-[var(--gray-8)]"
         }`}
       ></div>
       <div className="truncate">{song.lastPlayed}</div>
@@ -232,9 +240,23 @@ const MusicWidget: FC = () => {
     };
 
     fetchSpotifyData();
-    const interval = setInterval(fetchSpotifyData, 45000);
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        fetchSpotifyData();
+      }
+    }, 45000);
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchSpotifyData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
       clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

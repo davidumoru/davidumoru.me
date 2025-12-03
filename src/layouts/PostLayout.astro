@@ -1,4 +1,5 @@
 ---
+import type { MarkdownHeading } from "astro";
 import PageHeader from "../components/PageHeader.astro";
 import BaseLayout from "./BaseLayout.astro";
 import CenteredLayout from "./CenteredLayout.astro";
@@ -13,6 +14,7 @@ interface Props {
   imgAlt?: string;
   ogAlt?: string;
   hideDisclaimer?: boolean;
+  headings?: MarkdownHeading[];
 }
 
 const {
@@ -22,10 +24,11 @@ const {
   img,
   imgAlt,
   hideDisclaimer,
+  headings,
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} headings={headings}>
   <CenteredLayout>
     <article itemscope itemtype="https://schema.org/BlogPosting">
       <PageHeader

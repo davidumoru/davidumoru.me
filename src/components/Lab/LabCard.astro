@@ -39,11 +39,16 @@ const { id, data } = entry;
     flex-direction: column;
     padding: 0.5rem;
     height: 220px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  html[data-theme="dark"] .lab-card {
-    border-color: var(--gray-8);
-    background-color: var(--gray-1);
+  .lab-card:hover {
+    background-color: var(--gray-2);
+    border-color: var(--tomato-8);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+    z-index: 10;
   }
 
   .card-link {
@@ -72,6 +77,11 @@ const { id, data } = entry;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .lab-card:hover .preview-image {
+    transform: scale(1.05);
   }
 
   .preview-placeholder {
@@ -94,5 +104,10 @@ const { id, data } = entry;
     font-size: 1rem;
     text-align: center;
     flex-shrink: 0;
+    transition: color 0.3s ease;
+  }
+
+  .lab-card:hover .card-title {
+    color: var(--tomato-11);
   }
 </style>

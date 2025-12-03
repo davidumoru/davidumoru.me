@@ -1,9 +1,9 @@
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
 }
 
 blockquote,
@@ -31,38 +31,33 @@ legend {
   padding: 0;
 }
 
-.prose h2 {
-  padding-bottom: var(--space-2xs);
-  border-bottom: 1px solid var(--gray-4);
-}
-
 .prose h1,
 .prose h2,
 .prose h3,
 .prose h4 {
   scroll-margin-top: var(--space-xl);
-  margin: 2rem 0 1rem;
+  margin: 3.5rem 0 1rem;
 }
 
 .prose h5,
 .prose h6 {
-  margin: 1rem 0;
+  margin: 1.5rem 0 0.5rem;
 }
 .prose p {
-  margin: 0 0 2rem;
+  margin: 1rem 0 1.7rem;
 }
 .prose ul,
 .prose ol {
-    margin-top: 1.25em;
-    padding-left: 1.5em;
+    margin-top: 1.25rem;
+    padding-left: 1.5rem;
 }
 .prose pre {
   margin: 1rem 0;
 }
 
 body {
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
+  line-height: var(--lh-1);
+  -webkit-font-smoothing: antialiased;
 }
 
 img,
@@ -70,15 +65,15 @@ picture,
 video,
 canvas,
 svg {
-    display: block;
-    max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 input,
 button,
 textarea,
 select {
-    font: inherit;
+  font: inherit;
 }
 
 p,
@@ -88,7 +83,7 @@ h3,
 h4,
 h5,
 h6 {
-    overflow-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 h1,
@@ -97,10 +92,10 @@ h3,
 h4,
 h5,
 h6 {
-    text-wrap: balance;
+  text-wrap: balance;
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }

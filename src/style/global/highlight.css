@@ -1,17 +1,8 @@
 ::selection {
-  background-color: #ff0;
-  color: #333333;
+  background-color: var(--tomato-9);
+  color: var(--gray-12);
 }
 ::-moz-selection {
-  background-color: #ff0;
-  color: #333333;
-}
-
-html[data-theme="dark"] ::selection {
-  background-color: blue;
-  color: #ffffff;
-}
-html[data-theme="dark"] ::-moz-selection {
-  background-color: blue;
-  color: #ffffff;
+  background-color: var(--tomato-9);
+  color: var(--gray-12);
 }

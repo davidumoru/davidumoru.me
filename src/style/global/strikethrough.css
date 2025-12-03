@@ -1,4 +1,5 @@
 del {
   text-decoration: line-through;
-  color: var(--gray-9);
+  color: var(--tomato-9);
+  text-decoration-color: var(--tomato-9);
 }

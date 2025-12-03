@@ -28,7 +28,7 @@ export async function getStaticPaths() {
 }
 
 const { post, prev, next } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const { data } = post;
 const { title, description, datePublished, dateModified } = data;
@@ -39,7 +39,7 @@ const { title, description, datePublished, dateModified } = data;
   description={description}
   datePublished={datePublished}
   dateModified={dateModified}
->
+  headings={headings} >
   <Content />
   <div class="pagination" slot="after-prose">
     {

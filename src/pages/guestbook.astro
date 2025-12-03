@@ -1,16 +1,13 @@
 ---
 export const prerender = false;
-import { db, GuestBook, desc, sql } from "astro:db";
+import { db, GuestBook, Stamps, desc, sql, eq } from "astro:db";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GuestbookEntry from "../components/Guestbook/GuestbookEntry.astro";
 import AlertMessage from "../components/Guestbook/AlertMessage.astro";
 import Pagination from "../components/Guestbook/Pagination.astro";
 import GuestbookForm from "../components/Guestbook/GuestbookForm.astro";
 import PageHeader from "../components/PageHeader.astro";
-import { stampData } from "../../public/stamps/stamps.ts";
 import defaultStampAsset from "../../public/stamps/default.jpg";
-
-const stampDataMap = new Map(stampData.map((stamp) => [stamp.country, stamp]));
 
 const PER_PAGE = 19;
 
@@ -20,7 +17,7 @@ const generateOptimizedCloudinaryUrl = (url: string) => {
   if (index === -1) return url;
   const baseUrl = url.substring(0, index + uploadMarker.length);
   const imagePath = url.substring(index + uploadMarker.length);
-  const transformation = "w_300,h_375,c_fill,f_auto,q_auto/";
+  const transformation = "w_300,h_375,c_fill,f_auto,q_auto:eco,dpr_auto/";
   return `${baseUrl}${transformation}${imagePath}`;
 };
 
@@ -55,30 +52,46 @@ if (Astro.request.method === "POST") {
     return Astro.redirect("/guestbook?error=too_many_links");
   }
 
-  await db.insert(GuestBook).values({
+  const insertData: any = {
     author,
-    link,
     content,
     country,
     timestamp: new Date(),
-  });
+  };
+
+  if (link) {
+    insertData.link = link;
+  }
+
+  await db.insert(GuestBook).values(insertData);
   return Astro.redirect("/guestbook?success=message_added");
 }
 
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const offset = (page - 1) * PER_PAGE;
 
-const totalEntriesResult = await db
-  .select({ count: sql`count(*)` })
-  .from(GuestBook);
-const totalEntries = totalEntriesResult[0].count as number;
+const [guestBook, totalEntriesResult] = await Promise.all([
+  db
+    .select({
+      author: GuestBook.author,
+      link: GuestBook.link,
+      content: GuestBook.content,
+      country: GuestBook.country,
+      timestamp: GuestBook.timestamp,
+      stampImageUrl: Stamps.imageUrl,
+      stampHue: Stamps.hue,
+    })
+    .from(GuestBook)
+    .leftJoin(Stamps, eq(GuestBook.country, Stamps.country))
+    .orderBy(desc(GuestBook.timestamp))
+    .limit(PER_PAGE)
+    .offset(offset),
+  db
+    .select({ count: sql`count(*)` })
+    .from(GuestBook)
+]);
 
-const guestBook = await db
-  .select()
-  .from(GuestBook)
-  .orderBy(desc(GuestBook.timestamp))
-  .limit(PER_PAGE)
-  .offset(offset);
+const totalEntries = totalEntriesResult[0].count as number;
 
 const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
@@ -128,17 +141,14 @@ const error = Astro.url.searchParams.get("error");
     <section class="guestbook-entries">
       {
         guestBook.map((entry) => {
-          const matchingStamp = stampDataMap.get(entry.country);
-
-          const imageAssetForEntry = matchingStamp?.imageUrl
-            ? generateOptimizedCloudinaryUrl(matchingStamp.imageUrl)
+          const imageAssetForEntry = entry.stampImageUrl
+            ? generateOptimizedCloudinaryUrl(entry.stampImageUrl)
             : defaultStampAsset;
 
-          const displayCountry =
-            matchingStamp?.country || entry.country || "Unknown";
-          const displayHue = matchingStamp?.hue || 210;
-          const displayImageAlt = matchingStamp
-            ? `Stamp from ${matchingStamp.country} for ${entry.author}'s entry`
+          const displayCountry = entry.country || "Unknown";
+          const displayHue = entry.stampHue || 210;
+          const displayImageAlt = entry.stampImageUrl
+            ? `Stamp from ${entry.country} for ${entry.author}'s entry`
             : `Default stamp for ${entry.author}'s entry`;
 
           return (
@@ -165,6 +175,15 @@ const error = Astro.url.searchParams.get("error");
 
     <GuestbookForm />
   </main>
+
+  <button  
+    id="scrollToFormBtn"  
+    class="floating-btn"
+    aria-label="Scroll to guestbook form"
+    title="Add your message"
+  >
+    +
+  </button>
 </BaseLayout>
 
 <style>
@@ -177,4 +196,83 @@ const error = Astro.url.searchParams.get("error");
     margin: 0 auto 48px;
     text-align: center;
   }
+
+  .floating-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: var(--tomato-9);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .floating-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .floating-btn:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    .floating-btn {
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 48px;
+      height: 48px;
+      font-size: 1.75rem;
+    }
+  }
 </style>
+
+<script>
+  function initScrollButton() {
+    const scrollBtn = document.getElementById('scrollToFormBtn');
+    const form = document.querySelector('form');
+    
+    if (!scrollBtn || !form) return;
+    const newScrollBtn = scrollBtn.cloneNode(true) as HTMLElement;
+    scrollBtn.parentNode?.replaceChild(newScrollBtn, scrollBtn);
+    
+    newScrollBtn.addEventListener('click', () => {
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (newScrollBtn) {
+          if (entry.isIntersecting) {
+            newScrollBtn.style.opacity = '0';
+            newScrollBtn.style.pointerEvents = 'none';
+          } else {
+            newScrollBtn.style.opacity = '1';
+            newScrollBtn.style.pointerEvents = 'auto';
+          }
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    observer.observe(form);
+  }
+
+  initScrollButton();
+
+  document.addEventListener('astro:page-load', initScrollButton);
+</script>

@@ -87,7 +87,7 @@
     pointer-events: none;
   }
 
-  html[data-theme="dark"] .icon {
+  html.dark .icon {
     transform: rotate(180deg);
   }
 
@@ -113,24 +113,25 @@
   const htmlElement = document.documentElement;
 
   const handleThemeChange = (newTheme: "light" | "dark") => {
-    htmlElement.setAttribute("data-theme", newTheme);
+    if (newTheme === "dark") {
+      htmlElement.classList.add("dark");
+    } else {
+      htmlElement.classList.remove("dark");
+    }
     localStorage.setItem(THEME_STORAGE_KEY, newTheme);
   };
 
   function initializeThemeToggleButton(buttonElement: HTMLButtonElement) {
-    const currentThemeAttr = htmlElement.getAttribute("data-theme");
-    const currentTheme: "light" | "dark" =
-      currentThemeAttr === "light" || currentThemeAttr === "dark"
-        ? currentThemeAttr
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+    const currentTheme: "light" | "dark" = htmlElement.classList.contains("dark")
+      ? "dark"
+      : "light";
 
     const clickHandler = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
-      const newTheme: "light" | "dark" =
-        htmlElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      const newTheme: "light" | "dark" = htmlElement.classList.contains("dark")
+        ? "light"
+        : "dark";
       handleThemeChange(newTheme);
     };
 
@@ -166,8 +167,7 @@
     const customEvent = event as CustomEvent<{ theme: "light" | "dark" }>;
     const theme = customEvent.detail?.theme;
     if (theme === "light" || theme === "dark") {
-      htmlElement.setAttribute("data-theme", theme);
-      localStorage.setItem(THEME_STORAGE_KEY, theme);
+      handleThemeChange(theme);
     }
   });
 </script>

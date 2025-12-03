@@ -4,3 +4,9 @@
 	margin-inline: auto;
 	padding-inline: var(--space-xs);
 }
+
+@media (max-width: 640px) {
+	.container {
+		padding-inline: var(--space-3xs);
+	}
+}

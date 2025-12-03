@@ -1,0 +1,137 @@
+---
+import { displayDate } from "../lib/longDate";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+
+interface Feature {
+  name: string;
+  url: string;
+}
+---
+
+<article>
+  <div class="content">
+    <div class="text">
+      <a href={`posts/${post.id}`} class="title-link">
+        <p class="title">{post.data.title}</p>
+      </a>
+      {
+        post.data.description && (
+          <p class="description">{post.data.description}</p>
+        )
+      }
+
+      {
+        post.data.features && (
+          <div class="feature-text">
+            <span>Featured on </span>
+            {post.data.features.map(({ name, url }: Feature, i: number) => [
+              i > 0 && ", ",
+              <a href={url} target="_blank" class="feature-link">
+                {name}
+              </a>,
+            ])}
+          </div>
+        )
+      }
+    </div>
+    <p class="fs-0 date">
+      {displayDate(post.data.datePublished)}
+    </p>
+  </div>
+</article>
+
+<style>
+  article {
+    max-inline-size: 66ch;
+    padding-bottom: 1ch;
+  }
+
+  article:not(:first-child) {
+    margin-block: var(--space-m);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  @media (min-width: 640px) {
+    .content {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-m);
+    }
+  }
+
+  .text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  .title {
+    font-family: "Inter", sans-serif;
+    font-size: var(--fs-2);
+    font-weight: 500;
+    color: var(--gray-12);
+    line-height: 1.4;
+    margin: 0;
+    transition: color 0.2s ease;
+  }
+
+  .description {
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .title-link {
+    text-decoration: none;
+  }
+
+  .title-link:hover .title {
+    color: var(--tomato-9);
+  }
+
+  .date {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    order: -1;
+    font-size: var(--fs--1);
+  }
+
+  @media (min-width: 640px) {
+    .date {
+      text-align: right;
+      order: 0;
+      font-size: var(--fs-0);
+    }
+  }
+
+  .feature-text {
+    font-size: var(--fs--1);
+    margin-top: 2px;
+  }
+
+  .feature-link {
+    text-decoration: none;
+    border-bottom: 1px solid var(--gray-6);
+    transition: border-color 0.2s ease;
+  }
+
+  .feature-link:hover {
+    color: var(--gray-12);
+    border-bottom-color: var(--tomato-9);
+    transition: color 0.2s ease;
+  }
+</style>
