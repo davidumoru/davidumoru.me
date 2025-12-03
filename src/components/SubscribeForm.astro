@@ -25,6 +25,7 @@ const {
     class="subscribe-form"
   >
     <label for="bd-email" class="visually-hidden">Email Address</label>
+    
     <div class="input-wrapper">
       <input
         id="bd-email"
@@ -65,13 +66,16 @@ const {
   }
 
   .subscribe-title {
-    margin: 0.5rem 0 1rem 0;
-    color: inherit;
+    margin: 0.5rem 0 1.5rem 0;
+    color: var(--gray-11);
     max-width: 65ch;
+    line-height: 1.6;
   }
 
   .subscribe-form {
     display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
   .input-wrapper {
@@ -82,51 +86,79 @@ const {
   }
 
   .subscribe-input {
-    padding: 0.75rem 1rem;
-    padding-right: 3.5rem;
-    border: 1px solid var(--gray-7);
-    background-color: var(--gray-1);
-    color: var(--gray-11);
-    border-radius: 0.25rem;
     width: 100%;
-    transition:
-      border-color 0.2s ease-out,
-      outline 0.2s ease-out;
+    padding: 0.75rem 1rem;
+    padding-right: 3.5rem; 
+    
+    background-color: var(--gray-2);
+    border: 1px solid var(--gray-7);
+    border-radius: 6px;
+    color: var(--gray-12);
+    font-size: 0.95rem;
+    
+    transition: 
+      border-color 0.2s ease, 
+      background-color 0.2s ease, 
+      box-shadow 0.2s ease;
   }
 
-  .subscribe-input:focus-visible {
-    outline: 2px solid var(--tomato-9);
-    outline-offset: 2px;
-    border-color: var(--gray-10);
+  .subscribe-input::placeholder {
+    color: var(--gray-9);
+  }
+
+  .subscribe-input:hover {
+    border-color: var(--gray-8);
+  }
+
+  .subscribe-input:focus {
+    outline: none;
+    border-color: var(--gray-8);
+    background-color: var(--gray-1);
+    box-shadow: 0 0 0 4px var(--gray-4);
+  }
+
+  .subscribe-input:invalid:not(:placeholder-shown) {
+    border-color: var(--tomato-9);
   }
 
   .subscribe-button {
     position: absolute;
     right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    
     background-color: var(--gray-12);
     color: var(--gray-1);
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 4px;
     cursor: pointer;
-    white-space: nowrap;
-    padding: 0.5rem;
-    width: 40px;
-    height: 40px;
-    transition:
-      background-color 0.2s ease-out,
-      transform 0.1s ease-out;
+    
+    transition: 
+      background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+      transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .subscribe-button:hover {
     background-color: var(--gray-11);
-    transform: translateY(-1px);
   }
 
   .subscribe-button:active {
-    background-color: var(--gray-10);
-    transform: translateY(0);
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  .subscribe-button :global(svg) {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .subscribe-button:hover :global(svg) {
+    transform: translateX(2px);
   }
 </style>
