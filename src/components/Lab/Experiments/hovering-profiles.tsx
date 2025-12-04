@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const profileData = [
@@ -10,7 +10,7 @@ const profileData = [
   {
     id: "p2",
     image: "https://i.pravatar.cc/100?u=p2",
-    message: "super cold out here",
+    message: "Super cold out here",
   },
   {
     id: "p3",
@@ -41,7 +41,7 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
 
   return (
     <motion.div
-      className="flex flex-col items-center relative"
+      className="relative flex flex-col items-center"
       initial={{ opacity: 0, y: 20 }}
       animate={{
         opacity: 1,
@@ -49,27 +49,28 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
         transition: {
           delay: index * 0.1,
           duration: 0.4,
+          type: "spring",
         },
       }}
+      style={{ zIndex: isHovered ? 50 : 0 }}
     >
       <motion.div
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        className="flex flex-col items-center group"
-        whileHover={{ y: -4 }}
-        transition={{ duration: 0.2 }}
+        className="group flex flex-col items-center"
+        whileHover={{ y: -8, scale: 1.1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        <motion.div
-          className="relative overflow-hidden rounded-2xl"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.2 }}
-        >
+        <div className="relative overflow-hidden rounded-full">
           <img
             src={profile.image}
             alt={`Profile of ${profile.id}`}
-            className="w-20 h-20 object-cover cursor-pointer"
+            className="h-20 w-20 cursor-pointer object-cover"
+            style={{
+              border: "4px solid var(--gray-2)",
+            }}
           />
-        </motion.div>
+        </div>
 
         <AnimatePresence>
           {isHovered && (
@@ -77,24 +78,23 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute bottom-[calc(100%+12px)] z-10 max-w-[220px] w-max text-center whitespace-normal break-words pointer-events-none"
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="pointer-events-none absolute bottom-[calc(100%+16px)] z-10 w-max max-w-[200px] break-words text-center"
             >
               <div
-                className="relative px-3 py-2 rounded-lg text-xs font-medium"
+                className="relative rounded-xl px-4 py-2 text-xs font-semibold shadow-xl"
                 style={{
-                  backgroundColor: "var(--hp-speech-bubble-bg)",
-                  color: "var(--hp-speech-bubble-text)",
-                  boxShadow: "var(--hp-speech-bubble-shadow)",
+                  backgroundColor: "var(--gray-12)",
+                  color: "var(--gray-1)",
                 }}
               >
                 {profile.message}
                 <div
-                  className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0"
+                  className="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2 transform"
                   style={{
-                    borderLeft: "5px solid transparent",
-                    borderRight: "5px solid transparent",
-                    borderTop: "5px solid var(--hp-speech-bubble-bg)",
+                    borderLeft: "6px solid transparent",
+                    borderRight: "6px solid transparent",
+                    borderTop: "6px solid var(--gray-12)",
                   }}
                 />
               </div>
@@ -107,29 +107,8 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
 };
 
 const HoveringProfiles: React.FC = () => {
-  useEffect(() => {
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = `
-      :root {
-        --hp-speech-bubble-bg: #1f2937;
-        --hp-speech-bubble-text: #ffffff;
-        --hp-speech-bubble-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-      [data-theme="light"] {
-        --hp-speech-bubble-bg: #ffffff;
-        --hp-speech-bubble-text: #1f2937;
-        --hp-speech-bubble-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-    `;
-    document.head.appendChild(styleSheet);
-    return () => {
-      document.head.removeChild(styleSheet);
-    };
-  }, []);
-
   return (
-    <div className="flex gap-4 items-end justify-center py-10 flex-nowrap">
+    <div className="flex flex-nowrap items-end justify-center gap-4 py-20">
       {profileData.map((profile, index) => (
         <ProfileEntry key={profile.id} profile={profile} index={index} />
       ))}
