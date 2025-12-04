@@ -1,82 +1,85 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const navigationItems = [
   { id: "home", title: "Home" },
   { id: "about", title: "About" },
-  { id: "services", title: "Services" },
+  { id: "services", title: "Now" },
   { id: "contact", title: "Contact" },
 ];
 
 export default function AnimatedTabs() {
-  const [currentTab, setCurrentTab] = useState(navigationItems[0].id);
-
-  useEffect(() => {
-    const style = document.createElement("style");
-    style.innerHTML = `
-      :root {
-        --tab-bg-active: #e5e7eb;
-        --tab-text-active: #111827;
-        --tab-text-inactive: #6b7280;
-        --tab-text-hover: #374151;
-      }
-
-      [data-theme="dark"] {
-        --tab-bg-active: #374151;
-        --tab-text-active: #f9fafb;
-        --tab-text-inactive: #9ca3af;
-        --tab-text-hover: #f3f4f6;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
+  const [selected, setSelected] = useState(navigationItems[0].id);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <div className="w-full flex justify-center items-center py-4">
-      <nav className="flex items-center gap-[2px] sm:gap-2  max-w-full scale-[0.9] sm:scale-100">
+    <div className="flex w-full items-center justify-center py-4">
+      <nav
+        className="flex max-w-full scale-90 items-center gap-1 rounded-full p-1 sm:scale-100 sm:gap-2"
+        onMouseLeave={() => setHovered(null)}
+      >
         {navigationItems.map((item) => {
-          const isActive = currentTab === item.id;
+          const isSelected = selected === item.id;
+          const isHovered = hovered === item.id;
 
           return (
-            <motion.button
+            <button
               key={item.id}
-              layout
-              onClick={() => setCurrentTab(item.id)}
-              className={`
-                relative px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm font-semibold rounded-full whitespace-nowrap
-                transition-colors duration-200 ease-out bg-transparent
-                focus:outline-none focus-visible:ring focus-visible:ring-offset-2
-                focus-visible:ring-[color:var(--tab-bg-active)]
-              `}
+              onClick={() => setSelected(item.id)}
+              onMouseEnter={() => setHovered(item.id)}
+              className="relative cursor-pointer whitespace-nowrap rounded-full px-3 py-1.5 text-[10px] font-semibold outline-none focus-visible:ring-2 sm:px-4 sm:py-2 sm:text-sm"
               style={{
-                color: isActive
-                  ? "var(--tab-text-active)"
-                  : "var(--tab-text-inactive)",
                 WebkitTapHighlightColor: "transparent",
               }}
-              onMouseEnter={(e) => {
-                if (!isActive)
-                  e.currentTarget.style.color = "var(--tab-text-hover)";
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive)
-                  e.currentTarget.style.color = "var(--tab-text-inactive)";
-              }}
-              transition={{ type: "spring", stiffness: 250, damping: 20 }}
             >
-              {isActive && (
+              {isHovered && !isSelected && (
                 <motion.div
-                  className="absolute inset-0 rounded-full"
-                  style={{ backgroundColor: "var(--tab-bg-active)" }}
-                  layoutId="activeTab"
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  layoutId="nav-item-hover"
+                  className="absolute inset-0 z-0 rounded-full"
+                  style={{ backgroundColor: "var(--gray-4)" }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 30,
+                  }}
                 />
               )}
-              <span className="relative z-10 select-none">{item.title}</span>
-            </motion.button>
+
+              {isSelected && (
+                <motion.div
+                  layoutId="nav-item-active"
+                  className="absolute inset-0 z-0 rounded-full"
+                  style={{ backgroundColor: "var(--gray-12)" }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30,
+                  }}
+                />
+              )}
+
+              <motion.span
+                className="relative z-10 block"
+                initial={false}
+                animate={{
+                  color: isSelected
+                    ? "var(--gray-1)"
+                    : isHovered
+                    ? "var(--gray-12)"
+                    : "var(--gray-10)",
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                }}
+              >
+                {item.title}
+              </motion.span>
+            </button>
           );
         })}
       </nav>
