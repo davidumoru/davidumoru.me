@@ -64,7 +64,7 @@ const timelinePosts = await Promise.all(
 
     .timeline-post {
       position: relative;
-      margin-bottom: 2rem;
+      margin-bottom: var(--space-xl);
     }
 
     .timeline-post:last-child {
@@ -89,7 +89,7 @@ const timelinePosts = await Promise.all(
     }
 
     .content :global(p) {
-      margin-bottom: var(--space-s);
+      margin-bottom: var(--space-xs);
     }
     
     .content :global(p:last-child) {
