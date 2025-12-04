@@ -1,125 +1,123 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-interface Avatar {
-  id: string;
-  src: string;
-  alt: string;
-  name: string;
-}
-
-const avatars: Avatar[] = [
+const avatars = [
   {
     id: "1",
     src: "https://i.pravatar.cc/100?u=52",
-    alt: "John Doe",
-    name: "John Doe",
+    name: "Elias.",
+    viewed: "3h ago",
+  },
+  {
+    id: "2",
+    src: "https://i.pravatar.cc/100?u=13",
+    name: "Clara Leighton",
+    viewed: "1h ago",
   },
   {
     id: "3",
-    src: "https://i.pravatar.cc/100?u=13",
-    alt: "Jane Smith",
-    name: "Jane Smith",
+    src: "https://i.pravatar.cc/100?u=24",
+    name: "Dorian Hale",
+    viewed: "2d ago",
   },
   {
     id: "4",
-    src: "https://i.pravatar.cc/100?u=24",
-    alt: "Mike Wilson",
-    name: "Mike Wilson",
-  },
-  {
-    id: "5",
     src: "https://i.pravatar.cc/100?u=52",
-    alt: "Sarah Connor",
-    name: "Sarah Connor",
-  },
-  {
-    id: "6",
-    src: "https://i.pravatar.cc/100?u=60",
-    alt: "Providenci Altenwerth",
-    name: "Providenci Altenwerth",
+    name: "Marcus Kenley",
+    viewed: "10m ago",
   },
 ];
 
-const StackedAvatars: React.FC = () => {
-  useEffect(() => {
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = `
-      :root {
-        --sa-tooltip-bg: #1f2937;
-        --sa-tooltip-text: #ffffff;
-        --sa-tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        --sa-avatar-ring: #ffffff;
-      }
-      [data-theme="light"] {
-        --sa-tooltip-bg: #ffffff;
-        --sa-tooltip-text: #1f2937;
-        --sa-tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        --sa-avatar-ring: #ffffff;
-      }
-      [data-theme="dark"] {
-        --sa-tooltip-bg: #1f2937;
-        --sa-tooltip-text: #ffffff;
-        --sa-tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        --sa-avatar-ring: #1f2937;
-      }
-    `;
-    document.head.appendChild(styleSheet);
-    return () => {
-      document.head.removeChild(styleSheet);
-    };
-  }, []);
+export default function StackedAvatars() {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
   return (
-    <div className="flex items-center justify-center">
-      <div className="group flex justify-center py-16">
-        {avatars.map((avatar, index) => (
-          <motion.div
-            key={avatar.id}
-            className={`relative flex items-center justify-center transition-all duration-500 ease-out ${
-              index === 0 ? "ml-0" : "-ml-6 sm:-ml-8"
-            } group-hover:ml-1 sm:group-hover:ml-2`}
-            style={{ zIndex: avatars.length - index }}
-            whileHover={{ scale: 1.05, zIndex: 50 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <div className="peer relative h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 transition-all duration-500 ease-out group-hover:h-18 group-hover:w-18 sm:group-hover:h-22 sm:group-hover:w-22 md:group-hover:h-26 md:group-hover:w-26">
-              <img
-                src={avatar.src}
-                alt={avatar.alt}
-                className="w-full h-full rounded-full object-cover shadow-lg"
+    <div className="flex h-64 items-center justify-center">
+      <div
+        className="flex items-center rounded-full border px-3 py-3 shadow-sm"
+        style={{
+          backgroundColor: "var(--gray-1)",
+          borderColor: "var(--gray-3)",
+        }}
+        onMouseLeave={() => setHoveredId(null)}
+      >
+        <div className="flex items-center">
+          {avatars.map((avatar) => (
+            <div
+              key={avatar.id}
+              className="relative -ml-3 first:ml-0"
+              onMouseEnter={() => setHoveredId(avatar.id)}
+            >
+              <AnimatePresence>
+                {hoveredId === avatar.id && (
+                  <motion.div
+                    layoutId="tooltip"
+                    className="absolute bottom-[140%] left-1/2 z-50 w-max -translate-x-1/2 rounded-xl px-2.5 py-1.5 shadow-xl"
+                    style={{
+                      backgroundColor: "var(--gray-12)",
+                    }}
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 30,
+                    }}
+                  >
+                    <div className="flex flex-col items-center leading-none">
+                      <span
+                        className="text-xs font-bold"
+                        style={{ color: "var(--gray-1)" }}
+                      >
+                        {avatar.name}
+                      </span>
+                      <span
+                        className="mt-0.5 text-[10px] font-medium opacity-80"
+                        style={{ color: "var(--gray-1)" }}
+                      >
+                        Viewed {avatar.viewed}
+                      </span>
+                    </div>
+                    <div className="absolute left-1/2 top-full -mt-[1px] -translate-x-1/2">
+                      <svg
+                        width="12"
+                        height="6"
+                        viewBox="0 0 24 12"
+                        fill="var(--gray-12)"
+                      >
+                        <path d="M12 12L0 0H24L12 12Z" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <motion.div
+                className="relative z-0 h-14 w-14 overflow-hidden rounded-full border-[3px]"
                 style={{
-                  border: "4px solid var(--sa-avatar-ring)",
+                  borderColor: "var(--gray-1)",
                 }}
-              />
-            </div>
-            <div className="pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 transition-all duration-300 peer-hover:opacity-100 peer-hover:-translate-y-1">
-              <div className="relative">
-                <div
-                  className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium"
-                  style={{
-                    backgroundColor: "var(--sa-tooltip-bg)",
-                    color: "var(--sa-tooltip-text)",
-                    boxShadow: "var(--sa-tooltip-shadow)",
-                  }}
-                >
-                  {avatar.name}
-                </div>
-                <div
-                  className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0"
-                  style={{
-                    borderLeft: "5px solid transparent",
-                    borderRight: "5px solid transparent",
-                    borderTop: "5px solid var(--sa-tooltip-bg)",
-                  }}
+                animate={{
+                  scale: hoveredId === avatar.id ? 1.15 : 1,
+                  zIndex: hoveredId === avatar.id ? 50 : 0,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 30,
+                }}
+              >
+                <img
+                  src={avatar.src}
+                  alt={avatar.name}
+                  className="h-full w-full object-cover"
                 />
-              </div>
+              </motion.div>
             </div>
-          </motion.div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
-};
-
-export default StackedAvatars;
+}
