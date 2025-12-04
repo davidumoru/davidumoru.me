@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,11 +15,11 @@ const pills = [
 ];
 
 const transitionProps = {
-  type: "spring" as const,
+  type: "spring",
   stiffness: 500,
   damping: 30,
   mass: 0.5,
-};
+} as const;
 
 export default function PillSelector() {
   const [selected, setSelected] = useState<string[]>([]);
@@ -33,9 +31,9 @@ export default function PillSelector() {
   };
 
   return (
-    <div className="w-full p-6 flex justify-center">
+    <div className="flex w-full justify-center p-6">
       <motion.div
-        className="flex flex-wrap gap-3 overflow-visible justify-center"
+        className="flex flex-wrap justify-center gap-3 overflow-visible"
         layout
         transition={transitionProps}
       >
@@ -61,14 +59,14 @@ export default function PillSelector() {
                 backgroundColor: { duration: 0.1 },
               }}
               className={`
-                inline-flex items-center px-4 py-2 rounded-full text-base font-medium
-                whitespace-nowrap overflow-hidden ring-1 ring-inset
+                inline-flex items-center overflow-hidden whitespace-nowrap rounded-full px-4 py-2 text-base font-medium ring-1 ring-inset focus:outline-none
                 ${
                   isSelected
                     ? "text-[#2dd4bf] ring-[hsla(172,70%,50%,0.18)]"
                     : "text-slate-300 ring-[hsla(220,13%,91%,0.06)]"
                 }
               `}
+              style={{ WebkitTapHighlightColor: "transparent" }}
             >
               <motion.div
                 className="relative flex items-center"
@@ -89,11 +87,11 @@ export default function PillSelector() {
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
                       transition={transitionProps}
-                      className="absolute right-0"
+                      className="absolute right-0 flex items-center justify-center"
                     >
-                      <div className="w-5 h-5 rounded-full bg-[#2dd4bf] flex items-center justify-center shadow-md">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2dd4bf] shadow-md">
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="h-3.5 w-3.5"
                           viewBox="0 0 20 20"
                           fill="none"
                           stroke="#163e33"
