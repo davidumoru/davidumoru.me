@@ -1,8 +1,19 @@
 ::selection {
   background-color: var(--tomato-9);
+  color: var(--gray-1);
+}
+
+::-moz-selection {
+  background-color: var(--tomato-9);
+  color: var(--gray-1);
+}
+
+html.dark ::selection {
+  background-color: var(--tomato-9);
   color: var(--gray-12);
 }
-::-moz-selection {
+
+html.dark ::-moz-selection {
   background-color: var(--tomato-9);
   color: var(--gray-12);
 }
