@@ -1,19 +1,19 @@
 ::selection {
-  background-color: var(--tomato-9);
-  color: var(--gray-1);
+  background-color: color-mix(in srgb, var(--tomato-9) 40%, transparent);
+  color: var(--tomato-11);
 }
 
 ::-moz-selection {
-  background-color: var(--tomato-9);
-  color: var(--gray-1);
+  background-color: color-mix(in srgb, var(--tomato-9) 40%, transparent);
+  color: var(--tomato-11);
 }
 
 html.dark ::selection {
-  background-color: var(--tomato-9);
-  color: var(--gray-12);
+  background-color: color-mix(in srgb, var(--tomato-9) 50%, transparent);
+  color: var(--tomato-11);
 }
 
 html.dark ::-moz-selection {
-  background-color: var(--tomato-9);
-  color: var(--gray-12);
+  background-color: color-mix(in srgb, var(--tomato-9) 50%, transparent);
+  color: var(--tomato-11);
 }
