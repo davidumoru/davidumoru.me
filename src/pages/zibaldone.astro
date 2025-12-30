@@ -1,0 +1,99 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CenteredLayout from "../layouts/CenteredLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { displayDate } from "../lib/longDate";
+import { parseZibaldoneEntries } from "../lib/parseZibaldone";
+import MarkdownIt from "markdown-it";
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+});
+
+const monthlyFiles = await getCollection("zibaldone");
+
+const allEntries = monthlyFiles.flatMap((file) => {
+  const entries = parseZibaldoneEntries(file.body ?? "");
+  return entries;
+});
+
+allEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
+---
+
+<BaseLayout
+  title="Zibaldone"
+  description="Scattered thoughts, ideas, and quotes from books I've read, films I've watched and rabbit holes."
+>
+  <CenteredLayout>
+    <PageHeader
+      title="Zibaldone"
+      description="Scattered thoughts, ideas, and quotes from books, films and rabbit holes."
+    />
+    <div class="stream">
+      {
+        allEntries.map((entry) => (
+          <article class="fragment">
+            <div
+              class="fragment-content prose"
+              set:html={md.render(entry.content)}
+            />
+            <time datetime={entry.date.toISOString()}>
+              {displayDate(entry.date)}
+            </time>
+          </article>
+        ))
+      }
+    </div>
+  </CenteredLayout>
+</BaseLayout>
+
+<style>
+  .stream {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .fragment {
+    position: relative;
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--gray-4);
+  }
+
+  .fragment:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .fragment-content {
+    margin-bottom: var(--space-s);
+  }
+
+  .fragment-content :global(p) {
+    margin-bottom: var(--space-xs);
+  }
+
+  .fragment-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  time {
+    display: block;
+    font-size: var(--fs-0);
+    color: var(--gray-10);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 600px) {
+    .stream {
+      gap: var(--space-l);
+    }
+
+    .fragment {
+      padding-bottom: var(--space-l);
+    }
+  }
+</style>

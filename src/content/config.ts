@@ -100,4 +100,13 @@ export const collections = {
       reviewUrl: z.string().url().optional(),
     }),
   }),
+  zibaldone: defineCollection({
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "./src/content/zibaldone",
+    }),
+    schema: z.object({
+      month: z.string(),
+    }),
+  }),
 };

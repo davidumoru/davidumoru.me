@@ -38,5 +38,8 @@
     "sanitize-html": "^2.14.0",
     "tailwindcss": "^4.1.8",
     "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2"
   }
 }
