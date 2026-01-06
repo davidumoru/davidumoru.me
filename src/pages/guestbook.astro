@@ -176,14 +176,14 @@ const error = Astro.url.searchParams.get("error");
     <GuestbookForm />
   </main>
 
-  <button  
-    id="scrollToFormBtn"  
-    class="floating-btn"
-    aria-label="Scroll to guestbook form"
-    title="Add your message"
-  >
-    +
-  </button>
+  <button
+  id="scrollToFormBtn"  
+  class="floating-btn"
+  aria-label="Scroll to guestbook form"
+  title="Add your message"
+>
+  <span>+</span>
+</button>
 </BaseLayout>
 
 <style>
@@ -209,7 +209,6 @@ const error = Astro.url.searchParams.get("error");
     border: none;
     font-size: 2rem;
     font-weight: 300;
-    line-height: 1;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
@@ -227,6 +226,11 @@ const error = Astro.url.searchParams.get("error");
 
   .floating-btn:active {
     transform: scale(0.95);
+  }
+
+  .floating-btn span {
+    display: block;
+    transform: translateY(-2px);
   }
 
   @media (max-width: 768px) {
