@@ -18,10 +18,10 @@ const {
   <p class="h3">Subscribe</p>
   <p class="subscribe-title">{title}</p>
   <form
-    action="https://buttondown.email/api/emails/embed-subscribe/notesfromdavid"
+    action="https://buttondown.com/api/emails/embed-subscribe/notesfromdavid"
     method="post"
     target="popupwindow"
-    onsubmit="window.open('https://buttondown.email/notesfromdavid', 'popupwindow')"
+    onsubmit="window.open('https://buttondown.com/notesfromdavid', 'popupwindow')"
     class="subscribe-form"
   >
     <label for="bd-email" class="visually-hidden">Email Address</label>
@@ -40,7 +40,9 @@ const {
       </button>
     </div>
     
+    <label for="bd-honeypot" class="visually-hidden">Do not fill out this field</label>
     <input
+      id="bd-honeypot"
       type="text"
       name="honeypot"
       class="visually-hidden"
