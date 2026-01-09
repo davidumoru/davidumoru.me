@@ -1,0 +1,46 @@
+{
+  "name": "Development",
+  "order": 2,
+  "bookmarks": [
+    {
+      "title": "Using Server-Sent Events",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+    },
+    {
+      "title": "Creating an Operating System - OSDev Wiki",
+      "url": "https://wiki.osdev.org/Creating_an_Operating_System"
+    },
+    {
+      "title": "Spotify Developer Compliance Tips",
+      "url": "https://developer.spotify.com/compliance-tips"
+    },
+    {
+      "title": "collidingScopes - Creative Coding",
+      "url": "https://github.com/collidingScopes"
+    },
+    {
+      "title": "Max Elkins GitLab Projects",
+      "url": "https://gitlab.com/maxelkins/maxelkins-me/-/tree/main"
+    },
+    {
+      "title": "Next.js Dev Tools",
+      "url": "https://devouringdetails.com/prototypes/nextjs-dev-tools"
+    },
+    {
+      "title": "Unizoy UI Components",
+      "url": "https://ui.unizoy.com/docs"
+    },
+    {
+      "title": "Starlight Sidebar Autogeneration",
+      "url": "https://blog.trueberryless.org/blog/starlight-autogenerate-whole-sidebar/"
+    },
+    {
+      "title": "Max Leiter - Gemini Script",
+      "url": "https://maxleiter.com/notes/gemini-script"
+    },
+    {
+      "title": "Build Your Own Database",
+      "url": "https://www.nan.fyi/database"
+    }
+  ]
+}

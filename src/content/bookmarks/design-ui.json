@@ -1,0 +1,34 @@
+{
+  "name": "Design & UI",
+  "order": 1,
+  "bookmarks": [
+    {
+      "title": "16 Little UI Design Tips That Make a Big Impact",
+      "url": "https://www.adhamdannaway.com/blog/ui-design/ui-design-tips"
+    },
+    {
+      "title": "Web Interface Guidelines",
+      "url": "https://interfaces.rauno.me/"
+    },
+    {
+      "title": "Vercel Design Guidelines",
+      "url": "https://vercel.com/design/guidelines"
+    },
+    {
+      "title": "A Collection of Design Engineers",
+      "url": "https://maggieappleton.com/design-engineers"
+    },
+    {
+      "title": "Design Engineering",
+      "url": "https://www.floguo.com/notes/design-engineering"
+    },
+    {
+      "title": "Notes on Taste",
+      "url": "https://www.are.na/editorial/notes-on-taste"
+    },
+    {
+      "title": "The Curated Library of Award-Winning UI Patterns",
+      "url": "https://www.inspo.page/"
+    }
+  ]
+}

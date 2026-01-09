@@ -1,0 +1,38 @@
+{
+  "name": "Learning",
+  "order": 4,
+  "bookmarks": [
+    {
+      "title": "After Effects Curriculum",
+      "url": "https://www.learnto.day/aftereffects"
+    },
+    {
+      "title": "Learn Data Structures and Algorithms",
+      "url": "https://www.programiz.com/dsa"
+    },
+    {
+      "title": "The Book of Shaders",
+      "url": "https://thebookofshaders.com/"
+    },
+    {
+      "title": "System Design Primer",
+      "url": "https://systemdesignschool.io/primer#introduction"
+    },
+    {
+      "title": "Creative Coding Club",
+      "url": "https://www.creativecodingclub.com/enrollments"
+    },
+    {
+      "title": "Behind the Scenes - Design Courses",
+      "url": "https://devouringdetails.com/resources/behind-scenes"
+    },
+    {
+      "title": "Animations on the Web",
+      "url": "https://animations.dev/login"
+    },
+    {
+      "title": "Explore the In Our Time Archive",
+      "url": "https://www.braggoscope.com/"
+    }
+  ]
+}

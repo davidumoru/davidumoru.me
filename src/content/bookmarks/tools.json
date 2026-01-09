@@ -1,0 +1,42 @@
+{
+  "name": "Tools & Utilities",
+  "order": 7,
+  "bookmarks": [
+    {
+      "title": "Pickle AI",
+      "url": "https://app.getpickle.ai/signup"
+    },
+    {
+      "title": "iroh - Fast File Transfer",
+      "url": "https://www.iroh.computer/sendme"
+    },
+    {
+      "title": "Whisper - Secure File Sharing",
+      "url": "https://whisper-convex.vercel.app/"
+    },
+    {
+      "title": "ytfocusmode - YouTube Focus Mode",
+      "url": "https://github.com/amitdevv/ytfocusmode"
+    },
+    {
+      "title": "datatochart.com",
+      "url": "https://jordienric.com/writing/datatochartcom"
+    },
+    {
+      "title": "EasyEdit - Edit Images with One Prompt",
+      "url": "https://www.easyedit.io/"
+    },
+    {
+      "title": "My Life in Weeks",
+      "url": "https://life-in-weeks.jeremyrobertjones.com/"
+    },
+    {
+      "title": "37signals",
+      "url": "https://37signals.com/"
+    },
+    {
+      "title": "InstaGallery",
+      "url": "https://www.insta.gallery/"
+    }
+  ]
+}

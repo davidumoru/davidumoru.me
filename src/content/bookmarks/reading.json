@@ -1,0 +1,30 @@
+{
+  "name": "Reading List",
+  "order": 9,
+  "bookmarks": [
+    {
+      "title": "How to Build Meaningful Relationships After College",
+      "url": "https://huyenchip.com/2018/11/16/building-meaningful-relationships.html"
+    },
+    {
+      "title": "Books That Made Me Think (As an Engineer)",
+      "url": "https://huyenchip.com/2022/12/27/books-for-every-engineer.html"
+    },
+    {
+      "title": "Thirty Things",
+      "url": "https://thirtythings.timiajiboye.com/"
+    },
+    {
+      "title": "Honesty is Important",
+      "url": "https://thirtythings.timiajiboye.com/1"
+    },
+    {
+      "title": "The Internet Used to Be Fun",
+      "url": "https://projects.kwon.nyc/internet-is-fun/"
+    },
+    {
+      "title": "The Death of the English Language",
+      "url": "https://www.thealgorithmicbridge.com/p/the-death-of-the-english-language"
+    }
+  ]
+}

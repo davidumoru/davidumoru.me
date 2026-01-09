@@ -1,0 +1,30 @@
+{
+  "name": "AI & Machine Learning",
+  "order": 3,
+  "bookmarks": [
+    {
+      "title": "How to Create QR Code Art using Stable Diffusion",
+      "url": "https://ihsavru.medium.com/how-to-create-qr-code-art-using-stable-diffusion-58c5e7e55fcb"
+    },
+    {
+      "title": "Scrapybara - AI Coding Agent",
+      "url": "https://www.finta.com/founders/scrapybara"
+    },
+    {
+      "title": "How to Build Your Own Perplexity",
+      "url": "https://jnnnthnn.com/how-to-build-your-own-perplexity-for-any-dataset"
+    },
+    {
+      "title": "Open Sourcing Notes on a Robotics Startup",
+      "url": "https://carnegiepilled.substack.com/p/open-sourcing-my-notes-on-a-robotics"
+    },
+    {
+      "title": "Simon Willison's Weblog",
+      "url": "https://simonwillison.net/"
+    },
+    {
+      "title": "Simon Willison's Tools",
+      "url": "https://tools.simonwillison.net/"
+    }
+  ]
+}

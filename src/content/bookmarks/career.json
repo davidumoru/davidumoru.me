@@ -1,0 +1,26 @@
+{
+  "name": "Career & Interviews",
+  "order": 5,
+  "bookmarks": [
+    {
+      "title": "20 Essential Coding Patterns for Interviews",
+      "url": "https://dev.to/arslan_ah/20-essential-coding-patterns-to-ace-your-next-coding-interview-32a3"
+    },
+    {
+      "title": "Grind 75 - Better Blind 75",
+      "url": "https://www.techinterviewhandbook.org/grind75/"
+    },
+    {
+      "title": "Tech Interview Handbook",
+      "url": "https://www.techinterviewhandbook.org/"
+    },
+    {
+      "title": "Just Have Faith, Keep Doing What You're Doing",
+      "url": "https://adriandlam.com/blog/have-faith"
+    },
+    {
+      "title": "Edidiong Asikpo's Developer Advocacy Journey",
+      "url": "https://blog.piggyvest.com/life/didi-asikpo-developer-advocacy-journey/"
+    }
+  ]
+}

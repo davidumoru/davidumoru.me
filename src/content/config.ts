@@ -109,4 +109,18 @@ export const collections = {
       month: z.string(),
     }),
   }),
+  bookmarks: defineCollection({
+    type: "data",
+    schema: z.object({
+      name: z.string(),
+      order: z.number(),
+      bookmarks: z.array(
+        z.object({
+          title: z.string(),
+          url: z.string().url(),
+          favicon: z.string().optional(),
+        })
+      ),
+    }),
+  }),
 };
