@@ -199,22 +199,26 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
               </span>
             </div>
 
-            <button
-              onClick={() => window.history.back()}
-              className="browser-back-link"
-              type="button"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => (window.location.href = "/")}
+                className="browser-back-link"
+                type="button"
+                aria-label="Go to home page"
               >
-                <path d="M7.82843 10.9999H20V12.9999H7.82843L13.1924 18.3638L11.7782 19.778L4 11.9999L11.7782 4.22168L13.1924 5.63589L7.82843 10.9999Z" />
-              </svg>
-
-              <span>Back</span>
-            </button>
+                <Icon icon="arrowLeft" size="16" />
+              </button>
+              {selectedBookmark && (
+                <button
+                  onClick={() => window.open(selectedBookmark.url, '_blank', 'noopener,noreferrer')}
+                  className="browser-back-link"
+                  type="button"
+                  aria-label="Open in new tab"
+                >
+                  <Icon icon="externalLink" size="16" />
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="browser-sidebar-divider" />
