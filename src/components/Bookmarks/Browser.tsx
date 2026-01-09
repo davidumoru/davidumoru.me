@@ -195,7 +195,7 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
               <span className="browser-sidebar-title">{title}</span>
 
               <span className="browser-sidebar-subtitle">
-                A Folder from David
+                Links I find useful or interesting
               </span>
             </div>
 
