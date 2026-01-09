@@ -3,6 +3,10 @@
   "order": 10,
   "bookmarks": [
     {
+      "title": "Advice - Patrick Collison",
+      "url": "https://patrickcollison.com/advice"
+    },
+    {
       "title": "https://codepen.io/PixelPerfectLabs/pen/GgKLmWL",
       "url": "https://codepen.io/PixelPerfectLabs/pen/GgKLmWL"
     },
@@ -52,3 +56,4 @@
     }
   ]
 }
+
