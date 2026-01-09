@@ -307,10 +307,6 @@
   background: #ffffff;
 }
 
-:root.dark .browser-iframe {
-  background: #1a1a28;
-}
-
 /* Loading State */
 .browser-loading {
   position: absolute;
