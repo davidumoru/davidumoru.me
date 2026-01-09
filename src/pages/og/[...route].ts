@@ -44,6 +44,10 @@ const staticPages = {
     title: "Zibaldone",
     description: "Scattered thoughts, ideas, and quotes from books, films and rabbit holes.",
   },
+  bookmarks: {
+    title: "Bookmarks",
+    description: "A curated collection of links and resources I find useful or interesting.",
+  },
 };
 
 const collectionPages = [
