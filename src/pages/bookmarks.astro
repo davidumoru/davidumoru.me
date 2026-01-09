@@ -17,5 +17,12 @@ const description = "A curated collection of links and resources I find useful o
 ---
 
 <UnstyledBaseLayout title={title} description={description}>
-    <Browser client:load folders={folders} title={title} />
+  <Browser client:load folders={folders} title={title} />
 </UnstyledBaseLayout>
+
+<style is:global>
+  body {
+    margin: 0;
+    display: block;
+  }
+</style>
