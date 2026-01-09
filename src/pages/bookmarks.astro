@@ -1,0 +1,21 @@
+---
+import { getCollection } from "astro:content";
+import Browser from "../components/Bookmarks/Browser";
+import UnstyledBaseLayout from "../layouts/UnstyledBaseLayout.astro";
+
+const bookmarkEntries = await getCollection("bookmarks");
+
+const folders = bookmarkEntries
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({
+    name: entry.data.name,
+    bookmarks: entry.data.bookmarks,
+  }));
+
+const title = "David's Bookmarks";
+const description = "A curated collection of links and resources I find useful or interesting.";
+---
+
+<UnstyledBaseLayout title={title} description={description}>
+    <Browser client:load folders={folders} title={title} />
+</UnstyledBaseLayout>
