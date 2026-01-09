@@ -2,13 +2,9 @@
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import TableOfContents from "../components/TableOfContents.tsx";
-import "../style/index.css";
-import Analytics from "@vercel/analytics/astro";
-import SpeedInsights from "@vercel/speed-insights/astro";
-import { ClientRouter } from "astro:transitions";
-import type { TransitionAnimationPair } from "astro";
 import type { MarkdownHeading } from "astro";
-import LoadingIndicator from "astro-loading-indicator/component";
+import type { TransitionAnimationPair } from "astro";
+import UnstyledBaseLayout from "./UnstyledBaseLayout.astro";
 
 export type Props = {
   title?: string;
@@ -17,14 +13,6 @@ export type Props = {
   headings?: MarkdownHeading[];
 };
 const { title, description, hideFooter, headings } = Astro.props;
-
-const rawPath = new URL(Astro.url.pathname, Astro.site).pathname.replace(
-  /\/*$/,
-  ""
-);
-const pagePath = rawPath === "" ? "/index" : rawPath;
-
-const ogImageUrl = `https://www.davidumoru.me/og${pagePath}.png`;
 
 const forwards: TransitionAnimationPair = {
   old: {
@@ -64,120 +52,25 @@ const viewTransition = {
 };
 ---
 
-<html lang="en" transition:animate="none">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="canonical" href={Astro.url.href} />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
-    <meta
-      name="description"
-      content={description
-        ? description
-        : "David Umoru: I build things, mostly with code and sometimes design. Currently enjoying CSS. See what I'm up to."}
-    />
-
-    <meta
-      property="og:title"
-      content={title ? `${title} - David Umoru` : "David Umoru"}
-    />
-    <meta property="og:site_name" content="David Umoru" />
-    <meta
-      property="og:description"
-      content={description || "Designer who writes code."}
-    />
-    <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:alt" content={title || "Page Preview"} />
-    <meta property="og:url" content={Astro.url.href} />
-    <meta property="og:type" content="website" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content={title ? `${title} - David Umoru` : "David Umoru"}
-    />
-    <meta
-      name="twitter:description"
-      content={description || "Designer who writes code."}
-    />
-    <meta name="twitter:image" content={ogImageUrl} />
-    <meta name="twitter:image:alt" content={title || "Page Preview"} />
-    <meta name="twitter:url" content={Astro.url.href} />
-    <meta name="twitter:site" content="@theumoru" />
-    <meta name="twitter:creator" content="@theumoru" />
-
-    <title>{title && `${title} - `} David Umoru</title>
-
-    <script is:inline>
-      const themeStorageKey = "theme-preference";
-      const getThemePreference = () => {
-        if (typeof localStorage !== "undefined") {
-          const storedTheme = localStorage.getItem(themeStorageKey);
-          if (storedTheme === "light" || storedTheme === "dark") {
-            return storedTheme;
-          }
-        }
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      };
-      const theme = getThemePreference();
-
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    </script>
-
-    <ClientRouter />
-    <LoadingIndicator color="var(--tomato-9)" height="2px" threshold={400} />
-  </head>
-
-  <body>
-    <Header transition:persist />
-    <main class="flow" transition:animate={viewTransition}>
-      <slot />
-    </main>
-    {headings && headings.length > 0 && (
-      <aside class="toc-sidebar-global">
-        <TableOfContents client:load />
-      </aside>
-    )}
-    {!hideFooter && <Footer />}
-    <Analytics />
-    <SpeedInsights />
-
-    <script is:inline>
-      document.addEventListener("astro:before-swap", (event) => {
-        const theme = getThemePreference();
-
-        if (theme === "dark") {
-          event.newDocument.documentElement.classList.add("dark");
-        } else {
-          event.newDocument.documentElement.classList.remove("dark");
-        }
-      });
-    </script>
-  </body>
-</html>
+<UnstyledBaseLayout title={title} description={description}>
+  <Header transition:persist />
+  <main class="flow" transition:animate={viewTransition}>
+    <slot />
+  </main>
+  {headings && headings.length > 0 && (
+    <aside class="toc-sidebar-global">
+      <TableOfContents client:load />
+    </aside>
+  )}
+  {!hideFooter && <Footer />}
+</UnstyledBaseLayout>
 
 <style is:global>
   main {
     margin-top: 6rem;
     min-height: 72vh;
   }
-  @media (max-width: 1200px) { 
+  @media (max-width: 1200px) {
     main {
       margin-top: 0;
     }
