@@ -1,14 +1,14 @@
 /* Browser Container */
 .browser {
-  --browser-bg: #e8e0f0;
-  --browser-sidebar-bg: #ffffff;
-  --browser-content-bg: #f5f0fa;
-  --browser-border: rgba(0, 0, 0, 0.08);
-  --browser-text: #1a1a2e;
-  --browser-text-muted: #6b6b7b;
-  --browser-accent: #7c5cff;
-  --browser-hover: rgba(124, 92, 255, 0.08);
-  --browser-selected: rgba(124, 92, 255, 0.12);
+  --browser-bg: var(--gray-1);
+  --browser-sidebar-bg: var(--gray-1);
+  --browser-content-bg: var(--gray-2);
+  --browser-border: var(--gray-4);
+  --browser-text: var(--gray-12);
+  --browser-text-muted: var(--gray-11);
+  --browser-accent: var(--tomato-9);
+  --browser-hover: var(--gray-3);
+  --browser-selected: var(--tomato-3);
   --browser-radius-lg: 20px;
   --browser-radius-md: 12px;
   --browser-radius-sm: 8px;
@@ -17,33 +17,9 @@
   height: 100vh;
   height: 100dvh;
   padding: 1.5rem;
-  background: linear-gradient(
-    135deg,
-    #ddd6f3 0%,
-    #e8e0f0 50%,
-    #f5f0fa 100%
-  );
+  background: var(--gray-1);
   display: flex;
   flex-direction: column;
-}
-
-:root.dark .browser {
-  --browser-bg: #1e1e2e;
-  --browser-sidebar-bg: #252535;
-  --browser-content-bg: #1a1a28;
-  --browser-border: rgba(255, 255, 255, 0.08);
-  --browser-text: #e4e4ed;
-  --browser-text-muted: #9090a0;
-  --browser-accent: #a78bfa;
-  --browser-hover: rgba(167, 139, 250, 0.1);
-  --browser-selected: rgba(167, 139, 250, 0.18);
-
-  background: linear-gradient(
-    135deg,
-    #1a1a28 0%,
-    #252535 50%,
-    #1e1e2e 100%
-  );
 }
 
 .browser-window {
@@ -251,12 +227,19 @@
   background: var(--browser-hover);
 }
 
-.browser-sidebar-item--selected {
-  background: var(--browser-selected);
+.browser-sidebar-header-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.browser-sidebar-item--selected:hover {
+.browser-sidebar-item--selected {
   background: var(--browser-selected);
+  color: var(--browser-accent);
+}
+
+.browser-sidebar-item--selected .browser-sidebar-item-title {
+  color: var(--browser-accent);
+  font-weight: 500;
 }
 
 .browser-favicon {
