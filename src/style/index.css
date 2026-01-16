@@ -10,7 +10,7 @@ body {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	gap: var(--space-l);
-	font-size: var(--fs-1);
+	font-size: var(--fs-0);
 	font-family: "Inter", sans-serif;
 	font-weight: 400;
 	background: var(--gray-1);

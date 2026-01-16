@@ -36,23 +36,23 @@ legend {
 .prose h3,
 .prose h4 {
   scroll-margin-top: var(--space-xl);
-  margin: 3.5rem 0 1rem;
+  margin: 2em 0 1em;
 }
 
 .prose h5,
 .prose h6 {
-  margin: 1.5rem 0 0.5rem;
+  margin: 1.5em 0 0.5em;
 }
 .prose p {
-  margin: 1rem 0 1.7rem;
+  margin: 1em 0 1.5em;
 }
 .prose ul,
 .prose ol {
-    margin-top: 1.25rem;
-    padding-left: 1.5rem;
+    margin-top: 1em;
+    padding-left: 1.5em;
 }
 .prose pre {
-  margin: 1rem 0;
+  margin: 1.5em 0;
 }
 
 body {
