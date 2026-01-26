@@ -33,6 +33,7 @@
 @import "@radix-ui/colors/tomato-dark.css";
 
 :root {
+  /* Font sizes */
   --fs--2: 0.75rem;
   --fs--1: 0.875rem;
   --fs-0: 1rem;
@@ -42,6 +43,7 @@
   --fs-4: 1.875rem;
   --fs-5: 2.25rem;
 
+  /* Spacing */
   --space-3xs: 0.25rem;
   --space-2xs: 0.5rem;
   --space-xs: 0.75rem;
@@ -52,6 +54,7 @@
   --space-2xl: 4rem;
   --space-3xl: 6rem;
 
+  /* Line heights */
   --lh--2: 1rem;
   --lh--1: 1.25rem;
   --lh-0: 1.5rem;
@@ -61,4 +64,14 @@
   --lh-4: 2.25rem;
   --lh-5: 2.5rem;
   --lh-6: 3.75rem;
+
+  /* Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 250ms;
+
+  /* Easing functions */
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out: cubic-bezier(0.455, 0.03, 0.515, 0.955);
 }
