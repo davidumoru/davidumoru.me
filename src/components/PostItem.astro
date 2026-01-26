@@ -15,51 +15,87 @@ interface Feature {
 ---
 
 <article>
-  <div class="content">
-    <div class="text">
-      <a href={`posts/${post.id}`} class="title-link">
+  <div class="post-item-container">
+    <a href={`/posts/${post.id}`} class="post-link-overlay" aria-label={post.data.title}></a>
+    <div class="content">
+      <div class="text">
         <p class="title">{post.data.title}</p>
-      </a>
-      {
-        post.data.description && (
-          <p class="description">{post.data.description}</p>
-        )
-      }
-
-      {
-        post.data.features && (
-          <div class="feature-text">
-            <span>Featured on </span>
-            {post.data.features.map(({ name, url }: Feature, i: number) => [
-              i > 0 && ", ",
-              <a href={url} target="_blank" class="feature-link">
-                {name}
-              </a>,
-            ])}
-          </div>
-        )
-      }
+        {
+          post.data.description && (
+            <p class="description">{post.data.description}</p>
+          )
+        }
+      </div>
+      <p class="date">
+        {displayDate(post.data.datePublished)}
+      </p>
     </div>
-    <p class="fs-0 date">
-      {displayDate(post.data.datePublished)}
-    </p>
+    {
+      post.data.features && (
+        <div class="feature-text">
+          <span>Featured on </span>
+          {post.data.features.map(({ name, url }: Feature, i: number) => [
+            i > 0 && ", ",
+            <a href={url} target="_blank" rel="noopener noreferrer" class="feature-link">
+              {name}
+            </a>,
+          ])}
+        </div>
+      )
+    }
   </div>
 </article>
 
 <style>
   article {
-    max-inline-size: 66ch;
-    padding-bottom: 1ch;
+    padding: var(--space-m) 0;
+    border-bottom: 1px dashed var(--gray-6);
   }
 
-  article:not(:first-child) {
-    margin-block: var(--space-m);
+  article:first-child {
+    padding-top: 0;
+  }
+
+  article:last-child {
+    border-bottom: none;
+  }
+
+  .post-item-container {
+    position: relative;
+    padding: var(--space-s);
+    margin: calc(var(--space-s) * -1);
+    border-radius: 9px;
+    transition: background-color var(--duration-fast, 150ms) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .post-item-container:hover {
+      background-color: var(--gray-3);
+    }
+
+    :global(html.dark) .post-item-container:hover {
+      background-color: var(--gray-2);
+    }
+
+    .post-item-container:hover .title {
+      color: var(--tomato-9);
+    }
+  }
+
+  .post-link-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 12px;
   }
 
   .content {
     display: flex;
     flex-direction: column;
     gap: var(--space-3xs);
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
   }
 
   @media (min-width: 640px) {
@@ -85,20 +121,12 @@ interface Feature {
     color: var(--gray-12);
     line-height: 1.4;
     margin: 0;
-    transition: color 0.2s ease;
+    transition: color var(--duration-fast, 150ms) ease;
   }
 
   .description {
     line-height: 1.6;
     margin: 0;
-  }
-
-  .title-link {
-    text-decoration: none;
-  }
-
-  .title-link:hover .title {
-    color: var(--tomato-9);
   }
 
   .date {
@@ -120,18 +148,23 @@ interface Feature {
 
   .feature-text {
     font-size: var(--fs--1);
-    margin-top: 2px;
+    margin-top: var(--space-2xs);
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
   }
 
   .feature-link {
     text-decoration: none;
     border-bottom: 1px solid var(--gray-6);
-    transition: border-color 0.2s ease;
+    transition:
+      color var(--duration-fast, 150ms) ease,
+      border-color var(--duration-fast, 150ms) ease;
+    pointer-events: auto;
   }
 
   .feature-link:hover {
     color: var(--gray-12);
     border-bottom-color: var(--tomato-9);
-    transition: color 0.2s ease;
   }
 </style>
