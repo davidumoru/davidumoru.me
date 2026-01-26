@@ -111,18 +111,23 @@ const projects = (await getCollection("projects")).sort(
   }
 
   .revamp-overlay {
-    background-color: #ffc;
-    border: 1px solid #e0e0e0;
-    padding: 1.5rem;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #fdf5a3;
+    background-image: linear-gradient(to bottom right, #fdf5a3, #fcf286);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    border-radius: 2px;
+    box-shadow: 
+      0 1px 2px rgba(0,0,0,0.15),
+      0 2px 4px rgba(0,0,0,0.15),
+      0 4px 8px rgba(0,0,0,0.15),
+      0 8px 16px rgba(0,0,0,0.1);
     max-width: 450px;
     width: 90%;
     
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(-1.5deg);
     z-index: 10;
     text-align: center;
     font-weight: 600;
@@ -271,6 +276,10 @@ const projects = (await getCollection("projects")).sort(
     }
   }
   @media (max-width: 768px) {
+    .revamp-overlay {
+      top: 35%;
+      transform: translate(-50%, -50%) rotate(-1.5deg);
+    }
     .project-meta,
     .project-actions {
       justify-self: flex-start;
