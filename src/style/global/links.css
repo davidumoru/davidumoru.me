@@ -2,9 +2,9 @@ a:not([class]), .link {
   color: var(--tomato-9);
   text-decoration: underline;
   text-decoration-color: var(--gray-6);
-  transition: 
-    color 0.2s ease,
-    text-decoration-color 0.2s ease;
+  transition:
+    color var(--duration-fast, 150ms) ease,
+    text-decoration-color var(--duration-fast, 150ms) ease;
 }
 
 a:not([class]):hover, .link:hover {

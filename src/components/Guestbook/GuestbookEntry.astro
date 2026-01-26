@@ -172,11 +172,12 @@ const stampStyles = `
       inset 0 0 20px rgba(255, 255, 255, 0.5);
     transform: rotate(var(--rotate));
     transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+      transform var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
     border-radius: 2px;
     content-visibility: auto;
     contain-intrinsic-size: 300px 375px;
+    will-change: transform;
   }
 
   .guestbook-stamp::before {
@@ -307,8 +308,8 @@ const stampStyles = `
     opacity: 0.45;
     filter: contrast(1.1) saturate(1.1);
     transition:
-      opacity 0.3s ease,
-      filter 0.3s ease;
+      opacity var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      filter var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .guestbook-stamp:hover .stamp-bg-image {
@@ -453,7 +454,9 @@ const stampStyles = `
     background-repeat: repeat-x;
     background-position: left bottom 2px;
     padding-bottom: 2px;
-    transition: all 0.2s ease;
+    transition:
+      color var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      background-image var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .entry-link:hover {

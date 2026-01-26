@@ -211,12 +211,16 @@ const error = Astro.url.searchParams.get("error");
     font-weight: 300;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    transition:
+      transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      opacity var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
+    will-change: transform;
   }
 
   .floating-btn:hover {

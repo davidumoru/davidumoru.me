@@ -40,7 +40,8 @@ const { book } = Astro.props;
     display: block;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s ease-out;
+    transition: transform var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    will-change: transform;
   }
 
   .book-card:hover {
