@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const avatars = [
   {
@@ -30,6 +30,7 @@ const avatars = [
 
 export default function StackedAvatars() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="flex h-64 items-center justify-center">
@@ -56,10 +57,10 @@ export default function StackedAvatars() {
                     style={{
                       backgroundColor: "var(--gray-12)",
                     }}
-                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95, y: 8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                    transition={{
+                    exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 8 }}
+                    transition={shouldReduceMotion ? { duration: 0 } : {
                       type: "spring",
                       stiffness: 400,
                       damping: 30,
@@ -79,7 +80,7 @@ export default function StackedAvatars() {
                         Viewed {avatar.viewed}
                       </span>
                     </div>
-                    <div className="absolute left-1/2 top-full -mt-[1px] -translate-x-1/2">
+                    <div className="absolute left-1/2 top-full -mt-px -translate-x-1/2">
                       <svg
                         width="12"
                         height="6"
@@ -99,10 +100,10 @@ export default function StackedAvatars() {
                   borderColor: "var(--gray-1)",
                 }}
                 animate={{
-                  scale: hoveredId === avatar.id ? 1.15 : 1,
+                  scale: hoveredId === avatar.id ? (shouldReduceMotion ? 1 : 1.15) : 1,
                   zIndex: hoveredId === avatar.id ? 50 : 0,
                 }}
-                transition={{
+                transition={shouldReduceMotion ? { duration: 0 } : {
                   type: "spring",
                   stiffness: 400,
                   damping: 30,

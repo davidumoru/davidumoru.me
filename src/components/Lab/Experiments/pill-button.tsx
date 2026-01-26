@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const pills = [
   "Alpha",
@@ -23,6 +23,9 @@ const transitionProps = {
 
 export default function PillSelector() {
   const [selected, setSelected] = useState<string[]>([]);
+  const shouldReduceMotion = useReducedMotion();
+
+  const effectiveTransition = shouldReduceMotion ? { duration: 0 } : transitionProps;
 
   const togglePill = (pill: string) => {
     setSelected((prev) =>
@@ -35,7 +38,7 @@ export default function PillSelector() {
       <motion.div
         className="flex flex-wrap justify-center gap-3 overflow-visible"
         layout
-        transition={transitionProps}
+        transition={effectiveTransition}
       >
         {pills.map((pill) => {
           const isSelected = selected.includes(pill);
@@ -48,15 +51,15 @@ export default function PillSelector() {
               animate={{
                 backgroundColor: isSelected ? "#163e33" : "#23272a",
               }}
-              whileHover={{
+              whileHover={shouldReduceMotion ? {} : {
                 backgroundColor: isSelected ? "#163e33" : "#334155",
               }}
-              whileTap={{
+              whileTap={shouldReduceMotion ? {} : {
                 backgroundColor: isSelected ? "#0f2921" : "#1e293b",
               }}
               transition={{
-                ...transitionProps,
-                backgroundColor: { duration: 0.1 },
+                ...effectiveTransition,
+                backgroundColor: { duration: shouldReduceMotion ? 0 : 0.1 },
               }}
               className={`
                 inline-flex items-center overflow-hidden whitespace-nowrap rounded-full px-4 py-2 text-base font-medium ring-1 ring-inset focus:outline-none
@@ -74,7 +77,7 @@ export default function PillSelector() {
                   width: isSelected ? "auto" : "100%",
                   paddingRight: isSelected ? "1.7rem" : "0",
                 }}
-                transition={{
+                transition={shouldReduceMotion ? { duration: 0 } : {
                   ease: [0.175, 0.885, 0.32, 1.275],
                   duration: 0.3,
                 }}
@@ -83,10 +86,10 @@ export default function PillSelector() {
                 <AnimatePresence>
                   {isSelected && (
                     <motion.span
-                      initial={{ scale: 0, opacity: 0 }}
+                      initial={shouldReduceMotion ? { opacity: 1 } : { scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={transitionProps}
+                      exit={shouldReduceMotion ? { opacity: 0 } : { scale: 0, opacity: 0 }}
+                      transition={effectiveTransition}
                       className="absolute right-0 flex items-center justify-center"
                     >
                       <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2dd4bf] shadow-md">

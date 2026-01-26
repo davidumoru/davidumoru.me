@@ -4,6 +4,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
+  useReducedMotion,
   MotionValue,
 } from "framer-motion";
 import * as React from "react";
@@ -26,7 +27,7 @@ function lerp(start: number, end: number, progress: number) {
 
 function SwipeableCard({ imageUrl }: { imageUrl: string }) {
   return (
-    <div className="w-[160px] sm:w-[200px] aspect-square rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="w-40 sm:w-50 aspect-square rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <img
         src={`${imageUrl}?f_auto,q_auto`}
         alt="Card image"
@@ -48,6 +49,7 @@ function SwipeableCardItem({
   xInput: MotionValue<number>;
   moveToEnd: () => void;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const x = useMemo(() => 15 * i, [i]);
   const y = useMemo(() => 0, [i]);
   const scale = useMemo(() => 1 - i * 0.1, [i]);
@@ -70,14 +72,15 @@ function SwipeableCardItem({
     return lerp(start, end, Math.pow(progress, i));
   });
 
-  const rotateVal = useSpring(rotateInput, springConfig);
-  const scaleVal = useSpring(scaleInput, springConfig);
+  const effectiveSpringConfig = shouldReduceMotion ? { duration: 0 } : springConfig;
+  const rotateVal = useSpring(rotateInput, effectiveSpringConfig);
+  const scaleVal = useSpring(scaleInput, effectiveSpringConfig);
 
   return (
     <motion.div
       title="Drag me"
       layoutId={card.key || undefined}
-      drag={i === 0 ? "x" : false}
+      drag={i === 0 && !shouldReduceMotion ? "x" : false}
       dragSnapToOrigin
       className="cursor-pointer"
       dragConstraints={{ left: -100, right: 100 }}
@@ -90,7 +93,7 @@ function SwipeableCardItem({
           moveToEnd();
         }
       }}
-      whileDrag={{ cursor: "grabbing" }}
+      whileDrag={shouldReduceMotion ? {} : { cursor: "grabbing" }}
       style={{
         gridColumn: "1 / 4",
         gridRow: "1",
@@ -105,7 +108,7 @@ function SwipeableCardItem({
         scale,
         rotate,
       }}
-      transition={{
+      transition={shouldReduceMotion ? { duration: 0 } : {
         type: "spring",
         ...springConfig,
         layout: {

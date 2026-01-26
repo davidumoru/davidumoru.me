@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const profileData = [
   {
@@ -35,6 +35,7 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
   index,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const curveFactor =
     Math.sin((index / (profileData.length - 1)) * Math.PI) * 20;
@@ -42,15 +43,17 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
   return (
     <motion.div
       className="relative flex flex-col items-center"
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{
         opacity: 1,
         y: curveFactor,
-        transition: {
-          delay: index * 0.1,
-          duration: 0.4,
-          type: "spring",
-        },
+        transition: shouldReduceMotion
+          ? { duration: 0 }
+          : {
+              delay: index * 0.1,
+              duration: 0.4,
+              type: "spring",
+            },
       }}
       style={{ zIndex: isHovered ? 50 : 0 }}
     >
@@ -58,7 +61,7 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         className="group flex flex-col items-center"
-        whileHover={{ y: -8, scale: 1.1 }}
+        whileHover={shouldReduceMotion ? {} : { y: -8, scale: 1.1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         <div className="relative overflow-hidden rounded-full">
@@ -75,11 +78,11 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 8, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 5, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="pointer-events-none absolute bottom-[calc(100%+16px)] z-10 w-max max-w-[200px] break-words text-center"
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 4, scale: 0.98 }}
+              transition={shouldReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 25 }}
+              className="pointer-events-none absolute bottom-[calc(100%+16px)] z-10 w-max max-w-50 wrap-break-word text-center"
             >
               <div
                 className="relative rounded-xl px-4 py-2 text-xs font-semibold shadow-xl"

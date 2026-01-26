@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 
 const transition = {
@@ -38,27 +38,30 @@ const ITEMS = [
 
 export default function AnimatedCardsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+
+  const effectiveTransition = shouldReduceMotion ? { duration: 0 } : transition;
 
   return (
-    <div className="relative flex h-[200px] w-full flex-col items-center justify-center">
+    <div className="relative flex h-50 w-full flex-col items-center justify-center">
       <div className="absolute -top-24 flex flex-col items-center justify-center">
         <motion.div
           initial={false}
           className="flex justify-start gap-4"
           animate={{ x: -currentIndex * (200 + 16) + 432 }}
-          transition={transition}
+          transition={effectiveTransition}
         >
           {ITEMS.map(({ image }, index) => (
             <motion.div
               key={index}
-              initial={{ scale: 0.9, opacity: 0.6 }}
+              initial={shouldReduceMotion ? false : { scale: 0.9, opacity: 0.6 }}
               animate={{
                 y: currentIndex === index ? 0 : -32,
                 scale: currentIndex === index ? 1 : 0.9,
                 opacity: currentIndex === index ? 1 : 0.6,
               }}
-              transition={transition}
-              className={`h-[200px] w-[200px] overflow-hidden rounded-xl ${
+              transition={effectiveTransition}
+              className={`h-50 w-50 overflow-hidden rounded-xl ${
                 currentIndex === index
                   ? "shadow-lg shadow-black/20"
                   : "shadow-sm shadow-black/10"
@@ -69,7 +72,7 @@ export default function AnimatedCardsCarousel() {
                 src={image}
                 alt=""
                 loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-300 ease-in-out"
+                className="h-full w-full object-cover transition-transform duration-200 ease-out"
               />
             </motion.div>
           ))}
@@ -93,7 +96,7 @@ export default function AnimatedCardsCarousel() {
                   width: currentIndex === index ? 68 : 12,
                   height: currentIndex === index ? 28 : 12,
                 }}
-                transition={transition}
+                transition={effectiveTransition}
               >
                 <motion.span
                   layout
@@ -104,7 +107,7 @@ export default function AnimatedCardsCarousel() {
                     scale: currentIndex === index ? 1 : 0,
                     filter: currentIndex === index ? "blur(0)" : "blur(4px)",
                   }}
-                  transition={transition}
+                  transition={effectiveTransition}
                 >
                   {name}
                 </motion.span>

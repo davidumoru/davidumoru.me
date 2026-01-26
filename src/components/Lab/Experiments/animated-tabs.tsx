@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const navigationItems = [
   { id: "home", title: "Home" },
@@ -11,6 +11,15 @@ const navigationItems = [
 export default function AnimatedTabs() {
   const [selected, setSelected] = useState(navigationItems[0].id);
   const [hovered, setHovered] = useState<string | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  const springTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { type: "spring" as const, stiffness: 400, damping: 30 };
+
+  const springTransitionSlow = shouldReduceMotion
+    ? { duration: 0 }
+    : { type: "spring" as const, stiffness: 300, damping: 30 };
 
   return (
     <div className="flex w-full items-center justify-center py-4">
@@ -37,14 +46,10 @@ export default function AnimatedTabs() {
                   layoutId="nav-item-hover"
                   className="absolute inset-0 z-0 rounded-full"
                   style={{ backgroundColor: "var(--gray-4)" }}
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 30,
-                  }}
+                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+                  transition={springTransition}
                 />
               )}
 
@@ -53,11 +58,7 @@ export default function AnimatedTabs() {
                   layoutId="nav-item-active"
                   className="absolute inset-0 z-0 rounded-full"
                   style={{ backgroundColor: "var(--gray-12)" }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                  }}
+                  transition={springTransitionSlow}
                 />
               )}
 
@@ -71,11 +72,7 @@ export default function AnimatedTabs() {
                     ? "var(--gray-12)"
                     : "var(--gray-10)",
                 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
+                transition={springTransitionSlow}
               >
                 {item.title}
               </motion.span>
