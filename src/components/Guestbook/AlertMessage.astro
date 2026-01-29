@@ -20,60 +20,24 @@ const iconName = type === "success" ? "check" : "alert";
 
 <style>
   .alert {
-    --alert-success-bg-light: hsl(145, 63%, 90%);
-    --alert-success-text-light: hsl(145, 63%, 22%);
-    --alert-success-border-light: hsl(145, 50%, 78%);
-
-    --alert-error-bg-light: hsl(0, 84%, 94%);
-    --alert-error-text-light: hsl(0, 65%, 40%);
-    --alert-error-border-light: hsl(0, 74%, 85%);
-
-    --alert-success-bg-dark: hsl(145, 63%, 18%);
-    --alert-success-text-dark: hsl(145, 50%, 82%);
-    --alert-success-border-dark: hsl(145, 63%, 30%);
-
-    --alert-error-bg-dark: hsl(0, 65%, 22%);
-    --alert-error-text-dark: hsl(0, 74%, 80%);
-    --alert-error-border-dark: hsl(0, 65%, 35%);
-
-    --alert-bg: var(--alert-success-bg-light);
-    --alert-text: var(--alert-success-text-light);
-    --alert-border: var(--alert-success-border-light);
-
     border-radius: 6px;
     padding: 0.8rem 1.2rem;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    border: 1px solid var(--alert-border);
-    background-color: var(--alert-bg);
-    color: var(--alert-text);
   }
 
   .alert[data-type="success"] {
-    --alert-bg: var(--alert-success-bg-light);
-    --alert-text: var(--alert-success-text-light);
-    --alert-border: var(--alert-success-border-light);
+    background-color: var(--green-3);
+    border: 1px solid var(--green-6);
+    color: var(--green-11);
   }
 
   .alert[data-type="error"] {
-    --alert-bg: var(--alert-error-bg-light);
-    --alert-text: var(--alert-error-text-light);
-    --alert-border: var(--alert-error-border-light);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .alert[data-type="success"] {
-      --alert-bg: var(--alert-success-bg-dark);
-      --alert-text: var(--alert-success-text-dark);
-      --alert-border: var(--alert-success-border-dark);
-    }
-    .alert[data-type="error"] {
-      --alert-bg: var(--alert-error-bg-dark);
-      --alert-text: var(--alert-error-text-dark);
-      --alert-border: var(--alert-error-border-dark);
-    }
+    background-color: var(--red-3);
+    border: 1px solid var(--red-6);
+    color: var(--red-11);
   }
 
   .icon {
