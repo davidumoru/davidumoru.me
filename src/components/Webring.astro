@@ -13,10 +13,10 @@ const { title, description, url, prev, next, color } = data;
 <div
   class="webring"
   style={`
-    --webring-bg: var(--${color}-5);
-    --webring-text: var(--${color}-12);
-    --webring-hover: var(--${color}-6);
-    --webring-border: var(--${color}-7);
+    --webring-bg: var(--${color}-3);
+    --webring-text: var(--${color}-11);
+    --webring-hover: var(--${color}-4);
+    --webring-border: var(--${color}-5);
   `}
 >
   <a
@@ -115,7 +115,7 @@ const { title, description, url, prev, next, color } = data;
 
   .main h2 {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: var(--fs-2);
     font-family: "JetBrains Mono", "Fira Mono", "Menlo", monospace;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -123,10 +123,11 @@ const { title, description, url, prev, next, color } = data;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--webring-text);
   }
 
   .main span {
-    font-size: 0.98rem;
+    font-size: var(--fs-1);
     line-height: 1.4;
     opacity: 0.85;
     white-space: normal;
@@ -171,10 +172,11 @@ const { title, description, url, prev, next, color } = data;
       padding: 0.8rem 1rem;
     }
     .main h2 {
-      font-size: 1rem;
+      font-size: var(--fs-1);
     }
     .main span {
-      font-size: 0.92rem;
+      font-size: var(--fs-0);
+      max-width: 28ch;
     }
     .nav-button {
       width: 38px;
@@ -190,10 +192,11 @@ const { title, description, url, prev, next, color } = data;
       padding: 0.7rem 0.7rem;
     }
     .main h2 {
-      font-size: 0.98rem;
+      font-size: var(--fs-0);
     }
     .main span {
-      font-size: 0.88rem;
+      font-size: var(--fs--1);
+      max-width: 26ch;
     }
     .nav-button {
       width: 32px;
