@@ -1,6 +1,6 @@
 ---
 export const prerender = false;
-import { db, GuestBook, Stamps, desc, sql, eq } from "astro:db";
+import { db, GuestBook, Stamps, desc, sql, eq, asc } from "astro:db";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GuestbookEntry from "../components/Guestbook/GuestbookEntry.astro";
 import AlertMessage from "../components/Guestbook/AlertMessage.astro";
@@ -10,6 +10,18 @@ import PageHeader from "../components/PageHeader.astro";
 import defaultStampAsset from "../../public/stamps/default.jpg";
 
 const PER_PAGE = 19;
+
+let cachedCountries: string[] | null = null;
+const getCountries = async () => {
+  if (!cachedCountries) {
+    const stamps = await db
+      .select({ country: Stamps.country })
+      .from(Stamps)
+      .orderBy(asc(Stamps.country));
+    cachedCountries = stamps.map((s) => s.country);
+  }
+  return cachedCountries;
+};
 
 const generateOptimizedCloudinaryUrl = (url: string) => {
   const uploadMarker = "/image/upload/";
@@ -93,6 +105,8 @@ const [guestBook, totalEntriesResult] = await Promise.all([
 
 const totalEntries = totalEntriesResult[0].count as number;
 
+const countries = await getCountries();
+
 const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
 ---
@@ -173,7 +187,7 @@ const error = Astro.url.searchParams.get("error");
       hasPrevPage={page > 1}
     />
 
-    <GuestbookForm />
+    <GuestbookForm countries={countries} />
   </main>
 
   <button

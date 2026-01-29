@@ -1,12 +1,9 @@
 ---
-import { db, Stamps, asc } from "astro:db";
+interface Props {
+  countries: string[];
+}
 
-const stampCountries = await db
-  .select({ country: Stamps.country })
-  .from(Stamps)
-  .orderBy(asc(Stamps.country));
-
-const countries = stampCountries.map((stamp) => stamp.country);
+const { countries } = Astro.props;
 ---
 
 <form

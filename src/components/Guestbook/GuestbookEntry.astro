@@ -72,6 +72,7 @@ const stampStyles = `
           widths={[300, 600]}
           sizes="(max-width: 600px) 300px, 600px"
           loading="lazy"
+          decoding="async"
           format="webp"
         />
       ) : (
@@ -80,6 +81,8 @@ const stampStyles = `
           alt={imageAlt}
           class="stamp-bg-image"
           loading="lazy"
+          decoding="async"
+          fetchpriority="low"
           width="300"
           height="375"
         />
