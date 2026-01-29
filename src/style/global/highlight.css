@@ -1,19 +1,9 @@
 ::selection {
-  background-color: color-mix(in srgb, var(--tomato-9) 40%, transparent);
-  color: var(--tomato-11);
+  background-color: var(--tomato-4);
+  color: var(--tomato-9);
 }
 
 ::-moz-selection {
-  background-color: color-mix(in srgb, var(--tomato-9) 40%, transparent);
-  color: var(--tomato-11);
-}
-
-html.dark ::selection {
-  background-color: color-mix(in srgb, var(--tomato-9) 50%, transparent);
-  color: var(--tomato-11);
-}
-
-html.dark ::-moz-selection {
-  background-color: color-mix(in srgb, var(--tomato-9) 50%, transparent);
-  color: var(--tomato-11);
+  background-color: var(--tomato-4);
+  color: var(--tomato-9);
 }
