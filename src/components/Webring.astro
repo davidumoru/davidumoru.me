@@ -167,6 +167,11 @@ const { title, description, url, prev, next, color } = data;
     border-left: 1.5px solid var(--webring-border);
   }
 
+  .webring ::selection {
+    background-color: var(--webring-border);
+    color: var(--webring-text);
+  }
+
   @media (max-width: 700px) {
     .main-content {
       padding: 0.8rem 1rem;
