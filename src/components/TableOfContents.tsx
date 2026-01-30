@@ -99,7 +99,7 @@ function TocThumb({
   return (
     <div
       ref={thumbRef}
-      className={`absolute -left-1 w-4 bg-[var(--tomato-9)] transition-all duration-200 ${className}`}
+      className={`absolute -left-1 w-4 bg-(--tomato-9) transition-all duration-200 ${className}`}
       style={{
         top: "var(--fd-top, 0px)",
         height: "var(--fd-height, 0px)",
@@ -128,8 +128,8 @@ function TOCItem({
         }}
         className={`relative block py-1.5 text-sm transition-colors duration-200 ${
           isActive
-            ? "!text-[var(--tomato-9)]"
-            : "!text-[var(-gray-12)] hover:!text-[var(--gray-12)]"
+            ? "text-(--tomato-9)!"
+            : "text-(--gray-12)! hover:text-(--gray-12)!"
         }`}
         style={{
           paddingLeft: `${getItemOffset(item.level)}px`,
@@ -292,7 +292,7 @@ export default function TableOfContents({
   return (
     <nav className={`table-of-contents ${className}`}>
       <div className="mb-3">
-        <p className="text-sm font-semibold !text-[var(--gray-12)]">
+        <p className="text-sm font-semibold text-(--gray-12)!">
           On this page
         </p>
       </div>
@@ -309,11 +309,11 @@ export default function TableOfContents({
               )}")`,
             }}
           >
-            <div className="h-full bg-[var(--gray-8)]" />
+            <div className="h-full bg-(--gray-6)" />
             <TocThumb
               containerRef={containerRef}
               activeItems={activeItems}
-              className="bg-[var(--tomato-9)]"
+              className="bg-(--tomato-9)"
             />
           </div>
         )}
