@@ -1,0 +1,97 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CenteredLayout from "../layouts/CenteredLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+
+const pageFiles = import.meta.glob("/src/pages/**/*.astro", { eager: true });
+
+const staticPages = Object.keys(pageFiles)
+  .map((filePath) => {
+    // Convert /src/pages/foo.astro -> /foo, /src/pages/foo/index.astro -> /foo
+    let route = filePath
+      .replace("/src/pages", "")
+      .replace(/\.astro$/, "")
+      .replace(/\/index$/, "") || "/";
+
+    const filename = filePath.split("/").pop()?.replace(".astro", "") || "";
+    const title = filename === "index"
+      ? route === "/" ? "Home" : route.split("/").pop() || ""
+      : filename;
+
+    return { route, title: title.charAt(0).toUpperCase() + title.slice(1) };
+  })
+  .filter(({ route, title }) =>
+    // Exclude dynamic routes, 404, and this directory page
+    !route.includes("[") &&
+    title !== "404" &&
+    route !== "/directory"
+  )
+  .sort((a, b) => a.title.localeCompare(b.title));
+
+const allContentPages = await getCollection("pages");
+const contentPages = allContentPages.filter((page) => page.id !== "directory");
+
+const collections = await Promise.all([
+  getCollection("posts").then(items => ({ name: "Posts", path: "/posts", count: items.length })),
+  getCollection("projects").then(items => ({ name: "Projects", path: "/projects", count: items.length })),
+  getCollection("lab").then(items => ({ name: "Lab", path: "/lab", count: items.length })),
+  getCollection("books").then(items => ({ name: "Bookshelf", path: "/bookshelf", count: items.length })),
+  getCollection("webrings").then(items => ({ name: "Webrings", path: "/webrings", count: items.length })),
+  getCollection("zibaldone").then(items => ({ name: "Zibaldone", path: "/zibaldone", count: items.length })),
+  getCollection("bookmarks").then(items => ({ name: "Bookmarks", path: "/bookmarks", count: items.length })),
+]).then(cols => cols.sort((a, b) => a.name.localeCompare(b.name)));
+---
+
+<BaseLayout
+  title="Directory"
+  description="A list of everything on this site"
+>
+  <CenteredLayout>
+    <PageHeader
+      title="Directory"
+      description="A list of everything on this site"
+    />
+
+    <div class="prose">
+      <h2>Pages</h2>
+      <ul>
+        {staticPages.map((page) => (
+          <li>
+            <a href={page.route}>{page.title}</a>
+          </li>
+        ))}
+        {contentPages.map((page) => (
+          <li>
+            <a href={`/${page.id}`}>{page.data.title}</a>
+          </li>
+        ))}
+      </ul>
+
+      <h2>Collections</h2>
+      <ul>
+        {collections.map((collection) => (
+          <li>
+            <a href={collection.path}>{collection.name}</a>
+            <span class="count">({collection.count})</span>
+          </li>
+        ))}
+      </ul>
+
+      <h2>Feeds</h2>
+      <ul>
+        <li>
+          <a href="/rss.xml">RSS</a>
+        </li>
+      </ul>
+    </div>
+  </CenteredLayout>
+</BaseLayout>
+
+<style>
+  .count {
+    color: var(--gray-10);
+    font-size: 0.875rem;
+    margin-left: 0.25rem;
+  }
+</style>
