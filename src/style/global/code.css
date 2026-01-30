@@ -4,3 +4,13 @@ pre, code, .expressive-code, pre {
   box-sizing: border-box;
   min-width: 0;
 }
+
+.prose .expressive-code {
+  margin: 1.5em 0;
+}
+
+@media (max-width: 640px) {
+  .expressive-code .copy {
+    display: none !important;
+  }
+}

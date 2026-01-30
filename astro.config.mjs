@@ -27,8 +27,15 @@ export default defineConfig({
           "bash,ps,sh": { preserveIndent: false },
         },
       },
-      themes: ["rose-pine-dawn", "rose-pine"],
+      themes: ["rose-pine-dawn", "kanagawa-dragon"],
       useThemedSelectionColors: true,
+      useDarkModeMediaQuery: false,
+      themeCssSelector: (theme) => {
+        if (theme.name === "kanagawa-dragon") {
+          return ".dark";
+        }
+        return ":root";
+      },
     }),
     mdx(),
     sitemap(),
