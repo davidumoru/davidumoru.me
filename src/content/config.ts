@@ -81,10 +81,6 @@ export const collections = {
         description: z.string(),
         datePublished: z.date(),
         componentKey: z.string(),
-        hydration: z
-          .enum(["load", "idle", "visible", "none"])
-          .optional()
-          .default("none"),
         coverImage: z.string().optional(),
         coverAlt: z.string().optional(),
         repositoryUrl: z.string().url().optional(),
