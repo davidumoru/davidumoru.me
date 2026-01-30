@@ -1,99 +1,172 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import CenteredLayout from "../layouts/CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import { displayDate } from "../lib/longDate";
 import { parseZibaldoneEntries } from "../lib/parseZibaldone";
 import MarkdownIt from "markdown-it";
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-});
+const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
 
-const monthlyFiles = await getCollection("zibaldone");
+const entries = (await getCollection("zibaldone"))
+  .flatMap((file) => parseZibaldoneEntries(file.body ?? ""))
+  .sort((a, b) => b.date.getTime() - a.date.getTime());
 
-const allEntries = monthlyFiles.flatMap((file) => {
-  const entries = parseZibaldoneEntries(file.body ?? "");
-  return entries;
-});
+const colors = ["yellow", "pink", "cyan", "green", "orange", "violet"];
 
-allEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
 ---
 
 <BaseLayout
   title="Zibaldone"
   description="Scattered thoughts, ideas, and quotes from books I've read, films I've watched and rabbit holes."
 >
-  <CenteredLayout>
-    <PageHeader
-      title="Zibaldone"
-      description="Scattered thoughts, ideas, and quotes from books, films and rabbit holes."
-    />
-    <div class="stream">
+  <main class="zibaldone">
+    <div class="header">
+      <PageHeader
+        title="Zibaldone"
+        description="Scattered thoughts, ideas, and quotes from books, films and rabbit holes."
+      />
+    </div>
+    <div class="board">
       {
-        allEntries.map((entry) => (
-          <article class="fragment">
-            <div
-              class="fragment-content prose"
-              set:html={md.render(entry.content)}
-            />
-            <time datetime={entry.date.toISOString()}>
-              {displayDate(entry.date)}
-            </time>
-          </article>
-        ))
+        entries.map((entry, i) => {
+          const color = colors[Math.floor(seededRandom(i * 7) * colors.length)];
+          const rotation = (seededRandom(i * 13) - 0.5) * 6;
+
+          return (
+            <article class="note" data-color={color} style={`--rotation: ${rotation}deg`}>
+              <div class="tape" />
+              <div class="content" set:html={md.render(entry.content)} />
+              <time datetime={entry.date.toISOString()}>{displayDate(entry.date)}</time>
+            </article>
+          );
+        })
       }
     </div>
-  </CenteredLayout>
+  </main>
 </BaseLayout>
 
 <style>
-  .stream {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
+  .zibaldone {
+    padding: var(--space-m);
+    min-height: 100vh;
   }
 
-  .fragment {
+  .header {
+    max-width: 48rem;
+    margin: 0 auto var(--space-xl);
+    padding-inline: var(--space-s);
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-l);
+    max-width: 90rem;
+    margin: 0 auto;
+  }
+
+  .note {
     position: relative;
-    padding-bottom: var(--space-xl);
-    border-bottom: 1px dashed var(--gray-6);
+    padding: var(--space-l) var(--space-m) var(--space-m);
+    border-radius: 2px;
+    box-shadow:
+      2px 2px 4px rgba(0, 0, 0, 0.1),
+      4px 8px 16px rgba(0, 0, 0, 0.08);
+    transform: rotate(var(--rotation));
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .fragment:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+  .note:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow:
+      2px 2px 8px rgba(0, 0, 0, 0.15),
+      8px 16px 32px rgba(0, 0, 0, 0.12);
+    z-index: 10;
   }
 
-  .fragment-content {
+  .note[data-color="yellow"] { background: #fef9c3; }
+  .note[data-color="pink"] { background: #fce7f3; }
+  .note[data-color="cyan"] { background: #cffafe; }
+  .note[data-color="green"] { background: #dcfce7; }
+  .note[data-color="orange"] { background: #ffedd5; }
+  .note[data-color="violet"] { background: #ede9fe; }
+
+  .note[data-color="yellow"]::selection,
+  .note[data-color="yellow"] :global(*::selection) { background: #fde047; color: #422006; }
+  .note[data-color="pink"]::selection,
+  .note[data-color="pink"] :global(*::selection) { background: #f9a8d4; color: #500724; }
+  .note[data-color="cyan"]::selection,
+  .note[data-color="cyan"] :global(*::selection) { background: #67e8f9; color: #083344; }
+  .note[data-color="green"]::selection,
+  .note[data-color="green"] :global(*::selection) { background: #86efac; color: #052e16; }
+  .note[data-color="orange"]::selection,
+  .note[data-color="orange"] :global(*::selection) { background: #fdba74; color: #431407; }
+  .note[data-color="violet"]::selection,
+  .note[data-color="violet"] :global(*::selection) { background: #c4b5fd; color: #2e1065; }
+
+  .tape {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .content {
+    color: #333;
+    font-size: var(--fs-0);
+    line-height: 1.5;
     margin-bottom: var(--space-s);
   }
 
-  .fragment-content :global(p) {
+  .content :global(p) {
     margin-bottom: var(--space-xs);
   }
 
-  .fragment-content :global(p:last-child) {
+  .content :global(p:last-child) {
     margin-bottom: 0;
+  }
+
+  .content :global(a) {
+    color: #1a5a96;
+  }
+
+  .content :global(blockquote) {
+    border-left: 2px solid rgba(0, 0, 0, 0.3);
+    padding-left: var(--space-s);
+    margin: var(--space-xs) 0;
+    font-style: italic;
+    color: #444;
   }
 
   time {
     display: block;
-    font-size: var(--fs-0);
-    color: var(--gray-10);
+    font-size: var(--fs--1);
+    color: rgba(0, 0, 0, 0.5);
     font-variant-numeric: tabular-nums;
+    text-align: right;
   }
 
   @media (max-width: 600px) {
-    .stream {
-      gap: var(--space-l);
+    .zibaldone {
+      padding: var(--space-s);
     }
 
-    .fragment {
-      padding-bottom: var(--space-l);
+    .board {
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+    }
+
+    .note:hover {
+      transform: rotate(var(--rotation)) scale(1.02);
     }
   }
 </style>
