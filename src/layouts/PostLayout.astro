@@ -14,6 +14,7 @@ interface Props {
   imgAlt?: string;
   ogAlt?: string;
   hideDisclaimer?: boolean;
+  hideDescription?: boolean;
   headings?: MarkdownHeading[];
 }
 
@@ -24,6 +25,7 @@ const {
   img,
   imgAlt,
   hideDisclaimer,
+  hideDescription,
   headings,
 } = Astro.props;
 ---
@@ -33,7 +35,7 @@ const {
     <article itemscope itemtype="https://schema.org/BlogPosting">
       <PageHeader
         title={title}
-        description={description}
+        description={hideDescription ? undefined : description}
         datePublished={datePublished}
         img={img}
         imgAlt={imgAlt}

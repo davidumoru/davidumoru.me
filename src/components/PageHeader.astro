@@ -20,9 +20,9 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
   {description && <p class="sub">{description}</p>}
   {
     datePublished && (
-      <span class="date">
+      <p class="date">
         {datePublished ? displayDate(datePublished) : "Unknown Date"}
-      </span>
+      </p>
     )
   }
   {
@@ -46,10 +46,16 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
     font-weight: 400;
     max-width: 34rem;
   }
-    @media (width < 650px) {
+  @media (width < 650px) {
     .sub {
       font-size: var(--fs-2);
     }
+  }
+
+  .date {
+    margin-block-start: var(--space-2xs);
+    font-size: var(--fs-1);
+    color: var(--gray-12);
   }
 
   .page-image {
