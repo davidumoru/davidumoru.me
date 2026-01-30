@@ -169,4 +169,16 @@ function seededRandom(seed: number) {
       transform: rotate(var(--rotation)) scale(1.02);
     }
   }
+
+  @media (min-width: 601px) and (max-width: 900px) {
+    .board {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 901px) and (max-width: 1200px) {
+    .board {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 </style>
