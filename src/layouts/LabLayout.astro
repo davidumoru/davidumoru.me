@@ -4,7 +4,8 @@ import CenteredLayout from "./CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import { Icon } from "../components/Icon/Icon";
 import type { CollectionEntry } from "astro:content";
-import Wrapper from "../components/Lab/Wrapper.astro";
+import ExperimentRenderer from "../components/Lab/ExperimentRenderer";
+import type { ComponentKey } from "../components/Lab/componentRegistry";
 
 interface Props {
   entry: CollectionEntry<"lab">;
@@ -17,7 +18,6 @@ const {
   datePublished,
   repositoryUrl,
   componentKey,
-  hydration,
 } = entry.data;
 ---
 
@@ -70,7 +70,7 @@ const {
 
     {
       componentKey && (
-        <Wrapper componentKey={componentKey as any} hydration={hydration} />
+        <ExperimentRenderer componentKey={componentKey as ComponentKey} client:load />
       )
     }
 
