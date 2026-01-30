@@ -48,6 +48,10 @@ const staticPages = {
     title: "Bookmarks",
     description: "A curated collection of links and resources I find useful or interesting.",
   },
+  directory: {
+    title: "Directory",
+    description: "A list of everything on my site",
+  },
 };
 
 const collectionPages = [
