@@ -16,18 +16,20 @@ interface Feature {
 
 <article>
   <div class="post-item-container">
-    <a href={`/posts/${post.id}`} class="post-link-overlay" aria-label={post.data.title}></a>
+    <a href={`/posts/${post.id}`} class="post-link-overlay u-url" aria-label={post.data.title}></a>
     <div class="content">
       <div class="text">
-        <p class="title">{post.data.title}</p>
+        <p class="title p-name">{post.data.title}</p>
         {
           post.data.description && (
-            <p class="description">{post.data.description}</p>
+            <p class="description p-summary">{post.data.description}</p>
           )
         }
       </div>
       <p class="date">
-        {displayDate(post.data.datePublished)}
+        <time class="dt-published" datetime={post.data.datePublished.toISOString()}>
+          {displayDate(post.data.datePublished)}
+        </time>
       </p>
     </div>
     {
