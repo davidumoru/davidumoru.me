@@ -28,11 +28,15 @@ const {
   hideDescription,
   headings,
 } = Astro.props;
+
+const canonicalUrl = Astro.url.href;
 ---
 
 <BaseLayout title={title} description={description} headings={headings}>
   <CenteredLayout>
     <article class="h-entry" itemscope itemtype="https://schema.org/BlogPosting">
+      <a rel="author" class="p-author h-card" href="https://davidumoru.me/" style="display:none">David Umoru</a>
+      <a class="u-url" href={canonicalUrl} style="display:none">{title}</a>
       <PageHeader
         title={title}
         description={hideDescription ? undefined : description}
