@@ -1,38 +1,322 @@
 ---
 interface Props {
-  img: ImageMetadata[];
-  imgAlt: string;
+  img: ImageMetadata | ImageMetadata[] | (ImageMetadata | ImageMetadata[])[];
+  imgAlt: string | string[];
+  variant?: "default" | "transparent" | "full" | "grid" | "grid-full";
+  columns?: 2 | 3;
 }
 
-const { img, imgAlt } = Astro.props;
+const { img, imgAlt, variant = "default", columns = 2 } = Astro.props;
+
+type PictureSource = ImageMetadata | ImageMetadata[];
+const images = (Array.isArray(img) ? img : [img]) as PictureSource[];
+const alts = Array.isArray(imgAlt) ? imgAlt : [imgAlt];
+
+const isGrid = (variant === "grid" || variant === "grid-full") && images.length > 1;
+const isFull = variant === "full" || variant === "grid-full";
 ---
 
-<picture>
+<div
+  class:list={[
+    "picture-zoom",
+    `picture-${variant}`,
+    { [`picture-grid--${columns}`]: isGrid },
+    { "picture-full": isFull },
+  ]}
+>
   {
-    img.map((i, idx) =>
-      idx < img.length - 1 ? (
-        <source
-          media={`(max-width: ${img[idx + 1].width - 1}px)`}
-          srcset={i.src}
-        />
-      ) : (
-        <source media={`(min-width: ${i.width}px)`} srcset={i.src} />
-      )
-    )
+    images.map((image, index) => {
+      const alt = alts[index] || alts[0] || "";
+      const sources = Array.isArray(image) ? image : [image];
+      const fullSrc = sources[sources.length - 1]?.src || sources[0]?.src;
+
+      return (
+        <div class="picture-item">
+          <picture>
+            {sources.length > 1 ? (
+              sources.map((i, idx) =>
+                idx < sources.length - 1 ? (
+                  <source
+                    media={`(max-width: ${sources[idx + 1].width - 1}px)`}
+                    srcset={i.src}
+                  />
+                ) : (
+                  <source media={`(min-width: ${i.width}px)`} srcset={i.src} />
+                )
+              )
+            ) : (
+              <source srcset={sources[0].src} />
+            )}
+            <img src={sources[0].src} alt={alt} />
+          </picture>
+
+          <div class="lightbox" data-full-src={fullSrc} data-alt={alt}>
+            <div class="lightbox-backdrop" />
+            <img class="lightbox-img" src={fullSrc} alt={alt} />
+          </div>
+        </div>
+      );
+    })
   }
-  <img src={img[0].src} alt={imgAlt} />
-</picture>
+</div>
+
+<script>
+  async function ensureImageReady(image: HTMLImageElement) {
+    if (image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) return;
+
+    try {
+      await image.decode();
+    } catch {
+    }
+
+    if (image.naturalWidth > 0 && image.naturalHeight > 0) return;
+
+    await new Promise<void>((resolve) => {
+      const done = () => resolve();
+      image.addEventListener("load", done, { once: true });
+      image.addEventListener("error", done, { once: true });
+    });
+  }
+
+  function initPictureZoom() {
+    document.querySelectorAll(".picture-item").forEach((container) => {
+      const picture = container.querySelector("picture");
+      const pictureImg = picture?.querySelector("img");
+      const lightbox = container.querySelector(".lightbox") as HTMLElement;
+      const lightboxImg = lightbox?.querySelector(
+        ".lightbox-img"
+      ) as HTMLImageElement;
+
+      if (!picture || !pictureImg || !lightbox || !lightboxImg) return;
+
+      if (container.hasAttribute("data-zoom-init")) return;
+      container.setAttribute("data-zoom-init", "true");
+
+      const originalParent = lightbox.parentElement;
+
+      function flip(
+        first: DOMRect,
+        last: DOMRect,
+        firstWidth: number,
+        lastWidth: number
+      ) {
+        const deltaX =
+          first.left + first.width / 2 - (last.left + last.width / 2);
+        const deltaY =
+          first.top + first.height / 2 - (last.top + last.height / 2);
+        const scale = firstWidth / lastWidth;
+
+        return { deltaX, deltaY, scale };
+      }
+
+      async function open() {
+        const first = pictureImg!.getBoundingClientRect();
+
+        document.body.appendChild(lightbox);
+
+        lightbox.classList.add("open");
+        document.body.style.overflow = "hidden";
+
+        await ensureImageReady(lightboxImg);
+
+        const naturalW = lightboxImg.naturalWidth || first.width || 1;
+        const naturalH = lightboxImg.naturalHeight || first.height || 1;
+        const maxW = window.innerWidth * 0.9;
+        const maxH = window.innerHeight * 0.9;
+        const ratio = Math.min(maxW / naturalW, maxH / naturalH, 1);
+        const finalW = naturalW * ratio;
+        const finalH = naturalH * ratio;
+
+        lightboxImg.style.width = `${finalW}px`;
+        lightboxImg.style.height = `${finalH}px`;
+        lightboxImg.style.left = `${(window.innerWidth - finalW) / 2}px`;
+        lightboxImg.style.top = `${(window.innerHeight - finalH) / 2}px`;
+
+        const last = lightboxImg.getBoundingClientRect();
+
+        const { deltaX, deltaY, scale } = flip(first, last, first.width, finalW);
+
+        lightboxImg.style.transition = "none";
+        lightboxImg.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+
+        lightboxImg.offsetHeight;
+
+        lightboxImg.style.transition = "";
+        lightboxImg.style.transform = "translate(0, 0) scale(1)";
+      }
+
+      function close() {
+        const first = lightboxImg.getBoundingClientRect();
+        const firstWidth = parseFloat(lightboxImg.style.width);
+
+        const last = pictureImg!.getBoundingClientRect();
+
+        const { deltaX, deltaY, scale } = flip(last, first, last.width, firstWidth);
+
+        lightboxImg.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+        lightbox.classList.add("closing");
+        lightbox.classList.remove("open");
+
+        setTimeout(() => {
+          lightbox.classList.remove("closing");
+          lightboxImg.style.transform = "";
+          document.body.style.overflow = "";
+          originalParent?.appendChild(lightbox);
+        }, 300);
+      }
+
+      picture.addEventListener("click", open);
+      lightbox.addEventListener("click", close);
+    });
+
+    if (!document.documentElement.hasAttribute("data-picture-zoom-escape-init")) {
+      document.documentElement.setAttribute("data-picture-zoom-escape-init", "true");
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const openLightbox = document.querySelector(".lightbox.open") as HTMLElement;
+          if (openLightbox) {
+            openLightbox.click();
+          }
+        }
+      });
+    }
+  }
+
+  initPictureZoom();
+  document.addEventListener("astro:after-swap", initPictureZoom);
+</script>
 
 <style>
-  picture {
-    image-rendering: optimizeSpeed;
-    aspect-ratio: 1.91 / 1;
+  .picture-zoom {
+    position: relative;
     width: 100%;
-    max-width: 1280px;
+  }
+
+  .picture-item {
+    position: relative;
+  }
+
+  picture {
     display: block;
+    line-height: 0;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+
+  picture source {
+    display: none;
   }
 
   picture img {
     width: 100%;
+    height: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  .picture-default picture {
+    border: 1px solid var(--gray-6);
+    border-radius: var(--space-2xs);
+  }
+
+  .picture-transparent picture {
+    background: var(--gray-2);
+    border: 1px solid var(--gray-6);
+    border-radius: var(--space-2xs);
+  }
+
+  .picture-full {
+    width: 60vw;
+    max-width: 1024px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .picture-full picture {
+    border: 1px solid var(--gray-6);
+    border-radius: var(--space-s);
+  }
+
+  @media (max-width: 640px) {
+    .picture-full {
+      width: 90vw;
+    }
+
+    .picture-full picture {
+      border-radius: var(--space-2xs);
+    }
+  }
+
+  .picture-grid--2,
+  .picture-grid--3 {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .picture-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .picture-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .picture-grid--2 picture,
+  .picture-grid--3 picture {
+    border: 1px solid var(--gray-6);
+    border-radius: var(--space-2xs);
+  }
+
+  @media (max-width: 640px) {
+    .picture-grid--2,
+    .picture-grid--3 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+    cursor: zoom-out;
+  }
+
+  .lightbox.open,
+  .lightbox.closing {
+    pointer-events: auto;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .lightbox.open .lightbox-backdrop {
+    opacity: 1;
+  }
+
+  .lightbox.closing .lightbox-backdrop {
+    opacity: 0;
+  }
+
+  .lightbox-img {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    border-radius: var(--space-2xs);
+    will-change: transform;
+    transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .lightbox.open .lightbox-img,
+  .lightbox.closing .lightbox-img {
+    opacity: 1;
+    pointer-events: auto;
   }
 </style>
