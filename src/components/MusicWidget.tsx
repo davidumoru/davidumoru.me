@@ -83,7 +83,7 @@ const AudioVisualization: FC = () => {
 
   return (
     <div
-      className={`flex items-center justify-center w-full max-w-[8rem] ${heightClass}`}
+      className={`flex items-center justify-center w-full max-w-32 ${heightClass}`}
     >
       <svg
         viewBox="0 0 240 100"
@@ -113,29 +113,29 @@ const AudioVisualization: FC = () => {
 };
 
 const MusicWidgetSkeleton: FC = () => (
-  <div className="w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 overflow-x-auto">
-    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2">
-      <div className="h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-md bg-[var(--gray-7)]"></div>
+  <div className="w-full max-w-full rounded-xl bg-(--gray-4) p-1.5 overflow-x-auto">
+    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-(--gray-6) bg-(--gray-2) p-2">
+      <div className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-md bg-(--gray-7)"></div>
       <div className="min-w-0 flex-1 space-y-2">
-        <div className="h-4 sm:h-5 w-3/4 rounded bg-[var(--gray-7)]"></div>
-        <div className="h-3 sm:h-4 w-1/2 rounded bg-[var(--gray-7)]"></div>
+        <div className="h-4 sm:h-5 w-3/4 rounded bg-(--gray-7)"></div>
+        <div className="h-3 sm:h-4 w-1/2 rounded bg-(--gray-7)"></div>
       </div>
-      <div className="flex items-center ml-2 min-w-0 h-16 sm:h-20 justify-end w-full max-w-[80px]" />
+      <div className="flex items-center ml-2 min-w-0 h-16 sm:h-20 justify-end w-full max-w-20" />
     </div>
     <div className="flex items-center gap-x-2 px-3 py-1.5">
-      <div className="h-3 w-3 rounded-full bg-[var(--gray-7)]"></div>
-      <div className="h-3 w-28 rounded bg-[var(--gray-7)]"></div>
+      <div className="h-3 w-3 rounded-full bg-(--gray-7)"></div>
+      <div className="h-3 w-28 rounded bg-(--gray-7)"></div>
     </div>
   </div>
 );
 
 const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
-  <div className="w-full max-w-full rounded-xl border border-[var(--red-6)] bg-[var(--red-3)] p-4 text-sm text-[var(--red-11)] overflow-x-auto">
+  <div className="w-full max-w-full rounded-xl border border-(--red-6) bg-(--red-3) p-4 text-sm text-(--red-11) overflow-x-auto">
     <div className="flex items-center gap-x-3">
-      <ErrorIcon className="h-5 w-5 flex-shrink-0" />
+      <ErrorIcon className="h-5 w-5 shrink-0" />
       <div>
         <p className="font-semibold">Unable to load music activity</p>
-        <p className="mt-1 text-xs text-[var(--red-10)]">{message}</p>
+        <p className="mt-1 text-xs text-(--red-10)">{message}</p>
       </div>
     </div>
   </div>
@@ -144,9 +144,9 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
 const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0">
+    <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0">
       {!loaded && (
-        <div className="absolute inset-0 rounded-md bg-[var(--gray-7)] animate-pulse" />
+        <div className="absolute inset-0 rounded-md bg-(--gray-7) animate-pulse" />
       )}
       <img
         src={src}
@@ -165,8 +165,8 @@ const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
 };
 
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full max-w-full rounded-xl bg-[var(--gray-4)] p-1.5 overflow-x-auto">
-    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-[var(--gray-6)] bg-[var(--gray-2)] p-2">
+  <div className="group w-full max-w-full rounded-xl bg-(--gray-4) p-1.5 overflow-x-auto">
+    <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-(--gray-6) bg-(--gray-2) p-2">
       <AlbumArt
         src={song.albumArtUrl}
         alt={`Album artwork for ${song.title} by ${song.artists}`}
@@ -181,7 +181,7 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
           className="hover:underline"
         >
           <p
-            className="truncate text-base sm:text-lg font-semibold underline leading-tight text-[var(--gray-12)] transition-colors duration-300"
+            className="truncate text-base sm:text-lg font-semibold underline leading-tight text-(--gray-12) transition-colors duration-300"
             style={{
               textDecorationColor: "var(--gray-8)",
               transition: "text-decoration-color 0.3s ease",
@@ -196,20 +196,20 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
             {song.title}
           </p>
         </a>
-        <p className="truncate text-sm sm:text-base text-[var(--gray-11)]">
+        <p className="truncate text-sm sm:text-base text-(--gray-11)">
           {song.artists}
         </p>
       </div>
       <div
-        className={`flex items-center min-w-0 h-16 sm:h-20 justify-end w-full ${song.isPlaying ? "max-w-[6rem] sm:max-w-[10rem]" : "max-w-0"}`}
+        className={`flex items-center min-w-0 h-16 sm:h-20 justify-end w-full ${song.isPlaying ? "max-w-24 sm:max-w-40" : "max-w-0"}`}
       >
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
-    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-[var(--gray-11)]">
+    <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-(--gray-11)">
       <div
-        className={`h-3 w-3 flex-shrink-0 rounded-full ${
-          song.isPlaying ? "bg-[var(--tomato-9)]" : "bg-[var(--gray-8)]"
+        className={`h-3 w-3 shrink-0 rounded-full ${
+          song.isPlaying ? "bg-(--tomato-9)" : "bg-(--gray-8)"
         }`}
       ></div>
       <div className="truncate">{song.lastPlayed}</div>
