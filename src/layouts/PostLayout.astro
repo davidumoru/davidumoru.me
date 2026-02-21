@@ -32,7 +32,7 @@ const {
 
 <BaseLayout title={title} description={description} headings={headings}>
   <CenteredLayout>
-    <article class="h-entry" itemscope itemtype="https://schema.org/BlogPosting">
+    <article itemscope itemtype="https://schema.org/BlogPosting">
       <PageHeader
         title={title}
         description={hideDescription ? undefined : description}
@@ -40,7 +40,7 @@ const {
         img={img}
         imgAlt={imgAlt}
       />
-      <section itemprop="articleBody" class="prose e-content">
+      <section itemprop="articleBody" class="prose">
         <slot />
       </section>
       {!hideDisclaimer && <Disclaimer />}

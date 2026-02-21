@@ -14,14 +14,14 @@ const { title, description, img, imgAlt, datePublished } = Astro.props;
 ---
 
 <header class="page-header">
-  <h1 class="p-name">
+  <h1>
     {title}
   </h1>
   {description && <p class="sub">{description}</p>}
   {
     datePublished && (
       <p class="date">
-        <time class="dt-published" datetime={datePublished.toISOString()}>
+        <time datetime={datePublished.toISOString()}>
           {datePublished ? displayDate(datePublished) : "Unknown Date"}
         </time>
       </p>
