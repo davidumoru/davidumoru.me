@@ -79,4 +79,13 @@ import MusicWidget from "../components/MusicWidget.tsx";
   h3 {
     margin-top: var(--space-xl);
   }
+
+  p {
+    text-wrap: balance;
+  }
+  @media (max-width: 640px) {
+    p {
+      text-wrap: unset;
+    }
+  }
 </style>
