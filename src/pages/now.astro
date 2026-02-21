@@ -9,18 +9,18 @@ import type { CollectionEntry } from "astro:content";
 const posts = await getCollection("now");
 
 posts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
 
 const timelinePosts = await Promise.all(
   posts.map(async (post: CollectionEntry<"now">) => {
     const { Content } = await render(post);
-    
+
     return {
       date: post.data.date,
       ContentComponent: Content,
     };
-  })
+  }),
 );
 ---
 
@@ -38,7 +38,7 @@ const timelinePosts = await Promise.all(
             <div class="post-content">
               <p id="date">{displayDate(post.date)}</p>
               <div class="content">
-                <post.ContentComponent /> 
+                <post.ContentComponent />
               </div>
             </div>
           </div>
@@ -91,7 +91,7 @@ const timelinePosts = await Promise.all(
     .content :global(p) {
       margin-bottom: var(--space-xs);
     }
-    
+
     .content :global(p:last-child) {
       margin-bottom: 0;
     }

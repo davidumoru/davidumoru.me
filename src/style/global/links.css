@@ -1,4 +1,5 @@
-a:not([class]), .link {
+a:not([class]),
+.link {
   color: var(--tomato-9);
   text-decoration: underline;
   text-decoration-color: var(--gray-6);
@@ -7,7 +8,8 @@ a:not([class]), .link {
     text-decoration-color var(--duration-fast, 150ms) ease;
 }
 
-a:not([class]):hover, .link:hover {
+a:not([class]):hover,
+.link:hover {
   color: var(--tomato-9);
   text-decoration-color: var(--tomato-9);
 }

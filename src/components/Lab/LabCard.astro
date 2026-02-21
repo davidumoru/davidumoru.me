@@ -41,10 +41,14 @@ const { id, data } = entry;
     height: 220px;
     position: relative;
     transition:
-      transform var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      background-color var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      border-color var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      box-shadow var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+      transform var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      background-color var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      border-color var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
     will-change: transform;
   }
 
@@ -82,9 +86,10 @@ const { id, data } = entry;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform var(--duration-slow, 250ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    transition: transform var(--duration-slow, 250ms)
+      var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
-  
+
   .lab-card:hover .preview-image {
     transform: scale(1.05);
   }

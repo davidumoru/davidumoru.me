@@ -78,10 +78,22 @@ const ProfileEntry: React.FC<{ profile: Profile; index: number }> = ({
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 8, scale: 0.95 }}
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 1 }
+                  : { opacity: 0, y: 8, scale: 0.95 }
+              }
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 4, scale: 0.98 }}
-              transition={shouldReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 25 }}
+              exit={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: 4, scale: 0.98 }
+              }
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0 }
+                  : { type: "spring", stiffness: 300, damping: 25 }
+              }
               className="pointer-events-none absolute bottom-[calc(100%+16px)] z-10 w-max max-w-50 wrap-break-word text-center"
             >
               <div

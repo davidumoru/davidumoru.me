@@ -8,8 +8,7 @@ const pageEntries = await getCollection("pages");
 const staticPages = {
   index: {
     title: "David Umoru",
-    description:
-      "Design Engineer",
+    description: "Design Engineer",
   },
   bookshelf: {
     title: "Bookshelf",
@@ -42,11 +41,13 @@ const staticPages = {
   },
   zibaldone: {
     title: "Zibaldone",
-    description: "Scattered thoughts, ideas, and quotes from books, films and rabbit holes.",
+    description:
+      "Scattered thoughts, ideas, and quotes from books, films and rabbit holes.",
   },
   bookmarks: {
     title: "Bookmarks",
-    description: "A curated collection of links and resources I find useful or interesting.",
+    description:
+      "A curated collection of links and resources I find useful or interesting.",
   },
   directory: {
     title: "Directory",
@@ -77,7 +78,7 @@ const pages = {
     collectionPages.map(({ id, title, description }) => [
       id,
       { title, description },
-    ])
+    ]),
   ),
   ...staticPages,
 };

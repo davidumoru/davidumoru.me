@@ -50,7 +50,7 @@ async function getAccessToken(): Promise<string | null> {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: `Basic ${Buffer.from(
-        `${client_id}:${client_secret}`
+        `${client_id}:${client_secret}`,
       ).toString("base64")}`,
     },
     body: new URLSearchParams({
@@ -136,8 +136,7 @@ export const GET: APIRoute = async () => {
         headers: MUSIC_CACHE_HEADERS,
       });
     }
-  } catch (e) {
-  }
+  } catch (e) {}
 
   if (!client_id || !client_secret || !refresh_token) {
     return new Response(
@@ -145,7 +144,7 @@ export const GET: APIRoute = async () => {
         error:
           "Server environment variables for Spotify are not configured properly.",
       }),
-      { status: 500, headers: MUSIC_CACHE_HEADERS }
+      { status: 500, headers: MUSIC_CACHE_HEADERS },
     );
   }
 
@@ -156,7 +155,7 @@ export const GET: APIRoute = async () => {
         error:
           "Unable to authenticate with Spotify. Please check your credentials.",
       }),
-      { status: 500, headers: MUSIC_CACHE_HEADERS }
+      { status: 500, headers: MUSIC_CACHE_HEADERS },
     );
   }
 
@@ -175,8 +174,7 @@ export const GET: APIRoute = async () => {
 
       try {
         await kv.set("spotify-music", songData, { ex: 45 });
-      } catch (e) {
-      }
+      } catch (e) {}
 
       return new Response(JSON.stringify(songData), {
         status: 200,
@@ -201,8 +199,7 @@ export const GET: APIRoute = async () => {
 
       try {
         await kv.set("spotify-music", songData, { ex: 45 });
-      } catch (e) {
-      }
+      } catch (e) {}
 
       return new Response(JSON.stringify(songData), {
         status: 200,
@@ -218,6 +215,6 @@ export const GET: APIRoute = async () => {
     {
       status: 404,
       headers: MUSIC_CACHE_HEADERS,
-    }
+    },
   );
 };

@@ -7,13 +7,13 @@ import LabCard from "../../components/Lab/LabCard.astro";
 
 const allLabEntries = await getCollection(
   "lab",
-  (entry: CollectionEntry<"lab">) => entry.data.draft !== true
+  (entry: CollectionEntry<"lab">) => entry.data.draft !== true,
 );
 
 const sortedLabEntries = allLabEntries.sort(
   (a, b) =>
     new Date(b.data.datePublished).getTime() -
-    new Date(a.data.datePublished).getTime()
+    new Date(a.data.datePublished).getTime(),
 );
 ---
 
@@ -57,7 +57,7 @@ const sortedLabEntries = allLabEntries.sort(
     .lab-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .lab-grid:hover :global(.lab-card) {
       opacity: 1;
       filter: none;

@@ -10,7 +10,7 @@ const posts = await getCollection("posts");
 const allPosts = posts.sort(
   (a, b) =>
     new Date(b.data.datePublished).getTime() -
-    new Date(a.data.datePublished).getTime()
+    new Date(a.data.datePublished).getTime(),
 );
 
 const essays = posts
@@ -18,7 +18,7 @@ const essays = posts
   .sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
-      new Date(a.data.datePublished).getTime()
+      new Date(a.data.datePublished).getTime(),
   );
 
 const notes = posts
@@ -26,7 +26,7 @@ const notes = posts
   .sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
-      new Date(a.data.datePublished).getTime()
+      new Date(a.data.datePublished).getTime(),
   );
 ---
 
@@ -48,27 +48,33 @@ const notes = posts
 
     <div class="posts-container">
       <div id="all-posts" class="posts-section active">
-        {allPosts.length > 0 ? (
-          allPosts.map((post) => <PostItem post={post} />)
-        ) : (
-          <p class="empty-state">No posts yet.</p>
-        )}
+        {
+          allPosts.length > 0 ? (
+            allPosts.map((post) => <PostItem post={post} />)
+          ) : (
+            <p class="empty-state">No posts yet.</p>
+          )
+        }
       </div>
 
       <div id="essays-posts" class="posts-section">
-        {essays.length > 0 ? (
-          essays.map((post) => <PostItem post={post} />)
-        ) : (
-          <p class="empty-state">No essays yet.</p>
-        )}
+        {
+          essays.length > 0 ? (
+            essays.map((post) => <PostItem post={post} />)
+          ) : (
+            <p class="empty-state">No essays yet.</p>
+          )
+        }
       </div>
 
       <div id="notes-posts" class="posts-section">
-        {notes.length > 0 ? (
-          notes.map((post) => <PostItem post={post} />)
-        ) : (
-          <p class="empty-state">No notes yet.</p>
-        )}
+        {
+          notes.length > 0 ? (
+            notes.map((post) => <PostItem post={post} />)
+          ) : (
+            <p class="empty-state">No notes yet.</p>
+          )
+        }
       </div>
     </div>
   </CenteredLayout>
@@ -116,7 +122,8 @@ const notes = posts
 
   .posts-section.active {
     display: block;
-    animation: fadeIn 0.25s var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    animation: fadeIn 0.25s
+      var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .empty-state {
@@ -126,8 +133,14 @@ const notes = posts
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 
@@ -139,7 +152,10 @@ const notes = posts
     const postsSections = document.querySelectorAll(".posts-section");
 
     filterButtons.forEach((btn) => {
-      btn.classList.toggle("active", btn.getAttribute("data-filter") === filter);
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-filter") === filter,
+      );
     });
 
     postsSections.forEach((section) => {

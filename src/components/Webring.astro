@@ -19,11 +19,7 @@ const { title, description, url, prev, next, color } = data;
     --webring-border: var(--${color}-5);
   `}
 >
-  <a
-    href={prev}
-    class="nav-button prev"
-    aria-label="Previous website"
-  >
+  <a href={prev} class="nav-button prev" aria-label="Previous website">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -47,11 +43,7 @@ const { title, description, url, prev, next, color } = data;
       <span>{description}</span>
     </div>
   </a>
-  <a
-    href={next}
-    class="nav-button next"
-    aria-label="Next website"
-  >
+  <a href={next} class="nav-button next" aria-label="Next website">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -76,7 +68,8 @@ const { title, description, url, prev, next, color } = data;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     overflow: hidden;
     min-width: 0;
-    transition: border-color var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    transition: border-color var(--duration-fast, 150ms)
+      var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .main {

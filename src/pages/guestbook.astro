@@ -98,9 +98,7 @@ const [guestBook, totalEntriesResult] = await Promise.all([
     .orderBy(desc(GuestBook.timestamp))
     .limit(PER_PAGE)
     .offset(offset),
-  db
-    .select({ count: sql`count(*)` })
-    .from(GuestBook)
+  db.select({ count: sql`count(*)` }).from(GuestBook),
 ]);
 
 const totalEntries = totalEntriesResult[0].count as number;
@@ -191,13 +189,13 @@ const error = Astro.url.searchParams.get("error");
   </main>
 
   <button
-  id="scrollToFormBtn"  
-  class="floating-btn"
-  aria-label="Scroll to guestbook form"
-  title="Add your message"
->
-  <span>+</span>
-</button>
+    id="scrollToFormBtn"
+    class="floating-btn"
+    aria-label="Scroll to guestbook form"
+    title="Add your message"
+  >
+    <span>+</span>
+  </button>
 </BaseLayout>
 
 <style>
@@ -226,9 +224,12 @@ const error = Astro.url.searchParams.get("error");
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition:
-      transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      box-shadow var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      opacity var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+      transform var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      opacity var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -264,37 +265,40 @@ const error = Astro.url.searchParams.get("error");
 
 <script>
   function initScrollButton() {
-    const scrollBtn = document.getElementById('scrollToFormBtn');
-    const form = document.querySelector('form');
-    
+    const scrollBtn = document.getElementById("scrollToFormBtn");
+    const form = document.querySelector("form");
+
     if (!scrollBtn || !form) return;
     const newScrollBtn = scrollBtn.cloneNode(true) as HTMLElement;
     scrollBtn.parentNode?.replaceChild(newScrollBtn, scrollBtn);
-    
-    newScrollBtn.addEventListener('click', () => {
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    newScrollBtn.addEventListener("click", () => {
+      form.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (newScrollBtn) {
-          if (entry.isIntersecting) {
-            newScrollBtn.style.opacity = '0';
-            newScrollBtn.style.pointerEvents = 'none';
-          } else {
-            newScrollBtn.style.opacity = '1';
-            newScrollBtn.style.pointerEvents = 'auto';
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (newScrollBtn) {
+            if (entry.isIntersecting) {
+              newScrollBtn.style.opacity = "0";
+              newScrollBtn.style.pointerEvents = "none";
+            } else {
+              newScrollBtn.style.opacity = "1";
+              newScrollBtn.style.pointerEvents = "auto";
+            }
           }
-        }
-      });
-    }, {
-      threshold: 0.1
-    });
+        });
+      },
+      {
+        threshold: 0.1,
+      },
+    );
 
     observer.observe(form);
   }
 
   initScrollButton();
 
-  document.addEventListener('astro:page-load', initScrollButton);
+  document.addEventListener("astro:page-load", initScrollButton);
 </script>

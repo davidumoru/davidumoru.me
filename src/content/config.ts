@@ -18,7 +18,7 @@ export const collections = {
           z.object({
             url: z.string(),
             alt: z.string().optional(),
-          })
+          }),
         )
         .optional(),
     }),
@@ -115,7 +115,7 @@ export const collections = {
           title: z.string(),
           url: z.string().url(),
           favicon: z.string().optional(),
-        })
+        }),
       ),
     }),
   }),

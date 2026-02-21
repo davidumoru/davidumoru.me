@@ -57,11 +57,13 @@ const viewTransition = {
   <main class="flow" transition:animate={viewTransition}>
     <slot />
   </main>
-  {headings && headings.length > 0 && (
-    <aside class="toc-sidebar-global">
-      <TableOfContents client:load />
-    </aside>
-  )}
+  {
+    headings && headings.length > 0 && (
+      <aside class="toc-sidebar-global">
+        <TableOfContents client:load />
+      </aside>
+    )
+  }
   {!hideFooter && <Footer />}
 </UnstyledBaseLayout>
 

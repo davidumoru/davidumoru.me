@@ -38,10 +38,16 @@ function seededRandom(seed: number) {
           const rotation = (seededRandom(i * 13) - 0.5) * 6;
 
           return (
-            <article class="note" data-color={color} style={`--rotation: ${rotation}deg`}>
+            <article
+              class="note"
+              data-color={color}
+              style={`--rotation: ${rotation}deg`}
+            >
               <div class="tape" />
               <div class="content" set:html={md.render(entry.content)} />
-              <time datetime={entry.date.toISOString()}>{displayDate(entry.date)}</time>
+              <time datetime={entry.date.toISOString()}>
+                {displayDate(entry.date)}
+              </time>
             </article>
           );
         })
@@ -78,7 +84,9 @@ function seededRandom(seed: number) {
       2px 2px 4px rgba(0, 0, 0, 0.1),
       4px 8px 16px rgba(0, 0, 0, 0.08);
     transform: rotate(var(--rotation));
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .note:hover {
@@ -89,25 +97,55 @@ function seededRandom(seed: number) {
     z-index: 10;
   }
 
-  .note[data-color="yellow"] { background: #fef9c3; }
-  .note[data-color="pink"] { background: #fce7f3; }
-  .note[data-color="cyan"] { background: #cffafe; }
-  .note[data-color="green"] { background: #dcfce7; }
-  .note[data-color="orange"] { background: #ffedd5; }
-  .note[data-color="violet"] { background: #ede9fe; }
+  .note[data-color="yellow"] {
+    background: #fef9c3;
+  }
+  .note[data-color="pink"] {
+    background: #fce7f3;
+  }
+  .note[data-color="cyan"] {
+    background: #cffafe;
+  }
+  .note[data-color="green"] {
+    background: #dcfce7;
+  }
+  .note[data-color="orange"] {
+    background: #ffedd5;
+  }
+  .note[data-color="violet"] {
+    background: #ede9fe;
+  }
 
   .note[data-color="yellow"]::selection,
-  .note[data-color="yellow"] :global(*::selection) { background: #fde047; color: #422006; }
+  .note[data-color="yellow"] :global(*::selection) {
+    background: #fde047;
+    color: #422006;
+  }
   .note[data-color="pink"]::selection,
-  .note[data-color="pink"] :global(*::selection) { background: #f9a8d4; color: #500724; }
+  .note[data-color="pink"] :global(*::selection) {
+    background: #f9a8d4;
+    color: #500724;
+  }
   .note[data-color="cyan"]::selection,
-  .note[data-color="cyan"] :global(*::selection) { background: #67e8f9; color: #083344; }
+  .note[data-color="cyan"] :global(*::selection) {
+    background: #67e8f9;
+    color: #083344;
+  }
   .note[data-color="green"]::selection,
-  .note[data-color="green"] :global(*::selection) { background: #86efac; color: #052e16; }
+  .note[data-color="green"] :global(*::selection) {
+    background: #86efac;
+    color: #052e16;
+  }
   .note[data-color="orange"]::selection,
-  .note[data-color="orange"] :global(*::selection) { background: #fdba74; color: #431407; }
+  .note[data-color="orange"] :global(*::selection) {
+    background: #fdba74;
+    color: #431407;
+  }
   .note[data-color="violet"]::selection,
-  .note[data-color="violet"] :global(*::selection) { background: #c4b5fd; color: #2e1065; }
+  .note[data-color="violet"] :global(*::selection) {
+    background: #c4b5fd;
+    color: #2e1065;
+  }
 
   .tape {
     position: absolute;

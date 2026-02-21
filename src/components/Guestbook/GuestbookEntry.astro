@@ -175,8 +175,10 @@ const stampStyles = `
       inset 0 0 20px rgba(255, 255, 255, 0.5);
     transform: rotate(var(--rotate));
     transition:
-      transform var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      box-shadow var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+      transform var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
     border-radius: 2px;
     content-visibility: auto;
     contain-intrinsic-size: 300px 375px;
@@ -190,7 +192,8 @@ const stampStyles = `
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: radial-gradient(
+    background-image:
+      radial-gradient(
         circle at 12.5% 12.5%,
         transparent 12px,
         var(--border-accent) 12px,
@@ -311,8 +314,10 @@ const stampStyles = `
     opacity: 0.45;
     filter: contrast(1.1) saturate(1.1);
     transition:
-      opacity var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      filter var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+      opacity var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      filter var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .guestbook-stamp:hover .stamp-bg-image {
@@ -458,8 +463,10 @@ const stampStyles = `
     background-position: left bottom 2px;
     padding-bottom: 2px;
     transition:
-      color var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      background-image var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+      color var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      background-image var(--duration-normal, 200ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .entry-link:hover {

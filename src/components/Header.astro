@@ -19,23 +19,20 @@ const isGuestbook =
   <ThemeToggle />
   <nav aria-label="Primary navigation">
     <ul class="nav-links">
-      {navItems.map(({ href, label }) => {
-        const isActive =
-          href === "/"
-            ? currentPath === "/"
-            : currentPath.startsWith(href);
+      {
+        navItems.map(({ href, label }) => {
+          const isActive =
+            href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 
-        return (
-          <li>
-            <a
-              href={href}
-              aria-current={isActive ? "page" : undefined}
-            >
-              {label}
-            </a>
-          </li>
-        );
-      })}
+          return (
+            <li>
+              <a href={href} aria-current={isActive ? "page" : undefined}>
+                {label}
+              </a>
+            </li>
+          );
+        })
+      }
     </ul>
   </nav>
 </header>

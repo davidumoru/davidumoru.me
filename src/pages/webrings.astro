@@ -14,17 +14,18 @@ const webrings = await getCollection("webrings");
   description="A curated collection of interconnected personal sites I belong to"
 >
   <CenteredLayout>
-    <PageHeader
-      title="Webrings"
-      description="Webrings this site belong to"
-    />
+    <PageHeader title="Webrings" description="Webrings this site belong to" />
     <section>
       <div class="webrings">
         {webrings.map((webring) => <Webring webring={webring} />)}
       </div>
       <div class="badges">
         <WebringBadge site="davidumoru.me" ring="built-with-astro" />
-        <WebringBadge site={"davidumoru.me"} ring="friends-of-houston" animated />
+        <WebringBadge
+          site={"davidumoru.me"}
+          ring="friends-of-houston"
+          animated
+        />
       </div>
     </section>
   </CenteredLayout>

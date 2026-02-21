@@ -12,7 +12,8 @@ type PictureSource = ImageMetadata | ImageMetadata[];
 const images = (Array.isArray(img) ? img : [img]) as PictureSource[];
 const alts = Array.isArray(imgAlt) ? imgAlt : [imgAlt];
 
-const isGrid = (variant === "grid" || variant === "grid-full") && images.length > 1;
+const isGrid =
+  (variant === "grid" || variant === "grid-full") && images.length > 1;
 const isFull = variant === "full" || variant === "grid-full";
 ---
 
@@ -42,7 +43,7 @@ const isFull = variant === "full" || variant === "grid-full";
                   />
                 ) : (
                   <source media={`(min-width: ${i.width}px)`} srcset={i.src} />
-                )
+                ),
               )
             ) : (
               <source srcset={sources[0].src} />
@@ -62,12 +63,12 @@ const isFull = variant === "full" || variant === "grid-full";
 
 <script>
   async function ensureImageReady(image: HTMLImageElement) {
-    if (image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) return;
+    if (image.complete && image.naturalWidth > 0 && image.naturalHeight > 0)
+      return;
 
     try {
       await image.decode();
-    } catch {
-    }
+    } catch {}
 
     if (image.naturalWidth > 0 && image.naturalHeight > 0) return;
 
@@ -84,7 +85,7 @@ const isFull = variant === "full" || variant === "grid-full";
       const pictureImg = picture?.querySelector("img");
       const lightbox = container.querySelector(".lightbox") as HTMLElement;
       const lightboxImg = lightbox?.querySelector(
-        ".lightbox-img"
+        ".lightbox-img",
       ) as HTMLImageElement;
 
       if (!picture || !pictureImg || !lightbox || !lightboxImg) return;
@@ -98,7 +99,7 @@ const isFull = variant === "full" || variant === "grid-full";
         first: DOMRect,
         last: DOMRect,
         firstWidth: number,
-        lastWidth: number
+        lastWidth: number,
       ) {
         const deltaX =
           first.left + first.width / 2 - (last.left + last.width / 2);
@@ -134,7 +135,12 @@ const isFull = variant === "full" || variant === "grid-full";
 
         const last = lightboxImg.getBoundingClientRect();
 
-        const { deltaX, deltaY, scale } = flip(first, last, first.width, finalW);
+        const { deltaX, deltaY, scale } = flip(
+          first,
+          last,
+          first.width,
+          finalW,
+        );
 
         lightboxImg.style.transition = "none";
         lightboxImg.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
@@ -151,7 +157,12 @@ const isFull = variant === "full" || variant === "grid-full";
 
         const last = pictureImg!.getBoundingClientRect();
 
-        const { deltaX, deltaY, scale } = flip(last, first, last.width, firstWidth);
+        const { deltaX, deltaY, scale } = flip(
+          last,
+          first,
+          last.width,
+          firstWidth,
+        );
 
         lightboxImg.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
         lightbox.classList.add("closing");
@@ -169,11 +180,18 @@ const isFull = variant === "full" || variant === "grid-full";
       lightbox.addEventListener("click", close);
     });
 
-    if (!document.documentElement.hasAttribute("data-picture-zoom-escape-init")) {
-      document.documentElement.setAttribute("data-picture-zoom-escape-init", "true");
+    if (
+      !document.documentElement.hasAttribute("data-picture-zoom-escape-init")
+    ) {
+      document.documentElement.setAttribute(
+        "data-picture-zoom-escape-init",
+        "true",
+      );
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-          const openLightbox = document.querySelector(".lightbox.open") as HTMLElement;
+          const openLightbox = document.querySelector(
+            ".lightbox.open",
+          ) as HTMLElement;
           if (openLightbox) {
             openLightbox.click();
           }

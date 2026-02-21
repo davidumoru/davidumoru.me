@@ -6,17 +6,13 @@ interface Props {
 const { countries } = Astro.props;
 ---
 
-<form
-  method="POST"
-  enctype="multipart/form-data"
-  class="guestbook-form"
->
+<form method="POST" enctype="multipart/form-data" class="guestbook-form">
   <div class="form-content">
     <div class="form-header">
       <p class="form-title fs-3">Leave Your Mark</p>
       <div class="stamp-icon">✦</div>
     </div>
-    
+
     <div class="form-row">
       <div class="form-group">
         <label for="author" class="label">Name</label>
@@ -76,7 +72,8 @@ const { countries } = Astro.props;
     border-radius: 4px;
     border: 1px solid hsl(10, 30%, 85%);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    transition: box-shadow var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    transition: box-shadow var(--duration-normal, 200ms)
+      var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .guestbook-form:hover {
@@ -198,9 +195,12 @@ const { countries } = Astro.props;
     font-weight: 600;
     cursor: pointer;
     transition:
-      background-color var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      box-shadow var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+      background-color var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      transform var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -220,7 +220,8 @@ const { countries } = Astro.props;
   }
 
   .submit-button svg {
-    transition: transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    transition: transform var(--duration-fast, 150ms)
+      var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .submit-button:hover svg {

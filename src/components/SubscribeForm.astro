@@ -25,7 +25,7 @@ const {
     class="subscribe-form"
   >
     <label for="bd-email" class="visually-hidden">Email Address</label>
-    
+
     <div class="input-wrapper">
       <input
         id="bd-email"
@@ -39,8 +39,10 @@ const {
         <Icon icon="arrowRight" size="20" />
       </button>
     </div>
-    
-    <label for="bd-honeypot" class="visually-hidden">Do not fill out this field</label>
+
+    <label for="bd-honeypot" class="visually-hidden"
+      >Do not fill out this field</label
+    >
     <input
       id="bd-honeypot"
       type="text"
@@ -49,7 +51,7 @@ const {
       tabindex="-1"
       autocomplete="off"
     />
-    
+
     <input type="hidden" value="1" name="embed" />
   </form>
 </div>
@@ -144,8 +146,10 @@ const {
     cursor: pointer;
 
     transition:
-      background-color var(--duration-fast, 150ms) var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)),
-      transform var(--duration-fast, 150ms) var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
+      background-color var(--duration-fast, 150ms)
+        var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)),
+      transform var(--duration-fast, 150ms)
+        var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
   }
 
   .subscribe-button:hover {
@@ -157,7 +161,8 @@ const {
   }
 
   .subscribe-button :global(svg) {
-    transition: transform var(--duration-fast, 150ms) var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
+    transition: transform var(--duration-fast, 150ms)
+      var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
   }
 
   .subscribe-button:hover :global(svg) {

@@ -72,7 +72,9 @@ function SwipeableCardItem({
     return lerp(start, end, Math.pow(progress, i));
   });
 
-  const effectiveSpringConfig = shouldReduceMotion ? { duration: 0 } : springConfig;
+  const effectiveSpringConfig = shouldReduceMotion
+    ? { duration: 0 }
+    : springConfig;
   const rotateVal = useSpring(rotateInput, effectiveSpringConfig);
   const scaleVal = useSpring(scaleInput, effectiveSpringConfig);
 
@@ -108,14 +110,18 @@ function SwipeableCardItem({
         scale,
         rotate,
       }}
-      transition={shouldReduceMotion ? { duration: 0 } : {
-        type: "spring",
-        ...springConfig,
-        layout: {
-          type: "spring",
-          ...springConfig,
-        },
-      }}
+      transition={
+        shouldReduceMotion
+          ? { duration: 0 }
+          : {
+              type: "spring",
+              ...springConfig,
+              layout: {
+                type: "spring",
+                ...springConfig,
+              },
+            }
+      }
     >
       {card}
     </motion.div>
@@ -124,7 +130,7 @@ function SwipeableCardItem({
 
 function SwipeableCardStack({ children }: { children: React.ReactNode }) {
   const [cards, setCards] = useState<React.ReactElement[]>(
-    Children.toArray(children) as React.ReactElement[]
+    Children.toArray(children) as React.ReactElement[],
   );
   const xInput = useMotionValue(0);
 

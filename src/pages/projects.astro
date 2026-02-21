@@ -5,7 +5,7 @@ import CenteredLayout from "../layouts/CenteredLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import { Icon } from "../components/Icon/Icon";
 const projects = (await getCollection("projects")).sort(
-  (a, b) => b.data.year - a.data.year
+  (a, b) => b.data.year - a.data.year,
 );
 ---
 
@@ -22,10 +22,18 @@ const projects = (await getCollection("projects")).sort(
     <div class="project-list-wrapper">
       <div class="revamp-overlay">
         <p>
-          I’m rebuilding this section to better reflect my current direction; more UI-heavy, more "design engineering".  
-          While it’s in progress, you can browse <a href="https://davidumoru.me/lab">Lab</a>, explore my
-          <a href="https://playground.davidumoru.me/" target="_blank" rel="noopener noreferrer">Playground</a>,
-          or check my <a href="https://github.com/davidumoru/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          I’m rebuilding this section to better reflect my current direction;
+          more UI-heavy, more "design engineering". While it’s in progress, you
+          can browse <a href="https://davidumoru.me/lab">Lab</a>, explore my
+          <a
+            href="https://playground.davidumoru.me/"
+            target="_blank"
+            rel="noopener noreferrer">Playground</a
+          >, or check my <a
+            href="https://github.com/davidumoru/"
+            target="_blank"
+            rel="noopener noreferrer">GitHub</a
+          >
           for live work.
         </p>
       </div>
@@ -116,14 +124,14 @@ const projects = (await getCollection("projects")).sort(
     border: 1px solid rgba(0, 0, 0, 0.08);
     padding: 2rem;
     border-radius: 2px;
-    box-shadow: 
-      0 1px 2px rgba(0,0,0,0.15),
-      0 2px 4px rgba(0,0,0,0.15),
-      0 4px 8px rgba(0,0,0,0.15),
-      0 8px 16px rgba(0,0,0,0.1);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.15),
+      0 2px 4px rgba(0, 0, 0, 0.15),
+      0 4px 8px rgba(0, 0, 0, 0.15),
+      0 8px 16px rgba(0, 0, 0, 0.1);
     max-width: 450px;
     width: 90%;
-    
+
     position: absolute;
     top: 50%;
     left: 50%;

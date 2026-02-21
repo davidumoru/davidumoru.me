@@ -46,9 +46,17 @@ export default function AnimatedTabs() {
                   layoutId="nav-item-hover"
                   className="absolute inset-0 z-0 rounded-full"
                   style={{ backgroundColor: "var(--gray-4)" }}
-                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 1 }
+                      : { opacity: 0, scale: 0.95 }
+                  }
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+                  exit={
+                    shouldReduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, scale: 0.95 }
+                  }
                   transition={springTransition}
                 />
               )}
@@ -69,8 +77,8 @@ export default function AnimatedTabs() {
                   color: isSelected
                     ? "var(--gray-1)"
                     : isHovered
-                    ? "var(--gray-12)"
-                    : "var(--gray-10)",
+                      ? "var(--gray-12)"
+                      : "var(--gray-10)",
                 }}
                 transition={springTransitionSlow}
               >

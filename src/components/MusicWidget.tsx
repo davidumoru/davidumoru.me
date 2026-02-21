@@ -71,7 +71,7 @@ const AudioVisualization: FC = () => {
             };
           }
           return { ...bar, height: newHeight };
-        })
+        }),
       );
       animationFrame = requestAnimationFrame(animate);
     };
@@ -171,30 +171,38 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
         src={song.albumArtUrl}
         alt={`Album artwork for ${song.title} by ${song.artists}`}
       />
-      <div className={`min-w-0 space-y-1 ${song.isPlaying ? 'flex-1' : 'flex-1 sm:mr-3'}`}>
+      <div
+        className={`min-w-0 space-y-1 ${song.isPlaying ? "flex-1" : "flex-1 sm:mr-3"}`}
+      >
         <a
           href={song.songUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"
         >
-        <p
-          className="truncate text-base sm:text-lg font-semibold underline leading-tight text-[var(--gray-12)] transition-colors duration-300"
-          style={{
-            textDecorationColor: "var(--gray-8)",
-            transition: "text-decoration-color 0.3s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.textDecorationColor = "var(--gray-11)")}
-          onMouseLeave={(e) => (e.currentTarget.style.textDecorationColor = "var(--gray-8)")}
-        >
-          {song.title}
-        </p>
+          <p
+            className="truncate text-base sm:text-lg font-semibold underline leading-tight text-[var(--gray-12)] transition-colors duration-300"
+            style={{
+              textDecorationColor: "var(--gray-8)",
+              transition: "text-decoration-color 0.3s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.textDecorationColor = "var(--gray-11)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.textDecorationColor = "var(--gray-8)")
+            }
+          >
+            {song.title}
+          </p>
         </a>
         <p className="truncate text-sm sm:text-base text-[var(--gray-11)]">
           {song.artists}
         </p>
       </div>
-      <div className={`flex items-center min-w-0 h-16 sm:h-20 justify-end w-full ${song.isPlaying ? 'max-w-[6rem] sm:max-w-[10rem]' : 'max-w-0'}`}>
+      <div
+        className={`flex items-center min-w-0 h-16 sm:h-20 justify-end w-full ${song.isPlaying ? "max-w-[6rem] sm:max-w-[10rem]" : "max-w-0"}`}
+      >
         {song.isPlaying && <AudioVisualization />}
       </div>
     </div>
@@ -222,7 +230,7 @@ const MusicWidget: FC = () => {
         if (!response.ok) {
           const errData = await response.json();
           throw new Error(
-            errData.error || `Failed to fetch music data (${response.status})`
+            errData.error || `Failed to fetch music data (${response.status})`,
           );
         }
         const data: SongData = await response.json();
@@ -252,11 +260,11 @@ const MusicWidget: FC = () => {
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 

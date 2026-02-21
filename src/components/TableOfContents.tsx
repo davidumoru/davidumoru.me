@@ -292,9 +292,7 @@ export default function TableOfContents({
   return (
     <nav className={`table-of-contents ${className}`}>
       <div className="mb-3">
-        <p className="text-sm font-semibold text-(--gray-12)!">
-          On this page
-        </p>
+        <p className="text-sm font-semibold text-(--gray-12)!">On this page</p>
       </div>
 
       <div className="relative">

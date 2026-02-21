@@ -12,13 +12,8 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const {
-  title,
-  description,
-  datePublished,
-  repositoryUrl,
-  componentKey,
-} = entry.data;
+const { title, description, datePublished, repositoryUrl, componentKey } =
+  entry.data;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -44,21 +39,21 @@ const {
             </a>
           )
         }
-        
+
         <button id="copy-lab-url" class="icon-btn" aria-label="Copy URL">
           <span class="icon-wrapper default">
             <Icon icon="copy" size="18" />
           </span>
           <span class="icon-wrapper success">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="18" 
-              height="18" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              stroke-width="2" 
-              stroke-linecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
               stroke-linejoin="round"
             >
               <polyline points="20 6 9 17 4 12"></polyline>
@@ -70,7 +65,10 @@ const {
 
     {
       componentKey && (
-        <ExperimentRenderer componentKey={componentKey as ComponentKey} client:load />
+        <ExperimentRenderer
+          componentKey={componentKey as ComponentKey}
+          client:load
+        />
       )
     }
 
@@ -82,25 +80,25 @@ const {
 
 <script>
   const initCopyButton = () => {
-    const copyBtn = document.getElementById('copy-lab-url');
+    const copyBtn = document.getElementById("copy-lab-url");
 
     if (copyBtn) {
-      copyBtn.addEventListener('click', async () => {
+      copyBtn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(window.location.href);
-          copyBtn.setAttribute('data-copied', 'true');
-          
+          copyBtn.setAttribute("data-copied", "true");
+
           setTimeout(() => {
-            copyBtn.removeAttribute('data-copied');
+            copyBtn.removeAttribute("data-copied");
           }, 2000);
         } catch (err) {
-          console.error('Failed to copy: ', err);
+          console.error("Failed to copy: ", err);
         }
       });
     }
   };
 
-  document.addEventListener('astro:page-load', initCopyButton);
+  document.addEventListener("astro:page-load", initCopyButton);
 </script>
 
 <style>
@@ -123,13 +121,16 @@ const {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 36px; 
+    width: 36px;
     height: 36px;
     border-radius: 50%;
     cursor: pointer;
     background-color: var(--gray-3);
     color: var(--gray-11);
-    transition: background-color 0.2s ease, transform 0.1s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      transform 0.1s ease,
+      color 0.2s ease;
     text-decoration: none;
     line-height: 0;
     overflow: hidden;
@@ -149,7 +150,7 @@ const {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute; 
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -160,7 +161,7 @@ const {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  
+
   .icon-wrapper.success {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
@@ -176,7 +177,7 @@ const {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  
+
   #copy-lab-url[data-copied="true"] {
     background-color: var(--gray-5);
     color: var(--gray-12);

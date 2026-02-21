@@ -1,8 +1,100 @@
 ---
 title: Colophon
-description: Here’s what powers this site
+description: Here's what powers this site
 datePublished: 2025-01-31
 dateModified: 2025-01-31
 img: ["./colophon.jpeg"]
 imgAlt: Minimalist colophon page with bold 'COLOPHON' text and publication details.
 ---
+
+A colophon is traditionally the part of a book that describes how it was made.
+This page serves that purpose for this site.
+
+## About This Site
+
+This site has been my corner of the internet since April 2024.
+It started as a simple portfolio and has grown into something more personal: a place for my writing, projects, bookmarks, and whatever else I find interesting.
+
+I treat it as a long-term project. The goal isn't to chase trends or optimize for engagement.
+I want a space I enjoy maintaining, one that might still work in ten years without major rewrites.
+That philosophy shapes most of the technical decisions below.
+
+## Technology
+
+The site is built with [Astro](https://astro.build/), a static site generator that ships minimal JavaScript by default.
+I chose Astro because it stays out of the way. Content lives in flat MDX files that I can edit in any text editor.
+If Astro disappeared tomorrow, migrating the content would be straightforward.
+
+For the few interactive pieces (the music widget, table of contents, and some lab experiments), I use React through Astro's island architecture.
+Animations are handled by Framer Motion.
+
+The guestbook and other dynamic content run on [Astro DB](https://docs.astro.build/en/guides/astro-db/), backed by [Turso](https://turso.tech/).
+Hosting and deployment is on [Vercel](https://vercel.com/).
+
+## Typography
+
+Headings are set in **Editorial New**, a serif typeface that gives the site its character.
+I self-host it to avoid third-party font requests and ensure it loads reliably.
+
+Body text uses **Inter**, a sans-serif designed for screens.
+It loads from the system font stack where available.
+
+I use a fluid type scale, so text sizes adjust smoothly based on viewport width rather than jumping at breakpoints.
+
+## Styling
+
+Colors come from [Radix Colors](https://www.radix-ui.com/colors), which provides accessible color palettes with built-in dark mode support.
+The accent throughout the site is Tomato.
+
+I use [Tailwind CSS](https://tailwindcss.com/) alongside custom CSS variables for spacing, typography, and theming.
+There's a subtle noise texture overlay on larger screens, something I picked up from print design.
+
+## Code
+
+Syntax highlighting is powered by [Expressive Code](https://expressive-code.com/) with two themes: **Rose Pine Dawn** for light mode and **Kanagawa Dragon** for dark.
+
+## Writing
+
+I write in Markdown (MDX, specifically) using whatever text editor I have open.
+Posts start as rough notes, often just a few sentences.
+I revise them over time, sometimes publishing quickly, sometimes letting them sit for weeks.
+
+There's no CMS. I commit content directly to the repository.
+It's more friction than a web interface, but it keeps everything version-controlled and portable.
+
+## Privacy
+
+I use Vercel Analytics, which respects privacy and doesn't use cookies.
+There are no trackers, no ads, and no data sold to third parties.
+
+The guestbook collects only what you submit: your name, message, and country (for the stamp).
+If you want your entry removed, email me.
+
+## Accessibility
+
+I aim for WCAG AA compliance.
+The site works without JavaScript, respects reduced motion preferences, and should be navigable by keyboard and screen reader.
+If you encounter accessibility issues, please let me know.
+
+## Energy
+
+This site produces approximately 0.03g of CO2 per page view, earning an A+ rating on [Website Carbon Calculator](https://www.websitecarbon.com/).
+That's cleaner than most websites, largely thanks to minimal JavaScript, optimized images, and static page generation.
+
+I care about this because the internet consumes a lot of energy, and personal sites are a good place to be intentional about it.
+
+<div id="wcb" class="carbonbadge wcb-d"></div>
+<script
+  src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js"
+  defer
+></script>
+
+## Inspiration
+
+The design and approach have been influenced by many personal sites I admire.
+A few that stand out: [Paco Coursey](https://paco.me), [Maggie Appleton](https://maggieappleton.com), [Fabian Schultz](https://www.fabianschultz.com/), and the many folks in the [Hotline Webring](https://hotlinewebring.club/).
+
+## Source
+
+The code is on [GitHub](https://github.com/davidumoru/davidumoru.me).
+Feel free to look around, borrow ideas, or open an issue if something's broken.

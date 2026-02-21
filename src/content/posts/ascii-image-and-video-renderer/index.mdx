@@ -5,8 +5,8 @@ datePublished: 2024-09-07
 dateModified: 2024-09-07
 essay: true
 features:
-   - name: Level Up Coding
-     url: https://medium.com/gitconnected/build-an-ascii-image-and-video-renderer-with-python-c977070d45e7
+  - name: Level Up Coding
+    url: https://medium.com/gitconnected/build-an-ascii-image-and-video-renderer-with-python-c977070d45e7
 ---
 
 import ProjectInfo from "../../../components/ProjectInfo.astro";
@@ -17,12 +17,7 @@ import ProjectInfo from "../../../components/ProjectInfo.astro";
     end: "September 2023",
   }}
   roles={["Engineering"]}
-  tech={[
-    "Python",
-    "OpenCV",
-    "Blessed",
-    "Colorama",
-  ]}
+  tech={["Python", "OpenCV", "Blessed", "Colorama"]}
   repo="davidumoru/ascii-render"
   website=""
 />
@@ -39,8 +34,8 @@ This art form became popular when computers had limited graphic capabilities, an
 For example, an image of a cat might look something like this in ASCII art:
 
 ```bash
- /\_/\  
-( o.o ) 
+ /\_/\
+( o.o )
  > ^ <
 ```
 
@@ -130,7 +125,7 @@ def print_img(image, is_colored):
     for i, pixel in enumerate(pixels):
         if i % IMG_SIZE[0] == 0 and i != 0:
             output_string += "\n"
-        
+
         ind = int(pixel / 255 * (len(DEFAULT_CHARSET) - 1))
         char = DEFAULT_CHARSET[ind]
 
@@ -224,7 +219,7 @@ def main():
                 DEFAULT_COLOR = True
             case "-f":
                 DEFAULT_CHARSET = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,^`'."
-    
+
     for img in imgs:
         print_img(img, DEFAULT_COLOR)
         time.sleep(0.033)  # Approx. 30fps

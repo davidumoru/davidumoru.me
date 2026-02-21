@@ -16,7 +16,10 @@ interface Feature {
 
 <article>
   <div class="post-item-container">
-    <a href={`/posts/${post.id}`} class="post-link-overlay" aria-label={post.data.title}></a>
+    <a
+      href={`/posts/${post.id}`}
+      class="post-link-overlay"
+      aria-label={post.data.title}></a>
     <div class="content">
       <div class="text">
         <p class="title">{post.data.title}</p>
@@ -38,7 +41,12 @@ interface Feature {
           <span>Featured on </span>
           {post.data.features.map(({ name, url }: Feature, i: number) => [
             i > 0 && ", ",
-            <a href={url} target="_blank" rel="noopener noreferrer" class="feature-link">
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="feature-link"
+            >
               {name}
             </a>,
           ])}

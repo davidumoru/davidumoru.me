@@ -147,7 +147,7 @@ const SidebarFolder: FC<{
 const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
   const [openFolders, setOpenFolders] = useState<Set<string>>(new Set());
   const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(
-    null
+    null,
   );
   const [isLoading, setIsLoading] = useState(false);
   const isMobile = useIsMobile();
@@ -176,7 +176,6 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
   return (
     <div className={`browser ${isMobile ? "browser--mobile" : ""}`}>
       <div className="browser-window">
-
         {/* Sidebar */}
         <aside className="browser-sidebar">
           <div className="browser-sidebar-header">
@@ -199,7 +198,13 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
               </button>
               {!isMobile && selectedBookmark && (
                 <button
-                  onClick={() => window.open(selectedBookmark.url, '_blank', 'noopener,noreferrer')}
+                  onClick={() =>
+                    window.open(
+                      selectedBookmark.url,
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }
                   className="browser-back-link"
                   type="button"
                   aria-label="Open in new tab"

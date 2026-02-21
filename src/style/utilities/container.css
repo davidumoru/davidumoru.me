@@ -1,12 +1,12 @@
 .container {
-	max-inline-size: clamp(min(100%, 20rem), 90vw, 48rem);
-	inline-size: 100%;
-	margin-inline: auto;
-	padding-inline: var(--space-xs);
+  max-inline-size: clamp(min(100%, 20rem), 90vw, 48rem);
+  inline-size: 100%;
+  margin-inline: auto;
+  padding-inline: var(--space-xs);
 }
 
 @media (max-width: 640px) {
-	.container {
-		padding-inline: var(--space-3xs);
-	}
+  .container {
+    padding-inline: var(--space-3xs);
+  }
 }

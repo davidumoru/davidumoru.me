@@ -16,14 +16,24 @@ h3,
   line-height: var(--lh-3);
 }
 
-h1, h2, h3, .h1, .h2, .h3 {
-  font-family: 'EditorialNew', serif;
+h1,
+h2,
+h3,
+.h1,
+.h2,
+.h3 {
+  font-family: "EditorialNew", serif;
   font-weight: 400;
   color: var(--gray-12);
 }
 
-h4, h5, h6, .h4, .h5, .h6 {
-  font-family: 'EditorialNew', serif;
+h4,
+h5,
+h6,
+.h4,
+.h5,
+.h6 {
+  font-family: "EditorialNew", serif;
   font-weight: 300;
   color: var(--gray-12);
 }

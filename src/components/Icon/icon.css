@@ -1,26 +1,26 @@
 .icon {
-    display: inline-block;
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
 }
-  
+
 .icon.large {
-    width: 24px;
-    height: 24px;
+  width: 24px;
+  height: 24px;
 }
-  
+
 .icon.medium {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .icon.small {
-    width: 18px;
-    height: 18px;
+  width: 18px;
+  height: 18px;
 }
-  
+
 .icon.extraSmall {
-    width: 16px;
-    height: 16px;
+  width: 16px;
+  height: 16px;
 }

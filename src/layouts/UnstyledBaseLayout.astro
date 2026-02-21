@@ -13,7 +13,7 @@ const { title, description } = Astro.props;
 
 const rawPath = new URL(Astro.url.pathname, Astro.site).pathname.replace(
   /\/*$/,
-  ""
+  "",
 );
 const pagePath = rawPath === "" ? "/index" : rawPath;
 

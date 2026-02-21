@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   const posts = (await getCollection("posts")).sort(
     (a, b) =>
       new Date(b.data.datePublished).getTime() -
-      new Date(a.data.datePublished).getTime()
+      new Date(a.data.datePublished).getTime(),
   );
 
   return posts.map((post, index) => ({
@@ -40,7 +40,8 @@ const { title, description, datePublished, dateModified } = data;
   datePublished={datePublished}
   dateModified={dateModified}
   headings={headings}
-  hideDescription={true}>
+  hideDescription={true}
+>
   <Content />
   <div class="pagination" slot="after-prose">
     {

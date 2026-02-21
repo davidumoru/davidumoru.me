@@ -54,7 +54,9 @@ export default function AnimatedCardsCarousel() {
           {ITEMS.map(({ image }, index) => (
             <motion.div
               key={index}
-              initial={shouldReduceMotion ? false : { scale: 0.9, opacity: 0.6 }}
+              initial={
+                shouldReduceMotion ? false : { scale: 0.9, opacity: 0.6 }
+              }
               animate={{
                 y: currentIndex === index ? 0 : -32,
                 scale: currentIndex === index ? 1 : 0.9,

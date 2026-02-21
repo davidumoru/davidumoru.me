@@ -57,14 +57,26 @@ export default function StackedAvatars() {
                     style={{
                       backgroundColor: "var(--gray-12)",
                     }}
-                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95, y: 8 }}
+                    initial={
+                      shouldReduceMotion
+                        ? { opacity: 1 }
+                        : { opacity: 0, scale: 0.95, y: 8 }
+                    }
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 8 }}
-                    transition={shouldReduceMotion ? { duration: 0 } : {
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 30,
-                    }}
+                    exit={
+                      shouldReduceMotion
+                        ? { opacity: 0 }
+                        : { opacity: 0, scale: 0.95, y: 8 }
+                    }
+                    transition={
+                      shouldReduceMotion
+                        ? { duration: 0 }
+                        : {
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 30,
+                          }
+                    }
                   >
                     <div className="flex flex-col items-center leading-none">
                       <span
@@ -100,14 +112,23 @@ export default function StackedAvatars() {
                   borderColor: "var(--gray-1)",
                 }}
                 animate={{
-                  scale: hoveredId === avatar.id ? (shouldReduceMotion ? 1 : 1.15) : 1,
+                  scale:
+                    hoveredId === avatar.id
+                      ? shouldReduceMotion
+                        ? 1
+                        : 1.15
+                      : 1,
                   zIndex: hoveredId === avatar.id ? 50 : 0,
                 }}
-                transition={shouldReduceMotion ? { duration: 0 } : {
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 30,
-                }}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : {
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }
+                }
               >
                 <img
                   src={avatar.src}

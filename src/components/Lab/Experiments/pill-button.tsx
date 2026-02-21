@@ -25,11 +25,13 @@ export default function PillSelector() {
   const [selected, setSelected] = useState<string[]>([]);
   const shouldReduceMotion = useReducedMotion();
 
-  const effectiveTransition = shouldReduceMotion ? { duration: 0 } : transitionProps;
+  const effectiveTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : transitionProps;
 
   const togglePill = (pill: string) => {
     setSelected((prev) =>
-      prev.includes(pill) ? prev.filter((p) => p !== pill) : [...prev, pill]
+      prev.includes(pill) ? prev.filter((p) => p !== pill) : [...prev, pill],
     );
   };
 
@@ -51,12 +53,20 @@ export default function PillSelector() {
               animate={{
                 backgroundColor: isSelected ? "#163e33" : "#23272a",
               }}
-              whileHover={shouldReduceMotion ? {} : {
-                backgroundColor: isSelected ? "#163e33" : "#334155",
-              }}
-              whileTap={shouldReduceMotion ? {} : {
-                backgroundColor: isSelected ? "#0f2921" : "#1e293b",
-              }}
+              whileHover={
+                shouldReduceMotion
+                  ? {}
+                  : {
+                      backgroundColor: isSelected ? "#163e33" : "#334155",
+                    }
+              }
+              whileTap={
+                shouldReduceMotion
+                  ? {}
+                  : {
+                      backgroundColor: isSelected ? "#0f2921" : "#1e293b",
+                    }
+              }
               transition={{
                 ...effectiveTransition,
                 backgroundColor: { duration: shouldReduceMotion ? 0 : 0.1 },
@@ -77,18 +87,30 @@ export default function PillSelector() {
                   width: isSelected ? "auto" : "100%",
                   paddingRight: isSelected ? "1.7rem" : "0",
                 }}
-                transition={shouldReduceMotion ? { duration: 0 } : {
-                  ease: [0.175, 0.885, 0.32, 1.275],
-                  duration: 0.3,
-                }}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : {
+                        ease: [0.175, 0.885, 0.32, 1.275],
+                        duration: 0.3,
+                      }
+                }
               >
                 <span>{pill}</span>
                 <AnimatePresence>
                   {isSelected && (
                     <motion.span
-                      initial={shouldReduceMotion ? { opacity: 1 } : { scale: 0, opacity: 0 }}
+                      initial={
+                        shouldReduceMotion
+                          ? { opacity: 1 }
+                          : { scale: 0, opacity: 0 }
+                      }
                       animate={{ scale: 1, opacity: 1 }}
-                      exit={shouldReduceMotion ? { opacity: 0 } : { scale: 0, opacity: 0 }}
+                      exit={
+                        shouldReduceMotion
+                          ? { opacity: 0 }
+                          : { scale: 0, opacity: 0 }
+                      }
                       transition={effectiveTransition}
                       className="absolute right-0 flex items-center justify-center"
                     >

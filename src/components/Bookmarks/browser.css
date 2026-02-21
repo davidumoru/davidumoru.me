@@ -167,7 +167,8 @@
   border: none;
   border-radius: var(--browser-radius-sm);
   cursor: pointer;
-  transition: background-color 0.15s var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+  transition: background-color 0.15s
+    var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   text-align: left;
 }
 
@@ -196,7 +197,8 @@
 .browser-sidebar-folder-content {
   padding-left: 0.5rem;
   margin-top: 0.125rem;
-  animation: slideDown 0.2s var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+  animation: slideDown 0.2s
+    var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 }
 
 @keyframes slideDown {
@@ -285,7 +287,6 @@
   flex-direction: column;
   overflow: hidden;
 }
-
 
 .browser-iframe {
   width: 100%;

@@ -1,4 +1,7 @@
-pre, code, .expressive-code, pre {
+pre,
+code,
+.expressive-code,
+pre {
   max-width: 90vw;
   overflow-x: auto;
   box-sizing: border-box;

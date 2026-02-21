@@ -14,11 +14,11 @@ interface Props {
   afterLabel?: string;
 }
 
-const { 
-  before, 
+const {
+  before,
   after,
   beforeLabel = "Before",
-  afterLabel = "After"
+  afterLabel = "After",
 } = Astro.props;
 ---
 
@@ -26,7 +26,7 @@ const {
   <div class="container">
     <Image src={after.src} alt={after.alt} class="image image-after" />
     <Image src={before.src} alt={before.alt} class="image image-before" />
-    
+
     <input
       type="range"
       min="0"
@@ -35,9 +35,9 @@ const {
       class="slider"
       aria-label="Percentage of before photo shown"
     />
-    
+
     <div class="slider-line"></div>
-    
+
     <div class="slider-button" aria-hidden="true">
       <svg
         xmlns="http://www.w3.org/2000/svg"
