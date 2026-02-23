@@ -11,18 +11,6 @@ import defaultStampAsset from "../../public/stamps/default.jpg";
 
 const PER_PAGE = 19;
 
-let cachedCountries: string[] | null = null;
-const getCountries = async () => {
-  if (!cachedCountries) {
-    const stamps = await db
-      .select({ country: Stamps.country })
-      .from(Stamps)
-      .orderBy(asc(Stamps.country));
-    cachedCountries = stamps.map((s) => s.country);
-  }
-  return cachedCountries;
-};
-
 const generateOptimizedCloudinaryUrl = (url: string) => {
   const uploadMarker = "/image/upload/";
   const index = url.indexOf(uploadMarker);
@@ -82,7 +70,7 @@ if (Astro.request.method === "POST") {
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const offset = (page - 1) * PER_PAGE;
 
-const [guestBook, totalEntriesResult] = await Promise.all([
+const [guestBook, totalEntriesResult, stampRows] = await Promise.all([
   db
     .select({
       author: GuestBook.author,
@@ -99,11 +87,11 @@ const [guestBook, totalEntriesResult] = await Promise.all([
     .limit(PER_PAGE)
     .offset(offset),
   db.select({ count: sql`count(*)` }).from(GuestBook),
+  db.select({ country: Stamps.country }).from(Stamps).orderBy(asc(Stamps.country)),
 ]);
 
 const totalEntries = totalEntriesResult[0].count as number;
-
-const countries = await getCountries();
+const countries = stampRows.map((s) => s.country);
 
 const success = Astro.url.searchParams.get("success");
 const error = Astro.url.searchParams.get("error");
