@@ -1,6 +1,6 @@
 ---
 export const prerender = false;
-import { db, GuestBook, Stamps, desc, sql, eq, asc } from "astro:db";
+import { db, GuestBook, Stamps, desc, eq, asc } from "astro:db";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GuestbookEntry from "../components/Guestbook/GuestbookEntry.astro";
 import AlertMessage from "../components/Guestbook/AlertMessage.astro";
@@ -70,7 +70,7 @@ if (Astro.request.method === "POST") {
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const offset = (page - 1) * PER_PAGE;
 
-const [guestBook, totalEntriesResult, stampRows] = await Promise.all([
+const [rawEntries, stampRows] = await Promise.all([
   db
     .select({
       author: GuestBook.author,
@@ -84,16 +84,16 @@ const [guestBook, totalEntriesResult, stampRows] = await Promise.all([
     .from(GuestBook)
     .leftJoin(Stamps, eq(GuestBook.country, Stamps.country))
     .orderBy(desc(GuestBook.timestamp))
-    .limit(PER_PAGE)
+    .limit(PER_PAGE + 1)
     .offset(offset),
-  db.select({ count: sql`count(*)` }).from(GuestBook),
   db
     .select({ country: Stamps.country })
     .from(Stamps)
     .orderBy(asc(Stamps.country)),
 ]);
 
-const totalEntries = totalEntriesResult[0].count as number;
+const hasNextPage = rawEntries.length > PER_PAGE;
+const guestBook = hasNextPage ? rawEntries.slice(0, PER_PAGE) : rawEntries;
 const countries = stampRows.map((s) => s.country);
 
 const success = Astro.url.searchParams.get("success");
@@ -172,7 +172,7 @@ const error = Astro.url.searchParams.get("error");
 
     <Pagination
       currentPage={page}
-      hasNextPage={offset + guestBook.length < totalEntries}
+      hasNextPage={hasNextPage}
       hasPrevPage={page > 1}
     />
 
