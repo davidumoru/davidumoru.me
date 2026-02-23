@@ -2,10 +2,29 @@ export const prerender = false;
 
 import type { APIRoute } from "astro";
 
+const BLOCKED_DOMAINS = ["x.com", "twitter.com"];
+
 export const GET: APIRoute = async ({ url }) => {
   const targetUrl = url.searchParams.get("url");
 
   if (!targetUrl) {
+    return new Response(JSON.stringify({ embeddable: false }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    const hostname = new URL(targetUrl).hostname;
+    if (BLOCKED_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`))) {
+      return new Response(JSON.stringify({ embeddable: false }), {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
+  } catch {
     return new Response(JSON.stringify({ embeddable: false }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
