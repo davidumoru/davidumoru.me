@@ -75,13 +75,13 @@ export const collections = {
   }),
   lab: defineCollection({
     loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/lab" }),
-    schema: () =>
+    schema: ({ image }) =>
       z.object({
         title: z.string(),
         description: z.string(),
         datePublished: z.date(),
         componentKey: z.string(),
-        coverImage: z.string().optional(),
+        coverImage: image().optional(),
         coverAlt: z.string().optional(),
         repositoryUrl: z.string().url().optional(),
         draft: z.boolean().optional().default(false),

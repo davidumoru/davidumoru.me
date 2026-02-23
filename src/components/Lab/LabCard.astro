@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
 
 interface Props {
   entry: CollectionEntry<"lab">;
@@ -14,7 +15,7 @@ const { id, data } = entry;
     <div class="card-image-area">
       {
         data.coverImage ? (
-          <img
+          <Image
             src={data.coverImage}
             alt={data.coverAlt || `Preview for ${data.title}`}
             class="preview-image"
