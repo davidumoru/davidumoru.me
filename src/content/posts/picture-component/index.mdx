@@ -1,0 +1,88 @@
+---
+title: "<Picture />"
+description: Personal reference for the Picture component variants and usage.
+datePublished: 2026-01-31
+dateModified: 2026-02-23
+essay: true
+---
+
+import Picture from "../../../components/Picture.astro";
+import exampleDefault from "./example-default.jpg";
+import exampleFull from "./example-full.jpeg";
+import exampleGrid1 from "./example-grid-1.jpg";
+import exampleGrid2 from "./example-grid-2.jpg";
+import exampleTransparent from "./example-transparent.png";
+
+This is a personal reference for the `Picture` component on my site. I kept copy-pasting image markup across pages until it got messy enough to fix. This page documents the variants so I don't have to dig through the source every time I forget the API.
+
+**Source:** [Picture.astro](https://github.com/davidumoru/davidumoru.me/blob/main/src/components/Picture.astro)
+
+## Default
+
+```astro
+<Picture img={myImage} imgAlt="A screenshot" />
+```
+
+<Picture img={exampleDefault} imgAlt="Example of the default variant" />
+
+## Transparent
+
+```astro
+<Picture img={logo} imgAlt="Company logo" variant="transparent" />
+```
+
+<Picture
+  img={exampleTransparent}
+  imgAlt="Example of the transparent variant"
+  variant="transparent"
+/>
+
+## Full
+
+```astro
+<Picture img={heroImage} imgAlt="Detailed screenshot" variant="full" />
+```
+
+<Picture
+  img={exampleFull}
+  imgAlt="Example of the full variant"
+  variant="full"
+/>
+
+## Grid
+
+```astro
+<Picture
+  img={[image1, image2]}
+  imgAlt={["Before", "After"]}
+  variant="grid"
+  columns={2}
+/>
+```
+
+<Picture
+  img={[exampleGrid1, exampleGrid2]}
+  imgAlt={["First image in grid", "Second image in grid"]}
+  variant="grid"
+  columns={2}
+/>
+
+`columns={2}` and `columns={3}` supported. Collapses to one column on small screens.
+
+## Grid Full
+
+```astro
+<Picture
+  img={[image1, image2]}
+  imgAlt={["One", "Two"]}
+  variant="grid-full"
+  columns={2}
+/>
+```
+
+<Picture
+  img={[exampleGrid1, exampleGrid2]}
+  imgAlt={["First image in full grid", "Second image in full grid"]}
+  variant="grid-full"
+  columns={2}
+/>
