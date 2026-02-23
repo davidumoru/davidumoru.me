@@ -1,6 +1,8 @@
-import { useState, useEffect, type FC } from "react";
+import { useState, useEffect, useRef, type FC } from "react";
 import { Icon } from "../Icon/Icon";
 import "./browser.css";
+
+const embeddabilityCache = new Map<string, boolean>();
 
 interface Bookmark {
   title: string;
@@ -146,11 +148,11 @@ const SidebarFolder: FC<{
 
 const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
   const [openFolders, setOpenFolders] = useState<Set<string>>(new Set());
-  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(
-    null,
-  );
+  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isNotEmbeddable, setIsNotEmbeddable] = useState(false);
   const isMobile = useIsMobile();
+  const checkAbortRef = useRef<AbortController | null>(null);
 
   const toggleFolder = (folderName: string) => {
     setOpenFolders((prev) => {
@@ -165,8 +167,35 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
   };
 
   const handleSelectBookmark = (bookmark: Bookmark) => {
+    checkAbortRef.current?.abort();
+
     setIsLoading(true);
+    setIsNotEmbeddable(false);
     setSelectedBookmark(bookmark);
+
+    if (embeddabilityCache.has(bookmark.url)) {
+      if (!embeddabilityCache.get(bookmark.url)) {
+        setIsNotEmbeddable(true);
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    const controller = new AbortController();
+    checkAbortRef.current = controller;
+
+    fetch(`/api/check-embeddable?url=${encodeURIComponent(bookmark.url)}`, {
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
+      .then(({ embeddable }) => {
+        embeddabilityCache.set(bookmark.url, embeddable);
+        if (!embeddable) {
+          setIsNotEmbeddable(true);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {});
   };
 
   const handleIframeLoad = () => {
@@ -176,7 +205,6 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
   return (
     <div className={`browser ${isMobile ? "browser--mobile" : ""}`}>
       <div className="browser-window">
-        {/* Sidebar */}
         <aside className="browser-sidebar">
           <div className="browser-sidebar-header">
             <div className="browser-sidebar-title-group">
@@ -232,7 +260,6 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
           </nav>
         </aside>
 
-        {/* Main Content - only show on desktop */}
         {!isMobile && (
           <main className="browser-content">
             {selectedBookmark ? (
@@ -240,19 +267,36 @@ const Browser: FC<BrowserProps> = ({ folders, title = "Bookmarks" }) => {
                 {isLoading && (
                   <div className="browser-loading">
                     <div className="browser-loading-spinner" />
-
                     <span>Loading {selectedBookmark.title}...</span>
                   </div>
                 )}
 
-                <iframe
-                  src={selectedBookmark.url}
-                  title={selectedBookmark.title}
-                  className="browser-iframe"
-                  onLoad={handleIframeLoad}
-                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                  loading="lazy"
-                />
+                {isNotEmbeddable ? (
+                  <div className="browser-fallback">
+                    <FaviconImage url={selectedBookmark.url} alt={selectedBookmark.title} />
+                    <p className="browser-fallback-title">{selectedBookmark.title}</p>
+                    <p className="browser-fallback-url">{new URL(selectedBookmark.url).hostname}</p>
+                    <p className="browser-fallback-note">This site can't be previewed here.</p>
+                    <a
+                      href={selectedBookmark.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="browser-fallback-btn"
+                    >
+                      Open site
+                      <Icon icon="externalLink" size="16" />
+                    </a>
+                  </div>
+                ) : (
+                  <iframe
+                    src={selectedBookmark.url}
+                    title={selectedBookmark.title}
+                    className="browser-iframe"
+                    onLoad={handleIframeLoad}
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                    loading="lazy"
+                  />
+                )}
               </>
             ) : (
               <div className="browser-empty-state">
