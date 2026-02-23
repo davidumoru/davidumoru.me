@@ -13,37 +13,32 @@ const allPosts = posts.sort(
     new Date(a.data.datePublished).getTime(),
 );
 
-const essays = posts
-  .filter((post) => post.data.essay === true)
-  .sort(
-    (a, b) =>
-      new Date(b.data.datePublished).getTime() -
-      new Date(a.data.datePublished).getTime(),
-  );
+const sortByDate = (a: any, b: any) =>
+  new Date(b.data.datePublished).getTime() -
+  new Date(a.data.datePublished).getTime();
 
-const notes = posts
-  .filter((post) => post.data.essay === false)
-  .sort(
-    (a, b) =>
-      new Date(b.data.datePublished).getTime() -
-      new Date(a.data.datePublished).getTime(),
-  );
+const personal = posts
+  .filter((post) => post.data.type === "personal")
+  .sort(sortByDate);
+const technical = posts
+  .filter((post) => post.data.type === "technical")
+  .sort(sortByDate);
 ---
 
 <BaseLayout
   title="Posts"
-  description="Essays, notes, and writings on development, design, tools, and personal reflection."
+  description="Essays, thoughts, and technical writing on development, design, and personal reflection."
 >
   <CenteredLayout>
     <PageHeader
       title="Posts"
-      description="Essays, notes, and writings on development, design, tools, and personal reflection."
+      description="Essays, thoughts, and technical writing on development, design, and personal reflection."
     />
 
     <div class="filters">
       <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="essays">Essays</button>
-      <button class="filter-btn" data-filter="notes">Notes</button>
+      <button class="filter-btn" data-filter="personal">Personal</button>
+      <button class="filter-btn" data-filter="technical">Technical</button>
     </div>
 
     <div class="posts-container">
@@ -57,22 +52,22 @@ const notes = posts
         }
       </div>
 
-      <div id="essays-posts" class="posts-section">
+      <div id="personal-posts" class="posts-section">
         {
-          essays.length > 0 ? (
-            essays.map((post) => <PostItem post={post} />)
+          personal.length > 0 ? (
+            personal.map((post) => <PostItem post={post} />)
           ) : (
-            <p class="empty-state">No essays yet.</p>
+            <p class="empty-state">No personal posts yet.</p>
           )
         }
       </div>
 
-      <div id="notes-posts" class="posts-section">
+      <div id="technical-posts" class="posts-section">
         {
-          notes.length > 0 ? (
-            notes.map((post) => <PostItem post={post} />)
+          technical.length > 0 ? (
+            technical.map((post) => <PostItem post={post} />)
           ) : (
-            <p class="empty-state">No notes yet.</p>
+            <p class="empty-state">No technical posts yet.</p>
           )
         }
       </div>
@@ -177,7 +172,8 @@ const notes = posts
 
     // Restore saved filter state
     const savedFilter = sessionStorage.getItem(FILTER_STORAGE_KEY);
-    if (savedFilter) {
+    const validFilters = ["all", "personal", "technical"];
+    if (savedFilter && validFilters.includes(savedFilter)) {
       setActiveFilter(savedFilter);
     }
 

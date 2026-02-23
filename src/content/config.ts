@@ -31,7 +31,7 @@ export const collections = {
         description: z.string(),
         datePublished: z.date(),
         dateModified: z.date().optional(),
-        essay: z.boolean(),
+        type: z.enum(["personal", "technical"]),
         img: image().array().optional(),
         imgAlt: z.string().optional(),
         features: z
