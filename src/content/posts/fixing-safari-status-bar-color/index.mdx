@@ -3,7 +3,7 @@ title: Fixing Safari's status bar color
 description: How I fixed Safari's status bar ignoring my theme color on toggle
 datePublished: 2026-02-23
 dateModified: 2026-02-23
-essay: true
+type: technical
 ---
 
 import Picture from "../../../components/Picture.astro";
@@ -16,7 +16,10 @@ I have light and dark mode on this site, toggled by adding or removing a `.dark`
 
 <Picture
   img={[mismatchLight, mismatchDark]}
-  imgAlt={["Light mode page with dark status bar", "Dark mode page with light status bar"]}
+  imgAlt={[
+    "Light mode page with dark status bar",
+    "Dark mode page with light status bar",
+  ]}
   variant="grid"
   columns={2}
 />
@@ -123,7 +126,10 @@ const handleThemeChange = (newTheme) => {
 
 <Picture
   img={[matchLight, matchDark]}
-  imgAlt={["Light mode page with matching light status bar", "Dark mode page with matching dark status bar"]}
+  imgAlt={[
+    "Light mode page with matching light status bar",
+    "Dark mode page with matching dark status bar",
+  ]}
   variant="grid"
   columns={2}
 />
