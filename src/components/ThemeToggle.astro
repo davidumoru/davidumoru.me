@@ -115,10 +115,13 @@
   const htmlElement = document.documentElement;
 
   const handleThemeChange = (newTheme: "light" | "dark") => {
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (newTheme === "dark") {
       htmlElement.classList.add("dark");
+      if (themeColorMeta) themeColorMeta.setAttribute("content", "#111111");
     } else {
       htmlElement.classList.remove("dark");
+      if (themeColorMeta) themeColorMeta.setAttribute("content", "#fcfcfc");
     }
     localStorage.setItem(THEME_STORAGE_KEY, newTheme);
   };

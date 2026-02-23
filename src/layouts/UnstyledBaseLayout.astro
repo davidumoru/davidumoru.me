@@ -74,6 +74,8 @@ const ogImageUrl = `https://www.davidumoru.me/og${pagePath}.png`;
 
     <title>{title && `${title} - `} David Umoru</title>
 
+    <meta name="theme-color" content="#fcfcfc" />
+
     <script is:inline>
       const themeStorageKey = "theme-preference";
       const getThemePreference = () => {
@@ -88,11 +90,14 @@ const ogImageUrl = `https://www.davidumoru.me/og${pagePath}.png`;
           : "light";
       };
       const theme = getThemePreference();
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
 
       if (theme === "dark") {
         document.documentElement.classList.add("dark");
+        if (themeColorMeta) themeColorMeta.setAttribute("content", "#111111");
       } else {
         document.documentElement.classList.remove("dark");
+        if (themeColorMeta) themeColorMeta.setAttribute("content", "#fcfcfc");
       }
     </script>
 
@@ -121,10 +126,17 @@ const ogImageUrl = `https://www.davidumoru.me/og${pagePath}.png`;
         };
         const theme = getThemePreference();
 
+        const newThemeColorMeta = event.newDocument.querySelector(
+          'meta[name="theme-color"]',
+        );
         if (theme === "dark") {
           event.newDocument.documentElement.classList.add("dark");
+          if (newThemeColorMeta)
+            newThemeColorMeta.setAttribute("content", "#111111");
         } else {
           event.newDocument.documentElement.classList.remove("dark");
+          if (newThemeColorMeta)
+            newThemeColorMeta.setAttribute("content", "#fcfcfc");
         }
       });
     </script>

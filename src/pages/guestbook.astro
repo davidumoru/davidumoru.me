@@ -87,7 +87,10 @@ const [guestBook, totalEntriesResult, stampRows] = await Promise.all([
     .limit(PER_PAGE)
     .offset(offset),
   db.select({ count: sql`count(*)` }).from(GuestBook),
-  db.select({ country: Stamps.country }).from(Stamps).orderBy(asc(Stamps.country)),
+  db
+    .select({ country: Stamps.country })
+    .from(Stamps)
+    .orderBy(asc(Stamps.country)),
 ]);
 
 const totalEntries = totalEntriesResult[0].count as number;
