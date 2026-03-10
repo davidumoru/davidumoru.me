@@ -18,6 +18,9 @@ export default defineConfig({
   prefetch: true,
   trailingSlash: "ignore",
   site: "https://davidumoru.me",
+  security: {
+    checkOrigin: false,
+  },
 
   integrations: [
     expressiveCode({
