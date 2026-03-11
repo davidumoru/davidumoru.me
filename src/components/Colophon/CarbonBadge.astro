@@ -1,0 +1,21 @@
+---
+
+---
+
+<div id="wcb" class="carbonbadge"></div>
+<script src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js" defer
+></script>
+<script>
+  const applyBadgeTheme = () => {
+    const badge = document.getElementById("wcb");
+    if (!badge) return;
+    const isDark = document.documentElement.classList.contains("dark");
+    badge.classList.toggle("wcb-d", isDark);
+  };
+
+  applyBadgeTheme();
+
+  new MutationObserver(applyBadgeTheme).observe(document.documentElement, {
+    attributeFilter: ["class"],
+  });
+</script>
