@@ -1,0 +1,132 @@
+---
+const tomatoSteps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const graySteps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+const semanticLabels: Record<string, string> = {
+  "tomato-3": "Subtle bg",
+  "tomato-6": "Border",
+  "tomato-9": "Solid",
+  "tomato-11": "Text",
+  "gray-1": "Page",
+  "gray-2": "Card",
+  "gray-6": "Border",
+  "gray-11": "Body",
+  "gray-12": "Heading",
+};
+---
+
+<div class="palette">
+  <div class="scale-row">
+    <span class="scale-label">Tomato</span>
+    <div class="scale">
+      {
+        tomatoSteps.map((step) => {
+          const key = `tomato-${step}`;
+          return (
+            <div class="chip" title={`--${key}`}>
+              <div class="chip-color" style={`background: var(--${key});`} />
+              <span class="chip-step">{step}</span>
+              {semanticLabels[key] && (
+                <span class="chip-hint">{semanticLabels[key]}</span>
+              )}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <div class="scale-row">
+    <span class="scale-label">Gray</span>
+    <div class="scale">
+      {
+        graySteps.map((step) => {
+          const key = `gray-${step}`;
+          return (
+            <div class="chip" title={`--${key}`}>
+              <div class="chip-color" style={`background: var(--${key});`} />
+              <span class="chip-step">{step}</span>
+              {semanticLabels[key] && (
+                <span class="chip-hint">{semanticLabels[key]}</span>
+              )}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .palette {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    margin: var(--space-l) 0 0;
+  }
+
+  .scale-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .scale-label {
+    font-size: var(--fs--2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gray-9);
+  }
+
+  .scale {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    overflow: hidden;
+    border: 1px solid var(--gray-4);
+  }
+
+  .chip {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chip-color {
+    height: 80px;
+  }
+
+  .chip-step {
+    font-size: 0.6rem;
+    text-align: center;
+    padding: 4px 0 2px;
+    color: var(--gray-8);
+    background: var(--gray-2);
+    line-height: 1;
+  }
+
+  .chip-hint {
+    font-size: 0.55rem;
+    text-align: center;
+    padding: 0 2px 4px;
+    color: var(--tomato-10);
+    background: var(--gray-2);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 480px) {
+    .chip-color {
+      height: 56px;
+    }
+
+    .chip-step {
+      font-size: 0.5rem;
+    }
+
+    .chip-hint {
+      display: none;
+    }
+  }
+</style>

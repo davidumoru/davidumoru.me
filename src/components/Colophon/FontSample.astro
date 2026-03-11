@@ -1,0 +1,155 @@
+---
+const weights = [
+  { value: 200, name: "Ultralight" },
+  { value: 300, name: "Light" },
+  { value: 400, name: "Regular" },
+  { value: 500, name: "Medium" },
+  { value: 700, name: "Bold" },
+  { value: 900, name: "Ultrabold" },
+];
+---
+
+<div class="specimens">
+  <figure class="specimen">
+    <div class="specimen-label">
+      <span class="specimen-name">Editorial New</span>
+      <span class="specimen-meta">Serif · Self-hosted · 200–900</span>
+    </div>
+
+    <p class="specimen-display editorial">
+      Things worth making are worth making well.
+    </p>
+
+    <div class="weight-strip">
+      {
+        weights.map(({ value, name }) => (
+          <div class="weight-item">
+            <span class="weight-glyph" style={`font-weight: ${value}`}>
+              Ag
+            </span>
+            <span class="weight-name">{value}</span>
+          </div>
+        ))
+      }
+    </div>
+  </figure>
+
+  <figure class="specimen">
+    <div class="specimen-label">
+      <span class="specimen-name">Inter</span>
+      <span class="specimen-meta">Sans-serif · Variable · Google Fonts</span>
+    </div>
+
+    <p class="specimen-display inter">
+      Designed for screens. Optimised for legibility at every size.
+    </p>
+
+    <p class="specimen-body">
+      AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz 0123456789
+    </p>
+  </figure>
+</div>
+
+<style>
+  .specimens {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: var(--space-l) 0 0;
+    border: 1px solid var(--gray-4);
+    overflow: hidden;
+  }
+
+  .specimen {
+    margin: 0;
+    padding: var(--space-l);
+    background: var(--gray-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .specimen + .specimen {
+    border-top: 1px solid var(--gray-4);
+  }
+
+  .specimen-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+  }
+
+  .specimen-name {
+    font-size: var(--fs--2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gray-10);
+  }
+
+  .specimen-meta {
+    font-size: var(--fs--2);
+    color: var(--gray-10);
+  }
+
+  .specimen-display {
+    margin: 0;
+    color: var(--gray-12);
+    line-height: 1.1;
+  }
+
+  .specimen-display.editorial {
+    font-family: "EditorialNew", serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 300;
+  }
+
+  .specimen-display.inter {
+    font-family: "Inter", sans-serif;
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  .weight-strip {
+    display: flex;
+    gap: var(--space-m);
+    padding-top: var(--space-xs);
+    border-top: 1px solid var(--gray-4);
+    flex-wrap: wrap;
+  }
+
+  .weight-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .weight-glyph {
+    font-family: "EditorialNew", serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--gray-12);
+  }
+
+  .weight-name {
+    font-size: 0.65rem;
+    color: var(--gray-10);
+    letter-spacing: 0.04em;
+  }
+
+  .specimen-body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    font-size: var(--fs--1);
+    color: var(--gray-10);
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    word-break: break-all;
+    border-top: 1px solid var(--gray-4);
+    padding-top: var(--space-xs);
+  }
+</style>
