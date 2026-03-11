@@ -1,11 +1,15 @@
 ---
 title: Colophon
-description: Here's what powers this site
+description: The tools, decisions, and people behind this site
 datePublished: 2025-01-31
-dateModified: 2025-01-31
+dateModified: 2026-03-10
 img: ["./colophon.jpeg"]
 imgAlt: Minimalist colophon page with bold 'COLOPHON' text and publication details.
 ---
+
+import FontSample from "../../../components/Colophon/FontSample.astro";
+import ColorSwatch from "../../../components/Colophon/ColorSwatch.astro";
+import CarbonBadge from "../../../components/Colophon/CarbonBadge.astro";
 
 A colophon is traditionally the part of a book that describes how it was made.
 This page serves that purpose for this site.
@@ -15,39 +19,33 @@ This page serves that purpose for this site.
 This site has been my corner of the internet since April 2024.
 It started as a simple portfolio and has grown into something more personal: a place for my writing, projects, bookmarks, and whatever else I find interesting.
 
-I treat it as a long-term project. The goal isn't to chase trends or optimize for engagement.
-I want a space I enjoy maintaining, one that might still work in ten years without major rewrites.
+I treat it as a long-term project. I want a space I enjoy maintaining, one that might still work in ten years without major rewrites.
 That philosophy shapes most of the technical decisions below.
 
 ## Technology
 
 The site is built with [Astro](https://astro.build/), a static site generator that ships minimal JavaScript by default.
-I chose Astro because it stays out of the way. Content lives in flat MDX files that I can edit in any text editor.
-If Astro disappeared tomorrow, migrating the content would be straightforward.
+I chose Astro because it stays out of the way. Content lives in flat Markdown or MDX files that I can edit in any text editor.
 
-For the few interactive pieces (the music widget, table of contents, and some lab experiments), I use React through Astro's island architecture.
-Animations are handled by Framer Motion.
+For the few interactive pieces (the music widget, table of contents, and the lab experiments), I use React through Astro's island architecture.
 
 The guestbook and other dynamic content run on [Astro DB](https://docs.astro.build/en/guides/astro-db/), backed by [Turso](https://turso.tech/).
 Hosting and deployment is on [Vercel](https://vercel.com/).
 
 ## Typography
 
-Headings are set in **Editorial New**, a serif typeface that gives the site its character.
-I self-host it to avoid third-party font requests and ensure it loads reliably.
+Headings are in **Editorial New**, body in **Inter**. Both are scaled fluidly, so sizes adjust smoothly based on viewport width rather than jumping at breakpoints.
 
-Body text uses **Inter**, a sans-serif designed for screens.
-It loads from the system font stack where available.
-
-I use a fluid type scale, so text sizes adjust smoothly based on viewport width rather than jumping at breakpoints.
+<FontSample />
 
 ## Styling
 
 Colors come from [Radix Colors](https://www.radix-ui.com/colors), which provides accessible color palettes with built-in dark mode support.
-The accent throughout the site is Tomato.
+The accent throughout the site is **Tomato**.
 
-I use [Tailwind CSS](https://tailwindcss.com/) alongside custom CSS variables for spacing, typography, and theming.
-There's a subtle noise texture overlay on larger screens, something I picked up from print design.
+I use custom CSS variables for spacing, typography, and theming.
+
+<ColorSwatch />
 
 ## Code
 
@@ -55,46 +53,40 @@ Syntax highlighting is powered by [Expressive Code](https://expressive-code.com/
 
 ## Writing
 
-I write in Markdown (MDX, specifically) using whatever text editor I have open.
-Posts start as rough notes, often just a few sentences.
+Posts start as rough notes in [Obsidian](https://obsidian.md/).
 I revise them over time, sometimes publishing quickly, sometimes letting them sit for weeks.
 
-There's no CMS. I commit content directly to the repository.
-It's more friction than a web interface, but it keeps everything version-controlled and portable.
+There's no CMS. Content lives in MDX files and is committed directly to the repository.
+More friction than a web interface, but everything stays version-controlled and portable.
 
 ## Privacy
 
-I use Vercel Analytics, which respects privacy and doesn't use cookies.
-There are no trackers, no ads, and no data sold to third parties.
+I use [Vercel Analytics](https://vercel.com/docs/analytics), which is a privacy-first tool that doesn't use cookies.
+There are no ads and no cross-site trackers, and I will never sell your data to third parties.
 
-The guestbook collects only what you submit: your name, message, and country (for the stamp).
-If you want your entry removed, email me.
+The [guestbook](/guestbook) collects only what you submit: your name, message, and country (for the stamp).
+If you want your entry removed, [email me](mailto:hey@davidumoru.me).
 
 ## Accessibility
 
-I aim for WCAG AA compliance.
-The site works without JavaScript, respects reduced motion preferences, and should be navigable by keyboard and screen reader.
+I aim for **WCAG AA** compliance.
+The site respects reduced motion preferences and should be navigable by keyboard and screen reader.
 If you encounter accessibility issues, please let me know.
 
 ## Energy
 
-This site produces approximately 0.03g of CO2 per page view, earning an A+ rating on [Website Carbon Calculator](https://www.websitecarbon.com/).
-That's cleaner than most websites, largely thanks to minimal JavaScript, optimized images, and static page generation.
+This site produces approximately 0.02g of CO2 per page view, earning an A+ rating on [Website Carbon Calculator](https://www.websitecarbon.com/).
+This is cleaner than 95 % of all web pages globally.
 
-I care about this because the internet consumes a lot of energy, and personal sites are a good place to be intentional about it.
-
-<div id="wcb" class="carbonbadge wcb-d"></div>
-<script
-  src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js"
-  defer
-></script>
+<CarbonBadge />
 
 ## Inspiration
 
-The design and approach have been influenced by many personal sites I admire.
-A few that stand out: [Paco Coursey](https://paco.me), [Maggie Appleton](https://maggieappleton.com), [Fabian Schultz](https://www.fabianschultz.com/), and the many folks in the [Hotline Webring](https://hotlinewebring.club/).
+- [Eva Decker](https://eva.town/) is the biggest one. Her site introduced me to the whole idea of digital gardens and the IndieWeb.
+The original look and feel of this site was directly shaped by hers.
+- [Pedro Duarte](https://ped.ro/) influenced the styling decisions: color, type, and restraint.
+- [Maggie Appleton](https://maggieappleton.com) shaped how I think about writing online.
 
 ## Source
 
-The code is on [GitHub](https://github.com/davidumoru/davidumoru.me).
-Feel free to look around, borrow ideas, or open an issue if something's broken.
+The code is on [GitHub](https://github.com/davidumoru/davidumoru.me). Poke around, take what's useful.
