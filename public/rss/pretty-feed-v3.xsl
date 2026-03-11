@@ -65,7 +65,7 @@
                 </a>
               </h3>
               <small class="text-gray">
-                Published: <xsl:value-of select="pubDate" />
+                Published: <xsl:value-of select="substring(pubDate, 1, 16)" />
               </small>
             </div>
           </xsl:for-each>

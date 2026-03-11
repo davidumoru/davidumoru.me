@@ -5,7 +5,9 @@ import sanitizeHtml from "sanitize-html";
 const parser = new MarkdownIt();
 
 export async function GET(context) {
-  const posts = await getCollection("posts");
+  const posts = (await getCollection("posts")).sort(
+    (a, b) => b.data.datePublished - a.data.datePublished,
+  );
 
   return rss({
     title: "David Umoru",
