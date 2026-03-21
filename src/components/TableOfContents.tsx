@@ -129,7 +129,7 @@ function TOCItem({
         className={`relative block py-1.5 text-sm transition-colors duration-200 ${
           isActive
             ? "text-(--tomato-9)!"
-            : "text-(--gray-12)! hover:text-(--gray-12)!"
+            : "text-(--gray-11)! hover:text-(--gray-12)!"
         }`}
         style={{
           paddingLeft: `${getItemOffset(item.level)}px`,
