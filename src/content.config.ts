@@ -3,7 +3,10 @@ import { glob } from "astro/loaders";
 
 export const collections = {
   projects: defineCollection({
-    type: "content",
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "./src/content/projects",
+    }),
     schema: z.object({
       title: z.string(),
       year: z.number(),
@@ -63,7 +66,10 @@ export const collections = {
       }),
   }),
   webrings: defineCollection({
-    type: "content",
+    loader: glob({
+      pattern: "**/[^_]*.{md,mdx}",
+      base: "./src/content/webrings",
+    }),
     schema: z.object({
       title: z.string(),
       description: z.string(),
@@ -106,7 +112,10 @@ export const collections = {
     }),
   }),
   bookmarks: defineCollection({
-    type: "data",
+    loader: glob({
+      pattern: "**/*.json",
+      base: "./src/content/bookmarks",
+    }),
     schema: z.object({
       name: z.string(),
       order: z.number(),
