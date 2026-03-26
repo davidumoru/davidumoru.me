@@ -3,5 +3,6 @@ code {
   padding: 1.5px 4.5px;
   border-radius: 4px;
   border: 0.1em solid var(--gray-6);
-  color: var(--tomato-9);
+  color: var(--gray-12);
+  font-size: var(--fs--1);
 }
