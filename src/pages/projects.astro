@@ -21,6 +21,7 @@ const projects = (await getCollection("projects")).sort(
 
     <div class="project-list-wrapper">
       <div class="revamp-overlay">
+        <div class="tape"></div>
         <p>
           I’m rebuilding this section to better reflect my current direction;
           more UI-heavy, more "design engineering". While it’s in progress, you
@@ -119,32 +120,51 @@ const projects = (await getCollection("projects")).sort(
   }
 
   .revamp-overlay {
-    background-color: var(--yellow-3);
-    background-image: linear-gradient(to bottom right, var(--yellow-3), var(--yellow-4));
-    border: 1px solid oklch(0 0 0 / 0.08);
-    padding: 2rem;
-    border-radius: 2px;
-    box-shadow:
-      0 1px 2px oklch(0 0 0 / 0.15),
-      0 2px 4px oklch(0 0 0 / 0.15),
-      0 4px 8px oklch(0 0 0 / 0.15),
-      0 8px 16px oklch(0 0 0 / 0.1);
-    max-width: 450px;
-    width: 90%;
-
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-1.5deg);
     z-index: 10;
+    max-width: 450px;
+    width: 90%;
+    padding: var(--space-l) var(--space-m) var(--space-m);
+    background: oklch(0.955 0.054 100);
+    border-radius: 2px;
+    box-shadow:
+      2px 2px 4px oklch(0 0 0 / 0.1),
+      4px 8px 16px oklch(0 0 0 / 0.08);
     text-align: center;
     font-weight: 600;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .revamp-overlay:hover {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.02);
+    box-shadow:
+      2px 2px 8px oklch(0 0 0 / 0.15),
+      8px 16px 32px oklch(0 0 0 / 0.12);
+  }
+  .revamp-overlay .tape {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 20px;
+    background: oklch(1 0 0 / 0.6);
+    border: 1px solid oklch(0 0 0 / 0.05);
   }
   .revamp-overlay p {
-    color: var(--gray-12);
+    color: oklch(0.27 0.033 100);
   }
   .revamp-overlay a {
-    color: var(--orange-11);
+    color: oklch(0.27 0.033 100);
+    text-decoration: underline;
+    text-decoration-color: oklch(0.27 0.033 100 / 0.4);
+  }
+  .revamp-overlay a:hover {
+    text-decoration-color: oklch(0.27 0.033 100);
   }
 
   .project-list {
