@@ -36,14 +36,14 @@ if (date) {
   }
 }
 
-const primaryStampColor = `hsl(${hue}, 70%, 45%)`;
-const lightStampBg = `hsl(${hue}, 85%, 97%)`;
-const textBgOverlay = `hsla(${hue}, 95%, 98%, 70%)`;
-const darkTextFixed = `hsl(${hue}, 60%, 20%)`;
-const midGreyFixed = `hsl(${hue}, 15%, 45%)`;
-const goldAccent = `hsl(45, 80%, 60%)`;
-const postmarkColorFixed = `hsla(${hue}, 40%, 30%, 0.8)`;
-const borderAccent = `hsl(${hue}, 50%, 40%)`;
+const primaryStampColor = `oklch(0.55 0.15 ${hue})`;
+const lightStampBg = `oklch(0.97 0.015 ${hue})`;
+const textBgOverlay = `oklch(0.98 0.01 ${hue} / 0.7)`;
+const darkTextFixed = `oklch(0.3 0.07 ${hue})`;
+const midGreyFixed = `oklch(0.53 0.02 ${hue})`;
+const goldAccent = `oklch(0.828 0.144 90.128)`;
+const postmarkColorFixed = `oklch(0.38 0.06 ${hue} / 0.8)`;
+const borderAccent = `oklch(0.5 0.1 ${hue})`;
 
 const isImageAsset = typeof imageUrl === "object" && "src" in imageUrl;
 
@@ -170,9 +170,9 @@ const stampStyles = `
     margin: 1.5rem;
     display: inline-block;
     box-shadow:
-      2px 3px 12px rgba(0, 0, 0, 0.15),
-      0 0 1px rgba(0, 0, 0, 0.1),
-      inset 0 0 20px rgba(255, 255, 255, 0.5);
+      2px 3px 12px oklch(0 0 0 / 0.15),
+      0 0 1px oklch(0 0 0 / 0.1),
+      inset 0 0 20px oklch(1 0 0 / 0.5);
     transform: rotate(var(--rotate));
     transition:
       transform var(--duration-normal, 200ms)
@@ -287,9 +287,9 @@ const stampStyles = `
   .guestbook-stamp:hover {
     transform: rotate(calc(var(--rotate) / 2)) scale(1.02);
     box-shadow:
-      4px 6px 16px rgba(0, 0, 0, 0.2),
-      0 0 2px rgba(0, 0, 0, 0.15),
-      inset 0 0 30px rgba(255, 255, 255, 0.6);
+      4px 6px 16px oklch(0 0 0 / 0.2),
+      0 0 2px oklch(0 0 0 / 0.15),
+      inset 0 0 30px oklch(1 0 0 / 0.6);
   }
 
   .stamp-frame {
@@ -301,7 +301,7 @@ const stampStyles = `
     overflow: hidden;
     border-radius: 2px;
     z-index: 1;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.1);
   }
 
   .stamp-bg-image {
@@ -335,8 +335,8 @@ const stampStyles = `
     z-index: 2;
     border-radius: 3px;
     box-shadow:
-      0 0 15px rgba(255, 255, 255, 0.8),
-      inset 0 0 2px rgba(0, 0, 0, 0.1);
+      0 0 15px oklch(1 0 0 / 0.8),
+      inset 0 0 2px oklch(0 0 0 / 0.1);
   }
 
   .corner {
@@ -399,7 +399,7 @@ const stampStyles = `
     color: var(--primary-stamp-color);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 1px oklch(1 0 0 / 0.8);
     line-height: 1.2;
   }
 
@@ -493,13 +493,13 @@ const stampStyles = `
   }
 
   .message-container {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: oklch(1 0 0 / 0.4);
     border-radius: 3px;
     padding: 10px 12px;
     margin-top: 4px;
     flex-grow: 1;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.7);
+    border: 1px solid oklch(0 0 0 / 0.05);
+    box-shadow: inset 0 0 5px oklch(1 0 0 / 0.7);
     position: relative;
     overflow: hidden;
   }
@@ -514,7 +514,7 @@ const stampStyles = `
     background: linear-gradient(
       90deg,
       transparent,
-      hsla(var(--hue), 70%, 80%, 0.3),
+      oklch(0.85 0.08 var(--hue) / 0.3),
       transparent
     );
   }
@@ -604,7 +604,7 @@ const stampStyles = `
     font-size: 1.2rem;
     color: var(--gold-accent);
     z-index: 3;
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 2px oklch(1 0 0 / 0.8);
     font-weight: bold;
   }
 
@@ -656,7 +656,7 @@ const stampStyles = `
   }
 
   .guestbook-stamp ::selection {
-    background-color: hsla(var(--hue), 70%, 45%, 0.4);
+    background-color: oklch(0.55 0.15 var(--hue) / 0.4);
     color: var(--dark-text-fixed);
   }
 </style>

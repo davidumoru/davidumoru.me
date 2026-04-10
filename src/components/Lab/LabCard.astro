@@ -57,7 +57,7 @@ const { id, data } = entry;
     background-color: var(--gray-2);
     border-color: var(--tomato-8);
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px -10px oklch(0 0 0 / 0.15);
     z-index: 10;
   }
 
@@ -79,7 +79,7 @@ const { id, data } = entry;
     min-height: 0;
   }
 
-  html[data-theme="dark"] .card-image-area {
+  html.dark .card-image-area {
     background-color: var(--gray-8);
   }
 
@@ -104,7 +104,7 @@ const { id, data } = entry;
     justify-content: center;
   }
 
-  html[data-theme="dark"] .preview-placeholder {
+  html.dark .preview-placeholder {
     background: linear-gradient(135deg, var(--gray-8) 0%, var(--gray-11) 100%);
   }
 

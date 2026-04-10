@@ -45,7 +45,7 @@
     outline: none;
 
     -webkit-tap-highlight-color: transparent !important;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+    -webkit-tap-highlight-color: oklch(0 0 0 / 0) !important;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -118,10 +118,10 @@
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (newTheme === "dark") {
       htmlElement.classList.add("dark");
-      if (themeColorMeta) themeColorMeta.setAttribute("content", "#111111");
+      if (themeColorMeta) themeColorMeta.setAttribute("content", "oklch(0.178 0 0)");
     } else {
       htmlElement.classList.remove("dark");
-      if (themeColorMeta) themeColorMeta.setAttribute("content", "#fcfcfc");
+      if (themeColorMeta) themeColorMeta.setAttribute("content", "oklch(0.991 0 0)");
     }
     localStorage.setItem(THEME_STORAGE_KEY, newTheme);
   };

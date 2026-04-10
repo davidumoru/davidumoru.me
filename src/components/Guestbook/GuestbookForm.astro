@@ -68,16 +68,16 @@ const { countries } = Astro.props;
   .guestbook-form {
     max-width: 480px;
     margin: 2rem auto;
-    background: white;
+    background: oklch(1 0 0);
     border-radius: 4px;
-    border: 1px solid hsl(10, 30%, 85%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid oklch(0.876 0.022 30.9);
+    box-shadow: 0 1px 3px oklch(0 0 0 / 0.06);
     transition: box-shadow var(--duration-normal, 200ms)
       var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .guestbook-form:hover {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px oklch(0 0 0 / 0.08);
   }
 
   .form-content {
@@ -90,12 +90,12 @@ const { countries } = Astro.props;
     align-items: center;
     margin-bottom: 1.25rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px dashed hsl(10, 30%, 80%);
+    border-bottom: 1px dashed oklch(0.834 0.03 31.009);
   }
 
   .form-title {
     margin: 0;
-    color: hsl(10, 50%, 35%);
+    color: oklch(0.45 0.106 32.853);
     font-size: 1.125rem;
     font-weight: 600;
     letter-spacing: 0.25px;
@@ -103,7 +103,7 @@ const { countries } = Astro.props;
 
   .stamp-icon {
     font-size: 1.125rem;
-    color: hsl(10, 30%, 60%);
+    color: oklch(0.663 0.065 31.515);
     opacity: 0.5;
   }
 
@@ -122,7 +122,7 @@ const { countries } = Astro.props;
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: hsl(10, 50%, 30%);
+    color: oklch(0.405 0.093 32.81);
     margin-bottom: 0.5rem;
   }
 
@@ -131,9 +131,9 @@ const { countries } = Astro.props;
   .select {
     width: 100%;
     padding: 0.75rem;
-    background-color: hsl(10, 30%, 98%);
-    color: hsl(10, 50%, 20%);
-    border: 1px solid hsl(10, 30%, 85%);
+    background-color: oklch(0.984 0.003 29.11);
+    color: oklch(0.31 0.067 32.664);
+    border: 1px solid oklch(0.876 0.022 30.9);
     border-radius: 4px;
     transition:
       border-color var(--duration-fast, 150ms) ease,
@@ -146,7 +146,7 @@ const { countries } = Astro.props;
 
   .input::placeholder,
   .textarea::placeholder {
-    color: hsl(10, 30%, 60%);
+    color: oklch(0.663 0.065 31.515);
   }
 
   .select {
@@ -159,7 +159,7 @@ const { countries } = Astro.props;
   }
 
   select:required:invalid {
-    color: hsl(10, 30%, 60%);
+    color: oklch(0.663 0.065 31.515);
   }
 
   option[value=""][disabled] {
@@ -167,16 +167,16 @@ const { countries } = Astro.props;
   }
 
   option {
-    color: hsl(10, 50%, 20%);
+    color: oklch(0.31 0.067 32.664);
   }
 
   .input:focus,
   .textarea:focus,
   .select:focus {
     outline: none;
-    border-color: var(--tomato-9, hsl(10, 78%, 54%));
-    box-shadow: 0 0 0 3px hsla(10, 78%, 54%, 0.1);
-    background-color: white;
+    border-color: var(--tomato-9);
+    box-shadow: 0 0 0 3px oklch(0.627 0.194 33.191 / 0.1);
+    background-color: oklch(1 0 0);
   }
 
   .textarea {
@@ -187,8 +187,8 @@ const { countries } = Astro.props;
   .submit-button {
     width: 100%;
     padding: 0.875rem 1.5rem;
-    background-color: var(--tomato-9, hsl(10, 78%, 54%));
-    color: white;
+    background-color: var(--tomato-9);
+    color: oklch(1 0 0);
     border: none;
     border-radius: 4px;
     font-size: 1rem;
@@ -209,14 +209,14 @@ const { countries } = Astro.props;
   }
 
   .submit-button:hover {
-    background-color: hsl(10, 78%, 48%);
+    background-color: oklch(0.588 0.2 32.931);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px hsla(10, 78%, 54%, 0.3);
+    box-shadow: 0 4px 12px oklch(0.627 0.194 33.191 / 0.3);
   }
 
   .submit-button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px hsla(10, 78%, 54%, 0.3);
+    box-shadow: 0 2px 4px oklch(0.627 0.194 33.191 / 0.3);
   }
 
   .submit-button svg {

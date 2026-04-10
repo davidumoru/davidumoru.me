@@ -208,12 +208,12 @@ const error = Astro.url.searchParams.get("error");
     height: 55px;
     border-radius: 50%;
     background: var(--tomato-9);
-    color: white;
+    color: oklch(1 0 0);
     border: none;
     font-size: 2rem;
     font-weight: 300;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px oklch(0 0 0 / 0.15);
     transition:
       transform var(--duration-fast, 150ms)
         var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
@@ -231,7 +231,7 @@ const error = Astro.url.searchParams.get("error");
 
   .floating-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 16px oklch(0 0 0 / 0.2);
   }
 
   .floating-btn:active {
