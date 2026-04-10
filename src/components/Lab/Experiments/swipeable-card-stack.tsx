@@ -27,7 +27,7 @@ function lerp(start: number, end: number, progress: number) {
 
 function SwipeableCard({ imageUrl }: { imageUrl: string }) {
   return (
-    <div className="w-40 sm:w-50 aspect-square rounded-xl shadow-sm border border-[oklch(0.929_0.013_255.508)] overflow-hidden">
+    <div className="w-40 sm:w-50 aspect-square rounded-xl shadow-sm border border-[var(--gray-4)] overflow-hidden">
       <img
         src={`${imageUrl}?f_auto,q_auto`}
         alt="Card image"

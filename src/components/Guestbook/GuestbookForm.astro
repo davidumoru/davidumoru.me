@@ -68,9 +68,9 @@ const { countries } = Astro.props;
   .guestbook-form {
     max-width: 480px;
     margin: 2rem auto;
-    background: oklch(1 0 0);
+    background: var(--gray-1);
     border-radius: 4px;
-    border: 1px solid oklch(0.876 0.022 30.9);
+    border: 1px solid var(--tomato-5);
     box-shadow: 0 1px 3px oklch(0 0 0 / 0.06);
     transition: box-shadow var(--duration-normal, 200ms)
       var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
@@ -90,12 +90,12 @@ const { countries } = Astro.props;
     align-items: center;
     margin-bottom: 1.25rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px dashed oklch(0.834 0.03 31.009);
+    border-bottom: 1px dashed var(--tomato-6);
   }
 
   .form-title {
     margin: 0;
-    color: oklch(0.45 0.106 32.853);
+    color: var(--tomato-11);
     font-size: 1.125rem;
     font-weight: 600;
     letter-spacing: 0.25px;
@@ -103,7 +103,7 @@ const { countries } = Astro.props;
 
   .stamp-icon {
     font-size: 1.125rem;
-    color: oklch(0.663 0.065 31.515);
+    color: var(--tomato-8);
     opacity: 0.5;
   }
 
@@ -122,7 +122,7 @@ const { countries } = Astro.props;
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: oklch(0.405 0.093 32.81);
+    color: var(--tomato-11);
     margin-bottom: 0.5rem;
   }
 
@@ -131,9 +131,9 @@ const { countries } = Astro.props;
   .select {
     width: 100%;
     padding: 0.75rem;
-    background-color: oklch(0.984 0.003 29.11);
-    color: oklch(0.31 0.067 32.664);
-    border: 1px solid oklch(0.876 0.022 30.9);
+    background-color: var(--tomato-2);
+    color: var(--tomato-12);
+    border: 1px solid var(--tomato-5);
     border-radius: 4px;
     transition:
       border-color var(--duration-fast, 150ms) ease,
@@ -146,7 +146,7 @@ const { countries } = Astro.props;
 
   .input::placeholder,
   .textarea::placeholder {
-    color: oklch(0.663 0.065 31.515);
+    color: var(--tomato-8);
   }
 
   .select {
@@ -159,7 +159,7 @@ const { countries } = Astro.props;
   }
 
   select:required:invalid {
-    color: oklch(0.663 0.065 31.515);
+    color: var(--tomato-8);
   }
 
   option[value=""][disabled] {
@@ -167,7 +167,7 @@ const { countries } = Astro.props;
   }
 
   option {
-    color: oklch(0.31 0.067 32.664);
+    color: var(--tomato-12);
   }
 
   .input:focus,
@@ -175,8 +175,8 @@ const { countries } = Astro.props;
   .select:focus {
     outline: none;
     border-color: var(--tomato-9);
-    box-shadow: 0 0 0 3px oklch(0.627 0.194 33.191 / 0.1);
-    background-color: oklch(1 0 0);
+    box-shadow: 0 0 0 3px oklch(0.62 0.2 33 / 0.1);
+    background-color: var(--gray-1);
   }
 
   .textarea {
@@ -188,7 +188,7 @@ const { countries } = Astro.props;
     width: 100%;
     padding: 0.875rem 1.5rem;
     background-color: var(--tomato-9);
-    color: oklch(1 0 0);
+    color: var(--color-on-accent);
     border: none;
     border-radius: 4px;
     font-size: 1rem;
@@ -209,14 +209,14 @@ const { countries } = Astro.props;
   }
 
   .submit-button:hover {
-    background-color: oklch(0.588 0.2 32.931);
+    background-color: var(--tomato-10);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px oklch(0.627 0.194 33.191 / 0.3);
+    box-shadow: 0 4px 12px oklch(0.62 0.2 33 / 0.3);
   }
 
   .submit-button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px oklch(0.627 0.194 33.191 / 0.3);
+    box-shadow: 0 2px 4px oklch(0.62 0.2 33 / 0.3);
   }
 
   .submit-button svg {

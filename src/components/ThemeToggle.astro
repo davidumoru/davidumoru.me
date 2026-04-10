@@ -118,10 +118,10 @@
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (newTheme === "dark") {
       htmlElement.classList.add("dark");
-      if (themeColorMeta) themeColorMeta.setAttribute("content", "oklch(0.178 0 0)");
+      if (themeColorMeta) themeColorMeta.setAttribute("content", "oklch(0.17 0 0)");
     } else {
       htmlElement.classList.remove("dark");
-      if (themeColorMeta) themeColorMeta.setAttribute("content", "oklch(0.991 0 0)");
+      if (themeColorMeta) themeColorMeta.setAttribute("content", "oklch(0.99 0 0)");
     }
     localStorage.setItem(THEME_STORAGE_KEY, newTheme);
   };

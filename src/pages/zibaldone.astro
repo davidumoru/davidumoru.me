@@ -98,53 +98,53 @@ function seededRandom(seed: number) {
   }
 
   .note[data-color="yellow"] {
-    background: oklch(0.973 0.069 103.236);
+    background: var(--note-yellow-bg);
   }
   .note[data-color="pink"] {
-    background: oklch(0.948 0.028 342.013);
+    background: var(--note-pink-bg);
   }
   .note[data-color="cyan"] {
-    background: oklch(0.956 0.044 203.522);
+    background: var(--note-cyan-bg);
   }
   .note[data-color="green"] {
-    background: oklch(0.962 0.043 156.895);
+    background: var(--note-green-bg);
   }
   .note[data-color="orange"] {
-    background: oklch(0.954 0.037 75.157);
+    background: var(--note-orange-bg);
   }
   .note[data-color="violet"] {
-    background: oklch(0.943 0.029 294.454);
+    background: var(--note-violet-bg);
   }
 
   .note[data-color="yellow"]::selection,
   .note[data-color="yellow"] :global(*::selection) {
-    background: oklch(0.905 0.166 98.127);
-    color: oklch(0.286 0.064 53.809);
+    background: var(--note-yellow-select);
+    color: var(--note-yellow-select-text);
   }
   .note[data-color="pink"]::selection,
   .note[data-color="pink"] :global(*::selection) {
-    background: oklch(0.823 0.11 345.963);
-    color: oklch(0.284 0.105 3.889);
+    background: var(--note-pink-select);
+    color: var(--note-pink-select-text);
   }
   .note[data-color="cyan"]::selection,
   .note[data-color="cyan"] :global(*::selection) {
-    background: oklch(0.865 0.115 207.127);
-    color: oklch(0.302 0.054 229.725);
+    background: var(--note-cyan-select);
+    color: var(--note-cyan-select-text);
   }
   .note[data-color="green"]::selection,
   .note[data-color="green"] :global(*::selection) {
-    background: oklch(0.871 0.136 154.49);
-    color: oklch(0.266 0.063 152.96);
+    background: var(--note-green-select);
+    color: var(--note-green-select-text);
   }
   .note[data-color="orange"]::selection,
   .note[data-color="orange"] :global(*::selection) {
-    background: oklch(0.837 0.116 66.287);
-    color: oklch(0.266 0.076 36.249);
+    background: var(--note-orange-select);
+    color: var(--note-orange-select-text);
   }
   .note[data-color="violet"]::selection,
   .note[data-color="violet"] :global(*::selection) {
-    background: oklch(0.811 0.101 293.541);
-    color: oklch(0.283 0.135 291.083);
+    background: var(--note-violet-select);
+    color: var(--note-violet-select-text);
   }
 
   .tape {
@@ -159,7 +159,7 @@ function seededRandom(seed: number) {
   }
 
   .content {
-    color: oklch(0.321 0 0);
+    color: var(--note-text);
     font-size: var(--fs-0);
     line-height: 1.5;
     margin-bottom: var(--space-s);
@@ -174,7 +174,7 @@ function seededRandom(seed: number) {
   }
 
   .content :global(a) {
-    color: oklch(0.46 0.116 250.97);
+    color: var(--note-link);
   }
 
   .content :global(blockquote) {
@@ -182,13 +182,13 @@ function seededRandom(seed: number) {
     padding-left: var(--space-s);
     margin: var(--space-xs) 0;
     font-style: italic;
-    color: oklch(0.387 0 0);
+    color: var(--note-blockquote);
   }
 
   time {
     display: block;
     font-size: var(--fs--1);
-    color: oklch(0 0 0 / 0.5);
+    color: var(--note-text-muted);
     font-variant-numeric: tabular-nums;
     text-align: right;
   }

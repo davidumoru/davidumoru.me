@@ -119,8 +119,8 @@ const projects = (await getCollection("projects")).sort(
   }
 
   .revamp-overlay {
-    background-color: oklch(0.958 0.102 103.401);
-    background-image: linear-gradient(to bottom right, oklch(0.958 0.102 103.401), oklch(0.947 0.13 103.919));
+    background-color: var(--yellow-3);
+    background-image: linear-gradient(to bottom right, var(--yellow-3), var(--yellow-4));
     border: 1px solid oklch(0 0 0 / 0.08);
     padding: 2rem;
     border-radius: 2px;
@@ -141,10 +141,10 @@ const projects = (await getCollection("projects")).sort(
     font-weight: 600;
   }
   .revamp-overlay p {
-    color: oklch(0.218 0 0);
+    color: var(--gray-12);
   }
   .revamp-overlay a {
-    color: oklch(0.495 0.142 44.956);
+    color: var(--orange-11);
   }
 
   .project-list {
