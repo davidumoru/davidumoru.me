@@ -81,8 +81,8 @@ function seededRandom(seed: number) {
     padding: var(--space-l) var(--space-m) var(--space-m);
     border-radius: 2px;
     box-shadow:
-      2px 2px 4px rgba(0, 0, 0, 0.1),
-      4px 8px 16px rgba(0, 0, 0, 0.08);
+      2px 2px 4px oklch(0 0 0 / 0.1),
+      4px 8px 16px oklch(0 0 0 / 0.08);
     transform: rotate(var(--rotation));
     transition:
       transform 0.2s ease,
@@ -92,59 +92,59 @@ function seededRandom(seed: number) {
   .note:hover {
     transform: rotate(0deg) scale(1.02);
     box-shadow:
-      2px 2px 8px rgba(0, 0, 0, 0.15),
-      8px 16px 32px rgba(0, 0, 0, 0.12);
+      2px 2px 8px oklch(0 0 0 / 0.15),
+      8px 16px 32px oklch(0 0 0 / 0.12);
     z-index: 10;
   }
 
   .note[data-color="yellow"] {
-    background: #fef9c3;
+    background: var(--note-yellow-bg);
   }
   .note[data-color="pink"] {
-    background: #fce7f3;
+    background: var(--note-pink-bg);
   }
   .note[data-color="cyan"] {
-    background: #cffafe;
+    background: var(--note-cyan-bg);
   }
   .note[data-color="green"] {
-    background: #dcfce7;
+    background: var(--note-green-bg);
   }
   .note[data-color="orange"] {
-    background: #ffedd5;
+    background: var(--note-orange-bg);
   }
   .note[data-color="violet"] {
-    background: #ede9fe;
+    background: var(--note-violet-bg);
   }
 
   .note[data-color="yellow"]::selection,
   .note[data-color="yellow"] :global(*::selection) {
-    background: #fde047;
-    color: #422006;
+    background: var(--note-yellow-select);
+    color: var(--note-yellow-select-text);
   }
   .note[data-color="pink"]::selection,
   .note[data-color="pink"] :global(*::selection) {
-    background: #f9a8d4;
-    color: #500724;
+    background: var(--note-pink-select);
+    color: var(--note-pink-select-text);
   }
   .note[data-color="cyan"]::selection,
   .note[data-color="cyan"] :global(*::selection) {
-    background: #67e8f9;
-    color: #083344;
+    background: var(--note-cyan-select);
+    color: var(--note-cyan-select-text);
   }
   .note[data-color="green"]::selection,
   .note[data-color="green"] :global(*::selection) {
-    background: #86efac;
-    color: #052e16;
+    background: var(--note-green-select);
+    color: var(--note-green-select-text);
   }
   .note[data-color="orange"]::selection,
   .note[data-color="orange"] :global(*::selection) {
-    background: #fdba74;
-    color: #431407;
+    background: var(--note-orange-select);
+    color: var(--note-orange-select-text);
   }
   .note[data-color="violet"]::selection,
   .note[data-color="violet"] :global(*::selection) {
-    background: #c4b5fd;
-    color: #2e1065;
+    background: var(--note-violet-select);
+    color: var(--note-violet-select-text);
   }
 
   .tape {
@@ -154,12 +154,12 @@ function seededRandom(seed: number) {
     transform: translateX(-50%);
     width: 60px;
     height: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: oklch(1 0 0 / 0.6);
+    border: 1px solid oklch(0 0 0 / 0.05);
   }
 
   .content {
-    color: #333;
+    color: var(--note-text);
     font-size: var(--fs-0);
     line-height: 1.5;
     margin-bottom: var(--space-s);
@@ -174,21 +174,21 @@ function seededRandom(seed: number) {
   }
 
   .content :global(a) {
-    color: #1a5a96;
+    color: var(--note-link);
   }
 
   .content :global(blockquote) {
-    border-left: 2px solid rgba(0, 0, 0, 0.3);
+    border-left: 2px solid oklch(0 0 0 / 0.3);
     padding-left: var(--space-s);
     margin: var(--space-xs) 0;
     font-style: italic;
-    color: #444;
+    color: var(--note-blockquote);
   }
 
   time {
     display: block;
     font-size: var(--fs--1);
-    color: rgba(0, 0, 0, 0.5);
+    color: var(--note-text-muted);
     font-variant-numeric: tabular-nums;
     text-align: right;
   }

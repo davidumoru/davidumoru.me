@@ -51,20 +51,20 @@ export default function PillSelector() {
               layout
               initial={false}
               animate={{
-                backgroundColor: isSelected ? "#163e33" : "#23272a",
+                backgroundColor: isSelected ? "oklch(0.332 0.049 172.436)" : "oklch(0.27 0.008 240.249)",
               }}
               whileHover={
                 shouldReduceMotion
                   ? {}
                   : {
-                      backgroundColor: isSelected ? "#163e33" : "#334155",
+                      backgroundColor: isSelected ? "oklch(0.332 0.049 172.436)" : "oklch(0.372 0.039 257.298)",
                     }
               }
               whileTap={
                 shouldReduceMotion
                   ? {}
                   : {
-                      backgroundColor: isSelected ? "#0f2921" : "#1e293b",
+                      backgroundColor: isSelected ? "oklch(0.257 0.036 170.95)" : "oklch(0.279 0.037 260.039)",
                     }
               }
               transition={{
@@ -75,8 +75,8 @@ export default function PillSelector() {
                 inline-flex items-center overflow-hidden whitespace-nowrap rounded-full px-4 py-2 text-base font-medium ring-1 ring-inset focus:outline-none
                 ${
                   isSelected
-                    ? "text-[#2dd4bf] ring-[hsla(172,70%,50%,0.18)]"
-                    : "text-slate-300 ring-[hsla(220,13%,91%,0.06)]"
+                    ? "text-[oklch(0.785_0.133_181.954)] ring-[oklch(0.785_0.133_181.954/0.18)]"
+                    : "text-[oklch(0.793_0.012_261.309)] ring-[oklch(0.931_0.01_261/0.06)]"
                 }
               `}
               style={{ WebkitTapHighlightColor: "transparent" }}
@@ -114,12 +114,12 @@ export default function PillSelector() {
                       transition={effectiveTransition}
                       className="absolute right-0 flex items-center justify-center"
                     >
-                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2dd4bf] shadow-md">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[oklch(0.785_0.133_181.954)] shadow-md">
                         <svg
                           className="h-3.5 w-3.5"
                           viewBox="0 0 20 20"
                           fill="none"
-                          stroke="#163e33"
+                          stroke="oklch(0.332 0.049 172.436)"
                           strokeWidth={2.2}
                           strokeLinecap="round"
                           strokeLinejoin="round"

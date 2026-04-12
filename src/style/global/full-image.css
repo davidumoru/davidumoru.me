@@ -6,7 +6,7 @@
   max-width: 100vw;
   padding: 0.4rem;
   border-radius: 1rem;
-  background-color: #aaa;
+  background-color: var(--gray-8);
   margin: 2rem 0;
 }
 

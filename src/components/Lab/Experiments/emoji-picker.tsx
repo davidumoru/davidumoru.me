@@ -151,9 +151,9 @@ export default function EmojiSelector() {
           }}
           transition={isExpanded ? transition.expand : transition.collapse}
           className={`
-            bg-[#1A1A1A]
-            border border-[#2A2A2A]
-            shadow-[0_8px_32px_rgba(0,0,0,0.4)]
+            bg-[oklch(0.218_0_0)]
+            border border-[oklch(0.285_0_0)]
+            shadow-[0_8px_32px_oklch(0_0_0/0.4)]
             overflow-hidden
             w-80
             ${isExpanded ? "p-4" : "px-2 py-1.5"}

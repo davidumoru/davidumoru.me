@@ -2,7 +2,7 @@
 title: Colophon
 description: The tools, decisions, and people behind this site
 datePublished: 2025-01-31
-dateModified: 2026-03-10
+dateModified: 2026-04-08
 img: ["./colophon.jpeg"]
 imgAlt: Minimalist colophon page with bold 'COLOPHON' text and publication details.
 ---
@@ -40,7 +40,7 @@ Headings are in **Editorial New**, body in **Inter**. Both are scaled fluidly, s
 
 ## Styling
 
-Colors come from [Radix Colors](https://www.radix-ui.com/colors), which provides accessible color palettes with built-in dark mode support.
+Colors are defined in the [OKLCH color space](https://oklch.com/), a perceptually uniform model that keeps lightness, chroma, and hue independent. Each palette is generated as a percentage of the sRGB gamut maximum, so every hue looks equally vivid at the same step.
 The accent throughout the site is **Tomato**.
 
 I use custom CSS variables for spacing, typography, and theming.
@@ -58,6 +58,9 @@ I revise them over time, sometimes publishing quickly, sometimes letting them si
 
 There's no CMS. Content lives in MDX files and is committed directly to the repository.
 More friction than a web interface, but everything stays version-controlled and portable.
+
+The newsletter runs on [Buttondown](https://buttondown.com/).
+List, archive, and delivery all live there. On this site I only drop in the sign-up form in the footer.
 
 ## Privacy
 
