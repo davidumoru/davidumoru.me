@@ -52,7 +52,7 @@ const Thumb: FC<{ film: FilmEntry }> = ({ film }) => {
       className="group relative block transition-transform duration-150 ease-out active:scale-[0.96]"
     >
       <PosterTooltip text={label} />
-      <div className="relative aspect-2/3 w-full overflow-hidden rounded bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md">
+      <div className="relative aspect-2/3 w-full overflow-hidden rounded bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-[transform,box-shadow,filter] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md [@media(hover:hover)]:brightness-75 [@media(hover:hover)]:group-hover:brightness-100">
         {!loaded && film.posterUrl && (
           <div className="absolute inset-0 animate-pulse bg-(--gray-7)" />
         )}
