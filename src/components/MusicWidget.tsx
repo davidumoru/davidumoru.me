@@ -113,7 +113,7 @@ const AudioVisualization: FC = () => {
 };
 
 const MusicWidgetSkeleton: FC = () => (
-  <div className="w-full max-w-full rounded-xl bg-(--gray-4) p-1.5 overflow-x-auto">
+  <div className="w-full max-w-full rounded-[14px] bg-(--gray-4) p-1.5 overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-(--gray-6) bg-(--gray-2) p-2">
       <div className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-md bg-(--gray-7)"></div>
       <div className="min-w-0 flex-1 space-y-2">
@@ -165,7 +165,7 @@ const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
 };
 
 const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
-  <div className="group w-full max-w-full rounded-xl bg-(--gray-4) p-1.5 overflow-x-auto">
+  <div className="group w-full max-w-full rounded-[14px] bg-(--gray-4) p-1.5 overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-(--gray-6) bg-(--gray-2) p-2">
       <AlbumArt
         src={song.albumArtUrl}

@@ -212,7 +212,10 @@ const projects = (await getCollection("projects")).sort(
     border: 1px solid var(--gray-8);
     border-radius: 2rem;
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
     background-color: transparent;
     cursor: pointer;
   }

@@ -152,6 +152,12 @@ const {
         var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
   }
 
+  .subscribe-button::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+  }
+
   .subscribe-button:hover {
     background-color: var(--gray-11);
   }
