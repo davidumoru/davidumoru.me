@@ -7,7 +7,7 @@ const LETTERBOXD_USERNAME = "umoru";
 const RSS_URL = `https://letterboxd.com/${LETTERBOXD_USERNAME}/rss/`;
 const CACHE_KEY = "letterboxd-recent";
 const CACHE_TTL_SECONDS = 60 * 60 * 6;
-const MAX_ENTRIES = 6;
+const MAX_ENTRIES = 7;
 
 const HEADERS = {
   "Content-Type": "application/json",

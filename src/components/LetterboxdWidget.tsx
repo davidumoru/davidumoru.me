@@ -34,18 +34,17 @@ function formatWatched(dateStr: string): string {
   });
 }
 
-const Poster: FC<{ film: FilmEntry }> = ({ film }) => {
+const Thumb: FC<{ film: FilmEntry }> = ({ film }) => {
   const [loaded, setLoaded] = useState(false);
-
   return (
     <a
       href={film.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex shrink-0 flex-col gap-1.5 w-20 sm:w-24 transition-transform duration-150 ease-out active:scale-[0.96]"
+      className="group block transition-transform duration-150 ease-out active:scale-[0.96]"
       title={`${film.title} (${film.year})${film.rating ? ` — ${renderStars(film.rating)}` : ""}`}
     >
-      <div className="relative aspect-2/3 overflow-hidden rounded-md bg-(--gray-7) shadow-sm ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md">
+      <div className="relative aspect-2/3 w-full overflow-hidden rounded bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md">
         {!loaded && film.posterUrl && (
           <div className="absolute inset-0 animate-pulse bg-(--gray-7)" />
         )}
@@ -61,23 +60,44 @@ const Poster: FC<{ film: FilmEntry }> = ({ film }) => {
             }`}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center px-2 text-center text-xs text-(--gray-11)">
+          <div className="flex h-full w-full items-center justify-center px-1 text-center text-[10px] leading-tight text-(--gray-11)">
             {film.title}
           </div>
         )}
       </div>
-      <div className="min-w-0 space-y-0.5">
-        <p className="line-clamp-2 min-h-[2lh] text-xs font-medium leading-tight text-(--gray-12) text-pretty sm:text-sm">
-          {film.title}
-        </p>
-        <p className="flex items-center gap-1 text-[0.7rem] text-(--gray-11) sm:text-xs tabular-nums">
-          <span>{film.year}</span>
-          {film.rating !== null && (
-            <span className="text-(--tomato-9)">
-              {renderStars(film.rating)}
-            </span>
-          )}
-        </p>
+    </a>
+  );
+};
+
+const HeroPoster: FC<{ film: FilmEntry }> = ({ film }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <a
+      href={film.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block shrink-0 transition-transform duration-150 ease-out active:scale-[0.96]"
+      title={`${film.title} (${film.year})`}
+    >
+      <div className="relative aspect-2/3 w-28 sm:w-32 overflow-hidden rounded-md bg-(--gray-7) shadow-sm ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md">
+        {!loaded && film.posterUrl && (
+          <div className="absolute inset-0 animate-pulse bg-(--gray-7)" />
+        )}
+        {film.posterUrl ? (
+          <img
+            src={film.posterUrl}
+            alt={`Poster for ${film.title}`}
+            draggable={false}
+            onLoad={() => setLoaded(true)}
+            className={`h-full w-full object-cover transition-opacity duration-300 ${
+              loaded ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center px-2 text-center text-xs text-(--gray-11)">
+            {film.title}
+          </div>
+        )}
       </div>
     </a>
   );
@@ -86,17 +106,22 @@ const Poster: FC<{ film: FilmEntry }> = ({ film }) => {
 const Skeleton: FC = () => (
   <div className="w-full max-w-full rounded-[14px] bg-(--gray-4) p-1.5">
     <div className="rounded-lg border border-(--gray-6) bg-(--gray-2) p-3">
-      <div className="flex gap-3 overflow-hidden">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="shrink-0 w-20 sm:w-24 space-y-1.5">
-            <div className="aspect-2/3 rounded-md bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10" />
-            <div className="space-y-1">
-              <div className="h-3 rounded bg-(--gray-7)" />
-              <div className="h-3 w-3/4 rounded bg-(--gray-7)" />
-            </div>
-            <div className="h-2 w-2/3 rounded bg-(--gray-7)" />
+      <div className="flex flex-row gap-3 sm:gap-4">
+        <div className="aspect-2/3 w-28 sm:w-32 shrink-0 rounded-md bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10" />
+        <div className="flex min-w-0 flex-1 flex-col gap-3 pt-3 sm:pt-5">
+          <div className="space-y-2">
+            <div className="h-4 w-3/4 rounded bg-(--gray-7)" />
+            <div className="h-3 w-1/3 rounded bg-(--gray-7)" />
+            <div className="h-3 w-1/2 rounded bg-(--gray-7)" />
           </div>
-        ))}
+          <div className="mt-auto grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className={i >= 3 ? "hidden sm:block" : ""}>
+                <div className="aspect-2/3 w-full rounded bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
     <div className="flex items-center gap-x-2 px-3 py-1.5">
@@ -121,34 +146,77 @@ const ErrorState: FC<{ message: string }> = ({ message }) => (
 );
 
 const Content: FC<{ films: FilmEntry[] }> = ({ films }) => {
-  const latest = films[0];
+  const [latest, ...rest] = films;
 
   return (
     <div className="w-full max-w-full rounded-[14px] bg-(--gray-4) p-1.5">
       <div className="rounded-lg border border-(--gray-6) bg-(--gray-2) p-3">
-        <div
-          className="flex gap-3 overflow-x-auto"
-          style={{ scrollbarWidth: "thin" }}
-        >
-          {films.map((film) => (
-            <Poster key={film.link || film.title} film={film} />
-          ))}
+        <div className="flex flex-row gap-3 sm:gap-4">
+          <HeroPoster film={latest} />
+          <div className="flex min-w-0 flex-1 flex-col gap-3 pt-3 sm:pt-5">
+            <div className="space-y-1">
+              <a
+                href={latest.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                <p
+                  className="truncate text-base sm:text-lg font-semibold underline leading-tight text-(--gray-12) transition-colors duration-300"
+                  style={{
+                    textDecorationColor: "var(--gray-8)",
+                    transition: "text-decoration-color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.textDecorationColor =
+                      "var(--gray-11)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.textDecorationColor =
+                      "var(--gray-8)")
+                  }
+                >
+                  {latest.title}
+                </p>
+              </a>
+              <p className="flex items-center gap-1.5 text-xs sm:text-sm text-(--gray-11) tabular-nums">
+                <span>Watched {formatWatched(latest.watchedDate)}</span>
+                {latest.rating !== null && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span className="text-(--tomato-9)">
+                      {renderStars(latest.rating)}
+                    </span>
+                  </>
+                )}
+                {latest.rewatch && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span className="text-[10px] uppercase tracking-wide text-(--gray-10)">
+                      rewatch
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+            {rest.length > 0 && (
+              <div className="mt-auto grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {rest.slice(0, 6).map((film, i) => (
+                  <div
+                    key={film.link || film.title}
+                    className={i >= 3 ? "hidden sm:block" : ""}
+                  >
+                    <Thumb film={film} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex items-center gap-x-2 px-3 py-1.5 text-sm text-(--gray-11)">
         <Icon icon="movie" size="16" />
-        <span className="truncate tabular-nums">
-          Last watched{" "}
-          <a
-            href={latest.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-(--gray-12) underline decoration-(--gray-8) underline-offset-2 transition-colors hover:decoration-(--gray-11)"
-          >
-            {latest.title}
-          </a>{" "}
-          {formatWatched(latest.watchedDate)}
-        </span>
+        <span className="truncate">Recently on Letterboxd</span>
       </div>
     </div>
   );
