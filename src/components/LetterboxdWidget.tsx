@@ -12,25 +12,6 @@ interface FilmEntry {
   rewatch: boolean;
 }
 
-const ErrorIcon: FC<{ className?: string }> = ({ className }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-    <path d="M12 9v4" />
-    <path d="M12 17h.01" />
-  </svg>
-);
-
 function renderStars(rating: number): string {
   const full = Math.floor(rating);
   const half = rating - full >= 0.5;
@@ -128,7 +109,7 @@ const Skeleton: FC = () => (
 const ErrorState: FC<{ message: string }> = ({ message }) => (
   <div className="w-full max-w-full overflow-x-auto rounded-xl border border-(--red-6) bg-(--red-3) p-4 text-sm text-(--red-11)">
     <div className="flex items-center gap-x-3">
-      <ErrorIcon className="h-5 w-5 shrink-0" />
+      <Icon icon="alert" size="20" />
       <div>
         <p className="font-semibold text-pretty">
           Unable to load Letterboxd activity
