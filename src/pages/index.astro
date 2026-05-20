@@ -12,10 +12,10 @@ import LetterboxdWidget from "../components/LetterboxdWidget.tsx";
 >
   <CenteredLayout>
     <section class="flow">
-      <h2>
+      <h1>
         I'm a developer and designer. I spend my days writing code, designing
         when needed, and finding better ways to make ideas work on the web.
-      </h2>
+      </h1>
       <div class="widget"><MusicWidget client:visible /></div>
       <div class="widget"><LetterboxdWidget client:visible /></div>
 
@@ -80,7 +80,6 @@ import LetterboxdWidget from "../components/LetterboxdWidget.tsx";
   }
   .widget {
     margin: var(--space-l) 0 0;
-    max-width: 42rem;
   }
   .widget + .widget {
     margin-top: var(--space-s);
@@ -88,5 +87,12 @@ import LetterboxdWidget from "../components/LetterboxdWidget.tsx";
 
   h3 {
     margin-top: var(--space-xl);
+  }
+
+  @media (max-width: 639px) {
+    h1 {
+      font-size: var(--fs-4);
+      line-height: var(--lh-4);
+    }
   }
 </style>
