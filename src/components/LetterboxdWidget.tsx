@@ -109,9 +109,8 @@ const Skeleton: FC = () => (
       <div className="flex flex-row gap-3 sm:gap-4">
         <div className="aspect-2/3 w-28 sm:w-32 shrink-0 rounded-md bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10" />
         <div className="flex min-w-0 flex-1 flex-col gap-3 pt-3 sm:pt-5">
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="h-4 w-3/4 rounded bg-(--gray-7)" />
-            <div className="h-3 w-1/3 rounded bg-(--gray-7)" />
             <div className="h-3 w-1/2 rounded bg-(--gray-7)" />
           </div>
           <div className="mt-auto grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -136,10 +135,10 @@ const ErrorState: FC<{ message: string }> = ({ message }) => (
     <div className="flex items-center gap-x-3">
       <Icon icon="alert" size="20" />
       <div>
-        <p className="font-semibold text-pretty">
+        <p className="font-semibold">
           Unable to load Letterboxd activity
         </p>
-        <p className="mt-1 text-xs text-(--red-10) text-pretty">{message}</p>
+        <p className="mt-1 text-xs text-(--red-10)">{message}</p>
       </div>
     </div>
   </div>

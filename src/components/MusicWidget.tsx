@@ -72,12 +72,6 @@ const AudioVisualization: FC = () => {
         className="w-full h-full"
         style={{ display: "block", maxWidth: "100%" }}
       >
-        <defs>
-          <linearGradient id="audioGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--tomato-8)" />
-            <stop offset="100%" stopColor="var(--tomato-10)" />
-          </linearGradient>
-        </defs>
         {bars.map((bar, i) => (
           <rect
             key={i}
@@ -86,7 +80,7 @@ const AudioVisualization: FC = () => {
             width={8}
             height={bar.height}
             rx={4}
-            fill="url(#audioGradient)"
+            fill="var(--tomato-9)"
           />
         ))}
       </svg>
@@ -97,7 +91,7 @@ const AudioVisualization: FC = () => {
 const MusicWidgetSkeleton: FC = () => (
   <div className="w-full max-w-full rounded-[14px] bg-(--gray-4) p-1.5 overflow-x-auto">
     <div className="flex w-full items-center gap-x-2 sm:gap-x-4 rounded-lg border border-(--gray-6) bg-(--gray-2) p-2">
-      <div className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-md bg-(--gray-7)"></div>
+      <div className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-md bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10"></div>
       <div className="min-w-0 flex-1 space-y-2">
         <div className="h-4 sm:h-5 w-3/4 rounded bg-(--gray-7)"></div>
         <div className="h-3 sm:h-4 w-1/2 rounded bg-(--gray-7)"></div>
@@ -116,7 +110,9 @@ const MusicWidgetError: FC<{ message: string }> = ({ message }) => (
     <div className="flex items-center gap-x-3">
       <Icon icon="alert" size="20" />
       <div>
-        <p className="font-semibold">Unable to load music activity</p>
+        <p className="font-semibold">
+          Unable to load music activity
+        </p>
         <p className="mt-1 text-xs text-(--red-10)">{message}</p>
       </div>
     </div>
@@ -128,14 +124,14 @@ const AlbumArt: FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return (
     <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0">
       {!loaded && (
-        <div className="absolute inset-0 rounded-md bg-(--gray-7) animate-pulse" />
+        <div className="absolute inset-0 rounded-md bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10 animate-pulse" />
       )}
       <img
         src={src}
         alt={alt}
         width={80}
         height={80}
-        className={`h-16 w-16 sm:h-20 sm:w-20 rounded-md object-cover ${
+        className={`h-16 w-16 sm:h-20 sm:w-20 rounded-md object-cover ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-opacity duration-300 ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
         style={{ position: "absolute", inset: 0 }}
@@ -194,7 +190,7 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
           song.isPlaying ? "bg-(--tomato-9)" : "bg-(--gray-8)"
         }`}
       ></div>
-      <div className="truncate">{song.lastPlayed}</div>
+      <div className="truncate tabular-nums">{song.lastPlayed}</div>
     </div>
   </div>
 );
