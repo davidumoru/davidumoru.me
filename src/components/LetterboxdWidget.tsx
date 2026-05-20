@@ -34,16 +34,24 @@ function formatWatched(dateStr: string): string {
   });
 }
 
+const PosterTooltip: FC<{ text: string }> = ({ text }) => (
+  <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-(--gray-12) px-2 py-1 text-xs font-medium text-(--gray-1) opacity-0 shadow-md transition-opacity duration-100 ease-out group-hover:opacity-100 group-hover:delay-150">
+    {text}
+  </div>
+);
+
 const Thumb: FC<{ film: FilmEntry }> = ({ film }) => {
   const [loaded, setLoaded] = useState(false);
+  const label = `${film.title} (${film.year})${film.rating ? ` — ${renderStars(film.rating)}` : ""}`;
   return (
     <a
       href={film.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block transition-transform duration-150 ease-out active:scale-[0.96]"
-      title={`${film.title} (${film.year})${film.rating ? ` — ${renderStars(film.rating)}` : ""}`}
+      aria-label={label}
+      className="group relative block transition-transform duration-150 ease-out active:scale-[0.96]"
     >
+      <PosterTooltip text={label} />
       <div className="relative aspect-2/3 w-full overflow-hidden rounded bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md">
         {!loaded && film.posterUrl && (
           <div className="absolute inset-0 animate-pulse bg-(--gray-7)" />
@@ -72,34 +80,26 @@ const Thumb: FC<{ film: FilmEntry }> = ({ film }) => {
 const HeroPoster: FC<{ film: FilmEntry }> = ({ film }) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <a
-      href={film.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block shrink-0 transition-transform duration-150 ease-out active:scale-[0.96]"
-      title={`${film.title} (${film.year})`}
-    >
-      <div className="relative aspect-2/3 w-28 sm:w-32 overflow-hidden rounded-md bg-(--gray-7) shadow-sm ring-1 ring-black/10 in-[.dark]:ring-white/10 transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md">
-        {!loaded && film.posterUrl && (
-          <div className="absolute inset-0 animate-pulse bg-(--gray-7)" />
-        )}
-        {film.posterUrl ? (
-          <img
-            src={film.posterUrl}
-            alt={`Poster for ${film.title}`}
-            draggable={false}
-            onLoad={() => setLoaded(true)}
-            className={`h-full w-full object-cover transition-opacity duration-300 ${
-              loaded ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center px-2 text-center text-xs text-(--gray-11)">
-            {film.title}
-          </div>
-        )}
-      </div>
-    </a>
+    <div className="relative aspect-2/3 w-28 sm:w-32 shrink-0 overflow-hidden rounded-md bg-(--gray-7) shadow-sm ring-1 ring-black/10 in-[.dark]:ring-white/10">
+      {!loaded && film.posterUrl && (
+        <div className="absolute inset-0 animate-pulse bg-(--gray-7)" />
+      )}
+      {film.posterUrl ? (
+        <img
+          src={film.posterUrl}
+          alt={`Poster for ${film.title}`}
+          draggable={false}
+          onLoad={() => setLoaded(true)}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center px-2 text-center text-xs text-(--gray-11)">
+          {film.title}
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -154,7 +154,7 @@ const Content: FC<{ films: FilmEntry[] }> = ({ films }) => {
         <div className="flex flex-row gap-3 sm:gap-4">
           <HeroPoster film={latest} />
           <div className="flex min-w-0 flex-1 flex-col gap-3 pt-3 sm:pt-5">
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <a
                 href={latest.link}
                 target="_blank"
