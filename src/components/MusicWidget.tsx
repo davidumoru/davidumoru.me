@@ -44,8 +44,8 @@ const AudioVisualization: FC = () => {
     const animate = () => {
       setBars((prev) =>
         prev.map((bar) => {
-          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.1;
-          if (Math.random() < 0.03) {
+          const newHeight = bar.height + (bar.targetHeight - bar.height) * 0.13;
+          if (Math.random() < 0.04) {
             return {
               ...bar,
               height: newHeight,
@@ -61,7 +61,7 @@ const AudioVisualization: FC = () => {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
-  const heightClass = isMobile ? "h-10" : "h-14";
+  const heightClass = isMobile ? "h-14" : "h-18";
 
   return (
     <div
@@ -69,9 +69,23 @@ const AudioVisualization: FC = () => {
     >
       <svg
         viewBox="0 0 240 100"
+        preserveAspectRatio="none"
         className="w-full h-full"
         style={{ display: "block", maxWidth: "100%" }}
       >
+        <defs>
+          <linearGradient
+            id="viz-gradient"
+            gradientUnits="userSpaceOnUse"
+            x1="0"
+            y1="0"
+            x2="240"
+            y2="0"
+          >
+            <stop offset="0%" stopColor="var(--tomato-9)" />
+            <stop offset="100%" stopColor="var(--orange-9)" />
+          </linearGradient>
+        </defs>
         {bars.map((bar, i) => (
           <rect
             key={i}
@@ -80,7 +94,7 @@ const AudioVisualization: FC = () => {
             width={8}
             height={bar.height}
             rx={4}
-            fill="var(--tomato-9)"
+            fill="url(#viz-gradient)"
           />
         ))}
       </svg>
