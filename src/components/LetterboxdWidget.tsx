@@ -159,7 +159,7 @@ const Content: FC<{ films: FilmEntry[] }> = ({ films }) => {
                 className="hover:underline"
               >
                 <p
-                  className="truncate text-base sm:text-lg font-semibold underline leading-tight text-(--gray-12) transition-colors duration-300"
+                  className="text-base sm:text-lg font-semibold underline leading-tight text-(--gray-12) transition-colors duration-300"
                   style={{
                     textDecorationColor: "var(--gray-8)",
                     transition: "text-decoration-color 0.3s ease",
