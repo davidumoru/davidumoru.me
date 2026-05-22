@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import CenteredLayout from "../layouts/CenteredLayout.astro";
 import { Icon } from "../components/Icon/Icon";
 import MusicWidget from "../components/MusicWidget.tsx";
+import LetterboxdWidget from "../components/LetterboxdWidget.tsx";
 ---
 
 <BaseLayout
@@ -11,13 +12,14 @@ import MusicWidget from "../components/MusicWidget.tsx";
 >
   <CenteredLayout>
     <section class="flow">
-      <h2>
+      <h1>
         I'm a developer and designer. I spend my days writing code, designing
         when needed, and finding better ways to make ideas work on the web.
-      </h2>
+      </h1>
       <div class="widget"><MusicWidget client:visible /></div>
+      <div class="widget"><LetterboxdWidget client:visible /></div>
 
-      <h3>Now</h3>
+      <h3>Currently</h3>
       <p>
         I'm a frontend engineer at <a href="https://yolat.com/" target="_blank"
           >Yolat</a
@@ -78,19 +80,19 @@ import MusicWidget from "../components/MusicWidget.tsx";
   }
   .widget {
     margin: var(--space-l) 0 0;
-    max-width: 42rem;
+  }
+  .widget + .widget {
+    margin-top: var(--space-s);
   }
 
   h3 {
     margin-top: var(--space-xl);
   }
 
-  p {
-    text-wrap: balance;
-  }
-  @media (max-width: 640px) {
-    p {
-      text-wrap: unset;
+  @media (max-width: 639px) {
+    h1 {
+      font-size: var(--fs-4);
+      line-height: var(--lh-4);
     }
   }
 </style>

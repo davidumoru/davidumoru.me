@@ -234,13 +234,23 @@ const isFull = variant === "full" || variant === "grid-full";
   }
 
   .picture-default picture {
-    border: 1px solid var(--gray-6);
+    outline: 1px solid oklch(0 0 0 / 0.1);
+    outline-offset: -1px;
     border-radius: var(--space-2xs);
+  }
+
+  :global(html.dark) .picture-default picture,
+  :global(html.dark) .picture-transparent picture,
+  :global(html.dark) .picture-full picture,
+  :global(html.dark) .picture-grid--2 picture,
+  :global(html.dark) .picture-grid--3 picture {
+    outline-color: oklch(1 0 0 / 0.1);
   }
 
   .picture-transparent picture {
     background: var(--gray-2);
-    border: 1px solid var(--gray-6);
+    outline: 1px solid oklch(0 0 0 / 0.1);
+    outline-offset: -1px;
     border-radius: var(--space-2xs);
   }
 
@@ -253,7 +263,8 @@ const isFull = variant === "full" || variant === "grid-full";
   }
 
   .picture-full picture {
-    border: 1px solid var(--gray-6);
+    outline: 1px solid oklch(0 0 0 / 0.1);
+    outline-offset: -1px;
     border-radius: var(--space-s);
   }
 
@@ -283,7 +294,8 @@ const isFull = variant === "full" || variant === "grid-full";
 
   .picture-grid--2 picture,
   .picture-grid--3 picture {
-    border: 1px solid var(--gray-6);
+    outline: 1px solid oklch(0 0 0 / 0.1);
+    outline-offset: -1px;
     border-radius: var(--space-2xs);
   }
 

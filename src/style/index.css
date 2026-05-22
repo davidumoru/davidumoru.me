@@ -9,6 +9,7 @@ body {
   min-height: 100svh;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-l);
   font-size: var(--fs-0);
   font-family: "Inter", sans-serif;
@@ -38,6 +39,5 @@ body {
     opacity: 0.03;
     pointer-events: none;
     z-index: -1;
-    will-change: transform;
   }
 }

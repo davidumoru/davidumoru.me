@@ -45,19 +45,7 @@ const { title, description, datePublished, repositoryUrl, componentKey } =
             <Icon icon="copy" size="18" />
           </span>
           <span class="icon-wrapper success">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+            <Icon icon="check" size="18" />
           </span>
         </button>
       </div>
@@ -143,7 +131,7 @@ const { title, description, datePublished, repositoryUrl, componentKey } =
 
   .icon-btn:active {
     background-color: var(--gray-6);
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
 
   .icon-wrapper {
@@ -154,7 +142,9 @@ const { title, description, datePublished, repositoryUrl, componentKey } =
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition:
+      transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .icon-wrapper.default {
