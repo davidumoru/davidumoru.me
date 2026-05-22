@@ -35,7 +35,7 @@ function formatWatched(dateStr: string): string {
 }
 
 const PosterTooltip: FC<{ text: string }> = ({ text }) => (
-  <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-(--gray-12) px-2 py-1 text-xs font-medium text-(--gray-1) opacity-0 shadow-md transition-opacity duration-100 ease-out group-hover:opacity-100 group-hover:delay-150">
+  <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-(--gray-12) px-2 py-1 text-xs font-medium text-(--gray-1) shadow-md group-hover:block">
     {text}
   </div>
 );
@@ -135,9 +135,7 @@ const ErrorState: FC<{ message: string }> = ({ message }) => (
     <div className="flex items-center gap-x-3">
       <Icon icon="alert" size="20" />
       <div>
-        <p className="font-semibold">
-          Unable to load Letterboxd activity
-        </p>
+        <p className="font-semibold">Unable to load Letterboxd activity</p>
         <p className="mt-1 text-xs text-(--red-10)">{message}</p>
       </div>
     </div>
