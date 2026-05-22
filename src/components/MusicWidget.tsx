@@ -163,6 +163,7 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
             style={{
               textDecorationColor: "var(--gray-8)",
               transition: "text-decoration-color 0.3s ease",
+              textWrap: "nowrap",
             }}
             onMouseEnter={(e) =>
               (e.currentTarget.style.textDecorationColor = "var(--gray-11)")
@@ -174,7 +175,10 @@ const MusicWidgetContent: FC<{ song: SongData }> = ({ song }) => (
             {song.title}
           </p>
         </a>
-        <p className="truncate text-sm sm:text-base text-(--gray-11)">
+        <p
+          className="truncate text-sm sm:text-base text-(--gray-11)"
+          style={{ textWrap: "nowrap" }}
+        >
           {song.artists}
         </p>
       </div>
