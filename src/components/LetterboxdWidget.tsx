@@ -108,8 +108,8 @@ const Skeleton: FC = () => (
     <div className="rounded-lg border border-(--gray-6) bg-(--gray-2) p-3">
       <div className="flex flex-row gap-3 sm:gap-4">
         <div className="aspect-2/3 w-28 sm:w-32 shrink-0 rounded-md bg-(--gray-7) ring-1 ring-black/10 in-[.dark]:ring-white/10" />
-        <div className="flex min-w-0 flex-1 flex-col gap-3 pt-3 sm:pt-5">
-          <div className="space-y-1.5">
+        <div className="flex min-w-0 flex-1 flex-col gap-3 pt-6 sm:pt-5">
+          <div className="space-y-1">
             <div className="h-4 w-3/4 rounded bg-(--gray-7)" />
             <div className="h-3 w-1/2 rounded bg-(--gray-7)" />
           </div>
@@ -150,13 +150,13 @@ const Content: FC<{ films: FilmEntry[] }> = ({ films }) => {
       <div className="rounded-lg border border-(--gray-6) bg-(--gray-2) p-3">
         <div className="flex flex-row gap-3 sm:gap-4">
           <HeroPoster film={latest} />
-          <div className="flex min-w-0 flex-1 flex-col gap-3 pt-3 sm:pt-5">
-            <div className="space-y-1.5">
+          <div className="flex min-w-0 flex-1 flex-col gap-3 pt-6 sm:pt-5">
+            <div className="space-y-1">
               <a
                 href={latest.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:underline"
+                className="block hover:underline"
               >
                 <p
                   className="text-base sm:text-lg font-semibold underline leading-tight text-(--gray-12) transition-colors duration-300"
@@ -176,18 +176,15 @@ const Content: FC<{ films: FilmEntry[] }> = ({ films }) => {
                   {latest.title}
                 </p>
               </a>
-              <p className="flex items-center gap-1.5 text-xs sm:text-sm text-(--gray-11) tabular-nums">
+              <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs sm:text-sm text-(--gray-11) tabular-nums">
                 <span>
                   {latest.rewatch ? "Rewatched" : "Watched"}{" "}
                   {formatWatched(latest.watchedDate)}
                 </span>
                 {latest.rating !== null && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className="text-(--tomato-9)">
-                      {renderStars(latest.rating)}
-                    </span>
-                  </>
+                  <span className="text-(--tomato-9)">
+                    {renderStars(latest.rating)}
+                  </span>
                 )}
               </p>
             </div>
