@@ -177,20 +177,15 @@ const Content: FC<{ films: FilmEntry[] }> = ({ films }) => {
                 </p>
               </a>
               <p className="flex items-center gap-1.5 text-xs sm:text-sm text-(--gray-11) tabular-nums">
-                <span>Watched {formatWatched(latest.watchedDate)}</span>
+                <span>
+                  {latest.rewatch ? "Rewatched" : "Watched"}{" "}
+                  {formatWatched(latest.watchedDate)}
+                </span>
                 {latest.rating !== null && (
                   <>
                     <span aria-hidden="true">·</span>
                     <span className="text-(--tomato-9)">
                       {renderStars(latest.rating)}
-                    </span>
-                  </>
-                )}
-                {latest.rewatch && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className="text-[10px] uppercase tracking-wide text-(--gray-10)">
-                      rewatch
                     </span>
                   </>
                 )}
