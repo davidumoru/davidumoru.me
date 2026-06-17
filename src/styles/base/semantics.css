@@ -1,0 +1,27 @@
+:root {
+  /* background layers */
+  --background: var(--gray-1);
+  --surface: var(--gray-2);
+  --surface-hover: var(--gray-3);
+  --surface-active: var(--gray-4);
+
+  --text: var(--gray-12);
+  --text-muted: var(--gray-11);
+  --text-subtle: var(--gray-10);
+  --text-disabled: var(--gray-8);
+
+  --border: var(--gray-5);
+  --border-strong: var(--gray-6);
+
+  /* brand */
+  --primary: var(--tomato-9);
+  --primary-hover: var(--tomato-10);
+  --primary-active: var(--tomato-11);
+  --primary-subtle: var(--tomato-3);
+
+  /* focus / interaction */
+  --focus: var(--tomato-9);
+  --selection: var(--tomato-3);
+  --disabled: var(--gray-8);
+  --disabled-opacity: 0.5;
+}
