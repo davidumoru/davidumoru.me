@@ -1,0 +1,6 @@
+code {
+  padding: 0.15em 0.4em;
+  background: var(--surface-hover);
+  border-radius: var(--radius-md);
+  font-size: 0.875em;
+}

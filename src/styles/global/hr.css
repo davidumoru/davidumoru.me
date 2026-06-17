@@ -1,0 +1,6 @@
+hr {
+  border: 0;
+  block-size: 1px;
+  background: var(--border);
+  margin-block: var(--space-xl);
+}

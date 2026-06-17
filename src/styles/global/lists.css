@@ -1,0 +1,19 @@
+ul,
+ol {
+  padding-inline-start: var(--space-lg);
+}
+
+li {
+  margin-block: var(--space-xs);
+}
+
+li::marker {
+  color: var(--text-subtle);
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+  margin-block: var(--space-xs);
+}

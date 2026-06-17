@@ -1,0 +1,21 @@
+a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--border-strong);
+  transition:
+    color var(--duration-fast) ease,
+    text-decoration-color var(--duration-fast) ease;
+}
+
+a:hover {
+  color: var(--primary-hover);
+  text-decoration-color: var(--primary);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

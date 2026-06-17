@@ -1,0 +1,8 @@
+mark {
+  padding: 0.05em 0.25em;
+  background: var(--amber-4);
+  color: var(--amber-12);
+  border-radius: var(--radius-xs);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

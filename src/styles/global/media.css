@@ -1,0 +1,19 @@
+img,
+picture,
+video,
+svg,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  margin-block-start: var(--space-sm);
+  font-size: var(--fs-sm);
+  color: var(--text-subtle);
+  text-align: center;
+}

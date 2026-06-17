@@ -1,3 +1,4 @@
 @import "./reset.css";
-@import "./semantics.css";
 @import "./variables.css";
+@import "./scales.css";
+@import "./semantics.css";
