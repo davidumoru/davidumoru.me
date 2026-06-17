@@ -14,7 +14,8 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "astro": "^6.4.7"
+    "astro": "^6.4.7",
+    "motion": "^12.40.0"
   },
   "devDependencies": {
     "prettier": "^3.8.4",
