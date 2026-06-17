@@ -1,9 +1,0 @@
-::selection {
-  background-color: var(--tomato-5);
-  color: var(--tomato-9);
-}
-
-.dark ::selection {
-  background-color: var(--tomato-3);
-  color: var(--tomato-10);
-}
