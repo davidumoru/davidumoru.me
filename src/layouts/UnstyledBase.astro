@@ -1,0 +1,101 @@
+---
+import "../styles/index.css";
+import { ClientRouter } from "astro:transitions";
+
+export type Props = {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+};
+
+const SITE_NAME = "David Umoru";
+const DEFAULT_DESCRIPTION =
+  "David Umoru is a design engineer who builds interfaces for the web, obsessing over the details until they look, feel, and behave right.";
+
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  image,
+  type = "website",
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${SITE_NAME}` : SITE_NAME;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const path = canonical.pathname.replace(/\/+$/, "") || "/index";
+const ogImage = new URL(image ?? `/og${path}.png`, Astro.site);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE_NAME} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta name="theme-color" content="#fdfdfd" />
+
+    {/* Open Graph */}
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={title ?? SITE_NAME} />
+    <meta property="og:locale" content="en_US" />
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title ?? SITE_NAME} />
+    <meta name="twitter:site" content="@theumoru" />
+    <meta name="twitter:creator" content="@theumoru" />
+
+    <script is:inline>
+      const root = document.documentElement;
+
+      const getTheme = () => {
+        const stored = localStorage.getItem("theme");
+        if (stored === "dark" || stored === "light") return stored;
+        return matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+
+      const applyTheme = () => {
+        const dark = getTheme() === "dark";
+        root.classList.toggle("dark", dark);
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", dark ? "#0e0e0e" : "#fdfdfd");
+      };
+
+      applyTheme();
+      document.addEventListener("astro:after-swap", applyTheme);
+
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest("#themeToggle")) return;
+        const dark = !root.classList.contains("dark");
+        localStorage.setItem("theme", dark ? "dark" : "light");
+        applyTheme();
+      });
+    </script>
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>
