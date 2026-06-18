@@ -1,0 +1,13 @@
+@import "./base/index.css";
+@import "./global/index.css";
+@import "./utilities/index.css";
+
+body {
+  min-height: 100dvh;
+  font-family: "Inter";
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--text);
+  background: var(--background);
+}
