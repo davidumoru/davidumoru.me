@@ -25,6 +25,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
 const path = canonical.pathname.replace(/\/+$/, "") || "/index";
 const ogImage = new URL(image ?? `/og${path}.png`, Astro.site);
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: SITE_NAME,
+  url: Astro.site,
+  jobTitle: "Design Engineer",
+  description: DEFAULT_DESCRIPTION,
+  sameAs: ["https://github.com/davidumoru", "https://x.com/theumoru"],
+};
 ---
 
 <html lang="en">
@@ -61,6 +71,12 @@ const ogImage = new URL(image ?? `/og${path}.png`, Astro.site);
     <meta name="twitter:image:alt" content={title ?? SITE_NAME} />
     <meta name="twitter:site" content="@theumoru" />
     <meta name="twitter:creator" content="@theumoru" />
+
+    {/* Structured data */}
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(personSchema)}
+    />
 
     <script is:inline>
       const root = document.documentElement;
