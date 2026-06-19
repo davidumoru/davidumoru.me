@@ -1,0 +1,28 @@
+---
+import UnstyledBase from "./UnstyledBase.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, image, type } = Astro.props;
+---
+
+<UnstyledBase title={title} description={description} image={image} type={type}>
+  <main>
+    <slot />
+  </main>
+</UnstyledBase>
+
+<style is:global>
+  main {
+    min-height: 100dvh;
+    max-inline-size: var(--content-width);
+    margin-inline: auto;
+    padding-inline: var(--space-lg);
+    padding-block: var(--space-5xl);
+  }
+</style>
