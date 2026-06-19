@@ -4,7 +4,7 @@
 
 body {
   min-height: 100dvh;
-  font-family: "Inter";
+  font-family: var(--font-inter), system-ui, sans-serif;
   font-size: var(--fs-base);
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);

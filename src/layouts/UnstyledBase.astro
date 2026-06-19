@@ -1,5 +1,6 @@
 ---
 import "../styles/index.css";
+import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 
 export type Props = {
@@ -50,6 +51,9 @@ const personSchema = {
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-instrument-serif" preload />
 
     <meta name="theme-color" content="#fdfdfd" />
 

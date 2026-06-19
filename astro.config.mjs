@@ -14,6 +14,13 @@ export default defineConfig({
       cssVariable: "--font-inter",
       weights: ["100 900"],
     },
+    {
+      provider: fontProviders.google(),
+      name: "Instrument Serif",
+      cssVariable: "--font-instrument-serif",
+      weights: [400],
+      styles: ["normal", "italic"],
+    },
   ],
 
   integrations: [sitemap()],
