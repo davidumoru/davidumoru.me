@@ -3,17 +3,38 @@ ol {
   padding-inline-start: var(--space-lg);
 }
 
-li {
-  margin-block: var(--space-xs);
+.prose ul,
+.prose ol {
+  list-style: none;
+  padding-inline-start: 0;
 }
 
-li::marker {
-  color: var(--text-subtle);
+.prose li {
+  position: relative;
+  padding-inline-start: var(--space-xl);
 }
 
-ul ul,
-ul ol,
-ol ul,
-ol ol {
-  margin-block: var(--space-xs);
+.prose li + li {
+  margin-block-start: var(--space-sm);
+}
+
+.prose ul > li::before {
+  content: "—";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--primary);
+}
+
+.prose ol {
+  counter-reset: item;
+}
+.prose ol > li {
+  counter-increment: item;
+}
+.prose ol > li::before {
+  content: counter(item) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
 }
