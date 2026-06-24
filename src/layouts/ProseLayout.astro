@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import { formatDate, toISODate } from "../utils/date";
 
 interface Props {
   title: string;
@@ -19,15 +20,8 @@ const {
   type = "website",
 } = Astro.props;
 
-const dateDisplay = date
-  ? new Intl.DateTimeFormat("en-US", {
-      timeZone: "UTC",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(date)
-  : undefined;
-const dateISO = date ? date.toISOString().slice(0, 10) : undefined;
+const dateDisplay = date ? formatDate(date) : undefined;
+const dateISO = date ? toISODate(date) : undefined;
 ---
 
 <BaseLayout title={title} description={description} type={type}>
