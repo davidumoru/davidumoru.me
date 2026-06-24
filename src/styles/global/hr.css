@@ -1,6 +1,12 @@
 hr {
-  border: 0;
-  block-size: 1px;
-  background: var(--border);
-  margin-block: var(--space-xl);
+  border: none;
+  margin-block: var(--space-2xl);
+  text-align: center;
+  color: var(--primary);
+}
+
+hr::before {
+  content: "∗ ∗ ∗";
+  font-size: var(--fs-lg);
+  letter-spacing: 0.4em;
 }
