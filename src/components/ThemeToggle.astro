@@ -1,0 +1,40 @@
+---
+
+---
+
+<button id="themeToggle" type="button" aria-label="Toggle color theme">
+  <span class="when-light">Light</span>
+  <span class="when-dark">Dark</span>
+</button>
+
+<style>
+  button {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+
+  button:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .when-dark {
+    display: none;
+  }
+  :global(.dark) .when-light {
+    display: none;
+  }
+  :global(.dark) .when-dark {
+    display: inline;
+  }
+</style>
