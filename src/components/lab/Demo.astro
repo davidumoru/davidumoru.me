@@ -7,13 +7,28 @@ interface Props {
 
 const { name } = Astro.props;
 
-const sources = import.meta.glob("./*.tsx", {
+const tsx = import.meta.glob("./*/*.tsx", {
   query: "?raw",
   import: "default",
   eager: true,
 }) as Record<string, string>;
 
-const source = (sources[`./${name}.tsx`] ?? "").trim();
+const css = import.meta.glob("./*/*.module.css", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+const files = [
+  { name: `${name}.tsx`, lang: "tsx", code: tsx[`./${name}/${name}.tsx`] },
+  {
+    name: `${name}.module.css`,
+    lang: "css",
+    code: css[`./${name}/${name}.module.css`],
+  },
+].filter((file): file is { name: string; lang: "tsx" | "css"; code: string } =>
+  Boolean(file.code),
+);
 ---
 
 <div class="demo">
@@ -21,7 +36,7 @@ const source = (sources[`./${name}.tsx`] ?? "").trim();
     <slot />
   </div>
   {
-    source && (
+    files.length > 0 && (
       <details class="source">
         <summary>
           <svg
@@ -42,11 +57,18 @@ const source = (sources[`./${name}.tsx`] ?? "").trim();
           </svg>
           <span>View source</span>
         </summary>
-        <Code
-          code={source}
-          lang="tsx"
-          themes={{ light: "github-light", dark: "github-dark" }}
-        />
+        <div class="files">
+          {files.map((file) => (
+            <div class="file">
+              <span class="filename">{file.name}</span>
+              <Code
+                code={file.code.trim()}
+                lang={file.lang}
+                themes={{ light: "github-light", dark: "github-dark" }}
+              />
+            </div>
+          ))}
+        </div>
       </details>
     )
   }
@@ -103,7 +125,17 @@ const source = (sources[`./${name}.tsx`] ?? "").trim();
   .source[open]::details-content {
     block-size: auto;
   }
-  .source :global(pre) {
+  .files {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
     margin-block-start: var(--space-sm);
+  }
+  .filename {
+    display: block;
+    margin-block-end: var(--space-xs);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
   }
 </style>

@@ -1,5 +1,4 @@
 :root {
-  /* background layers */
   --background: var(--gray-1);
   --surface: var(--gray-2);
   --surface-hover: var(--gray-3);
@@ -13,13 +12,11 @@
   --border: var(--gray-5);
   --border-strong: var(--gray-6);
 
-  /* brand */
   --primary: var(--tomato-9);
   --primary-hover: var(--tomato-10);
   --primary-active: var(--tomato-11);
   --primary-subtle: var(--tomato-3);
 
-  /* focus / interaction */
   --focus: var(--tomato-9);
   --selection: var(--tomato-3);
   --disabled: var(--gray-8);
