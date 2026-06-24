@@ -1,0 +1,87 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  showDescription?: boolean;
+  date?: Date;
+  dateLabel?: string;
+  type?: "website" | "article";
+}
+
+const {
+  title,
+  description,
+  showDescription = false,
+  date,
+  dateLabel,
+  type = "website",
+} = Astro.props;
+
+const dateDisplay = date
+  ? new Intl.DateTimeFormat("en-US", {
+      timeZone: "UTC",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date)
+  : undefined;
+const dateISO = date ? date.toISOString().slice(0, 10) : undefined;
+---
+
+<BaseLayout title={title} description={description} type={type}>
+  <article>
+    <header class="page-header">
+      <h1>{title}</h1>
+      {showDescription && description && <p class="lead">{description}</p>}
+      {
+        dateDisplay && (
+          <p class="meta">
+            {dateLabel ? `${dateLabel} ` : ""}
+            <time datetime={dateISO}>{dateDisplay}</time>
+          </p>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-block-end: var(--space-3xl);
+  }
+  .lead {
+    margin-block-start: var(--space-md);
+    font-size: 1.4rem;
+    color: var(--text);
+    max-width: 34rem;
+    line-height: var(--lh-tight);
+  }
+  .meta {
+    margin-block-start: var(--space-sm);
+    color: var(--text-subtle);
+  }
+</style>
+
+<style is:global>
+  .prose > * + *:not(hr) {
+    margin-block-start: var(--space-md);
+  }
+  .prose > * + :is(h2, h3, h4) {
+    margin-block-start: var(--space-2xl);
+  }
+  .prose > :is(h2, h3, h4) + *:not(hr) {
+    margin-block-start: var(--space-sm);
+  }
+  .prose > * + pre {
+    margin-block-start: var(--space-xl);
+  }
+  .prose > pre + *:not(hr, h2, h3, h4) {
+    margin-block-start: var(--space-xl);
+  }
+</style>

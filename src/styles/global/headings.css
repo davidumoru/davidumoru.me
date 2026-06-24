@@ -6,7 +6,9 @@ h5,
 h6 {
   font-family: var(--font-instrument-serif), Georgia, serif;
   line-height: var(--lh-tight);
+  color: var(--text);
   margin: 0;
+  scroll-margin-block-start: var(--space-xl);
 }
 
 h1 {
