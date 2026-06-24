@@ -1,7 +1,7 @@
 pre {
   padding: var(--space-lg);
   background: var(--background);
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow-border);
   border-radius: var(--radius-xl);
   max-height: 32rem;
   overflow: auto;
