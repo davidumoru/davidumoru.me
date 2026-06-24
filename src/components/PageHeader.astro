@@ -26,10 +26,17 @@ const dateISO = date ? toISODate(date) : undefined;
   <h1>{title}</h1>
   {showDescription && description && <p class="lead">{description}</p>}
   {
-    dateDisplay && (
+    (dateDisplay || Astro.slots.has("meta-end")) && (
       <p class="meta">
-        {dateLabel ? `${dateLabel} ` : ""}
-        <time datetime={dateISO}>{dateDisplay}</time>
+        <span class="meta-date">
+          {dateDisplay && (
+            <Fragment>
+              {dateLabel ? `${dateLabel} ` : ""}
+              <time datetime={dateISO}>{dateDisplay}</time>
+            </Fragment>
+          )}
+        </span>
+        <slot name="meta-end" />
       </p>
     )
   }
@@ -48,6 +55,10 @@ const dateISO = date ? toISODate(date) : undefined;
     line-height: var(--lh-tight);
   }
   .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
     margin-block-start: var(--space-sm);
     color: var(--text-subtle);
   }
