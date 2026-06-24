@@ -3,6 +3,8 @@
 @import "./lists.css";
 @import "./blockquote.css";
 @import "./inline-code.css";
+@import "./code-block.css";
 @import "./highlight.css";
 @import "./hr.css";
+@import "./media.css";
 @import "./selection.css";

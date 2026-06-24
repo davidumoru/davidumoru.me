@@ -22,7 +22,22 @@ export default defineConfig({
       weights: [400],
       styles: ["normal", "italic"],
     },
+    {
+      provider: fontProviders.google(),
+      name: "Geist Mono",
+      cssVariable: "--font-geist-mono",
+      weights: ["100 900"],
+    },
   ],
+
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    },
+  },
 
   integrations: [sitemap(), mdx()],
 });
