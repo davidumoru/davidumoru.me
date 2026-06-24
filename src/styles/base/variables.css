@@ -479,6 +479,8 @@
   --shadow-xl:
     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  --image-outline: rgb(0 0 0 / 0.1);
 }
 
 /* dark: white ring + darker halos (plain black shadows vanish on dark) */
@@ -502,4 +504,6 @@
     0 8px 10px -6px rgb(0 0 0 / 0.55);
   --shadow-2xl:
     0 0 0 1px rgb(255 255 255 / 0.04), 0 25px 50px -12px rgb(0 0 0 / 0.7);
+
+  --image-outline: rgb(255 255 255 / 0.1);
 }

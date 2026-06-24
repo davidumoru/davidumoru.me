@@ -1,0 +1,109 @@
+---
+import { Code } from "astro:components";
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+
+const sources = import.meta.glob("./*.tsx", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+const source = (sources[`./${name}.tsx`] ?? "").trim();
+---
+
+<div class="demo">
+  <div class="stage">
+    <slot />
+  </div>
+  {
+    source && (
+      <details class="source">
+        <summary>
+          <svg
+            class="chevron"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>View source</span>
+        </summary>
+        <Code
+          code={source}
+          lang="tsx"
+          themes={{ light: "github-light", dark: "github-dark" }}
+        />
+      </details>
+    )
+  }
+</div>
+
+<style>
+  .stage {
+    display: grid;
+    min-height: 28rem;
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-border);
+    overflow: hidden;
+  }
+  .source {
+    margin-block-start: var(--space-md);
+  }
+  .source summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    color: var(--text-subtle);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    transition:
+      color var(--duration-fast) ease,
+      background var(--duration-fast) ease;
+  }
+  .source summary::-webkit-details-marker {
+    display: none;
+  }
+  .source summary:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .chevron {
+    transition: transform var(--duration-fast) ease;
+  }
+  .source[open] .chevron {
+    transform: rotate(90deg);
+  }
+  .source::details-content {
+    block-size: 0;
+    overflow: clip;
+    overflow-clip-margin: var(--space-sm);
+    transition:
+      block-size var(--duration-normal) var(--ease-out),
+      content-visibility var(--duration-normal) allow-discrete;
+  }
+  .source[open]::details-content {
+    block-size: auto;
+  }
+  .source :global(pre) {
+    margin-block-start: var(--space-sm);
+  }
+</style>

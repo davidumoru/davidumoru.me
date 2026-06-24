@@ -1,0 +1,67 @@
+---
+interface Item {
+  href: string;
+  title: string;
+}
+
+interface Props {
+  prev?: Item;
+  next?: Item;
+}
+
+const { prev, next } = Astro.props;
+---
+
+<nav class="pager" aria-label="Pagination">
+  {
+    prev ? (
+      <a class="link prev" href={prev.href}>
+        <span class="dir">Previous</span>
+        <span class="title">{prev.title}</span>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+  {
+    next ? (
+      <a class="link next" href={next.href}>
+        <span class="dir">Next</span>
+        <span class="title">{next.title}</span>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+</nav>
+
+<style>
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    margin-block-start: var(--space-3xl);
+    padding-block-start: var(--space-lg);
+    border-block-start: 1px solid
+      color-mix(in oklch, var(--border) 50%, transparent);
+  }
+  .link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    max-inline-size: 48%;
+    text-decoration: none;
+  }
+  .next {
+    text-align: end;
+    align-items: flex-end;
+  }
+  .dir {
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  .title {
+    color: var(--text);
+    line-height: var(--lh-snug);
+  }
+</style>

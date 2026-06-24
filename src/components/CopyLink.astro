@@ -1,0 +1,113 @@
+---
+
+---
+
+<button
+  class="copy"
+  type="button"
+  aria-label="Copy link to this page"
+  data-copy-url
+>
+  <svg
+    class="icon link"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M9 17H7a5 5 0 0 1 0-10h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+  <svg
+    class="icon check"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M4 12l5 5L20 6"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</button>
+
+<script>
+  function init(btn: HTMLButtonElement) {
+    if (btn.dataset.ready) return;
+    btn.dataset.ready = "true";
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        btn.classList.add("copied");
+        window.setTimeout(() => btn.classList.remove("copied"), 1500);
+      } catch {}
+    });
+  }
+
+  function setup() {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-copy-url]")
+      .forEach(init);
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>
+
+<style>
+  .copy {
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--space-xl);
+    block-size: var(--space-xl);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-subtle);
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) ease,
+      background var(--duration-fast) ease;
+  }
+  .copy:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .copy:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .icon {
+    grid-area: 1 / 1;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out),
+      filter var(--duration-fast) var(--ease-out);
+  }
+  .check {
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
+  }
+  .copy.copied .link {
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
+  }
+  .copy.copied .check {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import LabCard from "../../components/LabCard.astro";
+
+const description = "Experiments in motion, interaction, and interface craft.";
+
+const experiments = (
+  await getCollection("lab", (entry) => entry.data.status === "live")
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Lab" description={description}>
+  <PageHeader title="Lab" description={description} showDescription />
+
+  {
+    experiments.length > 0 ? (
+      <ul class="grid">
+        {experiments.map((exp) => (
+          <li>
+            <LabCard entry={exp} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Nothing here yet.</p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .grid {
+    margin-block-start: var(--space-xl);
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-lg);
+  }
+  @media (min-width: 36rem) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .empty {
+    margin-block-start: var(--space-xl);
+  }
+</style>

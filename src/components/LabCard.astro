@@ -1,0 +1,80 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"lab">;
+}
+
+const { entry } = Astro.props;
+---
+
+<a class="card" href={`/lab/${entry.id}`}>
+  <div class="preview">
+    {
+      entry.data.poster && (
+        <Image class="poster" src={entry.data.poster} alt="" />
+      )
+    }
+  </div>
+  <div class="reveal">
+    <div class="reveal-inner">
+      <p class="title">{entry.data.title}</p>
+    </div>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 3 / 2;
+    padding: var(--space-sm);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-border);
+    text-decoration: none;
+    transition: box-shadow var(--duration-fast) ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-border-hover);
+  }
+  .preview {
+    flex: 1;
+    min-height: 0;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+  }
+  .reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-fast) var(--ease-out);
+  }
+  .card:hover .reveal,
+  .card:focus-visible .reveal {
+    grid-template-rows: 1fr;
+  }
+  .reveal-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .title {
+    padding-block-start: var(--space-sm);
+    padding-inline: var(--space-xs);
+    line-height: var(--lh-snug);
+    color: var(--text-subtle);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .card:hover .title,
+  .card:focus-visible .title {
+    opacity: 1;
+  }
+</style>

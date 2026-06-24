@@ -1,0 +1,35 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import LabLayout from "../../layouts/LabLayout.astro";
+import Pager from "../../components/Pager.astro";
+
+export async function getStaticPaths() {
+  const experiments = (
+    await getCollection("lab", (entry) => entry.data.status !== "draft")
+  ).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+  const toItem = (e: CollectionEntry<"lab"> | undefined) =>
+    e ? { href: `/lab/${e.id}`, title: e.data.title } : undefined;
+
+  return experiments.map((exp, i) => ({
+    params: { id: exp.id },
+    props: {
+      exp,
+      prev: toItem(experiments[i - 1]),
+      next: toItem(experiments[i + 1]),
+    },
+  }));
+}
+
+const { exp, prev, next } = Astro.props;
+const { Content } = await render(exp);
+---
+
+<LabLayout
+  title={exp.data.title}
+  description={exp.data.description}
+  date={exp.data.date}
+>
+  <Content />
+  <Pager prev={prev} next={next} />
+</LabLayout>

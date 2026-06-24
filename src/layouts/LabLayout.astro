@@ -1,0 +1,22 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import CopyLink from "../components/CopyLink.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  date?: Date;
+}
+
+const { title, description, date } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <article>
+    <PageHeader title={title} date={date}>
+      <CopyLink slot="meta-end" />
+    </PageHeader>
+    <slot />
+  </article>
+</BaseLayout>
