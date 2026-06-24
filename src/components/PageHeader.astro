@@ -1,0 +1,54 @@
+---
+import { formatDate, toISODate } from "../utils/date";
+
+interface Props {
+  title: string;
+  description?: string;
+  showDescription?: boolean;
+  date?: Date;
+  dateLabel?: string;
+}
+
+const {
+  title,
+  description,
+  showDescription = false,
+  date,
+  dateLabel,
+} = Astro.props;
+
+const dateDisplay = date ? formatDate(date) : undefined;
+const dateISO = date ? toISODate(date) : undefined;
+---
+
+<header class="page-header">
+  <slot name="eyebrow" />
+  <h1>{title}</h1>
+  {showDescription && description && <p class="lead">{description}</p>}
+  {
+    dateDisplay && (
+      <p class="meta">
+        {dateLabel ? `${dateLabel} ` : ""}
+        <time datetime={dateISO}>{dateDisplay}</time>
+      </p>
+    )
+  }
+  <slot />
+</header>
+
+<style>
+  .page-header {
+    margin-block-end: var(--space-3xl);
+  }
+  .lead {
+    margin-block-start: var(--space-md);
+    font-size: 1.4rem;
+    color: var(--text);
+    max-width: 34rem;
+    line-height: var(--lh-tight);
+  }
+  .meta {
+    margin-block-start: var(--space-sm);
+    color: var(--text-subtle);
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import { formatDate, toISODate } from "../utils/date";
+import PageHeader from "../components/PageHeader.astro";
 
 interface Props {
   title: string;
@@ -19,48 +19,23 @@ const {
   dateLabel,
   type = "website",
 } = Astro.props;
-
-const dateDisplay = date ? formatDate(date) : undefined;
-const dateISO = date ? toISODate(date) : undefined;
 ---
 
 <BaseLayout title={title} description={description} type={type}>
   <article>
-    <header class="page-header">
-      <h1>{title}</h1>
-      {showDescription && description && <p class="lead">{description}</p>}
-      {
-        dateDisplay && (
-          <p class="meta">
-            {dateLabel ? `${dateLabel} ` : ""}
-            <time datetime={dateISO}>{dateDisplay}</time>
-          </p>
-        )
-      }
-    </header>
+    <PageHeader
+      title={title}
+      description={description}
+      showDescription={showDescription}
+      date={date}
+      dateLabel={dateLabel}
+    />
 
     <div class="prose">
       <slot />
     </div>
   </article>
 </BaseLayout>
-
-<style>
-  .page-header {
-    margin-block-end: var(--space-3xl);
-  }
-  .lead {
-    margin-block-start: var(--space-md);
-    font-size: 1.4rem;
-    color: var(--text);
-    max-width: 34rem;
-    line-height: var(--lh-tight);
-  }
-  .meta {
-    margin-block-start: var(--space-sm);
-    color: var(--text-subtle);
-  }
-</style>
 
 <style is:global>
   .prose > * + *:not(hr) {
