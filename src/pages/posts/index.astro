@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import PostList from "../../components/PostList.astro";
+import { Icon } from "../../components/Icon/Icon.tsx";
+import { getPosts } from "../../utils/posts";
+
+const description = "Writing on design, code, and whatever else is on my mind.";
+const posts = await getPosts("live");
+---
+
+<BaseLayout title="Posts" description={description}>
+  <PageHeader title="Posts" description={description} showDescription />
+
+  <PostList posts={posts} empty="No posts yet." />
+
+  <a class="more" href="/archive"
+    >See archive <Icon name="arrowRight" size={16} /></a
+  >
+</BaseLayout>
+
+<style>
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block-start: var(--space-xl);
+    color: var(--text-subtle);
+    text-decoration: none;
+  }
+  .more:hover {
+    color: var(--primary);
+  }
+</style>

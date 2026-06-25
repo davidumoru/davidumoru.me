@@ -1,0 +1,78 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate, toISODate } from "../utils/date";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+  empty?: string;
+}
+
+const { posts, empty = "Nothing here yet." } = Astro.props;
+---
+
+{
+  posts.length > 0 ? (
+    <ul class="posts">
+      {posts.map((post) => (
+        <li>
+          <a class="post" href={`/posts/${post.id}`}>
+            <h2 class="title">{post.data.title}</h2>
+            <time class="date" datetime={toISODate(post.data.date)}>
+              {formatDate(post.data.date)}
+            </time>
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty">{empty}</p>
+  )
+}
+
+<style>
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    margin-inline: calc(-1 * var(--space-md));
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .post:hover {
+    background: var(--surface);
+  }
+  .title {
+    margin: 0;
+    font-family: inherit;
+    font-size: var(--fs-lg);
+    font-weight: 500;
+    line-height: var(--lh-snug);
+    color: var(--text);
+    text-wrap: balance;
+  }
+  .date {
+    flex-shrink: 0;
+    color: var(--text-subtle);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .empty {
+    color: var(--text-subtle);
+  }
+
+  @media (max-width: 30rem) {
+    .post {
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+  }
+</style>

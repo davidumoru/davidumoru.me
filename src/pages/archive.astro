@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import PostList from "../components/PostList.astro";
+import { Icon } from "../components/Icon/Icon.tsx";
+import { getPosts } from "../utils/posts";
+
+const description = "Posts from earlier versions of this site, and of me.";
+
+const posts = await getPosts("archive");
+---
+
+<BaseLayout title="Archive" description={description}>
+  <PageHeader title="Archive" description={description} showDescription />
+
+  <PostList posts={posts} empty="Nothing archived yet." />
+
+  <a class="more" href="/posts"><Icon name="arrowLeft" size={16} /> Posts</a>
+</BaseLayout>
+
+<style>
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block-start: var(--space-xl);
+    color: var(--text-subtle);
+    text-decoration: none;
+  }
+  .more:hover {
+    color: var(--primary);
+  }
+</style>

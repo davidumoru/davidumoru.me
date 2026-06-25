@@ -11,6 +11,16 @@ const pages = defineCollection({
   }),
 });
 
+const posts = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/posts" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.coerce.date(),
+    status: z.enum(["live", "archive", "draft"]).default("live"),
+  }),
+});
+
 const lab = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/lab" }),
   schema: ({ image }) =>
@@ -23,4 +33,4 @@ const lab = defineCollection({
     }),
 });
 
-export const collections = { pages, lab };
+export const collections = { pages, posts, lab };

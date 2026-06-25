@@ -1,0 +1,42 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import ProseLayout from "../../layouts/ProseLayout.astro";
+import Pager from "../../components/Pager.astro";
+import Toc from "../../components/Toc.astro";
+import { getPublishedPosts } from "../../utils/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  const toItem = (p: CollectionEntry<"posts"> | undefined) =>
+    p ? { href: `/posts/${p.id}`, title: p.data.title } : undefined;
+
+  return posts.map((post) => {
+    const siblings = posts.filter((p) => p.data.status === post.data.status);
+    const i = siblings.findIndex((p) => p.id === post.id);
+    return {
+      params: { id: post.id },
+      props: {
+        post,
+        prev: toItem(siblings[i - 1]),
+        next: toItem(siblings[i + 1]),
+      },
+    };
+  });
+}
+
+const { post, prev, next } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<ProseLayout
+  title={post.data.title}
+  description={post.data.description}
+  date={post.data.date}
+  type="article"
+  showDescription
+>
+  <Toc slot="toc" headings={headings} />
+  <Content />
+  <Pager prev={prev} next={next} />
+</ProseLayout>

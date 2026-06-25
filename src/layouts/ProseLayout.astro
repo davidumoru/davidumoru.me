@@ -21,7 +21,12 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} type={type}>
+<BaseLayout
+  title={title}
+  description={description}
+  type={type}
+  publishedDate={date}
+>
   <article>
     <PageHeader
       title={title}
@@ -31,6 +36,8 @@ const {
       dateLabel={dateLabel}
     />
 
+    <slot name="toc" />
+
     <div class="prose">
       <slot />
     </div>
@@ -38,6 +45,9 @@ const {
 </BaseLayout>
 
 <style is:global>
+  .prose :is(h2, h3, h4) {
+    scroll-margin-block-start: var(--space-xl);
+  }
   .prose > * + *:not(hr) {
     margin-block-start: var(--space-md);
   }
@@ -47,10 +57,10 @@ const {
   .prose > :is(h2, h3, h4) + *:not(hr) {
     margin-block-start: var(--space-sm);
   }
-  .prose > * + pre {
+  .prose > * + :is(pre, .code-block) {
     margin-block-start: var(--space-xl);
   }
-  .prose > pre + *:not(hr, h2, h3, h4) {
+  .prose > :is(pre, .code-block) + *:not(hr, h2, h3, h4) {
     margin-block-start: var(--space-xl);
   }
 </style>
