@@ -1,5 +1,6 @@
 ---
 import UnstyledBase from "./UnstyledBase.astro";
+import CodeCopy from "../components/CodeCopy.astro";
 
 interface Props {
   title?: string;
@@ -22,6 +23,7 @@ const { title, description, image, type, publishedDate } = Astro.props;
   <main>
     <slot />
   </main>
+  <CodeCopy />
 </UnstyledBase>
 
 <style is:global>

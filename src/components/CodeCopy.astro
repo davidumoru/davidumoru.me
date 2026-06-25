@@ -1,0 +1,120 @@
+---
+import { Icon } from "./Icon/Icon.tsx";
+---
+
+<template data-code-copy-template>
+  <button type="button" class="code-copy" aria-label="Copy code">
+    <span class="ic ic-copy"><Icon name="copy" size={16} /></span>
+    <span class="ic ic-check"><Icon name="check" size={16} /></span>
+  </button>
+</template>
+
+<script>
+  function setup() {
+    const tpl = document.querySelector<HTMLTemplateElement>(
+      "[data-code-copy-template]",
+    );
+    const template = tpl?.content.firstElementChild;
+    if (!template) return;
+
+    const blocks = document.querySelectorAll<HTMLPreElement>(
+      ".prose pre, .files pre",
+    );
+
+    blocks.forEach((pre) => {
+      if (pre.dataset.copyReady) return;
+      pre.dataset.copyReady = "true";
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+      pre.replaceWith(wrapper);
+      wrapper.appendChild(pre);
+
+      const button = template.cloneNode(true) as HTMLButtonElement;
+      wrapper.appendChild(button);
+
+      let timer = 0;
+      button.addEventListener("click", async () => {
+        const code = pre.querySelector("code")?.textContent ?? "";
+        try {
+          await navigator.clipboard.writeText(code);
+          button.classList.add("copied");
+          window.clearTimeout(timer);
+          timer = window.setTimeout(() => {
+            button.classList.remove("copied");
+          }, 1500);
+        } catch {}
+      });
+    });
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>
+
+<style is:global>
+  .code-block {
+    position: relative;
+  }
+  .code-copy {
+    position: absolute;
+    inset-block-start: var(--space-sm);
+    inset-inline-end: var(--space-sm);
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--space-xl);
+    block-size: var(--space-xl);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text-subtle);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+  .code-block:hover .code-copy,
+  .code-copy:focus-visible {
+    opacity: 1;
+  }
+  .code-copy:hover,
+  .code-copy.copied {
+    color: var(--text);
+  }
+  .code-copy.copied {
+    opacity: 1;
+  }
+
+  .ic {
+    grid-area: 1 / 1;
+    display: inline-grid;
+    place-items: center;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out),
+      filter var(--duration-fast) var(--ease-out);
+  }
+  .ic-check {
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
+  }
+  .code-copy.copied .ic-copy {
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
+  }
+  .code-copy.copied .ic-check {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  @media (hover: none) {
+    .code-copy {
+      opacity: 1;
+    }
+  }
+</style>

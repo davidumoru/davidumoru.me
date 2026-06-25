@@ -1,0 +1,127 @@
+---
+import { Icon } from "./Icon/Icon.tsx";
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+  backHref?: string;
+  backLabel?: string;
+}
+
+const { headings, backHref = "/posts", backLabel = "Posts" } = Astro.props;
+const items = headings.filter((h) => h.depth === 2);
+const show = items.length >= 2;
+---
+
+<nav class="toc" aria-label="Table of contents">
+  <a class="back" href={backHref}>
+    <Icon name="arrowDownLeft" size={16} />
+    {backLabel}
+  </a>
+  {
+    show && (
+      <ul>
+        {items.map((h) => (
+          <li class:list={[`depth-${h.depth}`]}>
+            <a href={`#${h.slug}`} data-toc-link={h.slug}>
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</nav>
+
+<style>
+  .toc {
+    display: none;
+  }
+
+  @media (min-width: 80rem) {
+    .toc {
+      display: block;
+      position: fixed;
+      inset-block-start: var(--space-5xl);
+      inset-inline-start: calc(var(--space-3xl) + var(--space-md));
+      inline-size: 12rem;
+      max-block-size: calc(100dvh - 2 * var(--space-5xl));
+      overflow-y: auto;
+    }
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block-end: var(--space-2xl);
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--text);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .depth-3 a {
+    padding-inline-start: var(--space-md);
+  }
+
+  a[data-toc-link] {
+    display: block;
+    color: var(--text-subtle);
+    font-size: 0.8125rem;
+    line-height: var(--lh-snug);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  a[data-toc-link]:hover,
+  a[data-toc-link][data-active="true"] {
+    color: var(--text);
+  }
+</style>
+
+<script>
+  function setupToc() {
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"),
+    );
+    if (!links.length) return;
+
+    const byId = new Map(
+      links.map((l) => [l.getAttribute("data-toc-link") ?? "", l]),
+    );
+    const headings = links
+      .map((l) =>
+        document.getElementById(l.getAttribute("data-toc-link") ?? ""),
+      )
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            links.forEach((l) => l.removeAttribute("data-active"));
+            byId.get(entry.target.id)?.setAttribute("data-active", "true");
+          }
+        }
+      },
+      { rootMargin: "0px 0px -75% 0px" },
+    );
+
+    headings.forEach((h) => observer.observe(h));
+  }
+
+  setupToc();
+  document.addEventListener("astro:page-load", setupToc);
+</script>
