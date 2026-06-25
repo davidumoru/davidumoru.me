@@ -1,0 +1,22 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.stack {
+  display: grid;
+}
+
+.item {
+  cursor: grab;
+}
+
+.card {
+  inline-size: 11rem;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-border), var(--shadow-md);
+  overflow: hidden;
+}

@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  block-size: 100%;
+}
+
+.viewport {
+  position: relative;
+  inline-size: 100%;
+  block-size: 272px;
+  margin-block-start: -80px;
+}
+
+.row {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.card {
+  flex-shrink: 0;
+  inline-size: 240px;
+  block-size: 240px;
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: var(--surface-active);
+  cursor: pointer;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-2xl);
+}
+
+.dot {
+  block-size: 10px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: var(--surface-active);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.dot[data-active="true"] {
+  background: var(--text-subtle);
+}
