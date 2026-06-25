@@ -8,6 +8,9 @@ import react from "@astrojs/react";
 export default defineConfig({
   site: "https://davidumoru.me",
   prefetch: true,
+  devToolbar: {
+    enabled: false,
+  },
 
   fonts: [
     {
