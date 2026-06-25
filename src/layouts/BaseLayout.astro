@@ -6,12 +6,19 @@ interface Props {
   description?: string;
   image?: string;
   type?: "website" | "article";
+  publishedDate?: Date;
 }
 
-const { title, description, image, type } = Astro.props;
+const { title, description, image, type, publishedDate } = Astro.props;
 ---
 
-<UnstyledBase title={title} description={description} image={image} type={type}>
+<UnstyledBase
+  title={title}
+  description={description}
+  image={image}
+  type={type}
+  publishedDate={publishedDate}
+>
   <main>
     <slot />
   </main>

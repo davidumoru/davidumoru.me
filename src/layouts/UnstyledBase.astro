@@ -8,6 +8,7 @@ export type Props = {
   description?: string;
   image?: string;
   type?: "website" | "article";
+  publishedDate?: Date;
 };
 
 const SITE_NAME = "David Umoru";
@@ -19,6 +20,7 @@ const {
   description = DEFAULT_DESCRIPTION,
   image,
   type = "website",
+  publishedDate,
 } = Astro.props;
 
 const pageTitle = title ? `${title} — ${SITE_NAME}` : SITE_NAME;
@@ -36,6 +38,23 @@ const personSchema = {
   description: DEFAULT_DESCRIPTION,
   sameAs: ["https://github.com/davidumoru", "https://x.com/theumoru"],
 };
+
+const articleSchema =
+  type === "article" && publishedDate
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description,
+        datePublished: publishedDate.toISOString().slice(0, 10),
+        dateModified: publishedDate.toISOString().slice(0, 10),
+        author: { "@type": "Person", name: SITE_NAME, url: Astro.site },
+        publisher: { "@type": "Person", name: SITE_NAME, url: Astro.site },
+        image: ogImage,
+        url: canonical,
+        mainEntityOfPage: canonical,
+      }
+    : null;
 ---
 
 <html lang="en">
@@ -79,6 +98,15 @@ const personSchema = {
       type="application/ld+json"
       set:html={JSON.stringify(personSchema)}
     />
+
+    {
+      articleSchema && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(articleSchema)}
+        />
+      )
+    }
 
     <script is:inline>
       const root = document.documentElement;
