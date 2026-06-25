@@ -1,5 +1,5 @@
 ---
-
+import { Icon } from "./Icon/Icon.tsx";
 ---
 
 <button
@@ -8,36 +8,8 @@
   aria-label="Copy link to this page"
   data-copy-url
 >
-  <svg
-    class="icon link"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M9 17H7a5 5 0 0 1 0-10h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
-  </svg>
-  <svg
-    class="icon check"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M4 12l5 5L20 6"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
-  </svg>
+  <span class="slot link"><Icon name="link" size={16} /></span>
+  <span class="slot check"><Icon name="check" size={16} /></span>
 </button>
 
 <script>
@@ -88,8 +60,9 @@
     outline: 2px solid var(--focus);
     outline-offset: 2px;
   }
-  .icon {
+  .slot {
     grid-area: 1 / 1;
+    display: inline-flex;
     transition:
       opacity var(--duration-fast) var(--ease-out),
       transform var(--duration-fast) var(--ease-out),
