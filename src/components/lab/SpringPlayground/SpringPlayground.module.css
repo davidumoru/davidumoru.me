@@ -1,0 +1,56 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.area {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+}
+
+.ball {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-2xl);
+  background: var(--primary);
+  cursor: grab;
+}
+
+.hint {
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.controls {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 5rem 1fr 3rem;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--fs-sm);
+}
+
+.label {
+  color: var(--text-muted);
+}
+
+.range {
+  inline-size: 100%;
+  accent-color: var(--primary);
+}
+
+.value {
+  color: var(--text-subtle);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

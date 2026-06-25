@@ -1,0 +1,64 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-2xl);
+  background: var(--background);
+  box-shadow: var(--shadow-border);
+  font-size: var(--fs-base);
+  color: var(--text);
+}
+
+.iconWrapper {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.icon {
+  position: absolute;
+  display: grid;
+  place-items: center;
+}
+
+.label {
+  display: inline-block;
+}
+
+.morph {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.char {
+  display: inline-block;
+  white-space: pre;
+}
+
+.spinner {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

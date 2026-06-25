@@ -1,0 +1,43 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-lg);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  inline-size: 16rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: var(--shadow-border);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  cursor: grab;
+  user-select: none;
+}
+
+.item:active {
+  cursor: grabbing;
+}
+
+.grip {
+  inline-size: 0.75rem;
+  block-size: 1rem;
+  background-image: radial-gradient(var(--text-subtle) 1px, transparent 1.5px);
+  background-size: 0.375rem 0.375rem;
+  background-position: center;
+  opacity: 0.5;
+}

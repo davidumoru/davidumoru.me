@@ -1,0 +1,22 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.dock {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  height: calc(2.75rem + 2 * var(--space-sm));
+  padding: var(--space-sm);
+  border-radius: var(--radius-2xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  overflow: visible;
+}
+
+.item {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}

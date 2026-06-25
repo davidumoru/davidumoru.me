@@ -1,0 +1,64 @@
+.stage {
+  display: grid;
+  place-items: center;
+  gap: var(--space-xs);
+}
+
+.display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--fs-6xl);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text);
+}
+
+.col {
+  display: block;
+}
+
+.window {
+  position: relative;
+  display: block;
+  height: 1em;
+  overflow: hidden;
+}
+
+.digit {
+  display: block;
+  line-height: 1;
+}
+
+.row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.btn {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--fs-xl);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.btn:active {
+  transform: scale(0.96);
+}

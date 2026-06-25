@@ -1,0 +1,68 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 5.5rem;
+  block-size: 5.5rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button[data-done="true"] {
+  cursor: pointer;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  transform: rotate(-90deg);
+  fill: none;
+  overflow: visible;
+}
+
+.track {
+  stroke: var(--border);
+  stroke-width: 5;
+}
+
+.progress {
+  stroke: var(--primary);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke var(--duration-normal) var(--ease-out);
+}
+
+.button[data-done="true"] .progress {
+  stroke: var(--green-9);
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.button[data-done="true"] .icon {
+  color: var(--green-9);
+}

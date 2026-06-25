@@ -1,0 +1,51 @@
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.add {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.add:hover {
+  background: var(--surface-hover);
+}
+
+.add:active {
+  transform: scale(0.96);
+}
+
+.region {
+  position: absolute;
+  inset-block-end: var(--space-xl);
+  inset-inline-start: 50%;
+  width: 16rem;
+  transform: translateX(-50%);
+  transition: height var(--duration-slow) var(--ease-out);
+}
+
+.toast {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: var(--space-md);
+  border-radius: var(--radius-xl);
+  background: var(--background);
+  box-shadow: var(--shadow-border), var(--shadow-lg);
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
