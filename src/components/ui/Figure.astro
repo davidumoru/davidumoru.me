@@ -1,0 +1,174 @@
+---
+import { Image } from "astro:assets";
+import sharp from "sharp";
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  full?: boolean;
+  ratio?: string;
+  width?: number;
+  height?: number;
+  loading?: "lazy" | "eager";
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  full = false,
+  ratio,
+  width,
+  height,
+  loading = "lazy",
+  class: className,
+} = Astro.props;
+
+const isRemote = typeof src === "string";
+const aspect = ratio ? `aspect-ratio: ${ratio}` : undefined;
+const hasCaption = Astro.slots.has("default");
+
+let lqip: string | undefined;
+if (!isRemote) {
+  const path = (src as ImageMetadata & { fsPath?: string }).fsPath;
+  if (path) {
+    try {
+      const buffer = await sharp(path)
+        .resize(24)
+        .webp({ quality: 40 })
+        .toBuffer();
+      lqip = `data:image/webp;base64,${buffer.toString("base64")}`;
+    } catch {
+      lqip = undefined;
+    }
+  }
+}
+
+const frameStyle = lqip ? `--lqip: url(${lqip})` : undefined;
+---
+
+<figure class:list={["figure", full && "full", className]}>
+  <div class="frame" data-blur={lqip ? "" : undefined} style={frameStyle}>
+    {
+      isRemote ? (
+        <img
+          class="media"
+          src={src as string}
+          alt={alt}
+          width={width}
+          height={height}
+          loading={loading}
+          decoding="async"
+          style={aspect}
+        />
+      ) : (
+        <Image
+          class="media"
+          src={src as ImageMetadata}
+          alt={alt}
+          width={width}
+          height={height}
+          loading={loading}
+          style={aspect}
+        />
+      )
+    }
+  </div>
+  {
+    hasCaption && (
+      <figcaption class="caption">
+        <slot />
+      </figcaption>
+    )
+  }
+</figure>
+
+<noscript>
+  <style is:inline>
+    [data-blur] .media {
+      opacity: 1 !important;
+    }
+  </style>
+</noscript>
+
+<script>
+  function reveal() {
+    document
+      .querySelectorAll<HTMLImageElement>("[data-blur] img.media")
+      .forEach((img) => {
+        if (img.dataset.revealed) return;
+        img.dataset.revealed = "true";
+        if (img.complete) {
+          img.classList.add("loaded");
+          return;
+        }
+        img.addEventListener("load", () => img.classList.add("loaded"), {
+          once: true,
+        });
+      });
+  }
+  reveal();
+  document.addEventListener("astro:page-load", reveal);
+</script>
+
+<style>
+  .frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+  .frame[data-blur]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: var(--lqip);
+    background-size: cover;
+    background-position: center;
+    filter: blur(12px);
+    transform: scale(1.1);
+  }
+  .frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+    pointer-events: none;
+  }
+  .media {
+    position: relative;
+    z-index: 1;
+    display: block;
+    inline-size: 100%;
+    object-fit: cover;
+    transition: opacity var(--duration-slow) var(--ease-out);
+  }
+  [data-blur] .media {
+    opacity: 0;
+  }
+  [data-blur] .media.loaded {
+    opacity: 1;
+  }
+  .caption {
+    text-wrap: pretty;
+  }
+
+  .figure.full {
+    inline-size: 100vw;
+    max-inline-size: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+  .figure.full .frame {
+    border-radius: 0;
+  }
+  .figure.full .frame::after {
+    box-shadow: none;
+  }
+  .figure.full .caption {
+    max-inline-size: var(--content-width);
+    margin-inline: auto;
+    padding-inline: var(--space-lg);
+  }
+</style>
