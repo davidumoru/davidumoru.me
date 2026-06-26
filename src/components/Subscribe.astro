@@ -1,0 +1,376 @@
+---
+import { Icon } from "./Icon/Icon.tsx";
+import Button from "./ui/Button.astro";
+
+interface Props {
+  heading?: string;
+  lead?: string;
+}
+
+const {
+  heading = "Subscribe",
+  lead = "Project updates, web finds, and personal notes in your inbox, now and then. No spam.",
+} = Astro.props;
+
+const action =
+  "https://buttondown.com/api/emails/embed-subscribe/notesfromdavid";
+---
+
+<section class="subscribe">
+  <h2 class="title">{heading}</h2>
+  <p class="lead">{lead}</p>
+
+  <form
+    class="form"
+    action={action}
+    method="post"
+    target="bd-sink"
+    data-subscribe
+  >
+    <div class="stack">
+      <div class="row">
+        <div class="field">
+          <input
+            class="input"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+            aria-label="Email address"
+          />
+          <canvas class="vanish" aria-hidden="true"></canvas>
+        </div>
+        <Button type="submit">Subscribe</Button>
+      </div>
+      <div class="success" role="status" aria-live="polite">
+        <span class="check"><Icon name="checkCircle" size={18} /></span>
+        <span>You're on the list. Check your inbox to confirm.</span>
+        <button type="button" class="relink" data-reset
+          >Use a different email</button
+        >
+      </div>
+    </div>
+  </form>
+
+  <iframe
+    name="bd-sink"
+    class="sink"
+    title="Subscription"
+    aria-hidden="true"
+    tabindex="-1"></iframe>
+</section>
+
+<script>
+  type Particle = {
+    x: number;
+    y: number;
+    r: number;
+    vx: number;
+    vy: number;
+    color: string;
+    active: boolean;
+  };
+
+  function vanish(
+    input: HTMLInputElement,
+    canvas: HTMLCanvasElement,
+    onDone: () => void,
+  ) {
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ctx = canvas.getContext("2d");
+    const text = input.value;
+    if (reduce || !ctx || !text) {
+      onDone();
+      return;
+    }
+
+    const dpr = Math.min(Math.round(window.devicePixelRatio || 1), 2);
+    const w = input.offsetWidth;
+    const h = input.offsetHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+
+    const s = getComputedStyle(input);
+    const textLeft = parseFloat(s.paddingLeft) || 0;
+    const textColor = s.color;
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
+    ctx.fillStyle = textColor;
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, textLeft, h / 2);
+    const textRight = textLeft + ctx.measureText(text).width;
+
+    const dw = canvas.width;
+    const data = ctx.getImageData(0, 0, dw, canvas.height).data;
+    const particles: Particle[] = [];
+    for (let y = 0; y < canvas.height; y += dpr) {
+      for (let x = 0; x < dw; x += dpr) {
+        const i = (y * dw + x) * 4;
+        if (data[i + 3] > 128) {
+          particles.push({
+            x: x / dpr,
+            y: y / dpr,
+            r: 1,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: (Math.random() - 0.5) * 1.2,
+            active: false,
+            color: `rgba(${data[i]},${data[i + 1]},${data[i + 2]},${data[i + 3] / 255})`,
+          });
+        }
+      }
+    }
+
+    canvas.style.opacity = "1";
+    input.style.setProperty("color", "transparent");
+    input.style.setProperty("-webkit-text-fill-color", "transparent");
+    input.style.setProperty("caret-color", "transparent");
+
+    let pos = textRight;
+    const wipeSpeed = w / 75;
+
+    function frame() {
+      pos -= wipeSpeed;
+      ctx!.clearRect(0, 0, w, h);
+      ctx!.globalAlpha = 1;
+
+      if (pos > 0) {
+        ctx!.save();
+        ctx!.beginPath();
+        ctx!.rect(0, 0, pos, h);
+        ctx!.clip();
+        ctx!.fillStyle = textColor;
+        ctx!.fillText(text, textLeft, h / 2);
+        ctx!.restore();
+      }
+
+      let aliveParticles = 0;
+      for (const p of particles) {
+        if (p.r <= 0) continue;
+        if (!p.active) {
+          if (p.x >= pos) p.active = true;
+          else continue;
+        }
+        p.x += p.vx;
+        p.y += p.vy;
+        p.r -= 0.014;
+        if (p.r <= 0) continue;
+        aliveParticles++;
+        ctx!.globalAlpha = Math.min(p.r, 1);
+        ctx!.fillStyle = p.color;
+        ctx!.fillRect(p.x, p.y, p.r, p.r);
+      }
+      ctx!.globalAlpha = 1;
+
+      if (pos > 0 || aliveParticles > 0) {
+        requestAnimationFrame(frame);
+      } else {
+        input.style.removeProperty("color");
+        input.style.removeProperty("-webkit-text-fill-color");
+        input.style.removeProperty("caret-color");
+        onDone();
+        canvas.style.opacity = "0";
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function setup() {
+    document
+      .querySelectorAll<HTMLFormElement>("[data-subscribe]")
+      .forEach((form) => {
+        if (form.dataset.ready) return;
+        form.dataset.ready = "true";
+
+        const button = form.querySelector<HTMLButtonElement>("button");
+        const input = form.querySelector<HTMLInputElement>("input[type=email]");
+        const canvas = form.querySelector<HTMLCanvasElement>(".vanish");
+        const reset = form.querySelector<HTMLButtonElement>("[data-reset]");
+        const label = button?.textContent ?? "Subscribe";
+
+        form.addEventListener("submit", () => {
+          if (button) {
+            button.disabled = true;
+            button.textContent = "Subscribing…";
+          }
+          window.setTimeout(() => {
+            const done = () => {
+              if (input) input.value = "";
+              form.dataset.state = "success";
+            };
+            if (input && canvas) {
+              vanish(input, canvas, done);
+            } else {
+              done();
+            }
+          }, 700);
+        });
+
+        reset?.addEventListener("click", () => {
+          form.dataset.state = "";
+          if (button) {
+            button.disabled = false;
+            button.textContent = label;
+          }
+          input?.focus();
+        });
+      });
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>
+
+<style>
+  .subscribe {
+    max-inline-size: 32rem;
+  }
+  .title {
+    margin: 0;
+  }
+  .lead {
+    margin: var(--space-sm) 0 var(--space-lg);
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .stack {
+    display: grid;
+  }
+  .row {
+    grid-area: 1 / 1;
+    display: flex;
+    gap: var(--space-sm);
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out);
+  }
+  .success {
+    grid-area: 1 / 1;
+    align-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs) var(--space-sm);
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out),
+      visibility var(--duration-normal);
+  }
+  .relink {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-subtle);
+    font: inherit;
+    font-size: var(--fs-sm);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .relink:hover {
+    color: var(--text);
+  }
+  .check {
+    display: inline-grid;
+    place-items: center;
+    color: var(--text);
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
+    transition:
+      opacity var(--duration-normal) cubic-bezier(0.2, 0, 0, 1) 80ms,
+      transform var(--duration-normal) cubic-bezier(0.2, 0, 0, 1) 80ms,
+      filter var(--duration-normal) cubic-bezier(0.2, 0, 0, 1) 80ms;
+  }
+
+  .form[data-state="success"] .row {
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+  }
+  .form[data-state="success"] .success {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .form[data-state="success"] .check {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  .field {
+    position: relative;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .input {
+    inline-size: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .input::placeholder {
+    color: var(--text-subtle);
+  }
+  .input:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--focus) 16%, transparent);
+  }
+  .input:-webkit-autofill,
+  .input:-webkit-autofill:hover,
+  .input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text);
+    -webkit-box-shadow: 0 0 0 100px var(--surface) inset;
+    box-shadow: 0 0 0 100px var(--surface) inset;
+    caret-color: var(--text);
+    transition: background-color 9999s ease-out 0s;
+  }
+  .input:-webkit-autofill:focus-visible {
+    -webkit-box-shadow:
+      0 0 0 100px var(--surface) inset,
+      0 0 0 3px color-mix(in oklch, var(--focus) 16%, transparent);
+    box-shadow:
+      0 0 0 100px var(--surface) inset,
+      0 0 0 3px color-mix(in oklch, var(--focus) 16%, transparent);
+  }
+  .vanish {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .sink {
+    display: none;
+  }
+
+  @media (max-width: 30rem) {
+    .row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .row,
+    .success,
+    .check {
+      transition: none;
+    }
+  }
+</style>
