@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
+import Figure from "../components/ui/Figure.astro";
 
 interface Props {
   title: string;
@@ -9,6 +10,8 @@ interface Props {
   date?: Date;
   dateLabel?: string;
   type?: "website" | "article";
+  cover?: ImageMetadata | string;
+  coverAlt?: string;
 }
 
 const {
@@ -18,6 +21,8 @@ const {
   date,
   dateLabel,
   type = "website",
+  cover,
+  coverAlt,
 } = Astro.props;
 ---
 
@@ -35,6 +40,14 @@ const {
       date={date}
       dateLabel={dateLabel}
     />
+
+    {
+      cover && (
+        <div class="cover">
+          <Figure src={cover} alt={coverAlt ?? ""} loading="eager" />
+        </div>
+      )
+    }
 
     <slot name="toc" />
 
@@ -62,5 +75,11 @@ const {
   }
   .prose > :is(pre, .code-block) + *:not(hr, h2, h3, h4) {
     margin-block-start: var(--space-xl);
+  }
+</style>
+
+<style>
+  .cover {
+    margin-block-end: var(--space-3xl);
   }
 </style>

@@ -33,8 +33,9 @@ const { Content, headings } = await render(post);
   title={post.data.title}
   description={post.data.description}
   date={post.data.date}
+  cover={post.data.cover}
+  coverAlt={post.data.coverAlt}
   type="article"
-  showDescription
 >
   <Toc slot="toc" headings={headings} />
   <Content />
