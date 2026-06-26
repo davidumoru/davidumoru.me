@@ -25,9 +25,11 @@
     "motion": "^12.40.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "sharp": "^0.35.2",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
+    "@astrojs/markdown-remark": "^7.2.0",
     "prettier": "^3.8.4",
     "prettier-plugin-astro": "^0.14.1",
     "rehype-external-links": "^3.0.0"
