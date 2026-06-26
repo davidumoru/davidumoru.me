@@ -3,6 +3,7 @@ import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
+import rehypeExternalLinks from "rehype-external-links";
 
 // https://astro.build/config
 export default defineConfig({
@@ -35,6 +36,17 @@ export default defineConfig({
   ],
 
   markdown: {
+    rehypePlugins: [
+      [
+        rehypeExternalLinks,
+        {
+          target: "_blank",
+          rel: ["noopener"],
+          content: { type: "text", value: " (opens in new tab)" },
+          contentProperties: { className: ["sr-only"] },
+        },
+      ],
+    ],
     shikiConfig: {
       themes: {
         light: "github-light",
