@@ -1,0 +1,34 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  inline-size: 96px;
+  block-size: 96px;
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button:hover {
+  background: var(--surface-hover);
+}
+
+.button:active {
+  transform: scale(0.96);
+}
+
+.icon {
+  inline-size: 44px;
+  block-size: 44px;
+}
