@@ -1,0 +1,46 @@
+.root {
+  inline-size: min(28rem, 100%);
+  margin: auto;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  overflow: hidden;
+}
+
+.item + .item {
+  border-block-start: 1px solid var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  inline-size: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+}
+
+.chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.panel {
+  overflow: hidden;
+}
+
+.answer {
+  margin: 0;
+  padding: 0 var(--space-lg) var(--space-md);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+}

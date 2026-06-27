@@ -1,0 +1,90 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md) var(--space-lg);
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.heartWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+}
+
+.outline,
+.fill {
+  grid-area: 1 / 1;
+  inline-size: 26px;
+  block-size: 26px;
+}
+
+.outline {
+  color: var(--gray-8);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.button[data-liked="true"] .outline {
+  color: var(--red-9);
+}
+
+.fill {
+  color: var(--red-9);
+  fill: currentColor;
+}
+
+.burst {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.halo {
+  grid-area: 1 / 1;
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--red-9);
+}
+
+.particle {
+  grid-area: 1 / 1;
+  border-radius: 50%;
+}
+
+.countWrap {
+  display: grid;
+  place-items: center start;
+  min-inline-size: 3ch;
+  block-size: 1.4em;
+  overflow: hidden;
+}
+
+.count {
+  grid-area: 1 / 1;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.button[data-liked="true"] .count {
+  color: var(--text);
+}

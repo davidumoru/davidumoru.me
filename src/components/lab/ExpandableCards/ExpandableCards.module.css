@@ -1,0 +1,79 @@
+.root {
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-xl);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-md);
+  inline-size: min(24rem, 100%);
+}
+
+.card {
+  padding: var(--space-lg);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  cursor: pointer;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.sub {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-subtle);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-xl);
+  z-index: 2;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, var(--gray-1) 55%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.expanded {
+  position: relative;
+  z-index: 1;
+  inline-size: min(26rem, 100%);
+  cursor: default;
+}
+
+.body {
+  margin: var(--space-md) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-normal);
+}
+
+.close {
+  margin-block-start: var(--space-lg);
+  padding: var(--space-xs) var(--space-md);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--surface-active);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
