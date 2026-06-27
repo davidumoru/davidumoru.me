@@ -66,11 +66,11 @@ function TextMorph({
   className?: string;
   transition: Transition;
 }) {
-  const chars = useMemo(() => {
+  const words = useMemo(() => {
     const counts: Record<string, number> = {};
-    return Array.from(children).map((char) => {
-      const n = (counts[char] = (counts[char] ?? 0) + 1);
-      return { key: `${char}__${n}`, char };
+    return children.split(" ").map((word) => {
+      const n = (counts[word] = (counts[word] ?? 0) + 1);
+      return { key: `${word}__${n}`, word };
     });
   }, [children]);
 
@@ -78,17 +78,17 @@ function TextMorph({
     <span className={className}>
       <span className={styles.morph}>
         <AnimatePresence mode="popLayout" initial={false}>
-          {chars.map(({ key, char }) => (
+          {words.map(({ key, word }) => (
             <motion.span
               key={key}
               layout
-              className={styles.char}
+              className={styles.word}
               initial={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
               transition={transition}
             >
-              {char === " " ? " " : char}
+              {word}
             </motion.span>
           ))}
         </AnimatePresence>

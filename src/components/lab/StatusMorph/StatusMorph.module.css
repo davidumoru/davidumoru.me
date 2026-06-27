@@ -8,7 +8,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-lg);
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md) var(--space-lg);
   border-radius: var(--radius-2xl);
   background: var(--background);
   box-shadow: var(--shadow-border);
@@ -38,11 +39,11 @@
 .morph {
   display: inline-flex;
   white-space: nowrap;
+  column-gap: 0.25em;
 }
 
-.char {
+.word {
   display: inline-block;
-  white-space: pre;
 }
 
 .spinner {
