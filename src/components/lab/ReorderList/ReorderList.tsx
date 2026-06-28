@@ -22,7 +22,13 @@ export default function ReorderList() {
             className={styles.item}
             whileDrag={{ scale: 1.03 }}
           >
-            <span className={styles.grip} aria-hidden="true" />
+            <svg className={styles.grip} viewBox="0 0 10 16" aria-hidden="true">
+              {[3, 8, 13].flatMap((y) =>
+                [3, 7].map((x) => (
+                  <circle key={`${x}-${y}`} cx={x} cy={y} r="1" />
+                )),
+              )}
+            </svg>
             {item}
           </Reorder.Item>
         ))}

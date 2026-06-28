@@ -34,10 +34,13 @@
 }
 
 .grip {
-  inline-size: 0.75rem;
+  flex-shrink: 0;
+  inline-size: 0.625rem;
   block-size: 1rem;
-  background-image: radial-gradient(var(--text-subtle) 1px, transparent 1.5px);
-  background-size: 0.375rem 0.375rem;
-  background-position: center;
-  opacity: 0.5;
+  fill: var(--text-subtle);
+  transition: fill var(--duration-fast) var(--ease-out);
+}
+
+.item:hover .grip {
+  fill: var(--text-muted);
 }
