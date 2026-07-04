@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import { Icon } from "../ui/Icon/Icon.tsx";
 
 interface Props {
   name: string;
@@ -37,24 +38,9 @@ const files = [
   </div>
   {
     files.length > 0 && (
-      <details class="source">
+      <details class="source" data-silent>
         <summary>
-          <svg
-            class="chevron"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M9 6l6 6-6 6"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <Icon name="chevronRight" size={16} className="chevron" />
           <span>View source</span>
         </summary>
         <div class="files">
@@ -73,6 +59,25 @@ const files = [
     )
   }
 </div>
+
+<script>
+  import { play } from "../../utils/sound";
+
+  function setup() {
+    document
+      .querySelectorAll<HTMLDetailsElement>("details.source")
+      .forEach((details) => {
+        if (details.dataset.ready) return;
+        details.dataset.ready = "true";
+        details.addEventListener("toggle", () => {
+          play(details.open ? "expand" : "collapse");
+        });
+      });
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>
 
 <style>
   .stage {
@@ -109,10 +114,10 @@ const files = [
     color: var(--text);
     background: var(--surface);
   }
-  .chevron {
+  .source :global(.chevron) {
     transition: transform var(--duration-fast) ease;
   }
-  .source[open] .chevron {
+  .source[open] :global(.chevron) {
     transform: rotate(90deg);
   }
   .source::details-content {

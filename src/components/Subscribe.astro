@@ -62,6 +62,8 @@ const action =
 </section>
 
 <script>
+  import { play } from "../utils/sound";
+
   type Particle = {
     x: number;
     y: number;
@@ -198,6 +200,7 @@ const action =
             const done = () => {
               if (input) input.value = "";
               form.dataset.state = "success";
+              play("send");
             };
             if (input && canvas) {
               vanish(input, canvas, done);
