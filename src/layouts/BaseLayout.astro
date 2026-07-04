@@ -1,6 +1,7 @@
 ---
 import UnstyledBase from "./UnstyledBase.astro";
 import CodeCopy from "../components/CodeCopy.astro";
+import SoundToggle from "../components/SoundToggle.astro";
 
 interface Props {
   title?: string;
@@ -24,6 +25,7 @@ const { title, description, image, type, publishedDate } = Astro.props;
     <slot />
   </main>
   <CodeCopy />
+  <SoundToggle />
 </UnstyledBase>
 
 <style is:global>

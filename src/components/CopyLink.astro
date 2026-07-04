@@ -7,12 +7,15 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   type="button"
   aria-label="Copy link to this page"
   data-copy-url
+  data-silent
 >
   <span class="slot link"><Icon name="link" size={16} /></span>
   <span class="slot check"><Icon name="check" size={16} /></span>
 </button>
 
 <script>
+  import { play } from "../utils/sound";
+
   function init(btn: HTMLButtonElement) {
     if (btn.dataset.ready) return;
     btn.dataset.ready = "true";
@@ -20,6 +23,7 @@ import { Icon } from "./ui/Icon/Icon.tsx";
     btn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
+        play("copy");
         btn.classList.add("copied");
         window.setTimeout(() => btn.classList.remove("copied"), 1500);
       } catch {}

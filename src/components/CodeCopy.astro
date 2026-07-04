@@ -3,13 +3,15 @@ import { Icon } from "./ui/Icon/Icon.tsx";
 ---
 
 <template data-code-copy-template>
-  <button type="button" class="code-copy" aria-label="Copy code">
+  <button type="button" class="code-copy" aria-label="Copy code" data-silent>
     <span class="ic ic-copy"><Icon name="copy" size={16} /></span>
     <span class="ic ic-check"><Icon name="check" size={16} /></span>
   </button>
 </template>
 
 <script>
+  import { play } from "../utils/sound";
+
   function setup() {
     const tpl = document.querySelector<HTMLTemplateElement>(
       "[data-code-copy-template]",
@@ -38,6 +40,7 @@ import { Icon } from "./ui/Icon/Icon.tsx";
         const code = pre.querySelector("code")?.textContent ?? "";
         try {
           await navigator.clipboard.writeText(code);
+          play("copy");
           button.classList.add("copied");
           window.clearTimeout(timer);
           timer = window.setTimeout(() => {

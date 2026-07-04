@@ -1,0 +1,98 @@
+---
+import { Icon } from "./ui/Icon/Icon";
+---
+
+<button
+  id="soundToggle"
+  class="sound-toggle"
+  type="button"
+  aria-pressed="false"
+  aria-label="Toggle interface sound"
+  data-silent
+>
+  <span class="when-on"><Icon name="speakerSimpleHigh" size={16} /></span>
+  <span class="when-off"><Icon name="speakerSimpleSlash" size={16} /></span>
+</button>
+
+<script>
+  import { play, isEnabled, toggle } from "../utils/sound";
+
+  const INTERACTIVE = "a[href], button, [role='button'], summary";
+
+  if (!(window as any).__soundClickBound) {
+    (window as any).__soundClickBound = true;
+    document.addEventListener("click", (event) => {
+      const el = (event.target as HTMLElement).closest<HTMLElement>(
+        INTERACTIVE,
+      );
+      if (!el || el.closest("[data-silent]")) return;
+      play(el.dataset.sound || "click");
+    });
+  }
+
+  function setupToggle() {
+    const btn = document.getElementById("soundToggle");
+    if (!btn || btn.dataset.ready) return;
+    btn.dataset.ready = "true";
+    btn.setAttribute("aria-pressed", String(isEnabled()));
+    btn.addEventListener("click", () => {
+      btn.setAttribute("aria-pressed", String(toggle()));
+    });
+  }
+
+  setupToggle();
+  document.addEventListener("astro:page-load", setupToggle);
+</script>
+
+<style>
+  .sound-toggle {
+    position: fixed;
+    inset-block-end: var(--space-lg);
+    inset-inline-end: var(--space-lg);
+    z-index: 50;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-2xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-border);
+    color: var(--text-subtle);
+    cursor: pointer;
+    opacity: 0.55;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .sound-toggle:hover {
+    opacity: 1;
+    color: var(--text);
+    box-shadow: var(--shadow-border-hover);
+  }
+  .sound-toggle:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .when-on,
+  .when-off {
+    display: inline-flex;
+  }
+  .when-on {
+    display: none;
+  }
+  .sound-toggle[aria-pressed="true"] .when-on {
+    display: inline-flex;
+  }
+  .sound-toggle[aria-pressed="true"] .when-off {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sound-toggle {
+      transition: none;
+    }
+  }
+</style>
