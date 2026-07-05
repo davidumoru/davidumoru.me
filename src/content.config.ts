@@ -1,4 +1,8 @@
-import { defineCollection, type SchemaContext } from "astro:content";
+import {
+  defineCollection,
+  type CollectionEntry,
+  type SchemaContext,
+} from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
@@ -42,4 +46,41 @@ const lab = defineCollection({
     }),
 });
 
-export const collections = { pages, posts, lab };
+const workBase = {
+  title: z.string(),
+  description: z.string(),
+  url: z.string().optional(),
+  order: z.number().default(0),
+  status: z.enum(["live", "archive", "draft"]).default("live"),
+};
+
+const work = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/work" }),
+  schema: (ctx) =>
+    z.discriminatedUnion("kind", [
+      z.object({
+        kind: z.literal("project"),
+        ...workBase,
+        role: z.string().optional(),
+        year: z.string().optional(),
+        caseStudy: z.boolean().default(false),
+        ...coverFields(ctx),
+      }),
+      z.object({
+        kind: z.literal("play"),
+        ...workBase,
+        bg: z.string().optional(),
+        fg: z.string().default("#000"),
+      }),
+    ]),
+});
+
+export const collections = { pages, posts, lab, work };
+
+type WorkEntry = CollectionEntry<"work">;
+export type WorkProject = Omit<WorkEntry, "data"> & {
+  data: Extract<WorkEntry["data"], { kind: "project" }>;
+};
+export type WorkPlay = Omit<WorkEntry, "data"> & {
+  data: Extract<WorkEntry["data"], { kind: "play" }>;
+};
