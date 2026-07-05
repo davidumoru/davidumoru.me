@@ -12,6 +12,7 @@ interface Props {
   type?: "website" | "article";
   cover?: ImageMetadata | string;
   coverAlt?: string;
+  coverTransitionName?: string;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   type = "website",
   cover,
   coverAlt,
+  coverTransitionName,
 } = Astro.props;
 ---
 
@@ -44,7 +46,12 @@ const {
     {
       cover && (
         <div class="cover">
-          <Figure src={cover} alt={coverAlt ?? ""} loading="eager" />
+          <Figure
+            src={cover}
+            alt={coverAlt ?? ""}
+            loading="eager"
+            transitionName={coverTransitionName}
+          />
         </div>
       )
     }
