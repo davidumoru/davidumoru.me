@@ -1,0 +1,74 @@
+---
+import { getCollection } from "astro:content";
+import type { WorkProject, WorkPlay } from "../../content.config";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import WorkCard from "../../components/WorkCard.astro";
+import PlayList from "../../components/PlayList.astro";
+
+const description =
+  "A mix of things I've made and things I've helped make with others.";
+
+const entries = (
+  await getCollection("work", (entry) => entry.data.status === "live")
+).sort((a, b) => a.data.order - b.data.order);
+
+const projects = entries.filter(
+  (entry): entry is WorkProject => entry.data.kind === "project",
+);
+const play = entries.filter(
+  (entry): entry is WorkPlay => entry.data.kind === "play",
+);
+---
+
+<BaseLayout title="Work" description={description}>
+  <PageHeader title="Work" description={description} showDescription />
+
+  {
+    projects.length > 0 ? (
+      <ul class="projects">
+        {projects.map((project) => (
+          <li>
+            <WorkCard entry={project} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Nothing here yet.</p>
+    )
+  }
+
+  {
+    play.length > 0 && (
+      <section class="other">
+        <h2>Others</h2>
+        <p class="other-lead">
+          Things I built because I needed them, wondered if I could, or simply
+          couldn't resist.
+        </p>
+        <PlayList entries={play} />
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .projects {
+    margin-block-start: var(--space-2xl);
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4xl);
+  }
+  .empty {
+    margin-block-start: var(--space-xl);
+  }
+  .other {
+    margin-block-start: var(--space-4xl);
+  }
+  .other-lead {
+    margin-block-start: var(--space-xs);
+    margin-block-end: var(--space-xl);
+    font-size: var(--fs-lg);
+  }
+</style>

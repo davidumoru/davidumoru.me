@@ -49,6 +49,7 @@ const lab = defineCollection({
 const workBase = {
   title: z.string(),
   description: z.string(),
+  year: z.number(),
   url: z.string().optional(),
   order: z.number().default(0),
   status: z.enum(["live", "archive", "draft"]).default("live"),
@@ -62,15 +63,13 @@ const work = defineCollection({
         kind: z.literal("project"),
         ...workBase,
         role: z.string().optional(),
-        year: z.string().optional(),
         caseStudy: z.boolean().default(false),
         ...coverFields(ctx),
       }),
       z.object({
         kind: z.literal("play"),
         ...workBase,
-        bg: z.string().optional(),
-        fg: z.string().default("#000"),
+        color: z.string(),
       }),
     ]),
 });

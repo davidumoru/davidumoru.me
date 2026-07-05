@@ -1,0 +1,49 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import type { WorkProject } from "../../content.config";
+import ProseLayout from "../../layouts/ProseLayout.astro";
+import Pager from "../../components/ui/Pager.astro";
+import Toc from "../../components/Toc.astro";
+
+export async function getStaticPaths() {
+  const studies = (
+    await getCollection(
+      "work",
+      (entry) =>
+        entry.data.status === "live" &&
+        entry.data.kind === "project" &&
+        entry.data.caseStudy,
+    )
+  )
+    .filter((entry): entry is WorkProject => entry.data.kind === "project")
+    .sort((a, b) => a.data.order - b.data.order);
+
+  const toItem = (e: CollectionEntry<"work"> | undefined) =>
+    e ? { href: `/work/${e.id}`, title: e.data.title } : undefined;
+
+  return studies.map((project, i) => ({
+    params: { id: project.id },
+    props: {
+      project,
+      prev: toItem(studies[i - 1]),
+      next: toItem(studies[i + 1]),
+    },
+  }));
+}
+
+const { project, prev, next } = Astro.props;
+const { Content, headings } = await render(project);
+---
+
+<ProseLayout
+  title={project.data.title}
+  description={project.data.description}
+  cover={project.data.cover}
+  coverAlt={project.data.coverAlt}
+  coverTransitionName={`work-cover-${project.id}`}
+  type="article"
+>
+  <Toc slot="toc" headings={headings} backHref="/work" backLabel="Work" />
+  <Content />
+  <Pager prev={prev} next={next} />
+</ProseLayout>

@@ -1,0 +1,89 @@
+---
+import type { WorkPlay } from "../content.config";
+
+interface Props {
+  entries: WorkPlay[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ul class="play">
+  {
+    entries.map((entry) => {
+      const { title, description, url, color } = entry.data;
+      const isExternal = url?.startsWith("http") ?? false;
+      const Tag = url ? "a" : "div";
+      const attrs = url
+        ? {
+            href: url,
+            ...(isExternal ? { target: "_blank", rel: "noopener" } : {}),
+          }
+        : {};
+      return (
+        <li>
+          <Tag
+            class="band"
+            style={`--bg: var(--${color}-3); --fg: var(--${color}-11)`}
+            {...attrs}
+          >
+            <h3 class="title">{title}</h3>
+            <p class="desc">{description}</p>
+          </Tag>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .play {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .band {
+    display: block;
+    padding: var(--space-lg);
+    background: var(--bg);
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .title {
+    font-family: var(--font-inter);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-regular);
+    color: var(--fg);
+    text-underline-offset: 3px;
+  }
+
+  a.band .title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .desc {
+    margin-block-start: var(--space-md);
+    line-height: var(--lh-normal);
+    text-wrap: pretty;
+  }
+
+  a.band {
+    transition: filter var(--duration-fast) var(--ease-out);
+  }
+
+  a.band:hover,
+  a.band:focus-visible {
+    filter: brightness(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.band {
+      transition: none;
+    }
+  }
+</style>
