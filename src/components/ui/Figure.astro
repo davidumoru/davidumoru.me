@@ -11,6 +11,7 @@ interface Props {
   height?: number;
   loading?: "lazy" | "eager";
   class?: string;
+  transitionName?: string;
 }
 
 const {
@@ -22,10 +23,17 @@ const {
   height,
   loading = "lazy",
   class: className,
+  transitionName,
 } = Astro.props;
 
 const isRemote = typeof src === "string";
-const aspect = ratio ? `aspect-ratio: ${ratio}` : undefined;
+const mediaStyle =
+  [
+    ratio ? `aspect-ratio: ${ratio}` : undefined,
+    transitionName ? `view-transition-name: ${transitionName}` : undefined,
+  ]
+    .filter(Boolean)
+    .join("; ") || undefined;
 const hasCaption = Astro.slots.has("default");
 
 let lqip: string | undefined;
@@ -59,7 +67,7 @@ const frameStyle = lqip ? `--lqip: url(${lqip})` : undefined;
           height={height}
           loading={loading}
           decoding="async"
-          style={aspect}
+          style={mediaStyle}
         />
       ) : (
         <Image
@@ -69,7 +77,7 @@ const frameStyle = lqip ? `--lqip: url(${lqip})` : undefined;
           width={width}
           height={height}
           loading={loading}
-          style={aspect}
+          style={mediaStyle}
         />
       )
     }
