@@ -1,0 +1,15 @@
+del,
+s {
+  color: var(--primary);
+  text-decoration-line: line-through;
+  text-decoration-color: var(--primary);
+  transition:
+    color var(--duration-fast) ease,
+    text-decoration-color var(--duration-fast) ease;
+}
+
+del:hover,
+s:hover {
+  color: var(--muted);
+  text-decoration-color: transparent;
+}

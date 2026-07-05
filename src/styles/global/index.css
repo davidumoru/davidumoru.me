@@ -1,6 +1,7 @@
 @import "./links.css";
 @import "./headings.css";
 @import "./lists.css";
+@import "./strikethrough.css";
 @import "./blockquote.css";
 @import "./inline-code.css";
 @import "./code-block.css";
