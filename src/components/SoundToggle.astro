@@ -15,9 +15,21 @@ import { Icon } from "./ui/Icon/Icon.tsx";
 </button>
 
 <script>
-  import { play, isEnabled, toggle } from "../utils/sound";
+  import { play, isEnabled, toggle, prime } from "../utils/sound";
+
+  if (!(window as any).__soundUnlockBound) {
+    (window as any).__soundUnlockBound = true;
+    const unlock = () => {
+      prime();
+      window.removeEventListener("pointerdown", unlock, true);
+      window.removeEventListener("keydown", unlock, true);
+    };
+    window.addEventListener("pointerdown", unlock, true);
+    window.addEventListener("keydown", unlock, true);
+  }
 
   const INTERACTIVE = "a[href], button, [role='button'], summary";
+  const HOVERABLE = "a[href]";
 
   if (!(window as any).__soundClickBound) {
     (window as any).__soundClickBound = true;
@@ -27,6 +39,18 @@ import { Icon } from "./ui/Icon/Icon.tsx";
       );
       if (!el || el.closest("[data-silent]")) return;
       play(el.dataset.sound || "click");
+    });
+  }
+
+  if (!(window as any).__soundHoverBound) {
+    (window as any).__soundHoverBound = true;
+    let current: HTMLElement | null = null;
+    document.addEventListener("mouseover", (event) => {
+      const el = (event.target as HTMLElement).closest<HTMLElement>(HOVERABLE);
+      if (el === current) return;
+      current = el;
+      if (!el || el.closest("[data-silent]")) return;
+      play(el.dataset.hoverSound || "tap");
     });
   }
 
