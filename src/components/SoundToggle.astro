@@ -74,7 +74,7 @@ import { Icon } from "./ui/Icon/Icon.tsx";
     inset-block-end: var(--space-lg);
     inset-inline-end: var(--space-lg);
     z-index: 50;
-    display: inline-grid;
+    display: none;
     place-items: center;
     inline-size: 2.25rem;
     block-size: 2.25rem;
@@ -113,6 +113,11 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   }
   .sound-toggle[aria-pressed="true"] .when-off {
     display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sound-toggle {
+      display: inline-grid;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .sound-toggle {

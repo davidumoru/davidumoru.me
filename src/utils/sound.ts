@@ -18,6 +18,14 @@ function read(): boolean {
   return localStorage.getItem(ENABLED_KEY) === "true";
 }
 
+function supported(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches
+  );
+}
+
 function unlock() {
   ensureReady()
     .then((audio) => {
@@ -29,7 +37,7 @@ function unlock() {
 const jitter = (cents = 10) => (Math.random() - 0.5) * 2 * cents;
 
 export function prime() {
-  if (enabled) unlock();
+  if (enabled && supported()) unlock();
 }
 
 export function isEnabled() {
@@ -50,7 +58,7 @@ export function toggle() {
 }
 
 export function play(sound: string, opts: PlayOptions = {}) {
-  if (!enabled) return;
+  if (!enabled || !supported()) return;
   if (typeof document !== "undefined" && document.hidden) return;
   if (!ctx || ctx.state !== "running") return;
   if (!patch.sounds.includes(sound)) return;
