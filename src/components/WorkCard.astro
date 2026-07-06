@@ -16,19 +16,10 @@ const liveAttrs = isExternal ? { target: "_blank", rel: "noopener" } : {};
 
 const caseStudyHref = caseStudy ? `/work/${entry.id}` : undefined;
 const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
-
-const primary = caseStudyHref ?? url;
-const primaryExternal = primary?.startsWith("http") ?? false;
-const primaryAttrs = primaryExternal
-  ? { target: "_blank", rel: "noopener" }
-  : {};
-
-const CoverTag = primary ? "a" : "div";
-const coverAttrs = primary ? { href: primary, ...primaryAttrs } : {};
 ---
 
 <article>
-  <CoverTag class="cover" {...coverAttrs}>
+  <div class="cover">
     {
       cover ? (
         typeof cover === "string" ? (
@@ -60,7 +51,7 @@ const coverAttrs = primary ? { href: primary, ...primaryAttrs } : {};
         <span class="placeholder" />
       )
     }
-  </CoverTag>
+  </div>
 
   <div class="meta">
     <div class="head">
@@ -122,8 +113,8 @@ const coverAttrs = primary ? { href: primary, ...primaryAttrs } : {};
     background: var(--surface);
   }
 
-  a.cover:hover .media,
-  a.cover:hover .placeholder {
+  .cover:hover .media,
+  .cover:hover .placeholder {
     transform: scale(1.03);
   }
 
