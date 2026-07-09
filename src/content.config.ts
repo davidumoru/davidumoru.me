@@ -34,6 +34,14 @@ const posts = defineCollection({
     }),
 });
 
+const now = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/now" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+  }),
+});
+
 const lab = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/lab" }),
   schema: ({ image }) =>
@@ -74,7 +82,7 @@ const work = defineCollection({
     ]),
 });
 
-export const collections = { pages, posts, lab, work };
+export const collections = { pages, posts, now, lab, work };
 
 type WorkEntry = CollectionEntry<"work">;
 export type WorkProject = Omit<WorkEntry, "data"> & {

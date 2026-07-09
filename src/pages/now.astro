@@ -1,0 +1,95 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { formatDate, toISODate } from "../utils/date";
+
+const description =
+  "A running log of what I'm up to, where my head's at, and the occasional life update.";
+
+const entries = (await getCollection("now")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const timeline = await Promise.all(
+  entries.map(async (entry) => ({
+    data: entry.data,
+    Content: (await render(entry)).Content,
+  })),
+);
+---
+
+<BaseLayout title="Now" description={description}>
+  <PageHeader title="Now" description={description} showDescription />
+
+  <ol class="timeline">
+    {
+      timeline.map(({ data, Content }, index) => (
+        <li class:list={["entry", { current: index === 0 }]}>
+          <span class="marker" aria-hidden="true" />
+          <time class="date" datetime={toISODate(data.date)}>
+            {formatDate(data.date)}
+          </time>
+          <div class="prose body">
+            <Content />
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</BaseLayout>
+
+<style>
+  .timeline {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-block-start: var(--space-3xl);
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    inset-block: 0.28rem 0;
+    inset-inline-start: 4px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .entry {
+    position: relative;
+    padding-inline-start: var(--space-2xl);
+    padding-block-end: var(--space-3xl);
+  }
+  .entry:last-child {
+    padding-block-end: 0;
+  }
+
+  .marker {
+    position: absolute;
+    inset-block-start: 0.28rem;
+    inset-inline-start: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--text-subtle);
+  }
+  .entry.current .marker {
+    background: var(--background);
+    box-shadow: inset 0 0 0 1.5px var(--text-subtle);
+  }
+
+  .date {
+    display: block;
+    color: var(--text-subtle);
+    font-size: var(--fs-lg);
+    line-height: 1;
+  }
+
+  .body {
+    margin-block-start: var(--space-lg);
+  }
+  .body > * + * {
+    margin-block-start: var(--space-md);
+  }
+</style>
