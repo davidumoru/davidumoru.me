@@ -1,0 +1,185 @@
+---
+const href = "https://playground.davidumoru.me";
+const label = "Step into the playground";
+const clips = [
+  { src: "https://indevo.xyz/image-trail.mp4" },
+  { src: "https://indevo.xyz/3d-photo-carousel.mp4" },
+  { src: "https://indevo.xyz/photo-sphere.mp4" },
+  { src: "https://indevo.xyz/path-marquee.mp4" },
+  { src: "https://indevo.xyz/infinite-parallax-grid.mp4" },
+  { src: "https://indevo.xyz/shader-orb.mp4" },
+];
+
+const marqueeClips = [...clips, ...clips];
+---
+
+<div class="deck">
+  <a
+    class="frame"
+    href={href}
+    aria-label={label}
+    target="_blank"
+    rel="noopener"
+  >
+    <div class="stage" data-deck style={`--n:${clips.length}`}>
+      {
+        clips.map((clip, i) => (
+          <div class="card" style={`--i:${i}`}>
+            <video
+              src={clip.src}
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="metadata"
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="marquee" data-deck aria-hidden="true">
+      <div class="track">
+        {
+          marqueeClips.map((clip) => (
+            <div class="card">
+              <video
+                src={clip.src}
+                autoplay
+                loop
+                muted
+                playsinline
+                preload="metadata"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </a>
+</div>
+
+<script>
+  function setup() {
+    document.querySelectorAll<HTMLElement>("[data-deck]").forEach((stage) => {
+      if (stage.dataset.ready) return;
+      stage.dataset.ready = "true";
+      const videos = stage.querySelectorAll("video");
+      if (!videos.length) return;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          videos.forEach((v) =>
+            entry.isIntersecting ? v.play().catch(() => {}) : v.pause(),
+          );
+        },
+        { threshold: 0.1 },
+      );
+      io.observe(stage);
+    });
+  }
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>
+
+<style>
+  .deck {
+    inline-size: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+
+  .frame {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 1120px;
+    margin-inline: auto;
+    pointer-events: none;
+  }
+
+  .card {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .card video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ---------- Desktop: 3D isometric deck ---------- */
+  .stage {
+    --gap-z: 128px;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: perspective(5000px) rotateX(-14deg) rotateY(40deg);
+    block-size: 364px;
+  }
+
+  .stage .card {
+    --o: calc(var(--i) - (var(--n) - 1) / 2);
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 320px;
+    box-shadow:
+      var(--shadow-2xl),
+      inset 0 0 0 1px var(--image-outline);
+    transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)));
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  /* ---------- Mobile: full-bleed auto-marquee ---------- */
+  .marquee {
+    display: none;
+    overflow: hidden;
+    pointer-events: auto;
+    cursor: pointer;
+    -webkit-mask: linear-gradient(
+      90deg,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .track {
+    display: flex;
+    inline-size: max-content;
+    animation: deck-marquee 34s linear infinite;
+  }
+  .marquee .card {
+    flex: 0 0 auto;
+    inline-size: 280px;
+    margin-inline-end: var(--space-md);
+    box-shadow:
+      var(--shadow-lg),
+      inset 0 0 0 1px var(--image-outline);
+  }
+  @keyframes deck-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .stage {
+      display: none;
+    }
+    .marquee {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track {
+      animation: none;
+    }
+    .marquee {
+      overflow-x: auto;
+    }
+  }
+</style>
