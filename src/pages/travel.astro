@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import TravelMap from "../components/TravelMap.astro";
+
+const description = "A map of all countries I've visited or lived in so far.";
+---
+
+<BaseLayout title="Travel" description={description}>
+  <PageHeader title="Travel" description={description} showDescription />
+  <TravelMap />
+</BaseLayout>

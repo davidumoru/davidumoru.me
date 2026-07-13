@@ -1,0 +1,433 @@
+---
+import worldCountries from "world-atlas/countries-50m.json";
+import { geoNaturalEarth1, geoPath } from "d3-geo";
+import { feature } from "topojson-client";
+import type { Feature, FeatureCollection } from "geojson";
+import type { GeometryCollection, Topology } from "topojson-specification";
+import iso from "iso-3166-1";
+import { visitedCountryCodes } from "../data/visited-countries";
+import { countryNameFromId, isUnMemberState } from "../data/un-member-states";
+
+const visitedNumericIds = new Set(
+  visitedCountryCodes
+    .map((code) => iso.whereAlpha2(code)?.numeric)
+    .filter((id): id is string => Boolean(id)),
+);
+
+const topology = worldCountries as unknown as Topology;
+const featureCollection = feature(
+  topology,
+  topology.objects.countries as GeometryCollection,
+) as FeatureCollection;
+
+const unMemberFeatures = featureCollection.features.filter((geoFeature) =>
+  isUnMemberState(String(geoFeature.id ?? "")),
+);
+
+const MAP_CONFIG = {
+  width: 960,
+  height: 500,
+  patterns: {
+    dots: {
+      width: 4,
+      height: 4,
+      radius: 0.6,
+    },
+  },
+} as const;
+
+const projection = geoNaturalEarth1().fitSize(
+  [MAP_CONFIG.width, MAP_CONFIG.height],
+  { type: "FeatureCollection", features: unMemberFeatures },
+);
+const path = geoPath(projection);
+
+const countryFeatures = unMemberFeatures.map((geoFeature: Feature) => {
+  const id = String(geoFeature.id ?? "");
+  const visited = visitedNumericIds.has(id);
+  const name = countryNameFromId(id, geoFeature.properties?.name);
+
+  return {
+    ...geoFeature,
+    properties: {
+      ...geoFeature.properties,
+      name,
+      visited,
+    },
+  };
+});
+
+const uniqueCountries = [
+  ...new Map(
+    countryFeatures.map((country) => [String(country.id), country]),
+  ).values(),
+];
+
+function generateDotPositions(
+  width: number,
+  height: number,
+): Array<{ cx: number; cy: number }> {
+  const spacing = Math.min(width, height) / 2;
+  return [
+    { cx: spacing / 2, cy: spacing / 2 },
+    { cx: width - spacing / 2, cy: height - spacing / 2 },
+  ];
+}
+
+function getFillForVisited(visited: boolean): string {
+  return visited ? "var(--text)" : "url(#travel-dots)";
+}
+---
+
+<section class="travel-map">
+  <figure class="travel-map__container">
+    <svg
+      class="travel-map__svg"
+      viewBox={`0 0 ${MAP_CONFIG.width} ${MAP_CONFIG.height}`}
+      role="img"
+      aria-label="World map of countries visited"
+    >
+      <defs>
+        <pattern
+          id="travel-dots"
+          patternUnits="userSpaceOnUse"
+          patternContentUnits="userSpaceOnUse"
+          width={MAP_CONFIG.patterns.dots.width}
+          height={MAP_CONFIG.patterns.dots.height}
+        >
+          {
+            generateDotPositions(
+              MAP_CONFIG.patterns.dots.width,
+              MAP_CONFIG.patterns.dots.height,
+            ).map((pos) => (
+              <circle
+                cx={pos.cx}
+                cy={pos.cy}
+                r={MAP_CONFIG.patterns.dots.radius}
+                fill="var(--text)"
+              />
+            ))
+          }
+        </pattern>
+      </defs>
+      {
+        countryFeatures.map((country) => (
+          <path
+            class="travel-map__country"
+            d={path(country) ?? undefined}
+            fill={getFillForVisited(country.properties.visited)}
+            data-visited={country.properties.visited ? "true" : "false"}
+            data-name={country.properties.name}
+          />
+        ))
+      }
+    </svg>
+
+    <figcaption class="travel-map__legend">
+      {
+        [
+          {
+            type: "visited",
+            label: "Visited",
+            fill: "var(--text)",
+            count: uniqueCountries.filter((f) => f.properties.visited).length,
+          },
+          {
+            type: "unvisited",
+            label: "Not yet",
+            fill: "url(#travel-dots)",
+            count: uniqueCountries.filter((f) => !f.properties.visited).length,
+          },
+        ].map((item) => (
+          <div class="travel-map__legend-item" data-type={item.type}>
+            <div class="travel-map__legend-box">
+              <svg
+                class="travel-map__legend-pattern"
+                width="100%"
+                height="100%"
+                viewBox="0 0 18 18"
+                aria-hidden="true"
+              >
+                <rect width="18" height="18" fill={item.fill} />
+              </svg>
+            </div>
+            <span class="travel-map__legend-count">{item.count}</span>
+            <span class="travel-map__legend-label">{item.label}</span>
+          </div>
+        ))
+      }
+    </figcaption>
+
+    <div class="travel-map__tooltip" role="tooltip"></div>
+  </figure>
+</section>
+
+<script>
+  const MAP_WIDTH = 960;
+  let resizeHandler: (() => void) | null = null;
+
+  function setAttr(
+    elements: Iterable<Element>,
+    name: string,
+    value: string | null,
+  ) {
+    for (const element of elements) {
+      if (value === null) element.removeAttribute(name);
+      else element.setAttribute(name, value);
+    }
+  }
+
+  function initTravelMap() {
+    const container = document.querySelector(".travel-map__container");
+    if (!container) return;
+
+    if (resizeHandler) {
+      window.removeEventListener("resize", resizeHandler);
+      resizeHandler = null;
+    }
+
+    const svg = container.querySelector(".travel-map__svg");
+    const countries = container.querySelectorAll(".travel-map__country");
+    const legendItems = document.querySelectorAll(".travel-map__legend-item");
+    const tooltip = container.querySelector(
+      ".travel-map__tooltip",
+    ) as HTMLElement | null;
+
+    if (!svg || !tooltip) return;
+
+    const mapContainer = container as HTMLElement;
+    const mapTooltip = tooltip as HTMLElement;
+
+    function updatePatternScales() {
+      const svgNode = svg as SVGSVGElement;
+      const scale = svgNode.getBoundingClientRect().width / MAP_WIDTH;
+
+      for (const pattern of svgNode.querySelectorAll("pattern")) {
+        pattern.setAttribute("patternTransform", `scale(${1 / scale})`);
+      }
+
+      for (const rect of document.querySelectorAll(
+        ".travel-map__legend-pattern rect",
+      )) {
+        rect.setAttribute("width", String(18 / scale));
+        rect.setAttribute("height", String(18 / scale));
+        rect.setAttribute("transform", `scale(${scale})`);
+      }
+    }
+
+    function positionTooltip(event: MouseEvent) {
+      const containerRect = mapContainer.getBoundingClientRect();
+      const tooltipRect = mapTooltip.getBoundingClientRect();
+
+      const containerX = event.clientX - containerRect.left;
+      const containerY = event.clientY - containerRect.top;
+
+      let left = containerX + 16;
+      let top = containerY + 16;
+
+      if (left < 0) left = 16;
+      if (top < 0) top = 16;
+      if (left + tooltipRect.width > containerRect.width) {
+        left = containerRect.width - tooltipRect.width - 16;
+      }
+
+      mapTooltip.style.top = `${top}px`;
+      mapTooltip.style.left = `${left}px`;
+    }
+
+    function clearHoverState() {
+      setAttr(countries, "data-hovered", null);
+      mapTooltip.removeAttribute("data-visible");
+    }
+
+    resizeHandler = updatePatternScales;
+    updatePatternScales();
+    window.addEventListener("resize", resizeHandler);
+
+    for (const country of countries) {
+      country.addEventListener("mouseenter", (event) => {
+        const element = country as SVGPathElement;
+        const countryName = element.getAttribute("data-name") || "";
+        const visited = element.getAttribute("data-visited") === "true";
+        const statusText = visited ? "Visited" : "Not yet";
+
+        setAttr(countries, "data-hovered", null);
+        element.setAttribute("data-hovered", "true");
+        element.parentNode?.appendChild(element);
+
+        mapTooltip.innerHTML = `<strong>${countryName}</strong><br />${statusText}`;
+        mapTooltip.setAttribute("data-visible", "true");
+        positionTooltip(event as MouseEvent);
+      });
+
+      country.addEventListener("mousemove", (event) => {
+        positionTooltip(event as MouseEvent);
+      });
+
+      country.addEventListener("mouseleave", () => {
+        country.removeAttribute("data-hovered");
+        mapTooltip.removeAttribute("data-visible");
+      });
+    }
+
+    svg.addEventListener("mouseleave", clearHoverState);
+
+    for (const item of legendItems) {
+      item.addEventListener("mouseover", () => {
+        const hoveredType = item.getAttribute("data-type");
+        const isVisited = hoveredType === "visited";
+
+        setAttr(countries, "data-dimmed", "true");
+
+        for (const country of countries) {
+          const visited = country.getAttribute("data-visited") === "true";
+          if (visited === isVisited) {
+            country.removeAttribute("data-dimmed");
+            country.setAttribute("data-hovered", "true");
+          }
+        }
+
+        for (const legendItem of legendItems) {
+          if (legendItem.getAttribute("data-type") !== hoveredType) {
+            legendItem.setAttribute("data-dimmed", "true");
+          }
+        }
+      });
+
+      item.addEventListener("mouseout", () => {
+        setAttr(countries, "data-dimmed", null);
+        setAttr(countries, "data-hovered", null);
+        setAttr(legendItems, "data-dimmed", null);
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", initTravelMap);
+</script>
+
+<style>
+  .travel-map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+    margin-block-start: var(--space-3xl);
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: var(--space-sm);
+    box-sizing: border-box;
+  }
+
+  .travel-map__container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .travel-map__svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .travel-map__svg pattern {
+    transform-origin: 0 0;
+  }
+
+  .travel-map__country {
+    stroke: var(--background);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    cursor: default;
+    transition: opacity var(--duration-normal) var(--ease-out);
+  }
+
+  .travel-map__country[data-hovered="true"] {
+    stroke: var(--text);
+    stroke-width: 2;
+  }
+
+  .travel-map__country[data-dimmed="true"] {
+    opacity: 0.2;
+  }
+
+  .travel-map__legend {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    margin: 0;
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+  }
+
+  .travel-map__legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+    transition: opacity var(--duration-normal) var(--ease-out);
+  }
+
+  .travel-map__legend-item[data-dimmed="true"] {
+    opacity: 0.3;
+  }
+
+  .travel-map__legend-count {
+    font-weight: var(--fw-bold);
+    color: var(--text);
+  }
+
+  .travel-map__legend-label {
+    color: var(--text-subtle);
+  }
+
+  .travel-map__legend-box {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .travel-map__legend-pattern {
+    display: block;
+  }
+
+  .travel-map__tooltip {
+    position: absolute;
+    white-space: nowrap;
+    background: var(--text);
+    color: var(--background);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-snug);
+    pointer-events: none;
+    z-index: 10;
+    visibility: hidden;
+  }
+
+  .travel-map__tooltip[data-visible="true"] {
+    visibility: visible;
+  }
+
+  @media (min-width: 40rem) {
+    .travel-map {
+      padding-inline: var(--space-2xl);
+    }
+
+    .travel-map__container {
+      max-width: 76rem;
+    }
+  }
+</style>
