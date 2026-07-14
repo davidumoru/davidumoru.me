@@ -50,7 +50,7 @@ import { Icon } from "./ui/Icon/Icon.tsx";
       if (el === current) return;
       current = el;
       if (!el || el.closest("[data-silent]")) return;
-      play(el.dataset.hoverSound || "tap");
+      play(el.dataset.hoverSound || "hover");
     });
   }
 
