@@ -50,6 +50,7 @@ const { prev, next } = Astro.props;
     flex-direction: column;
     gap: var(--space-xs);
     max-inline-size: 48%;
+    min-inline-size: 0;
     text-decoration: none;
   }
   .next {
@@ -63,5 +64,9 @@ const { prev, next } = Astro.props;
   .title {
     color: var(--text);
     line-height: var(--lh-snug);
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>
