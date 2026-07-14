@@ -1,0 +1,102 @@
+---
+import { getCollection } from "astro:content";
+
+const MAX_TILT_DEGREES = 3;
+
+function tilt(id: string): number {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  }
+  const unit = (hash % 1000) / 1000;
+  return (unit * 2 - 1) * MAX_TILT_DEGREES;
+}
+
+const books = (await getCollection("books")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<ul class="bookshelf" role="list">
+  {
+    books.map((book) => (
+      <li class="bookshelf__book" style={`--tilt: ${tilt(book.id)}deg`}>
+        <img
+          src={book.data.cover}
+          alt={book.data.title}
+          loading="lazy"
+          decoding="async"
+        />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .bookshelf {
+    --columns: 5;
+    --book-width: 9.625rem;
+    --gap-inline: var(--space-4xl);
+
+    display: grid;
+    grid-template-columns: repeat(var(--columns), minmax(0, var(--book-width)));
+    justify-content: center;
+    align-items: start;
+    gap: var(--space-4xl) var(--gap-inline);
+
+    /* Full-bleed so tilted covers can spill past the content column. */
+    inline-size: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: var(--space-lg);
+    padding-block-start: var(--space-3xl);
+
+    list-style: none;
+  }
+
+  .bookshelf__book {
+    position: relative;
+    rotate: var(--tilt);
+    box-shadow:
+      var(--shadow-md),
+      inset 0 0 0 1px var(--image-outline);
+    transition:
+      rotate var(--duration-slow) var(--ease-out),
+      translate var(--duration-slow) var(--ease-out),
+      box-shadow var(--duration-slow) var(--ease-out);
+  }
+
+  .bookshelf__book img {
+    inline-size: 100%;
+  }
+
+  @media (hover: hover) {
+    .bookshelf__book:hover {
+      rotate: 0deg;
+      translate: 0 -4px;
+      z-index: 1;
+      box-shadow:
+        var(--shadow-lg),
+        inset 0 0 0 1px var(--image-outline);
+    }
+  }
+
+  @media (max-width: 64rem) {
+    .bookshelf {
+      --columns: 4;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .bookshelf {
+      --columns: 3;
+      --gap-inline: var(--space-3xl);
+    }
+  }
+
+  @media (max-width: 32rem) {
+    .bookshelf {
+      --columns: 2;
+      --gap-inline: var(--space-2xl);
+    }
+  }
+</style>

@@ -82,7 +82,18 @@ const work = defineCollection({
     ]),
 });
 
-export const collections = { pages, posts, now, lab, work };
+const books = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/books" }),
+  schema: () =>
+    z.object({
+      title: z.string(),
+      author: z.string(),
+      cover: z.url(),
+      order: z.number().default(0),
+    }),
+});
+
+export const collections = { pages, posts, now, lab, work, books };
 
 type WorkEntry = CollectionEntry<"work">;
 export type WorkProject = Omit<WorkEntry, "data"> & {
