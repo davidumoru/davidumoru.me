@@ -89,7 +89,16 @@ const timeline = await Promise.all(
   .body {
     margin-block-start: var(--space-lg);
   }
-  .body > * + * {
+</style>
+
+<style is:global>
+  .timeline .body > * + *:not(hr) {
     margin-block-start: var(--space-md);
+  }
+  .timeline .body > * + :is(h2, h3, h4) {
+    margin-block-start: var(--space-2xl);
+  }
+  .timeline .body > :is(h2, h3, h4) + *:not(hr) {
+    margin-block-start: var(--space-sm);
   }
 </style>
