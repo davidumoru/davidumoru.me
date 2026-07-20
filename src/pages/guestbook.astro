@@ -28,10 +28,15 @@ if (Astro.request.method === "POST") {
   }
 
   const formData = await Astro.request.formData();
+  const honeypot = (formData.get("website") as string)?.trim();
   const author = (formData.get("author") as string)?.trim();
   const link = (formData.get("link") as string)?.trim();
   const content = (formData.get("content") as string)?.trim();
   const country = (formData.get("country") as string)?.trim();
+
+  if (honeypot) {
+    return Astro.redirect("/guestbook?success=message_added");
+  }
 
   const isValidUrl = (url: string): boolean => {
     try {
