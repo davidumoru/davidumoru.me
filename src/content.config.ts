@@ -82,6 +82,21 @@ const work = defineCollection({
     ]),
 });
 
+const webrings = defineCollection({
+  loader: glob({
+    pattern: "**/[^_]*.{md,mdx}",
+    base: "./src/content/webrings",
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    url: z.url(),
+    prev: z.url(),
+    next: z.url(),
+    color: z.string(),
+  }),
+});
+
 const books = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/books" }),
   schema: () =>
@@ -93,7 +108,7 @@ const books = defineCollection({
     }),
 });
 
-export const collections = { pages, posts, now, lab, work, books };
+export const collections = { pages, posts, now, lab, work, books, webrings };
 
 type WorkEntry = CollectionEntry<"work">;
 export type WorkProject = Omit<WorkEntry, "data"> & {

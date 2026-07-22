@@ -1,0 +1,101 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "./ui/Icon/Icon.tsx";
+
+interface Props {
+  entry: CollectionEntry<"webrings">;
+}
+
+const { entry } = Astro.props;
+const { title, description, url, prev, next, color } = entry.data;
+---
+
+<article
+  class="webring"
+  style={`--ring-bg: var(--${color}-2); --ring-bg-hover: var(--${color}-3); --ring-edge: var(--${color}-5); --ring-text: var(--${color}-11);`}
+>
+  <a class="nav" href={prev} aria-label={`Previous site in ${title}`}>
+    <Icon name="arrowLeft" size={18} />
+  </a>
+  <a class="site" href={url} target="_blank" rel="noopener">
+    <h2 class="title">{title}</h2>
+    <p class="desc">{description}</p>
+  </a>
+  <a class="nav" href={next} aria-label={`Next site in ${title}`}>
+    <Icon name="arrowRight" size={18} />
+  </a>
+</article>
+
+<style>
+  .webring {
+    display: flex;
+    background: var(--ring-bg);
+    color: var(--ring-text);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 0 1px var(--ring-edge);
+    overflow: hidden;
+  }
+
+  .webring a {
+    color: inherit;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) ease,
+      scale var(--duration-fast) var(--ease-out);
+  }
+
+  .webring a:hover,
+  .webring a:focus-visible {
+    background-color: var(--ring-bg-hover);
+  }
+
+  .webring a:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    inline-size: 3rem;
+  }
+
+  .nav:active {
+    scale: 0.96;
+  }
+
+  .site {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    text-align: center;
+    border-inline: 1px solid var(--ring-edge);
+  }
+
+  .title {
+    font-family: var(--font-inter);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    color: inherit;
+  }
+
+  .desc {
+    opacity: 0.85;
+  }
+
+  @media (max-width: 30rem) {
+    .site {
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .nav {
+      inline-size: 2.5rem;
+    }
+  }
+</style>
