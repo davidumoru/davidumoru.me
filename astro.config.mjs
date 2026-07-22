@@ -16,10 +16,23 @@ export default defineConfig({
 
   fonts: [
     {
-      provider: fontProviders.google(),
+      provider: fontProviders.local(),
       name: "Inter",
       cssVariable: "--font-inter",
-      weights: ["100 900"],
+      options: {
+        variants: [
+          {
+            weight: "100 900",
+            style: "normal",
+            src: ["./src/assets/fonts/InterVariable.woff2"],
+          },
+          {
+            weight: "100 900",
+            style: "italic",
+            src: ["./src/assets/fonts/InterVariable-Italic.woff2"],
+          },
+        ],
+      },
     },
     {
       provider: fontProviders.google(),
