@@ -2,6 +2,7 @@
 import UnstyledBase from "./UnstyledBase.astro";
 import CodeCopy from "../components/CodeCopy.astro";
 import SoundToggle from "../components/SoundToggle.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 
 interface Props {
   title?: string;
@@ -25,7 +26,10 @@ const { title, description, image, type, publishedDate } = Astro.props;
     <slot />
   </main>
   <CodeCopy />
-  <SoundToggle />
+  <div class="corner-toggles">
+    <ThemeToggle />
+    <SoundToggle />
+  </div>
 </UnstyledBase>
 
 <style is:global>
@@ -35,5 +39,15 @@ const { title, description, image, type, publishedDate } = Astro.props;
     margin-inline: auto;
     padding-inline: var(--space-lg);
     padding-block: var(--space-5xl);
+  }
+
+  .corner-toggles {
+    position: fixed;
+    inset-block-end: var(--space-lg);
+    inset-inline-end: var(--space-lg);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
   }
 </style>
