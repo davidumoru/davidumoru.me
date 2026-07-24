@@ -80,6 +80,7 @@ const cards = scraps.map((scrap, i) => {
   return {
     photo,
     alt: scrap.image?.alt ?? "",
+    caption: scrap.image?.caption ?? "",
     html: photo ? null : md.render(scrap.content),
     palette: photo ? POLAROID : PALETTE[inks[i]],
     rotation: (seededRandom((i + 1) * 13) - 0.5) * 8,
@@ -103,7 +104,7 @@ const pileHeight = (cards.length - 1) * STEP + 42;
           {card.photo ? (
             <figure class="photo">
               <Image src={card.photo} alt={card.alt} width={1088} />
-              {card.alt && <figcaption>{card.alt}</figcaption>}
+              {card.caption && <figcaption>{card.caption}</figcaption>}
             </figure>
           ) : (
             <div class="content" set:html={card.html} />
