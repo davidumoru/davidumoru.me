@@ -82,6 +82,10 @@ const work = defineCollection({
     ]),
 });
 
+const scraps = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/scraps" }),
+});
+
 const webrings = defineCollection({
   loader: glob({
     pattern: "**/[^_]*.{md,mdx}",
@@ -108,7 +112,16 @@ const books = defineCollection({
     }),
 });
 
-export const collections = { pages, posts, now, lab, work, books, webrings };
+export const collections = {
+  pages,
+  posts,
+  now,
+  lab,
+  work,
+  books,
+  webrings,
+  scraps,
+};
 
 type WorkEntry = CollectionEntry<"work">;
 export type WorkProject = Omit<WorkEntry, "data"> & {

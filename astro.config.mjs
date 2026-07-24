@@ -47,6 +47,12 @@ export default defineConfig({
       cssVariable: "--font-geist-mono",
       weights: ["100 900"],
     },
+    {
+      provider: fontProviders.google(),
+      name: "Mynerve",
+      cssVariable: "--font-mynerve",
+      weights: [400],
+    },
   ],
 
   markdown: {

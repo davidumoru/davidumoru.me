@@ -1,0 +1,280 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import MarkdownIt from "markdown-it";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { parseScraps } from "../utils/scraps";
+
+const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
+
+const description =
+  "Scattered thoughts, quotes, and finds from books, films, and rabbit holes.";
+
+const PALETTE = [
+  { bg: "#f4a793", ink: "#221a15" },
+  { bg: "#f6d14c", ink: "#221a15" },
+  { bg: "#ee8a00", ink: "#221a15" },
+  { bg: "#16352a", ink: "#f3eee5" },
+  { bg: "#35202f", ink: "#f3eee5" },
+  { bg: "#9fc0b2", ink: "#16352a" },
+  { bg: "#e4574c", ink: "#2b0f0b" },
+  { bg: "#8fb3d0", ink: "#16263a" },
+  { bg: "#1e3050", ink: "#eef2f7" },
+  { bg: "#2b6b6b", ink: "#f0f8f6" },
+  { bg: "#b6a5d8", ink: "#241a33" },
+  { bg: "#efe3c8", ink: "#221a15" },
+  { bg: "#c4694a", ink: "#2a1410" },
+  { bg: "#5d6636", ink: "#f2f3e6" },
+];
+const POLAROID = { bg: "#f6f2ea", ink: "#221a15" };
+
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  "../content/scraps/images/*.{jpg,jpeg,png,webp,gif}",
+  { eager: true },
+);
+const imagesByName = new Map(
+  Object.entries(imageModules).map(([path, mod]) => [
+    path.split("/").pop() ?? path,
+    mod.default,
+  ]),
+);
+
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+const scraps = (await getCollection("scraps")).flatMap((file) =>
+  parseScraps(file.body ?? ""),
+);
+
+for (let i = scraps.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [scraps[i], scraps[j]] = [scraps[j], scraps[i]];
+}
+
+const bands = Array.from({ length: scraps.length }, (_, k) => k);
+for (let k = bands.length - 1; k > 0; k--) {
+  const j = Math.floor(seededRandom((k + 1) * 97) * (k + 1));
+  [bands[k], bands[j]] = [bands[j], bands[k]];
+}
+
+const inks = Array.from(
+  { length: scraps.length },
+  (_, k) => k % PALETTE.length,
+);
+for (let k = inks.length - 1; k > 0; k--) {
+  const j = Math.floor(seededRandom((k + 1) * 61) * (k + 1));
+  [inks[k], inks[j]] = [inks[j], inks[k]];
+}
+
+const STEP = 3.5;
+
+const cards = scraps.map((scrap, i) => {
+  const photo = scrap.image
+    ? imagesByName.get(scrap.image.src.split("/").pop() ?? "")
+    : undefined;
+
+  return {
+    photo,
+    alt: scrap.image?.alt ?? "",
+    html: photo ? null : md.render(scrap.content),
+    palette: photo ? POLAROID : PALETTE[inks[i]],
+    rotation: (seededRandom((i + 1) * 13) - 0.5) * 8,
+    x: (bands[i] + seededRandom((i + 1) * 29)) / scraps.length,
+    y: Math.max(0, i * STEP + (seededRandom((i + 1) * 31) - 0.5) * 4),
+  };
+});
+
+const pileHeight = (cards.length - 1) * STEP + 42;
+---
+
+<BaseLayout title="Scraps" description={description}>
+  <PageHeader title="Scraps" description={description} showDescription />
+  <section class="scraps-pile" style={`--pile-h: ${pileHeight}rem;`}>
+    {
+      cards.map((card) => (
+        <article
+          class="scrap"
+          style={`--card-bg: ${card.palette.bg}; --card-ink: ${card.palette.ink}; --rot: ${card.rotation.toFixed(2)}deg; --x: ${card.x.toFixed(3)}; --y: ${card.y.toFixed(2)}rem;`}
+        >
+          {card.photo ? (
+            <figure class="photo">
+              <Image src={card.photo} alt={card.alt} width={1088} />
+              {card.alt && <figcaption>{card.alt}</figcaption>}
+            </figure>
+          ) : (
+            <div class="content" set:html={card.html} />
+          )}
+        </article>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<script>
+  function initScraps() {
+    const pile = document.querySelector<HTMLElement>(".scraps-pile");
+    if (!pile) return;
+
+    const canDrag = matchMedia("(pointer: fine)").matches;
+    let topZ = 10;
+
+    for (const card of pile.querySelectorAll<HTMLElement>(".scrap")) {
+      card.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        if ((event.target as HTMLElement).closest("a")) return;
+
+        card.style.zIndex = String(++topZ);
+
+        if (!canDrag) return;
+
+        event.preventDefault();
+        card.setPointerCapture(event.pointerId);
+        card.dataset.dragging = "true";
+
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const baseX = parseFloat(card.dataset.dx ?? "0");
+        const baseY = parseFloat(card.dataset.dy ?? "0");
+
+        const move = (e: PointerEvent) => {
+          const dx = baseX + e.clientX - startX;
+          const dy = baseY + e.clientY - startY;
+          card.dataset.dx = String(dx);
+          card.dataset.dy = String(dy);
+          card.style.setProperty("--dx", `${dx}px`);
+          card.style.setProperty("--dy", `${dy}px`);
+        };
+
+        const drop = (e: PointerEvent) => {
+          card.releasePointerCapture(e.pointerId);
+          delete card.dataset.dragging;
+          card.removeEventListener("pointermove", move);
+          card.removeEventListener("pointerup", drop);
+          card.removeEventListener("pointercancel", drop);
+        };
+
+        card.addEventListener("pointermove", move);
+        card.addEventListener("pointerup", drop);
+        card.addEventListener("pointercancel", drop);
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", initScraps);
+</script>
+
+<style>
+  .scraps-pile {
+    position: relative;
+    inline-size: 100vw;
+    block-size: var(--pile-h);
+    margin-inline: calc(50% - 50vw);
+    margin-block-start: var(--space-lg);
+    padding-inline: var(--space-lg);
+    box-sizing: border-box;
+  }
+
+  .scrap {
+    position: absolute;
+    inline-size: min(34rem, calc(100vw - 2 * var(--space-lg)));
+    inset-inline-start: calc(
+      var(--space-lg) +
+        (
+          100% - 2 * var(--space-lg) -
+            min(34rem, calc(100vw - 2 * var(--space-lg)))
+        ) *
+        var(--x)
+    );
+    inset-block-start: var(--y);
+    padding: var(--space-lg) var(--space-xl) var(--space-xl);
+    background: var(--card-bg);
+    color: var(--card-ink);
+    border-radius: 2px;
+    box-shadow: var(--shadow-md);
+    font-family: var(--font-mynerve);
+    font-size: var(--fs-lg);
+    rotate: var(--rot);
+    translate: var(--dx, 0px) var(--dy, 0px);
+    cursor: grab;
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out),
+      scale var(--duration-fast) var(--ease-out);
+  }
+
+  .scrap[data-dragging] {
+    box-shadow: var(--shadow-xl);
+    scale: 1.02;
+    cursor: grabbing;
+  }
+
+  .content :global(p) {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .content :global(p + p) {
+    margin-block-start: var(--space-sm);
+  }
+
+  .content :global(a) {
+    color: inherit;
+    text-decoration-color: currentColor;
+  }
+
+  .content :global(blockquote) {
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-style: normal;
+  }
+
+  .content :global(img) {
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  .photo {
+    margin: 0;
+  }
+
+  .photo img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .photo figcaption {
+    margin-block-start: var(--space-sm);
+    font-size: var(--fs-sm);
+    opacity: 0.75;
+  }
+
+  @media (max-width: 40rem) {
+    .scraps-pile {
+      block-size: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: clip;
+      padding-block: var(--space-md) var(--space-3xl);
+    }
+
+    .scrap {
+      position: relative;
+      inset: auto;
+      inline-size: 100%;
+      translate: none;
+      padding: var(--space-md) var(--space-lg) var(--space-lg);
+      cursor: pointer;
+    }
+
+    .scrap + .scrap {
+      margin-block-start: -2rem;
+    }
+  }
+</style>
