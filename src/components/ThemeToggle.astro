@@ -1,40 +1,96 @@
 ---
-
+import { Icon } from "./ui/Icon/Icon.tsx";
 ---
 
-<button id="themeToggle" type="button" aria-label="Toggle color theme">
-  <span class="when-light">Light</span>
-  <span class="when-dark">Dark</span>
+<button
+  id="themeToggle"
+  type="button"
+  aria-label="Toggle color theme"
+  data-silent
+>
+  <span class="when-light"><Icon name="sun" size={16} variant="duotone" /></span
+  >
+  <span class="when-dark"><Icon name="moon" size={16} variant="duotone" /></span
+  >
 </button>
+
+<script>
+  import { play } from "../utils/sound";
+
+  function bindThemeSound() {
+    const btn = document.getElementById("themeToggle");
+    if (!btn || btn.dataset.soundReady) return;
+    btn.dataset.soundReady = "true";
+    btn.addEventListener("click", () => {
+      const willBeDark = !document.documentElement.classList.contains("dark");
+      play(willBeDark ? "toggle-on" : "toggle-off");
+    });
+  }
+
+  bindThemeSound();
+  document.addEventListener("astro:page-load", bindThemeSound);
+</script>
 
 <style>
   button {
-    padding: var(--space-xs) var(--space-sm);
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-    background: transparent;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    padding: 0;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: var(--shadow-border);
+    color: var(--text-subtle);
     cursor: pointer;
+    opacity: 0.55;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
   }
 
   button:hover {
+    opacity: 1;
     color: var(--text);
-    background: var(--surface-hover);
+    box-shadow: var(--shadow-border-hover);
   }
 
   button:focus-visible {
+    opacity: 1;
     outline: 2px solid var(--focus);
     outline-offset: 2px;
   }
 
+  .when-light,
   .when-dark {
-    display: none;
+    grid-area: 1 / 1;
+    display: inline-flex;
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      scale var(--duration-normal) var(--ease-out),
+      rotate var(--duration-normal) var(--ease-out);
+  }
+
+  .when-light {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+  .when-dark {
+    opacity: 0;
+    scale: 0.5;
+    rotate: 90deg;
   }
   :global(.dark) .when-light {
-    display: none;
+    opacity: 0;
+    scale: 0.5;
+    rotate: -90deg;
   }
   :global(.dark) .when-dark {
-    display: inline;
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
   }
 </style>

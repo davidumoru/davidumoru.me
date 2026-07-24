@@ -10,8 +10,12 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   aria-label="Toggle interface sound"
   data-silent
 >
-  <span class="when-on"><Icon name="speakerSimpleHigh" size={16} /></span>
-  <span class="when-off"><Icon name="speakerSimpleSlash" size={16} /></span>
+  <span class="when-on"
+    ><Icon name="speakerSimpleHigh" size={16} variant="duotone" /></span
+  >
+  <span class="when-off"
+    ><Icon name="speakerSimpleSlash" size={16} variant="duotone" /></span
+  >
 </button>
 
 <script>
@@ -70,17 +74,13 @@ import { Icon } from "./ui/Icon/Icon.tsx";
 
 <style>
   .sound-toggle {
-    position: fixed;
-    inset-block-end: var(--space-lg);
-    inset-inline-end: var(--space-lg);
-    z-index: 50;
     display: none;
     place-items: center;
     inline-size: 2.25rem;
     block-size: 2.25rem;
     padding: 0;
     border: none;
-    border-radius: var(--radius-2xl);
+    border-radius: 50%;
     background: var(--surface);
     box-shadow: var(--shadow-border);
     color: var(--text-subtle);
@@ -103,16 +103,27 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   }
   .when-on,
   .when-off {
+    grid-area: 1 / 1;
     display: inline-flex;
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      scale var(--duration-normal) var(--ease-out);
   }
   .when-on {
-    display: none;
+    opacity: 0;
+    scale: 0.5;
+  }
+  .when-off {
+    opacity: 1;
+    scale: 1;
   }
   .sound-toggle[aria-pressed="true"] .when-on {
-    display: inline-flex;
+    opacity: 1;
+    scale: 1;
   }
   .sound-toggle[aria-pressed="true"] .when-off {
-    display: none;
+    opacity: 0;
+    scale: 0.5;
   }
   @media (hover: hover) and (pointer: fine) {
     .sound-toggle {
