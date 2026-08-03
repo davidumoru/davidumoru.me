@@ -38,6 +38,30 @@ if (Astro.request.method === "POST") {
     return Astro.redirect("/guestbook?success=message_added");
   }
 
+  const token = (formData.get("cf-turnstile-response") as string) || "";
+  const remoteip =
+    Astro.request.headers.get("cf-connecting-ip") ||
+    Astro.request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "";
+
+  const verifyResponse = await fetch(
+    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+    {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: import.meta.env.TURNSTILE_SECRET_KEY,
+        response: token,
+        ...(remoteip ? { remoteip } : {}),
+      }),
+    },
+  );
+  const verifyOutcome = (await verifyResponse.json()) as { success: boolean };
+
+  if (!verifyOutcome.success) {
+    return Astro.redirect("/guestbook?error=captcha");
+  }
+
   const isValidUrl = (url: string): boolean => {
     try {
       new URL(url);
@@ -141,6 +165,14 @@ const error = Astro.url.searchParams.get("error");
         {
           error === "too_many_links" && (
             <AlertMessage type="error" message="Too many links in message." />
+          )
+        }
+        {
+          error === "captcha" && (
+            <AlertMessage
+              type="error"
+              message="Verification failed. Please try again."
+            />
           )
         }
       </div>

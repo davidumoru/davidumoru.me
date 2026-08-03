@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { countries } = Astro.props;
+const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY;
 ---
 
 <form method="POST" enctype="multipart/form-data" class="guestbook-form">
@@ -66,6 +67,13 @@ const { countries } = Astro.props;
         rows="3"
         class="textarea"
         placeholder="Write your message here..."></textarea>
+    </div>
+
+    <div
+      id="turnstile-widget"
+      class="turnstile"
+      data-sitekey={turnstileSiteKey}
+    >
     </div>
 
     <button type="submit" class="submit-button">
@@ -206,6 +214,11 @@ const { countries } = Astro.props;
     min-height: 80px;
   }
 
+  .turnstile {
+    margin-bottom: 1rem;
+    min-height: 65px;
+  }
+
   .submit-button {
     width: 100%;
     padding: 0.875rem 1.5rem;
@@ -306,3 +319,32 @@ const { countries } = Astro.props;
     }
   }
 </style>
+
+<script>
+  const TURNSTILE_SRC =
+    "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+
+  function renderTurnstile() {
+    const el = document.getElementById("turnstile-widget");
+    const turnstile = (window as any).turnstile;
+    if (!el || el.dataset.rendered || !turnstile) return;
+    turnstile.render(el, { sitekey: el.dataset.sitekey });
+    el.dataset.rendered = "true";
+  }
+
+  function setupTurnstile() {
+    if (!document.getElementById("turnstile-widget")) return;
+    if ((window as any).turnstile) return renderTurnstile();
+    if (document.getElementById("cf-turnstile-script")) return;
+
+    const script = document.createElement("script");
+    script.id = "cf-turnstile-script";
+    script.src = TURNSTILE_SRC;
+    script.async = true;
+    script.defer = true;
+    script.onload = renderTurnstile;
+    document.head.appendChild(script);
+  }
+
+  document.addEventListener("astro:page-load", setupTurnstile);
+</script>
