@@ -1,15 +1,31 @@
 // @ts-check
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig, fontProviders, envField } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import rehypeExternalLinks from "rehype-external-links";
 import { unified } from "@astrojs/markdown-remark";
 
+import vercel from "@astrojs/vercel";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://davidumoru.me",
   prefetch: true,
+
+  env: {
+    schema: {
+      TURSO_DATABASE_URL: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      TURSO_AUTH_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+    },
+  },
+
   devToolbar: {
     enabled: false,
   },
@@ -78,4 +94,5 @@ export default defineConfig({
   },
 
   integrations: [sitemap(), mdx(), react()],
+  adapter: vercel(),
 });

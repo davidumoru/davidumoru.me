@@ -1,0 +1,103 @@
+---
+import { Icon } from "../ui/Icon/Icon.tsx";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  total: number;
+}
+
+const { currentPage, totalPages, total } = Astro.props;
+
+const href = (page: number) =>
+  page === 1 ? "/guestbook" : `/guestbook?page=${page}`;
+---
+
+<nav class="pager" aria-label="Pagination">
+  <p class="pager-count">
+    {total.toLocaleString()} {total === 1 ? "stamp" : "stamps"} on the wall.
+    <span class="pager-place">Page {currentPage} of {totalPages}.</span>
+  </p>
+
+  {
+    totalPages > 1 && (
+      <div class="pager-controls">
+        {currentPage > 2 && (
+          <a
+            class="pager-btn"
+            href={href(1)}
+            aria-label="First page"
+            data-astro-prefetch="hover"
+          >
+            <Icon name="caretDoubleLeft" size={18} />
+          </a>
+        )}
+        {currentPage > 1 && (
+          <a
+            class="pager-btn"
+            href={href(currentPage - 1)}
+            aria-label="Previous page"
+            data-astro-prefetch="hover"
+          >
+            <Icon name="arrowLeft" size={18} />
+          </a>
+        )}
+        {currentPage < totalPages && (
+          <a
+            class="pager-btn"
+            href={href(currentPage + 1)}
+            aria-label="Next page"
+            data-astro-prefetch="hover"
+          >
+            <Icon name="arrowRight" size={18} />
+          </a>
+        )}
+      </div>
+    )
+  }
+</nav>
+
+<style>
+  .pager {
+    margin: 2rem auto 3rem;
+    text-align: center;
+  }
+
+  .pager-count {
+    margin: 0;
+    color: var(--text-subtle);
+    text-wrap: balance;
+  }
+  .pager-place {
+    display: block;
+  }
+
+  .pager-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xs);
+    margin-block-start: var(--space-md);
+  }
+
+  .pager-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    color: var(--text);
+    box-shadow: var(--shadow-border);
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .pager-btn:hover {
+    background: var(--surface-hover);
+    box-shadow: var(--shadow-border-hover);
+  }
+  .pager-btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>

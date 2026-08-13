@@ -1,0 +1,148 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Wall from "../components/guestbook/Wall.astro";
+import Skeleton from "../components/guestbook/Skeleton.astro";
+import Alert from "../components/guestbook/Alert.astro";
+import Form from "../components/guestbook/Form.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { turso } from "../utils/turso";
+import { getStampCountries } from "../utils/countries";
+
+if (Astro.request.method === "POST") {
+  const contentType = Astro.request.headers.get("content-type");
+  if (!contentType || !contentType.includes("multipart/form-data")) {
+    return new Response("Invalid content type", { status: 400 });
+  }
+
+  const formData = await Astro.request.formData();
+
+  // Answers success so bots get no failure signal to iterate against.
+  const honeypot = formData.get("special");
+  if (typeof honeypot === "string" && honeypot.trim()) {
+    return Astro.redirect("/guestbook?success=message_added");
+  }
+
+  const author = (formData.get("author") as string)?.trim();
+  const link = (formData.get("link") as string)?.trim();
+  const content = (formData.get("content") as string)?.trim();
+  const country = (formData.get("country") as string)?.trim();
+
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  if (!author || !content || !country || content.length > 150) {
+    return Astro.redirect("/guestbook?error=invalid_input");
+  }
+  if (link && !isValidUrl(link)) {
+    return Astro.redirect("/guestbook?error=invalid_link");
+  }
+  if ((content.match(/https?:\/\//g) || []).length > 1) {
+    return Astro.redirect("/guestbook?error=too_many_links");
+  }
+
+  await turso.execute({
+    sql: `INSERT INTO GuestBook (author, link, content, country, timestamp)
+          VALUES (?, ?, ?, ?, ?)`,
+    args: [author, link || null, content, country, new Date().toISOString()],
+  });
+
+  return Astro.redirect("/guestbook?success=message_added");
+}
+
+const page = Math.max(
+  1,
+  Number.parseInt(Astro.url.searchParams.get("page") || "1", 10) || 1,
+);
+if (Astro.url.searchParams.has("page") && page === 1) {
+  const canonical = new URL(Astro.url);
+  canonical.searchParams.delete("page");
+  return Astro.redirect(canonical.pathname + canonical.search, 301);
+}
+
+const countries = page === 1 ? await getStampCountries() : [];
+
+const success = Astro.url.searchParams.get("success");
+const error = Astro.url.searchParams.get("error");
+---
+
+<BaseLayout
+  title="Guestbook"
+  description="A digital guestbook where visitors can leave messages, thoughts, or feedback. Each entry is a snapshot of their visit, complete with a travel stamp from their country."
+>
+  <PageHeader
+    title="Guestbook"
+    description="Leave a message and get a travel stamp!"
+    showDescription
+  />
+
+  <div class="alert-container">
+    {
+      success && (
+        <Alert type="success" message="Message added successfully!" />
+      )
+    }
+    {
+      error === "invalid_input" && (
+        <Alert
+          type="error"
+          message="Invalid input. Ensure author and message are filled."
+        />
+      )
+    }
+    {
+      error === "invalid_link" && (
+        <Alert type="error" message="Invalid URL format." />
+      )
+    }
+    {
+      error === "too_many_links" && (
+        <Alert type="error" message="Too many links in message." />
+      )
+    }
+  </div>
+
+  <section class="guestbook-entries">
+    {page === 1 && <Form countries={countries} />}
+
+    <Wall server:defer page={page}>
+      <Skeleton slot="fallback" />
+    </Wall>
+  </section>
+</BaseLayout>
+
+<style>
+  .alert-container {
+    margin-bottom: 24px;
+  }
+
+  .guestbook-entries {
+    max-width: 120rem;
+    width: calc(100vw - 2 * var(--space-lg));
+    margin-inline-start: 50%;
+    translate: -50% 0;
+    margin-block-end: 48px;
+    text-align: center;
+  }
+</style>
+
+<script>
+  function stripFlashParams() {
+    const url = new URL(location.href);
+    if (!url.searchParams.has("success") && !url.searchParams.has("error"))
+      return;
+
+    url.searchParams.delete("success");
+    url.searchParams.delete("error");
+    history.replaceState(history.state, "", url.pathname + url.search);
+  }
+
+  document.addEventListener("astro:page-load", stripFlashParams);
+</script>

@@ -1,0 +1,100 @@
+---
+import { Icon } from "../ui/Icon/Icon.tsx";
+
+interface Props {
+  type: "success" | "error";
+  message: string;
+}
+
+const { type, message } = Astro.props;
+---
+
+<div class="alert" data-type={type} role="alert">
+  <span class="icon" aria-hidden="true">
+    <Icon name={type === "success" ? "checkCircle" : "warning"} size={22} variant="duotone" />
+  </span>
+  <p class="message">{message}</p>
+  <button class="dismiss" type="button" aria-label="Dismiss this message">
+    <Icon name="x" size={16} />
+  </button>
+</div>
+
+<style>
+  .alert {
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .alert[data-type="success"] {
+    background-color: var(--green-3);
+    border: 1px solid var(--green-6);
+    color: var(--green-11);
+  }
+
+  .alert[data-type="error"] {
+    background-color: var(--red-3);
+    border: 1px solid var(--red-6);
+    color: var(--red-11);
+  }
+
+  .icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .message {
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+  }
+
+  .dismiss {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      background var(--duration-fast) var(--ease-out);
+  }
+  .dismiss:hover {
+    opacity: 1;
+    background: oklch(0 0 0 / 0.08);
+  }
+  .dismiss:focus-visible {
+    opacity: 1;
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+  }
+</style>
+
+<script>
+  function initAlerts() {
+    for (const button of document.querySelectorAll<HTMLButtonElement>(
+      ".alert .dismiss",
+    )) {
+      button.addEventListener("click", () =>
+        button.closest(".alert")?.remove(),
+      );
+    }
+  }
+
+  document.addEventListener("astro:page-load", initAlerts);
+</script>

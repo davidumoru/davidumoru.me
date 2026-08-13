@@ -1,0 +1,55 @@
+---
+import Entry from "./Entry.astro";
+import Pagination from "./Pagination.astro";
+import { turso } from "../../utils/turso";
+import { PER_PAGE, stampImageUrl } from "../../utils/guestbook";
+import { DEFAULT_HUE } from "../../utils/stamp-theme";
+
+interface Props {
+  page: number;
+}
+
+const { page } = Astro.props;
+
+const [entries, counted] = await Promise.all([
+  turso.execute({
+    sql: `SELECT g.author, g.link, g.content, g.country, g.timestamp,
+                 s.has_image AS hasStamp, s.hue AS stampHue
+          FROM GuestBook g
+          LEFT JOIN Stamps s ON g.country = s.country
+          ORDER BY g.timestamp DESC
+          LIMIT ? OFFSET ?`,
+    args: [PER_PAGE, (page - 1) * PER_PAGE],
+  }),
+  turso.execute("SELECT COUNT(*) AS total FROM GuestBook"),
+]);
+
+const guestBook = entries.rows as unknown as {
+  author: string;
+  link: string | null;
+  content: string;
+  country: string;
+  timestamp: string;
+  hasStamp: number | null;
+  stampHue: number | null;
+}[];
+
+const total = Number(counted.rows[0].total);
+const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+---
+
+{
+  guestBook.map((entry) => (
+    <Entry
+      name={entry.author}
+      link={entry.link}
+      message={entry.content}
+      date={new Date(entry.timestamp)}
+      country={entry.country}
+      hue={entry.stampHue ?? DEFAULT_HUE}
+      imageUrl={entry.hasStamp ? stampImageUrl(entry.country) : undefined}
+    />
+  ))
+}
+
+<Pagination currentPage={page} totalPages={totalPages} total={total} />

@@ -1,0 +1,476 @@
+---
+import "./stamp.css";
+import { Icon } from "../ui/Icon/Icon.tsx";
+import { stampStyle, DEFAULT_HUE } from "../../utils/stamp-theme";
+
+interface Props {
+  countries: { country: string; hue: number }[];
+}
+
+const { countries } = Astro.props;
+---
+
+<form
+  class="guestbook-stamp stamp-form"
+  method="POST"
+  enctype="multipart/form-data"
+  style={stampStyle(DEFAULT_HUE)}
+>
+  <div class="stamp-paper"></div>
+  <div class="stamp-frame"></div>
+
+  <div class="content-overlay">
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+  </div>
+
+  <div class="stamp-form-content">
+    <label class="sr-only" for="content">Message</label>
+    <textarea
+      class="field field-message"
+      name="content"
+      id="content"
+      required
+      maxlength="150"
+      placeholder="Leave a message, write a note, say hello..."></textarea>
+
+    <label class="sr-only" for="author">Your name</label>
+    <input
+      class="field field-line"
+      type="text"
+      name="author"
+      id="author"
+      required
+      maxlength="50"
+      autocomplete="name"
+      placeholder="Your name"
+    />
+
+    <label class="sr-only" for="link">Link</label>
+    <input
+      class="field field-line"
+      type="url"
+      name="link"
+      id="link"
+      autocomplete="url"
+      placeholder="URL (optional)"
+    />
+
+    <label class="sr-only" for="country">Country</label>
+    <select
+      class="field field-line country-select"
+      name="country"
+      id="country"
+      required
+    >
+      <option value="" disabled selected>Country</option>
+      {
+        countries.map(({ country, hue }) => (
+          <option value={country} data-hue={hue}>
+            {country}
+          </option>
+        ))
+      }
+    </select>
+
+    <div class="combo" hidden>
+      <label class="sr-only" for="country-input">Country</label>
+      <input
+        class="field field-line"
+        type="text"
+        id="country-input"
+        role="combobox"
+        aria-controls="combo-list"
+        aria-expanded="false"
+        aria-autocomplete="list"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Country"
+      />
+      <ul class="combo-list" id="combo-list" role="listbox" hidden>
+        {
+          countries.map(({ country, hue }, i) => (
+            <li
+              class="combo-option"
+              id={`combo-opt-${i}`}
+              role="option"
+              aria-selected="false"
+              data-value={country}
+              data-hue={hue}
+            >
+              {country}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="honeypot" aria-hidden="true">
+    <label for="special">Leave this empty</label>
+    <input
+      type="text"
+      id="special"
+      name="special"
+      tabindex="-1"
+      autocomplete="off"
+    />
+  </div>
+
+  <button class="post-mark" type="submit">
+    <Icon name="paperPlaneTilt" size={16} variant="fill" />
+    Post it
+  </button>
+
+  <div class="stamp-decorative-line left"></div>
+  <div class="stamp-decorative-line right"></div>
+</form>
+
+<style>
+  .stamp-form {
+    --rotate: -0.8deg;
+    text-align: left;
+    overflow: visible;
+    content-visibility: visible;
+  }
+  .stamp-form:hover {
+    transform: rotate(var(--rotate));
+  }
+
+  .stamp-form-content {
+    position: absolute;
+    top: calc(var(--perforation-size) + var(--inner-padding));
+    left: calc(var(--perforation-size) + var(--inner-padding));
+    right: calc(var(--perforation-size) + var(--inner-padding));
+    height: calc(
+      100% - 2 * var(--perforation-size) - 2 * var(--inner-padding) - 16px
+    );
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field {
+    width: 100%;
+    font-family: inherit;
+    color: var(--dark-text-fixed);
+    background-color: transparent;
+    border: none;
+    box-sizing: border-box;
+    transition:
+      background-color var(--duration-fast, 150ms) ease,
+      border-color var(--duration-fast, 150ms) ease;
+  }
+  .field::placeholder {
+    color: var(--mid-grey-fixed);
+    opacity: 0.85;
+  }
+  .field:focus {
+    outline: none;
+  }
+
+  .field-message {
+    flex: 1;
+    min-height: 0;
+    resize: none;
+    padding: 8px 10px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 1px dashed var(--border-accent);
+    border-radius: 3px;
+    background-color: oklch(1 0 0 / 0.35);
+  }
+  .field-message:focus {
+    border-style: solid;
+    border-color: var(--primary-stamp-color);
+    background-color: oklch(1 0 0 / 0.6);
+  }
+
+  .field-line {
+    padding: 3px 2px;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed var(--border-accent);
+  }
+  .field-line:focus {
+    border-bottom-style: solid;
+    border-bottom-color: var(--primary-stamp-color);
+    background-color: oklch(1 0 0 / 0.45);
+  }
+
+  .country-select {
+    appearance: none;
+    cursor: pointer;
+    color: var(--dark-text-fixed);
+  }
+  .country-select:invalid {
+    color: var(--mid-grey-fixed);
+    opacity: 0.85;
+  }
+
+  .honeypot {
+    display: none;
+  }
+
+  .combo {
+    position: relative;
+  }
+
+  .combo-list {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 6;
+    max-height: 148px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    border: 1px solid var(--border-accent);
+    border-radius: 4px;
+    background-color: var(--light-stamp-bg);
+    box-shadow: 0 6px 18px oklch(0 0 0 / 0.18);
+    scrollbar-width: thin;
+  }
+
+  .combo-option {
+    padding: 4px 7px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    color: var(--dark-text-fixed);
+    cursor: pointer;
+  }
+  .combo-option:hover,
+  .combo-option.is-active {
+    background-color: oklch(1 0 0 / 0.75);
+    color: var(--primary-stamp-color);
+  }
+
+  .post-mark {
+    position: absolute;
+    bottom: -16px;
+    right: 22px;
+    z-index: 7;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 999px;
+    background-color: var(--action-color);
+    color: oklch(1 0 0);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow:
+      0 1px 3px oklch(0 0 0 / 0.2),
+      0 8px 18px oklch(0 0 0 / 0.14);
+    transition:
+      translate var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
+      box-shadow var(--duration-fast, 150ms) ease,
+      background-color var(--duration-fast, 150ms) ease;
+  }
+  .post-mark:hover {
+    translate: 0 -2px;
+    background-color: var(--dark-text-fixed);
+    box-shadow:
+      0 2px 5px oklch(0 0 0 / 0.22),
+      0 12px 24px oklch(0 0 0 / 0.18);
+  }
+  .post-mark:active {
+    translate: 0 1px;
+    box-shadow: 0 1px 2px oklch(0 0 0 / 0.2);
+  }
+  .post-mark:focus-visible {
+    outline: 2px solid var(--primary-stamp-color);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 400px) {
+    .field-message {
+      font-size: 0.9rem;
+    }
+    .combo-list {
+      max-height: 120px;
+    }
+    .post-mark {
+      font-size: 0.85rem;
+      padding: 8px 16px;
+    }
+  }
+</style>
+
+<script>
+  import { applyStampVars, DEFAULT_HUE } from "../../utils/stamp-theme";
+
+  let onDocumentClick: ((event: MouseEvent) => void) | null = null;
+
+  function initFormStamp() {
+    if (onDocumentClick) {
+      document.removeEventListener("click", onDocumentClick);
+      onDocumentClick = null;
+    }
+
+    const form = document.querySelector<HTMLFormElement>(".stamp-form");
+    const select = form?.querySelector<HTMLSelectElement>(".country-select");
+    if (!form || !select) return;
+
+    const retint = () => {
+      const hue = Number(select.selectedOptions[0]?.dataset.hue);
+      applyStampVars(form, Number.isFinite(hue) ? hue : DEFAULT_HUE);
+    };
+    select.addEventListener("change", retint);
+    retint();
+
+    const combo = form.querySelector<HTMLElement>(".combo");
+    const input = form.querySelector<HTMLInputElement>("#country-input");
+    const list = form.querySelector<HTMLElement>(".combo-list");
+    if (!combo || !input || !list) return;
+
+    combo.hidden = false;
+    select.classList.add("sr-only");
+    select.removeAttribute("required");
+
+    const options = Array.from(
+      list.querySelectorAll<HTMLLIElement>(".combo-option"),
+    );
+    const names = options.map((option) => option.dataset.value ?? "");
+    let active: HTMLLIElement | null = null;
+
+    const visible = () => options.filter((option) => !option.hidden);
+
+    const setActive = (option: HTMLLIElement | null) => {
+      active?.classList.remove("is-active");
+      active = option;
+      if (!option) {
+        input.removeAttribute("aria-activedescendant");
+        return;
+      }
+      option.classList.add("is-active");
+      input.setAttribute("aria-activedescendant", option.id);
+      option.scrollIntoView({ block: "nearest" });
+    };
+
+    const close = () => {
+      list.hidden = true;
+      input.setAttribute("aria-expanded", "false");
+      setActive(null);
+    };
+
+    const open = () => {
+      list.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+    };
+
+    const choose = (option: HTMLLIElement) => {
+      const value = option.dataset.value ?? "";
+      input.value = value;
+      select.value = value;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      input.setCustomValidity("");
+      close();
+    };
+
+    const move = (step: number) => {
+      const shown = visible();
+      if (!shown.length) return;
+      const index = active ? shown.indexOf(active) : -1;
+      setActive(shown[(index + step + shown.length) % shown.length]);
+    };
+
+    input.addEventListener("input", () => {
+      const needle = input.value.trim().toLowerCase();
+      if (!needle) {
+        close();
+        return;
+      }
+
+      let shown = 0;
+      options.forEach((option, i) => {
+        const match = names[i].toLowerCase().includes(needle);
+        option.hidden = !match;
+        if (match) shown++;
+      });
+
+      if (shown) {
+        open();
+        setActive(visible()[0]);
+      } else {
+        close();
+      }
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (list.hidden && (event.key === "ArrowDown" || event.key === "ArrowUp"))
+        return;
+
+      switch (event.key) {
+        case "ArrowDown":
+          event.preventDefault();
+          move(1);
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          move(-1);
+          break;
+        case "Enter":
+          if (active) {
+            event.preventDefault();
+            choose(active);
+          }
+          break;
+        case "Escape":
+          close();
+          break;
+      }
+    });
+
+    input.addEventListener("blur", () => {
+      window.setTimeout(() => {
+        if (!list.hidden) return;
+        const exact = names.find(
+          (name) => name.toLowerCase() === input.value.trim().toLowerCase(),
+        );
+        if (exact) {
+          select.value = exact;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+          input.value = exact;
+        } else {
+          input.value = select.value;
+        }
+      }, 120);
+    });
+
+    list.addEventListener("mousedown", (event) => {
+      const option = (event.target as HTMLElement).closest<HTMLLIElement>(
+        ".combo-option",
+      );
+      if (option) {
+        event.preventDefault();
+        choose(option);
+      }
+    });
+
+    form.addEventListener("submit", (event) => {
+      if (select.value) return;
+      event.preventDefault();
+      input.setCustomValidity("Pick a country from the list.");
+      input.reportValidity();
+    });
+    input.addEventListener("input", () => input.setCustomValidity(""));
+
+    onDocumentClick = (event: MouseEvent) => {
+      if (!combo.contains(event.target as Node)) close();
+    };
+    document.addEventListener("click", onDocumentClick);
+  }
+
+  document.addEventListener("astro:page-load", initFormStamp);
+</script>
