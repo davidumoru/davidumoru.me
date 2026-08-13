@@ -1,0 +1,130 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+
+const description =
+  "Tools, reads, and corners of the web I've saved and keep coming back to.";
+
+const folders = (await getCollection("bookmarks"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({
+    name: entry.data.name,
+    bookmarks: entry.data.bookmarks.map((bm) => {
+      const host = new URL(bm.url).hostname.replace(/^www\./, "");
+      return {
+        ...bm,
+        host,
+        favicon: `https://www.google.com/s2/favicons?domain=${host}&sz=64`,
+      };
+    }),
+  }));
+---
+
+<BaseLayout title="Bookmarks" description={description}>
+  <PageHeader title="Bookmarks" description={description} showDescription />
+
+  <div class="catalog">
+    {
+      folders.map((folder) => (
+        <section class="folder">
+          <h2 class="folder__name">{folder.name}</h2>
+          <ul class="links">
+            {folder.bookmarks.map((bm) => (
+              <li>
+                <a class="link" href={bm.url} target="_blank" rel="noopener">
+                  <img
+                    class="link__icon"
+                    src={bm.favicon}
+                    alt=""
+                    width="18"
+                    height="18"
+                    loading="lazy"
+                  />
+                  <span class="link__title">{bm.title}</span>
+                  <span class="link__host">{bm.host}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .catalog {
+    columns: 18rem;
+    column-gap: var(--space-2xl);
+    margin-block-start: var(--space-2xl);
+  }
+
+  .folder {
+    break-inside: avoid;
+    margin-block-end: var(--space-xl);
+  }
+
+  .folder__name {
+    margin: 0 0 var(--space-sm);
+    padding-block-end: var(--space-sm);
+    font-family: var(--font-inter, sans-serif);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .link {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    margin-inline: calc(-1 * var(--space-sm));
+    border-radius: var(--radius-md);
+    color: var(--text);
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background: var(--surface-hover);
+    outline: none;
+  }
+  .link__icon {
+    inline-size: 18px;
+    block-size: 18px;
+    border-radius: var(--radius-xs);
+  }
+  .link__title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .link__host {
+    display: none;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    white-space: nowrap;
+  }
+  .link:hover .link__host,
+  .link:focus-visible .link__host {
+    display: inline;
+  }
+
+  @media (hover: none) {
+    .link__host {
+      display: inline;
+    }
+  }
+</style>

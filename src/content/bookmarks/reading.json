@@ -1,0 +1,82 @@
+{
+  "name": "Reading",
+  "order": 1,
+  "bookmarks": [
+    {
+      "title": "The Brand Age",
+      "url": "https://paulgraham.com/brandage.html"
+    },
+    {
+      "title": "How to build meaningful relationships after college",
+      "url": "https://huyenchip.com/2018/11/16/building-meaningful-relationships.html"
+    },
+    {
+      "title": "Books that made me think",
+      "url": "https://huyenchip.com/2022/12/27/books-for-every-engineer.html"
+    },
+    {
+      "title": "Thirty Things",
+      "url": "https://thirtythings.timiajiboye.com/"
+    },
+    {
+      "title": "datatochart.com",
+      "url": "https://www.jordienric.com/writing/datatochartcom"
+    },
+    {
+      "title": "How to Create QR Code Art using Stable Diffusion",
+      "url": "https://ihsavru.medium.com/how-to-create-qr-code-art-using-stable-diffusion-58c5e7e55fcb"
+    },
+    {
+      "title": "Honesty is important",
+      "url": "https://thirtythings.timiajiboye.com/1"
+    },
+    {
+      "title": "Notes on “Taste”",
+      "url": "https://www.are.na/editorial/notes-on-taste"
+    },
+    {
+      "title": "How Edidiong Asikpo Built An Impressive Career In Developer Advocacy",
+      "url": "https://blog.piggyvest.com/life/didi-asikpo-developer-advocacy-journey/"
+    },
+    {
+      "title": "Show HN: BBC “In Our Time”, categorised by Dewey Decimal, heavy lifting by GPT",
+      "url": "https://news.ycombinator.com/item?id=35073603"
+    },
+    {
+      "title": "You just need a little bit of faith...",
+      "url": "https://www.adrianlam.sh/blog/have-faith"
+    },
+    {
+      "title": "Notion | Where teams and agents work together",
+      "url": "https://fdotinc.notion.site/Work-at-an-F-inc-Startup-1ae7344e43da8095ba5dc5a01ace8921"
+    },
+    {
+      "title": "Simon Willison’s Weblog",
+      "url": "https://simonwillison.net/"
+    },
+    {
+      "title": "Max Leiter",
+      "url": "https://maxleiter.com/notes/gemini-script"
+    },
+    {
+      "title": "Vayo · Articles",
+      "url": "https://www.vayo.me/bookmarks/cltpx1nq70001jw1tc90e4ht6"
+    },
+    {
+      "title": "The Death of the English Language",
+      "url": "https://www.thealgorithmicbridge.com/p/the-death-of-the-english-language"
+    },
+    {
+      "title": "Open sourcing my notes on a robotics start-up",
+      "url": "https://carnegiepilled.substack.com/open-sourcing-my-notes-on-a-robotics"
+    },
+    {
+      "title": "Robotics for software engineers",
+      "url": "https://newsletter.pragmaticengineer.com/p/robotics"
+    },
+    {
+      "title": "History of Software Design",
+      "url": "https://historyofsoftware.org/"
+    }
+  ]
+}

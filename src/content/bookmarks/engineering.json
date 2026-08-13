@@ -1,0 +1,50 @@
+{
+  "name": "Engineering",
+  "order": 4,
+  "bookmarks": [
+    {
+      "title": "Learn Data Structures and Algorithms",
+      "url": "https://www.programiz.com/dsa"
+    },
+    {
+      "title": "Compliance Tips",
+      "url": "https://developer.spotify.com/compliance-tips"
+    },
+    {
+      "title": "20 Essential Coding Patterns to Ace Your Next Coding Interview",
+      "url": "https://dev.to/arslan_ah/20-essential-coding-patterns-to-ace-your-next-coding-interview-32a3"
+    },
+    {
+      "title": "Grind 75 - A better Blind 75 you can customize, by the author of Blind 75",
+      "url": "https://www.techinterviewhandbook.org/grind75/"
+    },
+    {
+      "title": "Technical Interview Guide for Busy Engineers",
+      "url": "https://www.techinterviewhandbook.org/"
+    },
+    {
+      "title": "Using server-sent events - Web APIs",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+    },
+    {
+      "title": "System Design Primer",
+      "url": "https://systemdesignschool.io/primer#introduction"
+    },
+    {
+      "title": "How to fully autogenerate Starlight sidebars",
+      "url": "https://blog.trueberryless.org/blog/starlight-autogenerate-whole-sidebar/"
+    },
+    {
+      "title": "Build Your Own Database",
+      "url": "https://www.nan.fyi/database"
+    },
+    {
+      "title": "How to build your own Perplexity for any dataset - Learnings from building “Ask Hacker Search”",
+      "url": "https://jnnnthnn.com/how-to-build-your-own-perplexity-for-any-dataset"
+    },
+    {
+      "title": "Integrate USDB",
+      "url": "https://docs.flashnet.xyz/usdb/integrate"
+    }
+  ]
+}

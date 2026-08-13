@@ -112,6 +112,20 @@ const books = defineCollection({
     }),
 });
 
+const bookmarks = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/bookmarks" }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number().default(0),
+    bookmarks: z.array(
+      z.object({
+        title: z.string(),
+        url: z.url(),
+      }),
+    ),
+  }),
+});
+
 export const collections = {
   pages,
   posts,
@@ -121,6 +135,7 @@ export const collections = {
   books,
   webrings,
   scraps,
+  bookmarks,
 };
 
 type WorkEntry = CollectionEntry<"work">;

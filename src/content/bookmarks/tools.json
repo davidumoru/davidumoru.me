@@ -1,0 +1,54 @@
+{
+  "name": "Tools",
+  "order": 5,
+  "bookmarks": [
+    {
+      "title": "InstaGallery",
+      "url": "https://www.insta.gallery/"
+    },
+    {
+      "title": "Whisper",
+      "url": "https://whisper-convex.vercel.app/"
+    },
+    {
+      "title": "iroh",
+      "url": "https://www.iroh.computer/sendme"
+    },
+    {
+      "title": "amitdevv/ytfocusmode",
+      "url": "https://github.com/amitdevv/ytfocusmode"
+    },
+    {
+      "title": "EasyEdit – Edit images with one prompt",
+      "url": "https://www.easyedit.io/"
+    },
+    {
+      "title": "My Life in Weeks",
+      "url": "https://life-in-weeks.jeremyrobertjones.com/"
+    },
+    {
+      "title": "Explore the In Our Time archive",
+      "url": "https://www.braggoscope.com/"
+    },
+    {
+      "title": "tools.simonwillison.net",
+      "url": "https://tools.simonwillison.net/"
+    },
+    {
+      "title": "PP Neue Montreal – Grotesque Font by Pangram Pangram",
+      "url": "https://neuemontreal.com/"
+    },
+    {
+      "title": "OpenFreeMap",
+      "url": "https://openfreemap.org/"
+    },
+    {
+      "title": "Unlimited Gradients, Animated Gradients and AI-Generated Backgrounds",
+      "url": "https://grainient.supply/"
+    },
+    {
+      "title": "Beautiful Generative Gradient Avatars for React",
+      "url": "https://avatars.outpacestudios.com/"
+    }
+  ]
+}
