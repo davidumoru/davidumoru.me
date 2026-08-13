@@ -2,6 +2,8 @@
 import "../styles/index.css";
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
+import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 
 export type Props = {
   title?: string;
@@ -150,5 +152,7 @@ const articleSchema =
 
   <body>
     <slot />
+    <Analytics />
+    <SpeedInsights />
   </body>
 </html>
