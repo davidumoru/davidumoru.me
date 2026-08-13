@@ -1,0 +1,488 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404: Page Not Found">
+  <section class="lost">
+    <h1 class="lost__title">You're off the map.</h1>
+    <p class="lost__sub">
+      This page doesn't exist, so you might as well shoot some invaders while
+      you're here.
+    </p>
+
+    <div class="game">
+      <div class="game__hud">
+        <span>Score <b id="score">0</b></span>
+        <span>Lives <b id="lives">3</b></span>
+      </div>
+      <canvas
+        id="invaders"
+        tabindex="0"
+        width="480"
+        height="330"
+        aria-label="A small Space Invaders game"></canvas>
+      <p class="game__status sr-only" id="status" role="status"></p>
+      <p class="game__hint">← → or drag to move · space or tap to fire</p>
+    </div>
+
+    <a class="lost__home" href="/">Take me home</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .lost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: var(--space-2xl);
+  }
+  .lost__title {
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lost__sub {
+    margin: var(--space-sm) 0 0;
+    max-inline-size: 30rem;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+
+  .game {
+    margin-block-start: var(--space-xl);
+    inline-size: min(480px, 100%);
+  }
+  .game__hud {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-geist-mono, monospace);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    margin-block-end: var(--space-xs);
+  }
+  .game__hud b {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  #invaders {
+    inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-border);
+    background: var(--surface);
+    touch-action: none;
+    cursor: crosshair;
+  }
+  #invaders:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .game__hint {
+    margin: var(--space-2xs, 0.125rem) 0 0;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+  }
+
+  .lost__home {
+    margin-block-start: var(--space-xl);
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  type Rect = { x: number; y: number; w: number; h: number };
+  type Spark = { x: number; y: number; vx: number; vy: number; life: number };
+
+  let raf = 0;
+  let teardown: (() => void) | null = null;
+
+  function initGame() {
+    const canvas = document.getElementById(
+      "invaders",
+    ) as HTMLCanvasElement | null;
+    if (!canvas || canvas.dataset.init) return;
+    canvas.dataset.init = "1";
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    let cPrimary = "#e54d2e";
+    let cText = "#1a1a1a";
+    let cMuted = "#8a8a8a";
+    let cSurface = "#f2f2f2";
+    let fontMono = "monospace";
+
+    const readTokens = () => {
+      const css = getComputedStyle(document.documentElement);
+      const token = (name: string, fallback: string) => {
+        const v = css.getPropertyValue(name).trim();
+        return v && !v.includes("var(") ? v : fallback;
+      };
+      cPrimary = token("--primary", "#e54d2e");
+      cText = token("--text", "#1a1a1a");
+      cMuted = token("--text-subtle", "#8a8a8a");
+      cSurface = token("--surface", "#f2f2f2");
+      const candidate = token("--font-geist-mono", "monospace");
+      ctx.font = `12px ${candidate}`;
+      fontMono = ctx.font.includes("12px") ? candidate : "monospace";
+    };
+    readTokens();
+
+    const themeWatcher = new MutationObserver(readTokens);
+    themeWatcher.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    const COLS = 6;
+    const ROWS = 3;
+    const GAP_X = 60;
+    const GAP_Y = 42;
+    const INV_W = 30;
+    const INV_H = 20;
+    const originX = (W - (COLS - 1) * GAP_X - INV_W) / 2;
+    const originY = 24;
+    const playerY = H - 26;
+    const keys = new Set<string>();
+
+    type State = {
+      px: number;
+      alive: boolean[];
+      offX: number;
+      dir: number;
+      bullets: Rect[];
+      bombs: Rect[];
+      score: number;
+      lives: number;
+      status: "play" | "win" | "lose";
+      lastShot: number;
+      pointerX: number | null;
+      overSince: number;
+      sparks: Spark[];
+      shake: number;
+      hurtUntil: number;
+    };
+
+    let s: State;
+    const reset = () => {
+      s = {
+        px: W / 2 - INV_W / 2,
+        alive: new Array(COLS * ROWS).fill(true),
+        offX: 0,
+        dir: 1,
+        bullets: [],
+        bombs: [],
+        score: 0,
+        lives: 3,
+        status: "play",
+        lastShot: 0,
+        pointerX: null,
+        overSince: 0,
+        sparks: [],
+        shake: 0,
+        hurtUntil: 0,
+      };
+    };
+    reset();
+
+    const scoreEl = document.getElementById("score");
+    const livesEl = document.getElementById("lives");
+    const statusEl = document.getElementById("status");
+    const setHud = () => {
+      if (scoreEl) scoreEl.textContent = String(s.score);
+      if (livesEl) livesEl.textContent = String(s.lives);
+      if (statusEl) {
+        statusEl.textContent =
+          s.status === "win"
+            ? "Cleared. You're still lost, but respect."
+            : s.status === "lose"
+              ? "They got in. Space or tap to retry."
+              : "";
+      }
+    };
+    setHud();
+
+    const invX = (i: number) => originX + (i % COLS) * GAP_X + s.offX;
+    const invY = (i: number) => originY + Math.floor(i / COLS) * GAP_Y;
+    const hit = (a: Rect, b: Rect) =>
+      a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const takeHit = (x: number, y: number) => {
+      s.hurtUntil = performance.now() + 550;
+      if (reduceMotion) return;
+      s.shake = 1;
+      for (let i = 0; i < 16; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = 1 + Math.random() * 3;
+        s.sparks.push({
+          x,
+          y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp - 1.2,
+          life: 1,
+        });
+      }
+    };
+
+    const shoot = (now: number) => {
+      if (s.status !== "play" || now - s.lastShot < 200) return;
+      s.lastShot = now;
+      s.bullets.push({ x: s.px + INV_W / 2 - 1.5, y: playerY, w: 3, h: 10 });
+    };
+
+    let hovering = false;
+    let focused = false;
+
+    const MOVE_KEYS = ["ArrowLeft", "ArrowRight", "a", "d"];
+    const FIRE_KEYS = [" ", "Spacebar"];
+
+    let inView = false;
+    const viewWatcher = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (!inView) keys.clear();
+      },
+      { threshold: 0.3 },
+    );
+    viewWatcher.observe(canvas);
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      const engaged = hovering || focused;
+      const isMove = MOVE_KEYS.includes(e.key);
+      const isFire = FIRE_KEYS.includes(e.key);
+      if (!isMove && !isFire) return;
+
+      if (!engaged && !inView) return;
+
+      e.preventDefault();
+      if (isFire) {
+        if (s.status === "play") shoot(performance.now());
+        else (reset(), setHud());
+      } else {
+        keys.add(e.key);
+        s.pointerX = null;
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key);
+    const toLocalX = (clientX: number) => {
+      const r = canvas.getBoundingClientRect();
+      return ((clientX - r.left) / r.width) * W;
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      s.pointerX = toLocalX(e.clientX);
+    };
+    const onPointerEnter = () => {
+      hovering = true;
+    };
+    const onPointerLeave = () => {
+      hovering = false;
+      s.pointerX = null;
+    };
+    const onFocus = () => {
+      focused = true;
+    };
+    const onBlur = () => {
+      focused = false;
+      keys.clear();
+    };
+    const onPointerDown = (e: PointerEvent) => {
+      canvas.focus();
+      s.pointerX = toLocalX(e.clientX);
+      if (s.status === "play") shoot(performance.now());
+      else (reset(), setHud());
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    canvas.addEventListener("pointermove", onPointerMove);
+    canvas.addEventListener("pointerdown", onPointerDown);
+    canvas.addEventListener("pointerenter", onPointerEnter);
+    canvas.addEventListener("pointerleave", onPointerLeave);
+    canvas.addEventListener("focus", onFocus);
+    canvas.addEventListener("blur", onBlur);
+
+    const invader = (x: number, y: number) => {
+      ctx.fillStyle = cPrimary;
+      ctx.fillRect(x, y + 4, INV_W, INV_H - 8);
+      ctx.fillRect(x + 4, y, INV_W - 8, INV_H);
+      ctx.fillStyle = cText;
+      ctx.fillRect(x + 8, y + 7, 4, 4);
+      ctx.fillRect(x + INV_W - 12, y + 7, 4, 4);
+    };
+
+    const step = (now: number) => {
+      if (s.status === "play") {
+        const speed = 5.5;
+        if (keys.has("ArrowLeft") || keys.has("a")) s.px -= speed;
+        if (keys.has("ArrowRight") || keys.has("d")) s.px += speed;
+        if (s.pointerX !== null) {
+          const target = s.pointerX - INV_W / 2;
+          s.px += (target - s.px) * 0.5;
+        }
+        s.px = Math.max(4, Math.min(W - INV_W - 4, s.px));
+
+        let minX = Infinity;
+        let maxX = -Infinity;
+        s.alive.forEach((a, i) => {
+          if (!a) return;
+          minX = Math.min(minX, invX(i));
+          maxX = Math.max(maxX, invX(i) + INV_W);
+        });
+        if ((s.dir < 0 && minX <= 4) || (s.dir > 0 && maxX >= W - 4)) {
+          s.dir *= -1;
+        }
+        s.offX += s.dir * 1.1;
+
+        if (Math.random() < 0.024 && s.bombs.length < 4) {
+          const living = s.alive
+            .map((a, i) => (a ? i : -1))
+            .filter((i) => i >= 0);
+          if (living.length) {
+            const i = living[Math.floor(Math.random() * living.length)];
+            s.bombs.push({
+              x: invX(i) + INV_W / 2 - 2,
+              y: invY(i) + INV_H,
+              w: 4,
+              h: 10,
+            });
+          }
+        }
+        s.bombs = s.bombs.filter((b) => {
+          b.y += 3;
+          if (hit(b, { x: s.px, y: playerY, w: INV_W, h: 12 })) {
+            s.lives -= 1;
+            takeHit(b.x + b.w / 2, playerY);
+            setHud();
+            if (s.lives <= 0) s.status = "lose";
+            return false;
+          }
+          return b.y < H;
+        });
+
+        s.bullets = s.bullets.filter((bl) => {
+          bl.y -= 6;
+          for (let i = 0; i < s.alive.length; i++) {
+            if (!s.alive[i]) continue;
+            if (hit(bl, { x: invX(i), y: invY(i), w: INV_W, h: INV_H })) {
+              s.alive[i] = false;
+              s.score += 10;
+              setHud();
+              return false;
+            }
+          }
+          return bl.y > -12;
+        });
+
+        if (s.alive.every((a) => !a)) s.status = "win";
+        if (s.status !== "play") {
+          setHud();
+          if (!s.overSince) s.overSince = now;
+        }
+      }
+
+      s.sparks = s.sparks.filter((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.12;
+        p.life -= 0.028;
+        return p.life > 0;
+      });
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      if (s.shake > 0.02) {
+        const k = s.shake * 7;
+        ctx.translate((Math.random() - 0.5) * k, (Math.random() - 0.5) * k);
+        s.shake *= 0.85;
+      } else {
+        s.shake = 0;
+      }
+
+      s.alive.forEach((a, i) => a && invader(invX(i), invY(i)));
+
+      const hurt = now < s.hurtUntil;
+      if (!hurt || Math.floor(now / 60) % 2 === 0) {
+        ctx.fillStyle = hurt ? cPrimary : cText;
+        ctx.fillRect(s.px, playerY, INV_W, 12);
+        ctx.fillRect(s.px + INV_W / 2 - 2, playerY - 6, 4, 6);
+      }
+
+      ctx.fillStyle = cPrimary;
+      s.bullets.forEach((b) => ctx.fillRect(b.x, b.y, b.w, b.h));
+      ctx.fillStyle = cMuted;
+      s.bombs.forEach((b) => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+      ctx.fillStyle = cPrimary;
+      s.sparks.forEach((p) => {
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillRect(p.x, p.y, 3, 3);
+      });
+      ctx.globalAlpha = 1;
+
+      ctx.restore();
+
+      if (s.status !== "play") {
+        const won = s.status === "win";
+        const fade = Math.min(1, (now - s.overSince) / 280);
+
+        ctx.globalAlpha = fade * 0.88;
+        ctx.fillStyle = cSurface;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = fade;
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "alphabetic";
+
+        ctx.fillStyle = won ? cPrimary : cText;
+        ctx.font = `700 34px ${fontMono}`;
+        ctx.fillText(won ? "CLEARED" : "GAME OVER", W / 2, H / 2 - 20);
+
+        ctx.fillStyle = cText;
+        ctx.font = `500 15px ${fontMono}`;
+        ctx.fillText(
+          won ? "You're still lost, but respect." : `Score ${s.score}`,
+          W / 2,
+          H / 2 + 8,
+        );
+
+        ctx.fillStyle = cMuted;
+        ctx.font = `400 12px ${fontMono}`;
+        ctx.fillText("Space or tap to play again", W / 2, H / 2 + 38);
+
+        ctx.globalAlpha = 1;
+      }
+
+      raf = requestAnimationFrame(step);
+    };
+
+    raf = requestAnimationFrame(step);
+
+    teardown = () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointerenter", onPointerEnter);
+      canvas.removeEventListener("pointerleave", onPointerLeave);
+      canvas.removeEventListener("focus", onFocus);
+      canvas.removeEventListener("blur", onBlur);
+      themeWatcher.disconnect();
+      viewWatcher.disconnect();
+      canvas.dataset.init = "";
+    };
+  }
+
+  document.addEventListener("astro:page-load", initGame);
+  document.addEventListener("astro:before-swap", () => {
+    if (teardown) teardown();
+    teardown = null;
+  });
+</script>
