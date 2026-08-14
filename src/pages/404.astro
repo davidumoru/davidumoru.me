@@ -319,7 +319,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     const step = (now: number) => {
       if (s.status === "play") {
-        const speed = 5.5;
+        const speed = 7;
         if (keys.has("ArrowLeft") || keys.has("a")) s.px -= speed;
         if (keys.has("ArrowRight") || keys.has("d")) s.px += speed;
         if (s.pointerX !== null) {
@@ -338,9 +338,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         if ((s.dir < 0 && minX <= 4) || (s.dir > 0 && maxX >= W - 4)) {
           s.dir *= -1;
         }
-        s.offX += s.dir * 1.1;
+        s.offX += s.dir * 1.7;
 
-        if (Math.random() < 0.024 && s.bombs.length < 4) {
+        if (Math.random() < 0.03 && s.bombs.length < 4) {
           const living = s.alive
             .map((a, i) => (a ? i : -1))
             .filter((i) => i >= 0);
@@ -355,7 +355,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           }
         }
         s.bombs = s.bombs.filter((b) => {
-          b.y += 3;
+          b.y += 4.2;
           if (hit(b, { x: s.px, y: playerY, w: INV_W, h: 12 })) {
             s.lives -= 1;
             takeHit(b.x + b.w / 2, playerY);
@@ -367,7 +367,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         });
 
         s.bullets = s.bullets.filter((bl) => {
-          bl.y -= 6;
+          bl.y -= 8;
           for (let i = 0; i < s.alive.length; i++) {
             if (!s.alive[i]) continue;
             if (hit(bl, { x: invX(i), y: invY(i), w: INV_W, h: INV_H })) {
