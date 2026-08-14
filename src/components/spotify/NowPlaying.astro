@@ -1,0 +1,265 @@
+---
+interface Props {
+  title: string;
+  artist: string;
+  cover?: string;
+  url?: string;
+  live?: boolean;
+}
+
+const { title, artist, cover, url, live = true } = Astro.props;
+
+const TitleTag = url ? "a" : "span";
+const titleAttrs = url
+  ? {
+      href: url,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      "aria-label": `${title} by ${artist}`,
+    }
+  : {};
+---
+
+<div class="now-playing" data-live={live}>
+  <div class="now-playing__card">
+    <span class="now-playing__vinyl" aria-hidden="true">
+      <span class="now-playing__disc">
+        {
+          cover && (
+            <img src={cover} alt="" width="96" height="96" decoding="async" />
+          )
+        }
+      </span>
+      <span class="now-playing__sheen"></span>
+      <span class="now-playing__spindle"></span>
+    </span>
+
+    <span class="now-playing__meta">
+      <TitleTag class="now-playing__title" {...titleAttrs}>{title}</TitleTag>
+      <span class="now-playing__artist">{artist}</span>
+    </span>
+  </div>
+
+  <p class="now-playing__status">
+    <span class="now-playing__dot" aria-hidden="true"></span>
+    {live ? "Listening now" : "Last played"}
+  </p>
+</div>
+
+<style>
+  .now-playing {
+    --np-card-h: 5rem;
+    --np-disc: calc(var(--np-card-h) * 1.375);
+    --np-disc-x: calc(var(--np-card-h) * 0.275);
+    --np-text-x: calc(var(--np-card-h) * 1.2);
+    --np-pad: 0.375rem;
+    --np-tray: var(--surface-hover);
+    --np-card: var(--background);
+
+    padding: var(--np-pad);
+    border-radius: calc(var(--radius-md) + var(--np-pad));
+    background: var(--np-tray);
+    box-shadow: var(--shadow-sm);
+  }
+
+  :global(.dark) .now-playing {
+    --np-tray: var(--surface);
+    --np-card: var(--surface-hover);
+  }
+
+  @media (max-width: 30rem) {
+    .now-playing {
+      --np-card-h: 4.25rem;
+    }
+  }
+
+  .now-playing__card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    block-size: var(--np-card-h);
+    padding-inline: var(--np-text-x) var(--space-md);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--np-card);
+    box-shadow: var(--shadow-border);
+  }
+
+  .now-playing__vinyl {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(var(--np-disc-x) - var(--np-disc) / 2);
+    inline-size: var(--np-disc);
+    block-size: var(--np-disc);
+    translate: 0 -50%;
+    pointer-events: none;
+    transition: translate var(--duration-normal) var(--ease-out);
+  }
+
+  .now-playing__card:has(a.now-playing__title:is(:hover, :focus-visible))
+    .now-playing__vinyl {
+    translate: 0.1875rem -50%;
+  }
+
+  .now-playing__disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      repeating-radial-gradient(
+        circle at center,
+        transparent 0 3px,
+        oklch(1 0 0 / 0.07) 3px 4px
+      ),
+      radial-gradient(
+        circle at center,
+        oklch(0.11 0 0) 40%,
+        oklch(0.16 0 0) 100%
+      );
+    box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.12);
+  }
+
+  .now-playing__disc img,
+  .now-playing__disc:has(img)::after {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 44%;
+    block-size: 44%;
+    translate: -50% -50%;
+    border-radius: 50%;
+  }
+  .now-playing__disc img {
+    object-fit: cover;
+  }
+  .now-playing__disc:has(img)::after {
+    content: "";
+    box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  }
+
+  .now-playing__sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 55deg,
+      transparent 0deg,
+      oklch(1 0 0 / 0.13) 30deg,
+      transparent 70deg,
+      transparent 180deg,
+      oklch(1 0 0 / 0.13) 210deg,
+      transparent 250deg
+    );
+  }
+
+  .now-playing__spindle {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 6%;
+    block-size: 6%;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: oklch(0 0 0 / 0.2);
+    box-shadow: inset 0 0 0 1px oklch(0.15 0 0 / 0.8);
+  }
+
+  .now-playing[data-live="true"] .now-playing__disc {
+    animation: now-playing-spin 8s linear infinite;
+  }
+
+  @keyframes now-playing-spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  .now-playing__meta {
+    display: grid;
+    min-inline-size: 0;
+  }
+  .now-playing__title,
+  .now-playing__artist {
+    justify-self: start;
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .now-playing__title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--text);
+  }
+  /* keeps the tap target at 24px without moving the artist line */
+  a.now-playing__title {
+    padding-block: 2px;
+    margin-block: -2px;
+  }
+  a.now-playing__title:hover {
+    color: var(--text);
+    text-decoration-color: var(--text-subtle);
+  }
+  .now-playing__artist {
+    margin-block-start: var(--space-xs);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-snug);
+    color: var(--text-muted);
+  }
+
+  .now-playing__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+    padding-block-start: var(--np-pad);
+    padding-inline-start: var(--space-xs);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  .now-playing__dot {
+    position: relative;
+    flex-shrink: 0;
+    inline-size: 0.375rem;
+    block-size: 0.375rem;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
+  }
+  .now-playing[data-live="true"] .now-playing__dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: now-playing-pulse 2s var(--ease-out) infinite;
+  }
+  .now-playing[data-live="false"] .now-playing__dot {
+    background: var(--text-disabled);
+    box-shadow: none;
+  }
+
+  @keyframes now-playing-pulse {
+    from {
+      scale: 1;
+      opacity: 0.5;
+    }
+    to {
+      scale: 2.6;
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .now-playing[data-live="true"] .now-playing__disc,
+    .now-playing[data-live="true"] .now-playing__dot::after {
+      animation: none;
+    }
+    .now-playing__card:has(a.now-playing__title:is(:hover, :focus-visible))
+      .now-playing__vinyl {
+      translate: 0 -50%;
+    }
+  }
+</style>
