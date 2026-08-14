@@ -1,13 +1,12 @@
 ---
 const href = "https://playground.davidumoru.me";
-const label = "Step into the playground";
 const clips = [
-  { src: "https://umorucdn.xyz/image-trail.mp4" },
-  { src: "https://umorucdn.xyz/3d-photo-carousel.mp4" },
-  { src: "https://umorucdn.xyz/photo-sphere.mp4" },
-  { src: "https://umorucdn.xyz/path-marquee.mp4" },
-  { src: "https://umorucdn.xyz/infinite-parallax-grid.mp4" },
-  { src: "https://umorucdn.xyz/shader-orb.mp4" },
+  "https://umorucdn.xyz/image-trail.mp4",
+  "https://umorucdn.xyz/3d-photo-carousel.mp4",
+  "https://umorucdn.xyz/photo-sphere.mp4",
+  "https://umorucdn.xyz/path-marquee.mp4",
+  "https://umorucdn.xyz/infinite-parallax-grid.mp4",
+  "https://umorucdn.xyz/shader-orb.mp4",
 ];
 
 const marqueeClips = [...clips, ...clips];
@@ -17,16 +16,16 @@ const marqueeClips = [...clips, ...clips];
   <a
     class="frame"
     href={href}
-    aria-label={label}
+    aria-label="Step into the playground"
     target="_blank"
     rel="noopener"
   >
-    <div class="stage" data-deck style={`--n:${clips.length}`}>
+    <div class="stage" style={`--n:${clips.length}`}>
       {
-        clips.map((clip, i) => (
+        clips.map((src, i) => (
           <div class="card" style={`--i:${i}`}>
             <video
-              src={clip.src}
+              src={src}
               autoplay
               loop
               muted
@@ -38,13 +37,13 @@ const marqueeClips = [...clips, ...clips];
       }
     </div>
 
-    <div class="marquee" data-deck aria-hidden="true">
+    <div class="marquee" aria-hidden="true">
       <div class="track">
         {
-          marqueeClips.map((clip) => (
+          marqueeClips.map((src) => (
             <div class="card">
               <video
-                src={clip.src}
+                src={src}
                 autoplay
                 loop
                 muted
@@ -61,11 +60,10 @@ const marqueeClips = [...clips, ...clips];
 
 <script>
   function setup() {
-    document.querySelectorAll<HTMLElement>("[data-deck]").forEach((stage) => {
-      if (stage.dataset.ready) return;
-      stage.dataset.ready = "true";
-      const videos = stage.querySelectorAll("video");
-      if (!videos.length) return;
+    document.querySelectorAll<HTMLElement>(".deck").forEach((deck) => {
+      if (deck.dataset.ready) return;
+      deck.dataset.ready = "true";
+      const videos = deck.querySelectorAll("video");
       const io = new IntersectionObserver(
         ([entry]) => {
           videos.forEach((v) =>
@@ -74,7 +72,7 @@ const marqueeClips = [...clips, ...clips];
         },
         { threshold: 0.1 },
       );
-      io.observe(stage);
+      io.observe(deck);
     });
   }
   setup();
@@ -96,6 +94,7 @@ const marqueeClips = [...clips, ...clips];
   }
 
   .card {
+    position: relative;
     aspect-ratio: 16 / 10;
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -107,14 +106,28 @@ const marqueeClips = [...clips, ...clips];
     object-fit: cover;
     display: block;
   }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+    pointer-events: none;
+    transition: box-shadow var(--duration-slow) var(--ease-out);
+  }
 
-  /* ---------- Desktop: 3D isometric deck ---------- */
   .stage {
     --gap-z: 128px;
     position: relative;
     transform-style: preserve-3d;
     transform: perspective(5000px) rotateX(-14deg) rotateY(40deg);
     block-size: 364px;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .stage:hover {
+    --gap-z: 168px;
+    transform: perspective(5000px) rotateX(-10deg) rotateY(32deg);
   }
 
   .stage .card {
@@ -123,15 +136,31 @@ const marqueeClips = [...clips, ...clips];
     inset-block-start: 50%;
     inset-inline-start: 50%;
     inline-size: 320px;
-    box-shadow:
-      var(--shadow-2xl),
-      inset 0 0 0 1px var(--image-outline);
+    box-shadow: var(--shadow-xl);
     transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)));
     pointer-events: auto;
     cursor: pointer;
+    transition: transform var(--duration-slow) var(--ease-out);
   }
 
-  /* ---------- Mobile: full-bleed auto-marquee ---------- */
+  .stage .card:hover {
+    transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)))
+      translateY(-18px);
+  }
+  .stage .card:hover::after {
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+  }
+
+  .stage .card:hover ~ .card {
+    transform: translate(-50%, -50%)
+      translateZ(calc(var(--o) * var(--gap-z) + 56px));
+  }
+
+  .stage .card:active {
+    transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)))
+      translateY(-18px) scale(0.98);
+  }
+
   .marquee {
     display: none;
     overflow: hidden;
@@ -151,13 +180,14 @@ const marqueeClips = [...clips, ...clips];
     inline-size: max-content;
     animation: deck-marquee 34s linear infinite;
   }
+  .marquee:hover .track {
+    animation-play-state: paused;
+  }
   .marquee .card {
     flex: 0 0 auto;
     inline-size: 280px;
     margin-inline-end: var(--space-md);
-    box-shadow:
-      var(--shadow-lg),
-      inset 0 0 0 1px var(--image-outline);
+    box-shadow: var(--shadow-lg);
   }
   @keyframes deck-marquee {
     to {
@@ -180,6 +210,15 @@ const marqueeClips = [...clips, ...clips];
     }
     .marquee {
       overflow-x: auto;
+    }
+    .stage:hover {
+      --gap-z: 128px;
+      transform: perspective(5000px) rotateX(-14deg) rotateY(40deg);
+    }
+    .stage .card:hover,
+    .stage .card:hover ~ .card,
+    .stage .card:active {
+      transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)));
     }
   }
 </style>
