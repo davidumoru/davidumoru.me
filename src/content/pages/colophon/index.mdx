@@ -1,0 +1,66 @@
+---
+title: Colophon
+description: The tools and decisions behind this site.
+date: 2026-08-14
+cover: ./colophon.jpeg
+coverAlt: Minimalist book page with bold 'COLOPHON' text and publication details.
+---
+
+import Spec from "../../../components/colophon/Spec.astro";
+import Row from "../../../components/colophon/Row.astro";
+import Fonts from "../../../components/colophon/Fonts.astro";
+
+<Spec>
+  <Row label="Stack">
+    [Astro](https://astro.build/), Markdown and MDX, with
+    [React](https://react.dev/) in the [lab](/lab).
+  </Row>
+
+<Row label="Typography">
+  <Fonts />
+</Row>
+
+<Row label="Color">[OKLCH](https://oklch.com/). Accent: Tomato.</Row>
+
+<Row label="Code">
+  [Shiki](https://shiki.style/), GitHub Light and GitHub Dark.
+</Row>
+
+<Row label="Guestbook">
+  [libSQL](https://github.com/tursodatabase/libsql) on
+  [Turso](https://turso.tech/).
+</Row>
+
+<Row label="Photography">
+  Stamps from [Unsplash](https://unsplash.com/), served from [Cloudflare
+  R2](https://developers.cloudflare.com/r2/).
+</Row>
+
+<Row label="Writing">
+  Drafted in [Obsidian](https://obsidian.md/). Newsletter on
+  [Buttondown](https://buttondown.com/).
+</Row>
+
+<Row label="Hosting">
+  [Vercel](https://vercel.com/), with Web Analytics and Speed Insights.
+</Row>
+
+<Row label="Privacy">
+  No ads, no cookies, nothing sold. The guestbook keeps your name, message, and
+  country. [Email me](mailto:hey@davidumoru.me) to remove an entry.
+</Row>
+
+<Row label="Accessibility">
+  WCAG AA. Reduced motion respected. Tell me if something is broken.
+</Row>
+
+<Row label="Inspiration">
+  [Ky Decker](https://ky.fyi/), [Pedro Duarte](https://ped.ro/), [Pranathi
+  Peri](https://pranathiperi.com/), [Maggie
+  Appleton](https://maggieappleton.com).
+</Row>
+
+  <Row label="Source">
+    [GitHub](https://github.com/davidumoru/davidumoru.me).
+  </Row>
+</Spec>

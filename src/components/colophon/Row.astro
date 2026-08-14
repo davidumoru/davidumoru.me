@@ -1,0 +1,39 @@
+---
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<dt>{label}</dt>
+<dd><slot /></dd>
+
+<style>
+  dt {
+    padding-block-start: var(--space-md);
+    color: var(--text);
+    font-weight: var(--fw-medium);
+  }
+
+  dd {
+    padding-block: var(--space-md);
+    margin: 0;
+  }
+
+  dd :global(p) {
+    margin: 0;
+  }
+  dd :global(p + p) {
+    margin-block-start: var(--space-xs);
+  }
+
+  @media (max-width: 34rem) {
+    dt {
+      padding-block-start: var(--space-lg);
+    }
+    dd {
+      padding-block: var(--space-xs) 0;
+    }
+  }
+</style>
