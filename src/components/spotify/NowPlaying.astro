@@ -311,8 +311,8 @@ const status = track ? formatListeningStatus(track) : null;
   .now-playing__dot {
     position: relative;
     flex-shrink: 0;
-    inline-size: 0.625rem;
-    block-size: 0.625rem;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
     border-radius: 50%;
     background: var(--primary);
     box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
@@ -326,6 +326,8 @@ const status = track ? formatListeningStatus(track) : null;
     animation: now-playing-pulse 2s var(--ease-out) infinite;
   }
   .now-playing[data-live="false"] .now-playing__dot {
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
     background: var(--text-disabled);
     box-shadow: none;
   }
