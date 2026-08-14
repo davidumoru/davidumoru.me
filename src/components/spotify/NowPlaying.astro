@@ -1,32 +1,35 @@
 ---
+import type { Track } from "../../utils/spotify";
+import { formatListeningStatus } from "../../utils/date";
+
 interface Props {
-  title: string;
-  artist: string;
-  cover?: string;
-  url?: string;
-  live?: boolean;
+  track?: Track | null;
+  pending?: boolean;
 }
 
-const { title, artist, cover, url, live = true } = Astro.props;
-
-const TitleTag = url ? "a" : "span";
-const titleAttrs = url
-  ? {
-      href: url,
-      target: "_blank",
-      rel: "noopener noreferrer",
-      "aria-label": `${title} by ${artist}`,
-    }
-  : {};
+const { track, pending = false } = Astro.props;
+const status = track ? formatListeningStatus(track) : null;
 ---
 
-<div class="now-playing" data-live={live}>
+<div
+  class="now-playing"
+  data-live={track?.live ?? false}
+  data-pending={pending ? true : undefined}
+  aria-busy={pending ? true : undefined}
+  hidden={!pending && !track}
+>
   <div class="now-playing__card">
     <span class="now-playing__vinyl" aria-hidden="true">
       <span class="now-playing__disc">
         {
-          cover && (
-            <img src={cover} alt="" width="96" height="96" decoding="async" />
+          track?.cover && (
+            <img
+              src={track.cover}
+              alt=""
+              width="96"
+              height="96"
+              decoding="async"
+            />
           )
         }
       </span>
@@ -35,15 +38,45 @@ const titleAttrs = url
     </span>
 
     <span class="now-playing__meta">
-      <TitleTag class="now-playing__title" {...titleAttrs}>{title}</TitleTag>
-      <span class="now-playing__artist">{artist}</span>
+      {
+        track?.url ? (
+          <a
+            class="now-playing__title"
+            href={track.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${track.title} by ${track.artist}`}
+          >
+            {track.title}
+          </a>
+        ) : (
+          <span
+            class:list={["now-playing__title", pending && "now-playing__bone"]}
+          >
+            {track?.title}
+          </span>
+        )
+      }
+      <span
+        class:list={["now-playing__artist", pending && "now-playing__bone"]}
+      >
+        {track?.artist}
+      </span>
     </span>
   </div>
 
   <p class="now-playing__status">
     <span class="now-playing__dot" aria-hidden="true"></span>
-    {live ? "Listening now" : "Last played"}
+    <span class="now-playing__status-text">{status}</span>
+    {pending && <span class="now-playing__bone now-playing__status-bone" />}
   </p>
+  {
+    pending && (
+      <p class="sr-only" role="status">
+        Loading now playing
+      </p>
+    )
+  }
 </div>
 
 <style>
@@ -55,6 +88,10 @@ const titleAttrs = url
     --np-pad: 0.375rem;
     --np-tray: var(--surface-hover);
     --np-card: var(--background);
+    --np-bone: var(--gray-5);
+    --np-bone-shine: var(--gray-7);
+    --np-label-bone: oklch(0.32 0 0);
+    --np-label-shine: oklch(0.42 0 0);
 
     padding: var(--np-pad);
     border-radius: calc(var(--radius-md) + var(--np-pad));
@@ -120,7 +157,8 @@ const titleAttrs = url
   }
 
   .now-playing__disc img,
-  .now-playing__disc:has(img)::after {
+  .now-playing__disc:has(img)::after,
+  .now-playing[data-pending] .now-playing__disc::before {
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 50%;
@@ -135,6 +173,9 @@ const titleAttrs = url
   .now-playing__disc:has(img)::after {
     content: "";
     box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  }
+  .now-playing[data-pending] .now-playing__spindle {
+    display: none;
   }
 
   .now-playing__sheen {
@@ -208,11 +249,59 @@ const titleAttrs = url
     color: var(--text-muted);
   }
 
+  .now-playing[data-pending] {
+    pointer-events: none;
+  }
+  .now-playing__bone {
+    --np-fill: var(--np-bone);
+    --np-shine: var(--np-bone-shine);
+    display: block;
+    block-size: 0.75em;
+    border-radius: var(--radius-sm);
+  }
+  .now-playing__title.now-playing__bone {
+    inline-size: 11ch;
+  }
+  .now-playing__artist.now-playing__bone {
+    inline-size: 8ch;
+  }
+  .now-playing__status-bone {
+    inline-size: 9ch;
+    block-size: 0.7em;
+  }
+  .now-playing[data-pending] .now-playing__disc::before {
+    content: "";
+    --np-fill: var(--np-label-bone);
+    --np-shine: var(--np-label-shine);
+  }
+  .now-playing__bone,
+  .now-playing[data-pending] .now-playing__disc::before {
+    background-color: var(--np-fill);
+    background-image: linear-gradient(
+      100deg,
+      transparent 40%,
+      var(--np-shine) 50%,
+      transparent 60%
+    );
+    background-size: 300% 100%;
+    animation: now-playing-sweep 1.6s ease-in-out infinite;
+  }
+
+  @keyframes now-playing-sweep {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+
   .now-playing__status {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
     margin: 0;
+    min-block-size: 1lh;
     padding-block-start: var(--np-pad);
     padding-inline-start: var(--space-xs);
     font-size: var(--fs-xs);
@@ -222,8 +311,8 @@ const titleAttrs = url
   .now-playing__dot {
     position: relative;
     flex-shrink: 0;
-    inline-size: 0.375rem;
-    block-size: 0.375rem;
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
     border-radius: 50%;
     background: var(--primary);
     box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
@@ -254,7 +343,9 @@ const titleAttrs = url
 
   @media (prefers-reduced-motion: reduce) {
     .now-playing[data-live="true"] .now-playing__disc,
-    .now-playing[data-live="true"] .now-playing__dot::after {
+    .now-playing[data-live="true"] .now-playing__dot::after,
+    .now-playing__bone,
+    .now-playing[data-pending] .now-playing__disc::before {
       animation: none;
     }
     .now-playing__card:has(a.now-playing__title:is(:hover, :focus-visible))
@@ -263,3 +354,108 @@ const titleAttrs = url
     }
   }
 </style>
+
+<script>
+  import { formatListeningStatus } from "../../utils/date";
+
+  type Track = {
+    title: string;
+    artist: string;
+    cover?: string;
+    url?: string;
+    live: boolean;
+    playedAt?: string;
+  };
+
+  const INTERVAL = 30_000;
+
+  let timer = 0;
+  let onVis: (() => void) | undefined;
+
+  function setTitle(widget: HTMLElement, track: Track) {
+    const current = widget.querySelector(".now-playing__title");
+    if (!current) return;
+
+    const wantLink = Boolean(track.url);
+    const isLink = current.tagName === "A";
+    const el =
+      wantLink === isLink
+        ? current
+        : Object.assign(document.createElement(wantLink ? "a" : "span"), {
+            className: current.className,
+          });
+    if (el !== current) current.replaceWith(el);
+
+    el.textContent = track.title;
+
+    if (el instanceof HTMLAnchorElement && track.url) {
+      el.href = track.url;
+      el.target = "_blank";
+      el.rel = "noopener noreferrer";
+      el.setAttribute("aria-label", `${track.title} by ${track.artist}`);
+    }
+  }
+
+  function apply(slot: Element, track: Track | null) {
+    const widget = slot.querySelector(".now-playing");
+    if (!(widget instanceof HTMLElement)) return;
+
+    if (!track) {
+      widget.hidden = true;
+      return;
+    }
+
+    widget.hidden = false;
+    widget.dataset.live = String(track.live);
+
+    const disc = widget.querySelector(".now-playing__disc");
+    let img = disc?.querySelector("img");
+    if (track.cover) {
+      if (!img && disc) {
+        img = document.createElement("img");
+        img.alt = "";
+        img.width = 96;
+        img.height = 96;
+        img.decoding = "async";
+        disc.prepend(img);
+      }
+      if (img && img.getAttribute("src") !== track.cover) img.src = track.cover;
+    } else {
+      img?.remove();
+    }
+
+    setTitle(widget, track);
+
+    const artist = widget.querySelector(".now-playing__artist");
+    if (artist) artist.textContent = track.artist;
+
+    const text = widget.querySelector(".now-playing__status-text");
+    if (text) text.textContent = formatListeningStatus(track);
+  }
+
+  async function refresh(slot: Element) {
+    if (document.hidden) return;
+    if (slot.querySelector("[data-pending]")) return;
+
+    try {
+      const res = await fetch("/api/now-playing");
+      if (!res.ok) return;
+      apply(slot, (await res.json()) as Track | null);
+    } catch {}
+  }
+
+  function bind() {
+    clearInterval(timer);
+    if (onVis) document.removeEventListener("visibilitychange", onVis);
+
+    const slot = document.querySelector(".now-playing-slot");
+    if (!slot) return;
+
+    const tick = () => void refresh(slot);
+    onVis = tick;
+    timer = window.setInterval(tick, INTERVAL);
+    document.addEventListener("visibilitychange", onVis);
+  }
+
+  document.addEventListener("astro:page-load", bind);
+</script>
