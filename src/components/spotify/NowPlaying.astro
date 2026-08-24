@@ -1,0 +1,447 @@
+---
+import type { Track } from "../../utils/spotify";
+import { formatListeningStatus } from "../../utils/date";
+
+interface Props {
+  track?: Track | null;
+  pending?: boolean;
+}
+
+const { track = null, pending = false } = Astro.props;
+const status = track ? formatListeningStatus(track) : null;
+---
+
+<div
+  class="now-playing"
+  data-live={track?.live ?? false}
+  data-pending={pending ? true : undefined}
+  aria-busy={pending ? true : undefined}
+>
+  <div class="now-playing__card">
+    <span class="now-playing__disc" aria-hidden="true">
+      {
+        track?.cover && (
+          <img
+            class="now-playing__art"
+            src={track.cover}
+            alt=""
+            width="240"
+            height="240"
+            decoding="async"
+          />
+        )
+      }
+      <span class="now-playing__sheen"></span>
+      <span class="now-playing__label"></span>
+      <span class="now-playing__spindle"></span>
+    </span>
+
+    <div class="now-playing__body">
+      <p class:list={["now-playing__artist", pending && "now-playing__bone"]}>
+        {track?.artist}
+      </p>
+      {
+        track?.url ? (
+          <a
+            class="now-playing__title"
+            href={track.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${track.title} by ${track.artist}`}
+          >
+            {track.title}
+          </a>
+        ) : (
+          <p
+            class:list={["now-playing__title", pending && "now-playing__bone"]}
+          >
+            {track?.title}
+          </p>
+        )
+      }
+    </div>
+  </div>
+
+  <p class="now-playing__status">
+    <span class="now-playing__dot" aria-hidden="true"></span>
+    <span class="now-playing__status-text">{status}</span>
+    {pending && <span class="now-playing__bone now-playing__status-bone" />}
+  </p>
+
+  {
+    pending && (
+      <p class="sr-only" role="status">
+        Loading what I'm listening to
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .now-playing {
+    --np-pad: 0.375rem;
+    --np-radius: var(--radius-2xl);
+    --np-tray: var(--surface-hover);
+    --np-face: var(--background);
+    --np-bone: var(--gray-5);
+    --np-bone-shine: var(--gray-7);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    block-size: 100%;
+    padding: var(--np-pad);
+    border-radius: calc(var(--np-radius) + var(--np-pad));
+    background: var(--np-tray);
+    box-shadow: var(--shadow-border);
+  }
+  :global(.dark) .now-playing {
+    --np-tray: var(--surface);
+    --np-face: var(--surface-hover);
+  }
+
+  .now-playing__card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-block-size: 0;
+    overflow: hidden;
+    border-radius: var(--np-radius);
+    background: var(--np-face);
+    box-shadow: var(--shadow-border);
+    container-type: inline-size;
+  }
+
+  /* Percentage padding resolves against width, so the disc row tracks the
+     card's width rather than its height and the status line can grow freely. */
+  .now-playing__card::before {
+    content: "";
+    padding-block-start: 61%;
+  }
+
+  .now-playing__disc {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: 9cqw;
+    z-index: 1;
+    inline-size: 102cqw;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background:
+      repeating-radial-gradient(
+        circle at center,
+        transparent 0 3px,
+        oklch(1 0 0 / 0.07) 3px 4px
+      ),
+      radial-gradient(
+        circle at center,
+        oklch(0.11 0 0) 40%,
+        oklch(0.16 0 0) 100%
+      );
+    box-shadow:
+      var(--shadow-lg),
+      inset 0 0 0 1px oklch(1 0 0 / 0.12);
+    transition: translate var(--duration-normal) var(--ease-out);
+  }
+  .now-playing[data-live="true"] .now-playing__disc {
+    animation: now-playing-spin 8s linear infinite;
+  }
+  .now-playing__card:has(a.now-playing__title:is(:hover, :focus-visible))
+    .now-playing__disc {
+    translate: -50% calc(-50% + 0.1875rem);
+  }
+
+  .now-playing__art,
+  .now-playing__label,
+  .now-playing__spindle {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    border-radius: 50%;
+  }
+  .now-playing__art,
+  .now-playing__label {
+    inline-size: 44%;
+    block-size: 44%;
+  }
+  .now-playing__art {
+    display: block;
+    object-fit: cover;
+  }
+  .now-playing__label {
+    box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.12);
+  }
+  .now-playing__spindle {
+    inline-size: 6%;
+    block-size: 6%;
+    background: oklch(0 0 0 / 0.2);
+    box-shadow: inset 0 0 0 1px oklch(0.15 0 0 / 0.8);
+  }
+  .now-playing__sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(
+      from 55deg,
+      transparent 0deg,
+      oklch(1 0 0 / 0.13) 30deg,
+      transparent 70deg,
+      transparent 180deg,
+      oklch(1 0 0 / 0.13) 210deg,
+      transparent 250deg
+    );
+  }
+
+  .now-playing__body {
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 0;
+    padding: 0 var(--space-md) var(--space-sm);
+    text-align: center;
+  }
+
+  .now-playing__artist,
+  .now-playing__title {
+    margin: 0;
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    line-height: var(--lh-snug);
+  }
+  .now-playing__artist {
+    font-size: clamp(var(--fs-xs), 4.2cqi, var(--fs-sm));
+    font-weight: var(--fw-medium);
+    color: var(--text-subtle);
+  }
+  .now-playing__title {
+    margin-block-start: var(--space-xs);
+    font-size: clamp(var(--fs-base), 6.2cqi, var(--fs-xl));
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  a.now-playing__title {
+    padding-block: 2px;
+    margin-block-start: calc(var(--space-xs) - 2px);
+    margin-block-end: -2px;
+  }
+  a.now-playing__title:hover {
+    color: var(--text);
+    text-decoration-color: var(--text-subtle);
+  }
+  a.now-playing__title:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .now-playing__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+    min-block-size: 1.5lh;
+    padding-block-start: var(--np-pad);
+    padding-inline-start: var(--space-sm);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .now-playing__status-text {
+    min-inline-size: 0;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .now-playing__dot {
+    position: relative;
+    flex-shrink: 0;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
+  }
+  .now-playing[data-live="true"] .now-playing__dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: now-playing-pulse 2s var(--ease-out) infinite;
+  }
+  .now-playing[data-live="false"] .now-playing__dot {
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    background: var(--text-disabled);
+    box-shadow: none;
+  }
+
+  .now-playing[data-pending] {
+    pointer-events: none;
+  }
+  .now-playing__bone {
+    display: block;
+    block-size: 0.75em;
+    border-radius: var(--radius-sm);
+    background-color: var(--np-bone);
+    background-image: linear-gradient(
+      100deg,
+      transparent 40%,
+      var(--np-bone-shine) 50%,
+      transparent 60%
+    );
+    background-size: 300% 100%;
+    animation: now-playing-sweep 1.6s ease-in-out infinite;
+  }
+  .now-playing__artist.now-playing__bone {
+    inline-size: 8ch;
+  }
+  .now-playing__title.now-playing__bone {
+    inline-size: 11ch;
+    margin-block-start: var(--space-sm);
+  }
+  .now-playing__status-bone {
+    inline-size: 9ch;
+    block-size: 0.7em;
+  }
+
+  @keyframes now-playing-spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+  @keyframes now-playing-pulse {
+    from {
+      scale: 1;
+      opacity: 0.5;
+    }
+    to {
+      scale: 2.6;
+      opacity: 0;
+    }
+  }
+  @keyframes now-playing-sweep {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .now-playing__card:has(a.now-playing__title:is(:hover, :focus-visible))
+      .now-playing__disc {
+      translate: -50% -50%;
+    }
+    .now-playing[data-live="true"] .now-playing__disc,
+    .now-playing[data-live="true"] .now-playing__dot::after,
+    .now-playing__bone {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import type { Track } from "../../utils/spotify";
+  import { formatListeningStatus } from "../../utils/date";
+
+  const INTERVAL = 30_000;
+
+  let timer = 0;
+  let onVis: (() => void) | undefined;
+
+  function setTitle(widget: HTMLElement, track: Track | null) {
+    const current = widget.querySelector(".now-playing__title");
+    if (!current) return;
+
+    const wantLink = Boolean(track?.url);
+    const isLink = current.tagName === "A";
+    const el =
+      wantLink === isLink
+        ? current
+        : Object.assign(document.createElement(wantLink ? "a" : "p"), {
+            className: current.className,
+          });
+    if (el !== current) current.replaceWith(el);
+
+    el.textContent = track?.title ?? "";
+
+    if (el instanceof HTMLAnchorElement && track?.url) {
+      el.href = track.url;
+      el.target = "_blank";
+      el.rel = "noopener noreferrer";
+      el.setAttribute("aria-label", `${track.title} by ${track.artist}`);
+    }
+  }
+
+  function setArt(widget: HTMLElement, cover: string | undefined) {
+    const disc = widget.querySelector(".now-playing__disc");
+    let img = disc?.querySelector("img");
+
+    if (!cover) {
+      img?.remove();
+      return;
+    }
+    if (!img && disc) {
+      img = document.createElement("img");
+      img.className = "now-playing__art";
+      img.alt = "";
+      img.width = 240;
+      img.height = 240;
+      img.decoding = "async";
+      disc.prepend(img);
+    }
+    if (img && img.getAttribute("src") !== cover) img.src = cover;
+  }
+
+  function apply(widget: HTMLElement, track: Track | null) {
+    widget.dataset.live = String(track?.live ?? false);
+
+    setArt(widget, track?.cover);
+    setTitle(widget, track);
+
+    const artist = widget.querySelector(".now-playing__artist");
+    if (artist) artist.textContent = track?.artist ?? "";
+
+    const text = widget.querySelector(".now-playing__status-text");
+    if (text) text.textContent = track ? formatListeningStatus(track) : "";
+  }
+
+  /* Re-queried each tick: the server island swaps the fallback markup, so an
+     element captured up front would already be detached. */
+  async function refresh() {
+    if (document.hidden) return;
+
+    const widgets = [
+      ...document.querySelectorAll<HTMLElement>(".now-playing"),
+    ].filter((widget) => !widget.dataset.pending);
+    if (!widgets.length) return;
+
+    try {
+      const res = await fetch("/api/now-playing");
+      if (!res.ok) return;
+      const track = (await res.json()) as Track | null;
+      widgets.forEach((widget) => apply(widget, track));
+    } catch {}
+  }
+
+  function bind() {
+    clearInterval(timer);
+    if (onVis) document.removeEventListener("visibilitychange", onVis);
+
+    onVis = () => void refresh();
+    timer = window.setInterval(onVis, INTERVAL);
+    document.addEventListener("visibilitychange", onVis);
+  }
+
+  document.addEventListener("astro:page-load", bind);
+</script>
