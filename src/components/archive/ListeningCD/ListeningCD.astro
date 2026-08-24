@@ -1,0 +1,467 @@
+---
+import type { Track } from "../../../utils/spotify";
+import { formatListeningStatus } from "../../../utils/date";
+
+interface Props {
+  track?: Track | null;
+  pending?: boolean;
+}
+
+const { track = null, pending = false } = Astro.props;
+const status = track ? formatListeningStatus(track) : null;
+---
+
+<div
+  class="listening"
+  data-live={track?.live ?? false}
+  data-pending={pending ? true : undefined}
+  aria-busy={pending ? true : undefined}
+>
+  <div class="listening__card">
+    <span class="listening__disc" aria-hidden="true">
+      {
+        track?.cover && (
+          <img
+            class="listening__art"
+            src={track.cover}
+            alt=""
+            width="240"
+            height="240"
+            decoding="async"
+          />
+        )
+      }
+      <span class="listening__sheen"></span>
+      <span class="listening__hub"></span>
+      <span class="listening__hole"></span>
+    </span>
+
+    <div class="listening__body">
+      <p class:list={["listening__artist", pending && "listening__bone"]}>
+        {track?.artist}
+      </p>
+      {
+        track?.url ? (
+          <a
+            class="listening__title"
+            href={track.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${track.title} by ${track.artist}`}
+          >
+            {track.title}
+          </a>
+        ) : (
+          <p class:list={["listening__title", pending && "listening__bone"]}>
+            {track?.title}
+          </p>
+        )
+      }
+    </div>
+  </div>
+
+  <p class="listening__status">
+    <span class="listening__dot" aria-hidden="true"></span>
+    <span class="listening__status-text">{status}</span>
+    {pending && <span class="listening__bone listening__status-bone" />}
+  </p>
+
+  {
+    pending && (
+      <p class="sr-only" role="status">
+        Loading what I'm listening to
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .listening {
+    --listening-pad: 0.375rem;
+    --listening-radius: var(--radius-2xl);
+    --listening-tray: var(--surface-hover);
+    --listening-face: var(--background);
+    --listening-disc: var(--gray-6);
+    --listening-bone: var(--gray-5);
+    --listening-bone-shine: var(--gray-7);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    block-size: 100%;
+    padding: var(--listening-pad);
+    border-radius: calc(var(--listening-radius) + var(--listening-pad));
+    background: var(--listening-tray);
+    box-shadow: var(--shadow-sm);
+  }
+  :global(.dark) .listening {
+    --listening-tray: var(--surface);
+    --listening-face: var(--surface-hover);
+  }
+
+  /* Disc geometry is keyed to card width, not height, so the status line below
+     can grow without dragging the disc onto the text. The spacer reserves the
+     disc's row via percentage padding, which resolves against width; `cqw` here
+     would be self-referential on the container itself and fall back to vw. */
+  .listening__card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-block-size: 0;
+    overflow: hidden;
+    border-radius: var(--listening-radius);
+    background: var(--listening-face);
+    box-shadow: var(--shadow-border);
+    container-type: inline-size;
+  }
+
+  .listening__card::before {
+    content: "";
+    padding-block-start: 61%;
+  }
+
+  .listening__disc {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: 9cqw;
+    z-index: 1;
+    inline-size: 100cqw;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--listening-disc);
+    box-shadow: var(--shadow-lg);
+  }
+  .listening__disc::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+    pointer-events: none;
+  }
+  .listening[data-live="true"] .listening__disc {
+    animation: listening-spin 8s linear infinite;
+  }
+  .listening__disc {
+    transition: translate var(--duration-normal) var(--ease-out);
+  }
+  .listening__card:has(a.listening__title:is(:hover, :focus-visible))
+    .listening__disc {
+    translate: -50% calc(-50% + 0.1875rem);
+  }
+
+  .listening__art,
+  .listening__hub,
+  .listening__hole {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    border-radius: 50%;
+  }
+  .listening__art {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .listening__sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Art is printed across the whole face, so the centre is a clear
+     polycarbonate ring around a 12.5% hole rather than a paper label. */
+  .listening__hub {
+    inline-size: 28%;
+    block-size: 28%;
+    background: oklch(1 0 0 / 0.26);
+    box-shadow:
+      inset 0 0 0 1px oklch(1 0 0 / 0.4),
+      0 0 0 1px oklch(0 0 0 / 0.1);
+  }
+  .listening__hole {
+    inline-size: 12.5%;
+    block-size: 12.5%;
+    background: var(--listening-face);
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+  }
+  .listening__sheen {
+    background:
+      conic-gradient(
+        from 55deg,
+        transparent 0deg,
+        oklch(1 0 0 / 0.16) 26deg,
+        transparent 62deg
+      ),
+      conic-gradient(
+        from 210deg,
+        transparent 0deg,
+        oklch(0.9 0.09 200 / 0.16) 24deg,
+        oklch(0.9 0.09 320 / 0.14) 48deg,
+        oklch(0.92 0.1 100 / 0.13) 72deg,
+        transparent 104deg,
+        transparent 200deg,
+        oklch(0.92 0.08 260 / 0.14) 230deg,
+        transparent 280deg
+      );
+  }
+
+  .listening__body {
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 0;
+    padding: 0 var(--space-md) var(--space-sm);
+    text-align: center;
+  }
+
+  .listening__artist,
+  .listening__title {
+    margin: 0;
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .listening__artist {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: clamp(var(--fs-xs), 4.2cqi, var(--fs-sm));
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    color: var(--text-subtle);
+  }
+  .listening__title {
+    margin-block-start: var(--space-xs);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: clamp(var(--fs-base), 6.2cqi, var(--fs-xl));
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  /* keeps the tap target and the underline clear of overflow: hidden */
+  a.listening__title {
+    padding-block: 2px;
+    margin-block-start: calc(var(--space-xs) - 2px);
+    margin-block-end: -2px;
+  }
+  a.listening__title:hover {
+    color: var(--text);
+    text-decoration-color: var(--text-subtle);
+  }
+  a.listening__title:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .listening__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+    min-block-size: 1.5lh;
+    padding-block-start: var(--listening-pad);
+    padding-inline-start: var(--space-sm);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .listening__status-text {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .listening__dot {
+    position: relative;
+    flex-shrink: 0;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
+  }
+  .listening[data-live="true"] .listening__dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: listening-pulse 2s var(--ease-out) infinite;
+  }
+  .listening[data-live="false"] .listening__dot {
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    background: var(--text-disabled);
+    box-shadow: none;
+  }
+
+  .listening[data-pending] {
+    pointer-events: none;
+  }
+  .listening__bone {
+    display: block;
+    block-size: 0.75em;
+    border-radius: var(--radius-sm);
+    background-color: var(--listening-bone);
+    background-image: linear-gradient(
+      100deg,
+      transparent 40%,
+      var(--listening-bone-shine) 50%,
+      transparent 60%
+    );
+    background-size: 300% 100%;
+    animation: listening-sweep 1.6s ease-in-out infinite;
+  }
+  .listening__artist.listening__bone {
+    inline-size: 8ch;
+  }
+  .listening__title.listening__bone {
+    inline-size: 11ch;
+    margin-block-start: var(--space-sm);
+  }
+  .listening__status-bone {
+    inline-size: 9ch;
+    block-size: 0.7em;
+  }
+
+  @keyframes listening-spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+  @keyframes listening-pulse {
+    from {
+      scale: 1;
+      opacity: 0.5;
+    }
+    to {
+      scale: 2.6;
+      opacity: 0;
+    }
+  }
+  @keyframes listening-sweep {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .listening__card:has(a.listening__title:is(:hover, :focus-visible))
+      .listening__disc {
+      translate: -50% -50%;
+    }
+
+    .listening[data-live="true"] .listening__disc,
+    .listening[data-live="true"] .listening__dot::after,
+    .listening__bone {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import type { Track } from "../../../utils/spotify";
+  import { formatListeningStatus } from "../../../utils/date";
+
+  const INTERVAL = 30_000;
+
+  let timer = 0;
+  let onVis: (() => void) | undefined;
+
+  function setTitle(widget: HTMLElement, track: Track) {
+    const current = widget.querySelector(".listening__title");
+    if (!current) return;
+
+    const wantLink = Boolean(track.url);
+    const isLink = current.tagName === "A";
+    const el =
+      wantLink === isLink
+        ? current
+        : Object.assign(document.createElement(wantLink ? "a" : "p"), {
+            className: current.className,
+          });
+    if (el !== current) current.replaceWith(el);
+
+    el.textContent = track.title;
+
+    if (el instanceof HTMLAnchorElement && track.url) {
+      el.href = track.url;
+      el.target = "_blank";
+      el.rel = "noopener noreferrer";
+      el.setAttribute("aria-label", `${track.title} by ${track.artist}`);
+    }
+  }
+
+  /* Never hidden: the card holds a 2x2 cell in the bento, so an empty state is
+     a blank record rather than a hole in the grid. */
+  function apply(widget: HTMLElement, track: Track | null) {
+    widget.dataset.live = String(track?.live ?? false);
+    const text = widget.querySelector(".listening__status-text");
+
+    if (!track) {
+      widget.querySelector(".listening__artist")?.replaceChildren();
+      widget.querySelector(".listening__title")?.replaceChildren();
+      if (text) text.textContent = "";
+      return;
+    }
+
+    const disc = widget.querySelector(".listening__disc");
+    let img = disc?.querySelector("img");
+    if (track.cover) {
+      if (!img && disc) {
+        img = document.createElement("img");
+        img.className = "listening__art";
+        img.alt = "";
+        img.width = 240;
+        img.height = 240;
+        img.decoding = "async";
+        disc.prepend(img);
+      }
+      if (img && img.getAttribute("src") !== track.cover) img.src = track.cover;
+    } else {
+      img?.remove();
+    }
+
+    const artist = widget.querySelector(".listening__artist");
+    if (artist) artist.textContent = track.artist;
+
+    setTitle(widget, track);
+
+    if (text) text.textContent = formatListeningStatus(track);
+  }
+
+  /* Re-queried every tick: the server island replaces the fallback markup, so
+     any element captured up front would be detached by the time we update. */
+  async function refresh() {
+    if (document.hidden) return;
+
+    const widget = document.querySelector<HTMLElement>(".listening");
+    if (!widget || widget.dataset.pending) return;
+
+    try {
+      const res = await fetch("/api/now-playing");
+      if (!res.ok) return;
+      apply(widget, (await res.json()) as Track | null);
+    } catch {}
+  }
+
+  function bind() {
+    clearInterval(timer);
+    if (onVis) document.removeEventListener("visibilitychange", onVis);
+
+    onVis = () => void refresh();
+    timer = window.setInterval(onVis, INTERVAL);
+    document.addEventListener("visibilitychange", onVis);
+  }
+
+  document.addEventListener("astro:page-load", bind);
+</script>

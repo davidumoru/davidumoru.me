@@ -1,6 +1,6 @@
 ---
-import type { Track } from "../../utils/spotify";
-import { formatListeningStatus } from "../../utils/date";
+import type { Track } from "../../../utils/spotify";
+import { formatListeningStatus } from "../../../utils/date";
 
 interface Props {
   track?: Track | null;
@@ -358,7 +358,7 @@ const status = track ? formatListeningStatus(track) : null;
 </style>
 
 <script>
-  import { formatListeningStatus } from "../../utils/date";
+  import { formatListeningStatus } from "../../../utils/date";
 
   type Track = {
     title: string;
