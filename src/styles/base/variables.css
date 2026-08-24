@@ -454,6 +454,7 @@
 
   --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --ease-in-out: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
 
   --shadow-border:
     0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06),

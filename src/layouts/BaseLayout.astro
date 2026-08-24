@@ -1,6 +1,7 @@
 ---
 import UnstyledBase from "./UnstyledBase.astro";
 import CodeCopy from "../components/CodeCopy.astro";
+import SiteNav from "../components/SiteNav.astro";
 import SoundToggle from "../components/SoundToggle.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 
@@ -22,6 +23,7 @@ const { title, description, image, type, publishedDate } = Astro.props;
   type={type}
   publishedDate={publishedDate}
 >
+  <SiteNav />
   <main>
     <slot />
   </main>
