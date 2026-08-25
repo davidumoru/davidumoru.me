@@ -29,27 +29,7 @@ const socialsIndex = step;
     aria-controls="siteNavMenu"
     aria-expanded="false"
   >
-    <svg
-      class="site-nav-glyph icon size-20"
-      viewBox="0 0 256 256"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <rect
-        class="site-nav-bar is-top"
-        x="32"
-        y="120"
-        width="192"
-        height="16"
-        rx="8"></rect>
-      <rect
-        class="site-nav-bar is-bottom"
-        x="32"
-        y="120"
-        width="192"
-        height="16"
-        rx="8"></rect>
-    </svg>
+    <Icon name="equals" size={20} />
   </button>
 
   {
@@ -82,27 +62,10 @@ const socialsIndex = step;
         type="button"
         aria-label="Close menu"
       >
-        <svg
-          class="site-nav-glyph icon size-20"
-          viewBox="0 0 256 256"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <rect
-            class="site-nav-bar is-top"
-            x="32"
-            y="120"
-            width="192"
-            height="16"
-            rx="8"></rect>
-          <rect
-            class="site-nav-bar is-bottom"
-            x="32"
-            y="120"
-            width="192"
-            height="16"
-            rx="8"></rect>
-        </svg>
+        <span class="site-nav-swap">
+          <span class="when-closed"><Icon name="equals" size={20} /></span>
+          <span class="when-open"><Icon name="x" size={20} /></span>
+        </span>
       </button>
     </div>
 
@@ -285,47 +248,42 @@ const socialsIndex = step;
     outline-offset: 2px;
   }
 
-  .site-nav-glyph {
-    overflow: visible;
-    transition: scale var(--duration-fast) var(--ease-out-expo);
-  }
-
-  .site-nav-bar {
-    transform-box: view-box;
-    transform-origin: center;
-    transition:
-      translate var(--duration-fast) var(--ease-out-expo),
-      rotate var(--duration-fast) var(--ease-out-expo);
-  }
-
-  .site-nav-menu .site-nav-bar {
-    transition-duration: var(--duration-fast);
-  }
-
-  .site-nav-bar.is-top {
-    translate: 0 -32px;
-  }
-
-  .site-nav-bar.is-bottom {
-    translate: 0 32px;
-  }
-
   @media (hover: hover) and (pointer: fine) {
     .site-nav-button:hover {
       color: var(--text);
     }
 
-    .site-nav-button:hover .site-nav-glyph {
+    .site-nav-button:hover :global(.icon) {
       scale: 1.06;
     }
+  }
 
-    .site-nav-button.is-trigger:hover .site-nav-bar.is-top {
-      translate: 0 -38px;
-    }
+  .site-nav-button :global(.icon) {
+    transition: scale var(--duration-fast) var(--ease-out-expo);
+  }
 
-    .site-nav-button.is-trigger:hover .site-nav-bar.is-bottom {
-      translate: 0 38px;
-    }
+  .site-nav-swap {
+    display: inline-grid;
+    place-items: center;
+  }
+  .site-nav-swap > span {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      scale var(--duration-normal) var(--ease-out);
+  }
+  .when-open {
+    opacity: 0;
+    scale: 0.85;
+  }
+  .site-nav-menu[open] .when-closed {
+    opacity: 0;
+    scale: 0.85;
+  }
+  .site-nav-menu[open] .when-open {
+    opacity: 1;
+    scale: 1;
   }
 
   .site-nav-crumbs {
@@ -409,31 +367,6 @@ const socialsIndex = step;
   @starting-style {
     .site-nav-menu[open]::backdrop {
       opacity: 0;
-    }
-  }
-
-  .site-nav-menu[open] .site-nav-bar {
-    translate: 0 0;
-    transition-duration: var(--duration-fast);
-  }
-
-  .site-nav-menu[open] .site-nav-bar.is-top {
-    rotate: 45deg;
-  }
-
-  .site-nav-menu[open] .site-nav-bar.is-bottom {
-    rotate: -45deg;
-  }
-
-  @starting-style {
-    .site-nav-menu[open] .site-nav-bar.is-top {
-      translate: 0 -32px;
-      rotate: 0deg;
-    }
-
-    .site-nav-menu[open] .site-nav-bar.is-bottom {
-      translate: 0 32px;
-      rotate: 0deg;
     }
   }
 
@@ -550,28 +483,19 @@ const socialsIndex = step;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .site-nav-button:active,
+    .site-nav-button:hover :global(.icon) {
+      scale: 1;
+    }
+    .site-nav-swap > span,
+    .site-nav-menu[open] .site-nav-swap > span {
+      scale: 1;
+    }
     .site-nav-menu[open] .site-nav-list li,
     .site-nav-menu[open] .site-nav-socials,
     .site-nav-menu[open] .site-nav-group-label {
       animation-name: site-nav-fade;
       animation-delay: 0ms;
-    }
-
-    .site-nav-menu[open] .site-nav-bar {
-      transition-delay: 0ms;
-    }
-
-    .site-nav-button:hover .site-nav-glyph,
-    .site-nav-button:active {
-      scale: 1;
-    }
-
-    .site-nav-button.is-trigger:hover .site-nav-bar.is-top {
-      translate: 0 -32px;
-    }
-
-    .site-nav-button.is-trigger:hover .site-nav-bar.is-bottom {
-      translate: 0 32px;
     }
   }
 
