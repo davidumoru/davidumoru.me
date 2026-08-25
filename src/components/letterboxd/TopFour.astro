@@ -27,17 +27,17 @@ const films = [
 ];
 ---
 
-<div class="letterboxd-favorites">
+<div class="top-four">
   {
     films.map((f) => (
       <a
-        class="letterboxd-favorites__item"
+        class="top-four__item"
         href={f.url}
         target="_blank"
         rel="noopener"
         aria-label={f.title}
       >
-        <span class="letterboxd-favorites__poster">
+        <span class="top-four__poster">
           <img
             src={f.poster}
             alt={`${f.title} poster`}
@@ -52,19 +52,19 @@ const films = [
 </div>
 
 <style>
-  .letterboxd-favorites {
+  .top-four {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-md);
     align-items: start;
   }
 
-  .letterboxd-favorites__item {
+  .top-four__item {
     display: block;
     text-decoration: none;
   }
 
-  .letterboxd-favorites__poster {
+  .top-four__poster {
     display: block;
     aspect-ratio: 2 / 3;
     border-radius: var(--radius-sm);
@@ -76,14 +76,14 @@ const films = [
       inset 0 0 0 1px var(--image-outline);
     transition: box-shadow var(--duration-fast) var(--ease-out);
   }
-  .letterboxd-favorites__item:hover .letterboxd-favorites__poster,
-  .letterboxd-favorites__item:focus-visible .letterboxd-favorites__poster {
+  .top-four__item:hover .top-four__poster,
+  .top-four__item:focus-visible .top-four__poster {
     box-shadow:
       0 0 0 2px var(--primary),
       var(--shadow-sm),
       inset 0 0 0 1px var(--image-outline);
   }
-  .letterboxd-favorites__poster img {
+  .top-four__poster img {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
@@ -91,7 +91,7 @@ const films = [
   }
 
   @media (max-width: 34rem) {
-    .letterboxd-favorites {
+    .top-four {
       gap: var(--space-sm);
     }
   }
