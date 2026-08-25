@@ -6,19 +6,18 @@ const FAIL_TTL = 60_000;
 const URL =
   `https://api.open-meteo.com/v1/forecast` +
   `?latitude=${LAT}&longitude=${LON}` +
-  `&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day`;
+  `&current=temperature_2m,weather_code,wind_direction_10m,is_day`;
 
 export type Sky = "clear" | "cloud" | "rain" | "storm" | "fog";
 export type WeatherIcon = "sun" | "moon" | "cloud" | "rain" | "storm";
 
 export interface Weather {
   temp: number;
+  windDir: number;
   label: string;
   sky: Sky;
   day: boolean;
   icon: WeatherIcon;
-  wind: number;
-  windDir: number;
 }
 
 let cache: { weather: Weather | null; expires: number } | null = null;
@@ -46,7 +45,6 @@ function parse(data: {
   current?: {
     temperature_2m?: number;
     weather_code?: number;
-    wind_speed_10m?: number;
     wind_direction_10m?: number;
     is_day?: number;
   };
@@ -55,7 +53,6 @@ function parse(data: {
   if (
     cur?.temperature_2m == null ||
     cur.weather_code == null ||
-    cur.wind_speed_10m == null ||
     cur.wind_direction_10m == null ||
     cur.is_day == null
   )
@@ -67,12 +64,11 @@ function parse(data: {
 
   return {
     temp: Math.round(cur.temperature_2m),
+    windDir: cur.wind_direction_10m,
     label: labelFrom(code),
     sky,
     day,
     icon: iconFrom(sky, day),
-    wind: Math.round(cur.wind_speed_10m),
-    windDir: cur.wind_direction_10m,
   };
 }
 

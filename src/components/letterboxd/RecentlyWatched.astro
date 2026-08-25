@@ -1,0 +1,387 @@
+---
+import { Icon } from "../ui/Icon/Icon.tsx";
+import type { Watch } from "../../utils/letterboxd";
+
+interface Props {
+  watches?: Watch[] | null;
+  pending?: boolean;
+  compact?: boolean;
+}
+
+const { watches = null, pending = false, compact = false } = Astro.props;
+const featured = watches?.[0];
+const rest = watches?.slice(1, 6) ?? [];
+const stars = Array.from({ length: 5 }, (_, i) => i);
+---
+
+<div
+  class="recently-watched"
+  data-compact={compact ? true : undefined}
+  data-pending={pending ? true : undefined}
+  aria-busy={pending ? true : undefined}
+  hidden={!pending && !featured}
+>
+  <div class="recently-watched__card">
+    {
+      featured?.url ? (
+        <a
+          class="recently-watched__feature"
+          href={featured.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <span class="recently-watched__poster">
+            {featured.poster && (
+              <img
+                src={featured.poster}
+                alt=""
+                width="200"
+                height="300"
+                decoding="async"
+              />
+            )}
+          </span>
+        </a>
+      ) : (
+        <span class="recently-watched__feature">
+          <span class="recently-watched__poster recently-watched__bone" />
+        </span>
+      )
+    }
+
+    {
+      featured?.url ? (
+        <a
+          class="recently-watched__title"
+          href={featured.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {featured.title}
+        </a>
+      ) : (
+        <span
+          class:list={[
+            "recently-watched__title",
+            pending && "recently-watched__bone",
+          ]}
+        >
+          {featured?.title}
+        </span>
+      )
+    }
+
+    {
+      !pending && featured?.rating != null ? (
+        <span
+          class="recently-watched__rating"
+          style={`--fill: ${(featured.rating / 5) * 100}%`}
+          role="img"
+          aria-label={`${featured.rating} out of 5 stars`}
+        >
+          <span class="recently-watched__stars" aria-hidden="true">
+            {stars.map(() => (
+              <Icon name="star" variant="fill" size={16} />
+            ))}
+          </span>
+          <span
+            class="recently-watched__stars recently-watched__stars--on"
+            aria-hidden="true"
+          >
+            {stars.map(() => (
+              <Icon name="star" variant="fill" size={16} />
+            ))}
+          </span>
+        </span>
+      ) : (
+        pending && (
+          <span class="recently-watched__bone recently-watched__rating-bone" />
+        )
+      )
+    }
+
+    <div class="recently-watched__thumbs">
+      {
+        pending
+          ? stars.map(() => (
+              <span class="recently-watched__thumb recently-watched__bone" />
+            ))
+          : rest.map((watch) => (
+              <a
+                class="recently-watched__thumb"
+                href={watch.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={watch.title}
+              >
+                {watch.poster && (
+                  <img
+                    src={watch.poster}
+                    alt=""
+                    width="120"
+                    height="180"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+              </a>
+            ))
+      }
+    </div>
+  </div>
+
+  <p class="recently-watched__source">
+    <Icon name="filmReel" variant="duotone" size={16} />
+    Recently on Letterboxd
+  </p>
+  {
+    pending && (
+      <p class="sr-only" role="status">
+        Loading recently watched
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .recently-watched {
+    --rw-pad: 0.375rem;
+    --rw-poster: 9rem;
+    --rw-tray: var(--surface-hover);
+    --rw-card: var(--background);
+    --rw-lead: var(--space-sm);
+    --rw-bone: var(--gray-5);
+    --rw-bone-shine: var(--gray-7);
+
+    padding: var(--rw-pad);
+    border-radius: calc(var(--radius-md) + var(--rw-pad));
+    background: var(--rw-tray);
+    box-shadow: var(--shadow-border);
+  }
+  :global(.dark) .recently-watched {
+    --rw-tray: var(--surface);
+    --rw-card: var(--surface-hover);
+  }
+
+  .recently-watched__card {
+    display: grid;
+    grid-template-columns: var(--rw-poster) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--rw-card);
+    box-shadow: var(--shadow-border);
+  }
+
+  .recently-watched__feature {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: stretch;
+    display: block;
+    inline-size: var(--rw-poster);
+    text-decoration: none;
+  }
+
+  .recently-watched__poster,
+  .recently-watched__thumb {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+  }
+  .recently-watched__poster,
+  .recently-watched__thumb {
+    aspect-ratio: 2 / 3;
+  }
+  .recently-watched__poster {
+    aspect-ratio: auto;
+    block-size: 100%;
+  }
+  .recently-watched__poster img,
+  .recently-watched__thumb img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .recently-watched__title {
+    padding-block-start: var(--rw-lead);
+    grid-column: 2;
+    justify-self: start;
+    max-inline-size: 100%;
+    overflow: hidden;
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  /* keeps the tap target at 24px without moving the rating row */
+  a.recently-watched__title {
+    padding-block-end: 2px;
+    margin-block-end: -2px;
+  }
+
+  .recently-watched__rating,
+  .recently-watched__rating-bone {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .recently-watched__rating {
+    position: relative;
+    display: block;
+    color: var(--gray-6);
+  }
+  .recently-watched__stars {
+    display: flex;
+    gap: 0.125rem;
+  }
+  .recently-watched__stars--on {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    color: var(--primary);
+    clip-path: inset(0 calc(100% - var(--fill, 0%)) 0 0);
+  }
+
+  .recently-watched__thumbs {
+    grid-column: 2;
+    align-self: end;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-sm);
+    min-block-size: 0;
+  }
+  .recently-watched__thumb {
+    text-decoration: none;
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out),
+      translate var(--duration-fast) var(--ease-out);
+  }
+  .recently-watched__thumb:is(:hover, :focus-visible) {
+    translate: 0 -2px;
+  }
+  .recently-watched__thumb:is(:hover, :focus-visible),
+  .recently-watched__feature:is(:hover, :focus-visible)
+    .recently-watched__poster {
+    box-shadow:
+      0 0 0 2px var(--primary),
+      inset 0 0 0 1px var(--image-outline);
+  }
+  .recently-watched__thumb:focus-visible,
+  a.recently-watched__title:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .recently-watched__source {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0;
+    padding-block-start: var(--rw-pad);
+    padding-inline-start: var(--space-sm);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+  }
+  .recently-watched[data-pending] {
+    pointer-events: none;
+  }
+  .recently-watched__bone {
+    display: block;
+    border-radius: var(--radius-sm);
+    background-color: var(--rw-bone);
+    background-image: linear-gradient(
+      100deg,
+      transparent 40%,
+      var(--rw-bone-shine) 50%,
+      transparent 60%
+    );
+    background-size: 300% 100%;
+    animation: recently-watched-sweep 1.6s ease-in-out infinite;
+  }
+  .recently-watched__title.recently-watched__bone {
+    inline-size: 14ch;
+    block-size: 0.75em;
+    margin-block: calc((1lh - 0.75em) / 2);
+  }
+  .recently-watched__rating-bone {
+    inline-size: calc(5 * 16px + 4 * 0.125rem);
+    block-size: 16px;
+  }
+
+  @keyframes recently-watched-sweep {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+
+  .recently-watched[data-compact] {
+    --rw-poster: 4.5rem;
+    --rw-lead: var(--space-xs);
+
+    display: flex;
+    flex-direction: column;
+    block-size: 100%;
+  }
+  .recently-watched[data-compact] .recently-watched__card {
+    flex: 1;
+    min-block-size: 0;
+    gap: var(--space-xs);
+    padding: var(--space-xs);
+  }
+  .recently-watched[data-compact] .recently-watched__title {
+    font-size: var(--fs-sm);
+  }
+  .recently-watched[data-compact] .recently-watched__thumbs {
+    gap: var(--space-xs);
+  }
+  /* Radius is a share of the poster, so the smaller posters read as equally
+     rounded rather than pill-like. */
+  .recently-watched[data-compact]
+    :is(.recently-watched__poster, .recently-watched__thumb) {
+    border-radius: var(--radius-xs);
+  }
+  .recently-watched[data-compact] .recently-watched__stars :global(.icon) {
+    inline-size: 12px;
+    block-size: 12px;
+  }
+  .recently-watched[data-compact] .recently-watched__rating-bone {
+    inline-size: calc(5 * 12px + 4 * 0.125rem);
+    block-size: 12px;
+  }
+  .recently-watched[data-compact] .recently-watched__source {
+    padding-inline-start: var(--space-xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .recently-watched__bone {
+      animation: none;
+    }
+    .recently-watched__thumb {
+      transition: none;
+    }
+    .recently-watched__thumb:is(:hover, :focus-visible) {
+      translate: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.recently-watched__title:hover {
+      color: var(--text);
+      text-decoration-color: var(--text-subtle);
+    }
+  }
+</style>
