@@ -1,0 +1,14 @@
+---
+import { getWeather } from "../../utils/weather";
+import { getNowPlaying } from "../../utils/spotify";
+import { getRecentWatches } from "../../utils/letterboxd";
+import Bento from "./Bento.astro";
+
+const [weather, track, watches] = await Promise.all([
+  getWeather(),
+  getNowPlaying(),
+  getRecentWatches(6),
+]);
+---
+
+<Bento weather={weather} track={track} watches={watches} />

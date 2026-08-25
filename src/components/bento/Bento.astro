@@ -1,0 +1,404 @@
+---
+import { Icon } from "../ui/Icon/Icon.tsx";
+import RecentlyWatched from "../letterboxd/RecentlyWatched.astro";
+import NowPlaying from "../spotify/NowPlaying.astro";
+import { localClock } from "../../utils/date";
+import type { IconName } from "../ui/Icon/Icon.tsx";
+import type { Track } from "../../utils/spotify";
+import type { Weather, WeatherIcon } from "../../utils/weather";
+import type { Watch } from "../../utils/letterboxd";
+
+interface Props {
+  weather?: Weather | null;
+  track?: Track | null;
+  watches?: Watch[] | null;
+  pending?: boolean;
+}
+
+const {
+  weather = null,
+  track = null,
+  watches = null,
+  pending = false,
+} = Astro.props;
+
+const clock = localClock();
+const hourRot =
+  ((clock.hour % 12) + clock.minute / 60 + clock.second / 3600) * 30;
+const minuteRot = (clock.minute + clock.second / 60) * 6;
+const secondRot = clock.second * 6;
+const ticks = Array.from({ length: 60 }, (_, i) => i);
+
+const WEATHER_ICON: Record<WeatherIcon, IconName> = {
+  sun: "sun",
+  moon: "moon",
+  cloud: "cloud",
+  rain: "cloudRain",
+  storm: "cloudLightning",
+};
+---
+
+<div
+  class="bento"
+  data-pending={pending ? true : undefined}
+  aria-busy={pending ? true : undefined}
+>
+  <div class="bento__music">
+    <NowPlaying track={track} pending={pending} />
+  </div>
+
+  <div class="bento__tile bento__clock">
+    <svg class="bento__face" viewBox="0 0 100 100" aria-hidden="true">
+      {
+        ticks.map((i) => (
+          <line
+            class:list={["bento__tick", i % 5 === 0 && "bento__tick--hour"]}
+            x1="50"
+            y1="7"
+            x2="50"
+            y2={i % 5 === 0 ? "12" : "9"}
+            transform={`rotate(${i * 6} 50 50)`}
+          />
+        ))
+      }
+      <g class="bento__hand bento__hand--hour" style={`--rot: ${hourRot}deg`}>
+        <line x1="50" y1="50" x2="50" y2="30"></line>
+      </g>
+      <g
+        class="bento__hand bento__hand--minute"
+        style={`--rot: ${minuteRot}deg`}
+      >
+        <line x1="50" y1="50" x2="50" y2="18"></line>
+      </g>
+      <g
+        class="bento__hand bento__hand--second"
+        style={`--rot: ${secondRot}deg`}
+      >
+        <line x1="50" y1="56" x2="50" y2="14"></line>
+      </g>
+      <circle class="bento__hub" cx="50" cy="50" r="2.4"></circle>
+    </svg>
+  </div>
+
+  <div
+    class="bento__tile bento__weather"
+    data-sky={weather?.sky}
+    data-day={weather ? String(weather.day) : undefined}
+  >
+    <div class="bento__stack">
+      <span class="bento__place">
+        Abuja
+        {
+          weather && (
+            <Fragment>
+              <span class="bento__arrow" style={`--dir: ${weather.windDir}deg`}>
+                <Icon name="navigationArrow" variant="duotone" size={16} />
+              </span>
+              <span class="sr-only">
+                , wind from {Math.round(weather.windDir)} degrees
+              </span>
+            </Fragment>
+          )
+        }
+      </span>
+      <span
+        class:list={["bento__metric", "bento__temp", pending && "bento__bone"]}
+      >
+        {weather ? `${weather.temp}°` : pending ? null : "–"}
+      </span>
+    </div>
+
+    <div class="bento__stack">
+      <span class="bento__glyph">
+        {
+          weather && (
+            <Icon
+              name={WEATHER_ICON[weather.icon]}
+              variant="duotone"
+              size={20}
+            />
+          )
+        }
+      </span>
+      <span class:list={["bento__label", pending && "bento__bone"]}>
+        {weather?.label}
+      </span>
+    </div>
+  </div>
+
+  <div class="bento__deck">
+    <RecentlyWatched watches={watches} pending={pending} compact />
+  </div>
+
+  {
+    pending && (
+      <p class="sr-only" role="status">
+        Loading Abuja weather
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .bento {
+    --bento-gap: var(--space-sm);
+    --bento-pad: var(--space-sm);
+    --bento-radius: var(--radius-xl);
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--bento-gap);
+  }
+
+  .bento__music {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: 1;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .bento__tile {
+    --tile-bg: var(--surface);
+    --tile-ink: var(--text);
+    --tile-soft: var(--text-muted);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    aspect-ratio: 1;
+    min-inline-size: 0;
+    min-block-size: 0;
+    padding: var(--bento-pad);
+    overflow: hidden;
+    border-radius: var(--bento-radius);
+    background: var(--tile-bg);
+    color: var(--tile-ink);
+    box-shadow: var(--shadow-border);
+    container-type: inline-size;
+  }
+
+  .bento__weather {
+    --bento-pad: var(--space-md);
+    --tile-bg: var(--gray-3);
+    --tile-ink: var(--gray-12);
+    --tile-soft: var(--gray-11);
+  }
+  .bento__weather[data-sky="clear"][data-day="true"] {
+    --tile-bg: var(--yellow-3);
+    --tile-ink: var(--yellow-12);
+    --tile-soft: var(--yellow-11);
+  }
+  .bento__weather[data-sky="clear"][data-day="false"] {
+    --tile-bg: var(--indigo-3);
+    --tile-ink: var(--indigo-12);
+    --tile-soft: var(--indigo-11);
+  }
+  .bento__weather[data-sky="cloud"] {
+    --tile-bg: var(--blue-3);
+    --tile-ink: var(--blue-12);
+    --tile-soft: var(--blue-11);
+  }
+  .bento__weather[data-sky="rain"] {
+    --tile-bg: var(--cyan-3);
+    --tile-ink: var(--cyan-12);
+    --tile-soft: var(--cyan-11);
+  }
+  .bento__weather[data-sky="storm"] {
+    --tile-bg: var(--purple-3);
+    --tile-ink: var(--purple-12);
+    --tile-soft: var(--purple-11);
+  }
+
+  .bento__glyph {
+    display: grid;
+    justify-content: start;
+    min-block-size: 20px;
+    color: var(--tile-soft);
+  }
+
+  .bento__deck {
+    grid-column: span 2;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .bento__stack {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .bento__arrow {
+    display: inline-flex;
+    rotate: calc(var(--dir, 0deg) + 45deg);
+  }
+  .bento__arrow :global(.icon) {
+    inline-size: 14px;
+    block-size: 14px;
+  }
+  .bento__place {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    color: var(--tile-soft);
+  }
+
+  .bento__metric {
+    font-size: clamp(var(--fs-lg), 26cqw, var(--fs-2xl));
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-none);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .bento__temp {
+    font-size: clamp(var(--fs-2xl), 32cqw, var(--fs-4xl));
+    letter-spacing: -0.04em;
+  }
+
+  .bento__label {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    color: var(--tile-soft);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bento__clock {
+    display: grid;
+  }
+  .bento__face {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+    fill: none;
+  }
+  .bento__tick {
+    stroke: currentColor;
+    stroke-width: 0.7;
+    stroke-linecap: round;
+    opacity: 0.25;
+  }
+  .bento__tick--hour {
+    stroke-width: 1.1;
+    opacity: 0.6;
+  }
+  .bento__hand {
+    transform-box: view-box;
+    transform-origin: 50px 50px;
+    transform: rotate(var(--rot, 0deg));
+  }
+  .bento__hand line {
+    stroke: currentColor;
+    stroke-linecap: round;
+  }
+  .bento__hand--hour line {
+    stroke-width: 2.8;
+  }
+  .bento__hand--minute line {
+    stroke-width: 1.8;
+  }
+  .bento__hand--second line {
+    stroke: var(--primary);
+    stroke-width: 0.9;
+  }
+  .bento__hub {
+    fill: var(--primary);
+  }
+
+  .bento[data-pending] {
+    pointer-events: none;
+  }
+  .bento__bone {
+    display: block;
+    inline-size: 4.5ch;
+    block-size: 0.75em;
+    border-radius: var(--radius-sm);
+    background-color: color-mix(in oklch, currentColor 14%, transparent);
+    background-image: linear-gradient(
+      100deg,
+      transparent 40%,
+      color-mix(in oklch, currentColor 22%, transparent) 50%,
+      transparent 60%
+    );
+    background-size: 300% 100%;
+    animation: bento-sweep 1.6s ease-in-out infinite;
+  }
+  .bento__temp.bento__bone {
+    inline-size: 3ch;
+    block-size: 0.7em;
+  }
+  .bento__label.bento__bone {
+    inline-size: 7ch;
+    block-size: 0.7em;
+  }
+
+  @keyframes bento-sweep {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bento__hand--second {
+      display: none;
+    }
+    .bento__bone {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { localClock } from "../../utils/date";
+
+  let timer = 0;
+  let bound = false;
+
+  function setRot(root: Element, sel: string, deg: number) {
+    const el = root.querySelector<HTMLElement>(sel);
+    if (el) el.style.setProperty("--rot", `${deg}deg`);
+  }
+
+  function paint(root: Element) {
+    const c = localClock();
+    const hour = (c.hour % 12) + c.minute / 60 + c.second / 3600;
+    setRot(root, ".bento__hand--hour", hour * 30);
+    setRot(root, ".bento__hand--minute", (c.minute + c.second / 60) * 6);
+    setRot(root, ".bento__hand--second", c.second * 6);
+  }
+
+  function loop() {
+    document.querySelectorAll(".here").forEach(paint);
+    timer = window.setTimeout(loop, 1000 - (Date.now() % 1000));
+  }
+
+  function start() {
+    clearTimeout(timer);
+    if (document.hidden) return;
+    loop();
+  }
+
+  function bind() {
+    start();
+    if (bound) return;
+    bound = true;
+    document.addEventListener("visibilitychange", start);
+  }
+
+  document.addEventListener("astro:page-load", bind);
+</script>
