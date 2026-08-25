@@ -8,8 +8,10 @@ s {
     text-decoration-color var(--duration-fast) ease;
 }
 
-del:hover,
-s:hover {
-  color: var(--muted);
-  text-decoration-color: transparent;
+@media (hover: hover) and (pointer: fine) {
+  del:hover,
+  s:hover {
+    color: var(--muted);
+    text-decoration-color: transparent;
+  }
 }

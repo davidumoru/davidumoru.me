@@ -113,11 +113,6 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
     background: var(--surface);
   }
 
-  .cover:hover .media,
-  .cover:hover .placeholder {
-    transform: scale(1.03);
-  }
-
   .meta {
     margin-block-start: var(--space-md);
   }
@@ -180,5 +175,12 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
     inline-size: 1px;
     block-size: 1rem;
     background: var(--border-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cover:hover .media,
+    .cover:hover .placeholder {
+      transform: scale(1.03);
+    }
   }
 </style>

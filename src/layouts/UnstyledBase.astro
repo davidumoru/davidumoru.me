@@ -143,7 +143,11 @@ const articleSchema =
         if (!event.target.closest("#themeToggle")) return;
         const dark = !root.classList.contains("dark");
         localStorage.setItem("theme", dark ? "dark" : "light");
+        root.classList.add("theme-switching");
         applyTheme();
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => root.classList.remove("theme-switching")),
+        );
       });
     </script>
 

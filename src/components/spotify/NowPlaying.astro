@@ -232,10 +232,6 @@ const status = track ? formatListeningStatus(track) : null;
     margin-block-start: calc(var(--space-xs) - 2px);
     margin-block-end: -2px;
   }
-  a.now-playing__title:hover {
-    color: var(--text);
-    text-decoration-color: var(--text-subtle);
-  }
   a.now-playing__title:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 2px;
@@ -346,6 +342,13 @@ const status = track ? formatListeningStatus(track) : null;
     .now-playing[data-live="true"] .now-playing__dot::after,
     .now-playing__bone {
       animation: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.now-playing__title:hover {
+      color: var(--text);
+      text-decoration-color: var(--text-subtle);
     }
   }
 </style>

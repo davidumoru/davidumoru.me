@@ -27,7 +27,10 @@ const posts = await getPosts("archive");
     color: var(--text-subtle);
     text-decoration: none;
   }
-  .more:hover {
-    color: var(--primary);
+
+  @media (hover: hover) and (pointer: fine) {
+    .more:hover {
+      color: var(--primary);
+    }
   }
 </style>

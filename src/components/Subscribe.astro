@@ -226,9 +226,6 @@ const action =
 </script>
 
 <style>
-  .subscribe {
-    max-inline-size: 32rem;
-  }
   .title {
     margin: 0;
   }
@@ -277,9 +274,6 @@ const action =
     text-underline-offset: 2px;
     cursor: pointer;
     transition: color var(--duration-fast) var(--ease-out);
-  }
-  .relink:hover {
-    color: var(--text);
   }
   .check {
     display: inline-grid;
@@ -374,6 +368,12 @@ const action =
     .success,
     .check {
       transition: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .relink:hover {
+      color: var(--text);
     }
   }
 </style>

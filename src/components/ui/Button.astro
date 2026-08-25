@@ -64,26 +64,16 @@ const Tag = href ? "a" : "button";
     background: var(--text);
     color: var(--background);
   }
-  .variant-primary:hover {
-    opacity: 0.9;
-  }
 
   .variant-secondary {
     background: var(--surface);
     color: var(--text);
     box-shadow: var(--shadow-border);
   }
-  .variant-secondary:hover {
-    background: var(--surface-hover);
-  }
 
   .variant-ghost {
     background: transparent;
     color: var(--text-muted);
-  }
-  .variant-ghost:hover {
-    background: var(--surface);
-    color: var(--text);
   }
 
   .btn:active {
@@ -109,6 +99,19 @@ const Tag = href ? "a" : "button";
     }
     .btn:active {
       transform: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .variant-primary:hover {
+      opacity: 0.9;
+    }
+    .variant-secondary:hover {
+      background: var(--surface-hover);
+    }
+    .variant-ghost:hover {
+      background: var(--surface);
+      color: var(--text);
     }
   }
 </style>

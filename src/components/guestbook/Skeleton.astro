@@ -26,9 +26,6 @@ const tilts = [-1.2, 0.8, -0.5, 1.3, -1, 0.6, -0.9, 1.1];
     --light-stamp-bg: var(--gray-3);
     pointer-events: none;
   }
-  .skeleton:hover {
-    transform: rotate(var(--rotate));
-  }
 
   .skeleton .stamp-paper {
     background-image: linear-gradient(
@@ -58,6 +55,12 @@ const tilts = [-1.2, 0.8, -0.5, 1.3, -1, 0.6, -0.9, 1.1];
   @media (prefers-reduced-motion: reduce) {
     .skeleton .stamp-paper {
       animation: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .skeleton:hover {
+      transform: rotate(var(--rotate));
     }
   }
 </style>

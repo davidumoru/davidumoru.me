@@ -11,7 +11,11 @@ const { type, message } = Astro.props;
 
 <div class="alert" data-type={type} role="alert">
   <span class="icon" aria-hidden="true">
-    <Icon name={type === "success" ? "checkCircle" : "warning"} size={22} variant="duotone" />
+    <Icon
+      name={type === "success" ? "checkCircle" : "warning"}
+      size={22}
+      variant="duotone"
+    />
   </span>
   <p class="message">{message}</p>
   <button class="dismiss" type="button" aria-label="Dismiss this message">
@@ -74,14 +78,17 @@ const { type, message } = Astro.props;
       opacity var(--duration-fast) var(--ease-out),
       background var(--duration-fast) var(--ease-out);
   }
-  .dismiss:hover {
-    opacity: 1;
-    background: oklch(0 0 0 / 0.08);
-  }
   .dismiss:focus-visible {
     opacity: 1;
     outline: 2px solid currentColor;
     outline-offset: 1px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .dismiss:hover {
+      opacity: 1;
+      background: oklch(0 0 0 / 0.08);
+    }
   }
 </style>
 

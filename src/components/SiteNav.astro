@@ -358,10 +358,6 @@ const socialsIndex = step;
     color: var(--text);
   }
 
-  .site-nav-crumb:hover {
-    color: var(--text);
-  }
-
   .site-nav-crumb-sep {
     color: var(--text-disabled);
   }
@@ -511,11 +507,6 @@ const socialsIndex = step;
     transition: color var(--duration-fast) ease;
   }
 
-  .site-nav-link:hover,
-  .site-nav-link.is-current {
-    color: var(--text);
-  }
-
   .site-nav-socials {
     display: flex;
     align-items: center;
@@ -541,10 +532,6 @@ const socialsIndex = step;
 
   .site-nav-socials a + a {
     margin-inline-start: 0;
-  }
-
-  .site-nav-socials a:hover {
-    color: var(--text);
   }
 
   .site-nav-socials a:active {
@@ -585,6 +572,19 @@ const socialsIndex = step;
 
     .site-nav-button.is-trigger:hover .site-nav-bar.is-bottom {
       translate: 0 32px;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-nav-crumb:hover {
+      color: var(--text);
+    }
+    .site-nav-link:hover,
+    .site-nav-link.is-current {
+      color: var(--text);
+    }
+    .site-nav-socials a:hover {
+      color: var(--text);
     }
   }
 </style>

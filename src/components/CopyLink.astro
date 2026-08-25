@@ -56,10 +56,6 @@ import { Icon } from "./ui/Icon/Icon.tsx";
       color var(--duration-fast) ease,
       background var(--duration-fast) ease;
   }
-  .copy:hover {
-    color: var(--text);
-    background: var(--surface);
-  }
   .copy:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 2px;
@@ -86,5 +82,12 @@ import { Icon } from "./ui/Icon/Icon.tsx";
     opacity: 1;
     transform: scale(1);
     filter: blur(0);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .copy:hover {
+      color: var(--text);
+      background: var(--surface);
+    }
   }
 </style>

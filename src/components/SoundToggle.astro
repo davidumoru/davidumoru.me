@@ -90,11 +90,6 @@ import { Icon } from "./ui/Icon/Icon.tsx";
       scale var(--duration-fast) var(--ease-out),
       box-shadow var(--duration-fast) var(--ease-out);
   }
-  .sound-toggle:hover {
-    scale: 1.08;
-    color: var(--text);
-    box-shadow: var(--shadow-border-hover);
-  }
   .sound-toggle:active {
     scale: 0.96;
   }
@@ -135,6 +130,14 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   @media (prefers-reduced-motion: reduce) {
     .sound-toggle {
       transition: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .sound-toggle:hover {
+      scale: 1.08;
+      color: var(--text);
+      box-shadow: var(--shadow-border-hover);
     }
   }
 </style>

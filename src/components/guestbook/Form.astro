@@ -135,9 +135,6 @@ const { countries } = Astro.props;
     overflow: visible;
     content-visibility: visible;
   }
-  .stamp-form:hover {
-    transform: rotate(var(--rotate));
-  }
 
   .stamp-form-content {
     position: absolute;
@@ -170,6 +167,10 @@ const { countries } = Astro.props;
   }
   .field:focus {
     outline: none;
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--primary-stamp-color);
+    outline-offset: 3px;
   }
 
   .field-message {
@@ -244,11 +245,6 @@ const { countries } = Astro.props;
     color: var(--dark-text-fixed);
     cursor: pointer;
   }
-  .combo-option:hover,
-  .combo-option.is-active {
-    background-color: oklch(1 0 0 / 0.75);
-    color: var(--primary-stamp-color);
-  }
 
   .post-mark {
     position: absolute;
@@ -277,13 +273,6 @@ const { countries } = Astro.props;
       box-shadow var(--duration-fast, 150ms) ease,
       background-color var(--duration-fast, 150ms) ease;
   }
-  .post-mark:hover {
-    translate: 0 -2px;
-    background-color: var(--dark-text-fixed);
-    box-shadow:
-      0 2px 5px oklch(0 0 0 / 0.22),
-      0 12px 24px oklch(0 0 0 / 0.18);
-  }
   .post-mark:active {
     translate: 0 1px;
     box-shadow: 0 1px 2px oklch(0 0 0 / 0.2);
@@ -303,6 +292,24 @@ const { countries } = Astro.props;
     .post-mark {
       font-size: 0.85rem;
       padding: 8px 16px;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .stamp-form:hover {
+      transform: rotate(var(--rotate));
+    }
+    .combo-option:hover,
+    .combo-option.is-active {
+      background-color: oklch(1 0 0 / 0.75);
+      color: var(--primary-stamp-color);
+    }
+    .post-mark:hover {
+      translate: 0 -2px;
+      background-color: var(--dark-text-fixed);
+      box-shadow:
+        0 2px 5px oklch(0 0 0 / 0.22),
+        0 12px 24px oklch(0 0 0 / 0.18);
     }
   }
 </style>

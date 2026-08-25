@@ -38,9 +38,6 @@ const { entry } = Astro.props;
     text-decoration: none;
     transition: box-shadow var(--duration-fast) ease;
   }
-  .card:hover {
-    box-shadow: var(--shadow-border-hover);
-  }
   .preview {
     flex: 1;
     min-height: 0;
@@ -79,5 +76,11 @@ const { entry } = Astro.props;
   .card:hover .title,
   .card:focus-visible .title {
     opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover {
+      box-shadow: var(--shadow-border-hover);
+    }
   }
 </style>

@@ -15,7 +15,8 @@ const href = (page: number) =>
 
 <nav class="pager" aria-label="Pagination">
   <p class="pager-count">
-    {total.toLocaleString()} {total === 1 ? "stamp" : "stamps"} on the wall.
+    {total.toLocaleString()}
+    {total === 1 ? "stamp" : "stamps"} on the wall.
     <span class="pager-place">Page {currentPage} of {totalPages}.</span>
   </p>
 
@@ -92,12 +93,15 @@ const href = (page: number) =>
       background var(--duration-fast) var(--ease-out),
       box-shadow var(--duration-fast) var(--ease-out);
   }
-  .pager-btn:hover {
-    background: var(--surface-hover);
-    box-shadow: var(--shadow-border-hover);
-  }
   .pager-btn:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pager-btn:hover {
+      background: var(--surface-hover);
+      box-shadow: var(--shadow-border-hover);
+    }
   }
 </style>

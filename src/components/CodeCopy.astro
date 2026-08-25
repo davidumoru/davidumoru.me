@@ -82,10 +82,6 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   .code-copy:focus-visible {
     opacity: 1;
   }
-  .code-copy:hover,
-  .code-copy.copied {
-    color: var(--text);
-  }
   .code-copy.copied {
     opacity: 1;
   }
@@ -118,6 +114,13 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   @media (hover: none) {
     .code-copy {
       opacity: 1;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .code-copy:hover,
+    .code-copy.copied {
+      color: var(--text);
     }
   }
 </style>

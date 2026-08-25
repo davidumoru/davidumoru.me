@@ -60,10 +60,6 @@ const show = items.length >= 2;
     transition: color var(--duration-fast) var(--ease-out);
   }
 
-  .back:hover {
-    color: var(--text);
-  }
-
   ul {
     list-style: none;
     margin: 0;
@@ -85,9 +81,14 @@ const show = items.length >= 2;
     transition: color var(--duration-fast) var(--ease-out);
   }
 
-  a[data-toc-link]:hover,
-  a[data-toc-link][data-active="true"] {
-    color: var(--text);
+  @media (hover: hover) and (pointer: fine) {
+    .back:hover {
+      color: var(--text);
+    }
+    a[data-toc-link]:hover,
+    a[data-toc-link][data-active="true"] {
+      color: var(--text);
+    }
   }
 </style>
 

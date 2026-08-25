@@ -125,11 +125,6 @@ const marqueeClips = [...clips, ...clips];
     transition: transform var(--duration-slow) var(--ease-out);
   }
 
-  .stage:hover {
-    --gap-z: 168px;
-    transform: perspective(5000px) rotateX(-10deg) rotateY(32deg);
-  }
-
   .stage .card {
     --o: calc(var(--i) - (var(--n) - 1) / 2);
     position: absolute;
@@ -141,19 +136,6 @@ const marqueeClips = [...clips, ...clips];
     pointer-events: auto;
     cursor: pointer;
     transition: transform var(--duration-slow) var(--ease-out);
-  }
-
-  .stage .card:hover {
-    transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)))
-      translateY(-18px);
-  }
-  .stage .card:hover::after {
-    box-shadow: inset 0 0 0 1px var(--border-strong);
-  }
-
-  .stage .card:hover ~ .card {
-    transform: translate(-50%, -50%)
-      translateZ(calc(var(--o) * var(--gap-z) + 56px));
   }
 
   .stage .card:active {
@@ -179,9 +161,6 @@ const marqueeClips = [...clips, ...clips];
     display: flex;
     inline-size: max-content;
     animation: deck-marquee 34s linear infinite;
-  }
-  .marquee:hover .track {
-    animation-play-state: paused;
   }
   .marquee .card {
     flex: 0 0 auto;
@@ -219,6 +198,27 @@ const marqueeClips = [...clips, ...clips];
     .stage .card:hover ~ .card,
     .stage .card:active {
       transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)));
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .stage:hover {
+      --gap-z: 168px;
+      transform: perspective(5000px) rotateX(-10deg) rotateY(32deg);
+    }
+    .stage .card:hover {
+      transform: translate(-50%, -50%) translateZ(calc(var(--o) * var(--gap-z)))
+        translateY(-18px);
+    }
+    .stage .card:hover::after {
+      box-shadow: inset 0 0 0 1px var(--border-strong);
+    }
+    .stage .card:hover ~ .card {
+      transform: translate(-50%, -50%)
+        translateZ(calc(var(--o) * var(--gap-z) + 56px));
+    }
+    .marquee:hover .track {
+      animation-play-state: paused;
     }
   }
 </style>

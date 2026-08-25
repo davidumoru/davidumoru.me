@@ -46,9 +46,6 @@ const { posts, empty = "Nothing here yet." } = Astro.props;
     text-decoration: none;
     transition: background var(--duration-fast) var(--ease-out);
   }
-  .post:hover {
-    background: var(--surface);
-  }
   .title {
     margin: 0;
     font-family: inherit;
@@ -73,6 +70,12 @@ const { posts, empty = "Nothing here yet." } = Astro.props;
     .post {
       flex-direction: column;
       gap: var(--space-xs);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .post:hover {
+      background: var(--surface);
     }
   }
 </style>

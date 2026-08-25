@@ -89,7 +89,7 @@ const stampStyles = stampStyle(hue, Math.random() * 3 - 1.5);
         <span class="postmark-date">{displayDate}</span>
       </div>
     </div>
-    <div class="postmark-lines" />
+    <div class="postmark-lines"></div>
   </div>
 
   <div class="stamp-decorative-line left"></div>
@@ -111,11 +111,6 @@ const stampStyles = stampStyle(hue, Math.random() * 3 - 1.5);
         var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
       filter var(--duration-normal, 200ms)
         var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
-  }
-
-  .guestbook-stamp:hover .stamp-bg-image {
-    opacity: 0.55;
-    filter: contrast(1.2) saturate(1.2);
   }
 
   .country {
@@ -179,15 +174,6 @@ const stampStyles = stampStyle(hue, Math.random() * 3 - 1.5);
         var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
       background-image var(--duration-normal, 200ms)
         var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
-  }
-
-  .entry-link:hover {
-    color: var(--primary-stamp-color);
-    background-image: linear-gradient(
-      90deg,
-      var(--primary-stamp-color) 60%,
-      transparent 0
-    );
   }
 
   .entry-link strong {
@@ -310,7 +296,6 @@ const stampStyles = stampStyle(hue, Math.random() * 3 - 1.5);
   }
 
   @media (max-width: 400px) {
-
     .entry-name {
       font-size: 1.1rem;
     }
@@ -325,4 +310,18 @@ const stampStyles = stampStyle(hue, Math.random() * 3 - 1.5);
     }
   }
 
+  @media (hover: hover) and (pointer: fine) {
+    .guestbook-stamp:hover .stamp-bg-image {
+      opacity: 0.55;
+      filter: contrast(1.2) saturate(1.2);
+    }
+    .entry-link:hover {
+      color: var(--primary-stamp-color);
+      background-image: linear-gradient(
+        90deg,
+        var(--primary-stamp-color) 60%,
+        transparent 0
+      );
+    }
+  }
 </style>
