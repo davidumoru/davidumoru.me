@@ -1,4 +1,5 @@
 ---
+import { Icon } from "../ui/Icon/Icon.tsx";
 import type { Track } from "../../utils/spotify";
 import { formatListeningStatus } from "../../utils/date";
 
@@ -8,7 +9,11 @@ interface Props {
 }
 
 const { track = null, pending = false } = Astro.props;
-const status = track ? formatListeningStatus(track) : null;
+const source = track?.live
+  ? "Now playing on Spotify"
+  : track
+    ? formatListeningStatus(track)
+    : "";
 ---
 
 <div
@@ -62,10 +67,9 @@ const status = track ? formatListeningStatus(track) : null;
     </div>
   </div>
 
-  <p class="now-playing__status">
-    <span class="now-playing__dot" aria-hidden="true"></span>
-    <span class="now-playing__status-text">{status}</span>
-    {pending && <span class="now-playing__bone now-playing__status-bone" />}
+  <p class="now-playing__source">
+    <Icon name="spotifyLogo" variant="duotone" size={16} />
+    <span class="now-playing__source-text">{source}</span>
   </p>
 
   {
@@ -212,7 +216,6 @@ const status = track ? formatListeningStatus(track) : null;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
     line-height: var(--lh-snug);
   }
   .now-playing__artist {
@@ -238,46 +241,23 @@ const status = track ? formatListeningStatus(track) : null;
     border-radius: var(--radius-sm);
   }
 
-  .now-playing__status {
+  .now-playing__source {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
     margin: 0;
-    min-block-size: 1.5lh;
     padding-block-start: var(--np-pad);
     padding-inline-start: var(--space-sm);
     font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
     color: var(--text-muted);
   }
-  .now-playing__status-text {
+  .now-playing__source-text {
     min-inline-size: 0;
-    font-variant-numeric: tabular-nums;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-  .now-playing__dot {
-    position: relative;
-    flex-shrink: 0;
-    inline-size: 0.5rem;
-    block-size: 0.5rem;
-    border-radius: 50%;
-    background: var(--primary);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
-  }
-  .now-playing[data-live="true"] .now-playing__dot::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: var(--primary);
-    animation: now-playing-pulse 2s var(--ease-out) infinite;
-  }
-  .now-playing[data-live="false"] .now-playing__dot {
-    inline-size: 0.625rem;
-    block-size: 0.625rem;
-    background: var(--text-disabled);
-    box-shadow: none;
+    font-variant-numeric: tabular-nums;
   }
 
   .now-playing[data-pending] {
@@ -304,24 +284,10 @@ const status = track ? formatListeningStatus(track) : null;
     inline-size: 11ch;
     margin-block-start: var(--space-sm);
   }
-  .now-playing__status-bone {
-    inline-size: 9ch;
-    block-size: 0.7em;
-  }
 
   @keyframes now-playing-spin {
     to {
       rotate: 1turn;
-    }
-  }
-  @keyframes now-playing-pulse {
-    from {
-      scale: 1;
-      opacity: 0.5;
-    }
-    to {
-      scale: 2.6;
-      opacity: 0;
     }
   }
   @keyframes now-playing-sweep {
@@ -339,7 +305,6 @@ const status = track ? formatListeningStatus(track) : null;
       translate: -50% -50%;
     }
     .now-playing[data-live="true"] .now-playing__disc,
-    .now-playing[data-live="true"] .now-playing__dot::after,
     .now-playing__bone {
       animation: none;
     }
@@ -355,6 +320,7 @@ const status = track ? formatListeningStatus(track) : null;
 
 <script>
   import type { Track } from "../../utils/spotify";
+
   import { formatListeningStatus } from "../../utils/date";
 
   const INTERVAL = 30_000;
@@ -415,8 +381,14 @@ const status = track ? formatListeningStatus(track) : null;
     const artist = widget.querySelector(".now-playing__artist");
     if (artist) artist.textContent = track?.artist ?? "";
 
-    const text = widget.querySelector(".now-playing__status-text");
-    if (text) text.textContent = track ? formatListeningStatus(track) : "";
+    const text = widget.querySelector(".now-playing__source-text");
+    if (text) {
+      text.textContent = track?.live
+        ? "Now playing on Spotify"
+        : track
+          ? formatListeningStatus(track)
+          : "";
+    }
   }
 
   /* Re-queried each tick: the server island swaps the fallback markup, so an
