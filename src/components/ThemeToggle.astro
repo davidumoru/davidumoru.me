@@ -8,9 +8,11 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   aria-label="Toggle color theme"
   data-silent
 >
-  <span class="when-light"><Icon name="sun" size={16} variant="duotone" /></span
+  <span class="when-light" data-theme-motion
+    ><Icon name="sun" size={16} variant="duotone" /></span
   >
-  <span class="when-dark"><Icon name="moon" size={16} variant="duotone" /></span
+  <span class="when-dark" data-theme-motion
+    ><Icon name="moon" size={16} variant="duotone" /></span
   >
 </button>
 

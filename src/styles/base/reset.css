@@ -34,7 +34,7 @@ body {
 
 /* No colour animation while the theme swaps. */
 :root.theme-switching,
-:root.theme-switching *,
+:root.theme-switching *:not([data-theme-motion]),
 :root.theme-switching *::before,
 :root.theme-switching *::after {
   transition: none !important;
