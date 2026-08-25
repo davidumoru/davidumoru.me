@@ -11,7 +11,7 @@ export function toISODate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-const TIME_ZONE = "Africa/Lagos";
+export const TIME_ZONE = "Africa/Lagos";
 
 const partsIn = (options: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("en-US", { timeZone: TIME_ZONE, ...options });
@@ -53,4 +53,30 @@ export function formatListeningStatus(track: {
   if (track.live) return "Listening now";
   if (track.playedAt) return `Last played ${formatPlayedAt(track.playedAt)}`;
   return "Last played";
+}
+
+export interface LocalClock {
+  hour: number;
+  minute: number;
+  second: number;
+}
+
+const clockIn = new Intl.DateTimeFormat("en-GB", {
+  timeZone: TIME_ZONE,
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hourCycle: "h23",
+});
+
+export function localClock(now = new Date()): LocalClock {
+  const parts: Record<string, string> = {};
+  for (const part of clockIn.formatToParts(now)) {
+    if (part.type !== "literal") parts[part.type] = part.value;
+  }
+  return {
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+    second: Number(parts.second),
+  };
 }
