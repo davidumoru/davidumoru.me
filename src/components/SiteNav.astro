@@ -2,6 +2,7 @@
 import { Icon } from "./ui/Icon/Icon.tsx";
 import {
   NAV_GROUPS,
+  EMAIL,
   SOCIALS,
   isCurrent,
   normalizePath,
@@ -111,16 +112,53 @@ const socialsIndex = step;
               ? { target: "_blank", rel: "me noopener noreferrer" }
               : {})}
           >
-            <Icon name={icon} size={18} variant="duotone" />
+            <Icon name={icon} size={16} variant="duotone" />
           </a>
         ))
       }
     </div>
+
+    <button
+      class="site-nav-email"
+      type="button"
+      aria-label={`Copy email address, ${EMAIL}`}
+      data-copy-email={EMAIL}
+      data-silent
+    >
+      <span>{EMAIL}</span>
+      <span class="site-nav-email-icon">
+        <span class="site-nav-email-slot is-idle">
+          <Icon name="copy" size={16} />
+        </span>
+        <span class="site-nav-email-slot is-done">
+          <Icon name="check" size={16} />
+        </span>
+      </span>
+    </button>
   </div>
 </dialog>
 
 <script>
+  import { play } from "../utils/sound";
+
   const LOCK = "nav-open";
+
+  function bindEmailCopy() {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-copy-email]")
+      .forEach((btn) => {
+        if (btn.dataset.ready) return;
+        btn.dataset.ready = "true";
+        btn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(btn.dataset.copyEmail ?? "");
+            play("copy");
+            btn.classList.add("copied");
+            window.setTimeout(() => btn.classList.remove("copied"), 1500);
+          } catch {}
+        });
+      });
+  }
 
   function bindSiteNav() {
     document.documentElement.classList.remove(LOCK);
@@ -150,7 +188,11 @@ const socialsIndex = step;
   }
 
   bindSiteNav();
-  document.addEventListener("astro:page-load", bindSiteNav);
+  bindEmailCopy();
+  document.addEventListener("astro:page-load", () => {
+    bindSiteNav();
+    bindEmailCopy();
+  });
 </script>
 
 <style is:global>
@@ -440,9 +482,54 @@ const socialsIndex = step;
     transition: color var(--duration-fast) ease;
   }
 
+  .site-nav-email {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    align-self: start;
+    margin-block-start: var(--space-md);
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-subtle);
+    font: inherit;
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    transition: color var(--duration-fast) ease;
+  }
+  .site-nav-email:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  .site-nav-email-icon {
+    display: inline-grid;
+    place-items: center;
+  }
+  .site-nav-email-slot {
+    display: inline-flex;
+    grid-area: 1 / 1;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      scale var(--duration-fast) var(--ease-out);
+  }
+  .site-nav-email .is-done {
+    opacity: 0;
+    scale: 0.25;
+  }
+  .site-nav-email.copied .is-idle {
+    opacity: 0;
+    scale: 0.25;
+  }
+  .site-nav-email.copied .is-done {
+    opacity: 1;
+    scale: 1;
+  }
+
   .site-nav-socials {
     display: flex;
     align-items: center;
+    gap: var(--space-sm);
     flex-shrink: 0;
     margin-block-start: auto;
     padding-block-start: var(--space-2xl);
@@ -452,19 +539,17 @@ const socialsIndex = step;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-inline-size: 2.5rem;
-    min-block-size: 2.5rem;
-    margin-inline-start: -0.6875rem;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-border);
     color: var(--text-subtle);
     text-decoration: none;
-    border-radius: var(--radius-sm);
     transition:
       color var(--duration-fast) ease,
+      box-shadow var(--duration-fast) var(--ease-out),
       scale var(--duration-fast) var(--ease-out);
-  }
-
-  .site-nav-socials a + a {
-    margin-inline-start: 0;
   }
 
   .site-nav-socials a:active {
@@ -509,6 +594,7 @@ const socialsIndex = step;
     }
     .site-nav-socials a:hover {
       color: var(--text);
+      box-shadow: var(--shadow-border-hover);
     }
   }
 </style>

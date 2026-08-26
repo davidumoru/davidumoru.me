@@ -42,23 +42,26 @@ export const SOCIALS: {
   external?: boolean;
 }[] = [
   {
-    href: "https://github.com/davidumoru",
-    label: "GitHub",
-    icon: "github",
-    external: true,
-  },
-  {
     href: "https://x.com/theumoru",
     label: "X",
     icon: "xLogo",
     external: true,
   },
   {
-    href: "mailto:hey@davidumoru.me",
-    label: "Email",
-    icon: "mail",
+    href: "https://github.com/davidumoru",
+    label: "GitHub",
+    icon: "github",
+    external: true,
+  },
+  {
+    href: "https://linkedin.com/in/david-umoru/",
+    label: "LinkedIn",
+    icon: "linkedin",
+    external: true,
   },
 ];
+
+export const EMAIL = "hey@davidumoru.me";
 
 export function normalizePath(pathname: string): string {
   return pathname.replace(/\/+$/, "") || "/";
