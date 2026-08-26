@@ -86,6 +86,10 @@ export default defineConfig({
     },
   ],
 
+  image: {
+    domains: ["images-na.ssl-images-amazon.com", "m.media-amazon.com"],
+  },
+
   markdown: {
     processor: unified({
       rehypePlugins: [

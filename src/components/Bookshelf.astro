@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 const MAX_TILT_DEGREES = 3;
@@ -21,9 +22,12 @@ const books = (await getCollection("books")).sort(
   {
     books.map((book) => (
       <li class="bookshelf__book" style={`--tilt: ${tilt(book.id)}deg`}>
-        <img
+        <Image
           src={book.data.cover}
           alt={book.data.title}
+          inferSize
+          widths={[160, 320]}
+          sizes="154px"
           loading="lazy"
           decoding="async"
         />
@@ -56,6 +60,7 @@ const books = (await getCollection("books")).sort(
   .bookshelf__book {
     position: relative;
     rotate: var(--tilt);
+    background: var(--surface);
     box-shadow:
       var(--shadow-md),
       inset 0 0 0 1px var(--image-outline);
@@ -67,6 +72,7 @@ const books = (await getCollection("books")).sort(
 
   .bookshelf__book img {
     inline-size: 100%;
+    block-size: auto;
   }
 
   @media (hover: hover) {
