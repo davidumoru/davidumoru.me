@@ -84,11 +84,7 @@ const error = Astro.url.searchParams.get("error");
   />
 
   <div class="alert-container">
-    {
-      success && (
-        <Alert type="success" message="Message added successfully!" />
-      )
-    }
+    {success && <Alert type="success" message="Message added successfully!" />}
     {
       error === "invalid_input" && (
         <Alert

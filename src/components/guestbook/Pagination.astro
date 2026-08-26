@@ -11,12 +11,13 @@ const { currentPage, totalPages, total } = Astro.props;
 
 const href = (page: number) =>
   page === 1 ? "/guestbook" : `/guestbook?page=${page}`;
+
+const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on the wall.`;
 ---
 
 <nav class="pager" aria-label="Pagination">
   <p class="pager-count">
-    {total.toLocaleString()}
-    {total === 1 ? "stamp" : "stamps"} on the wall.
+    {count}
     <span class="pager-place">Page {currentPage} of {totalPages}.</span>
   </p>
 
