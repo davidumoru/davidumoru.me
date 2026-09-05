@@ -1,0 +1,134 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-lg);
+}
+
+.panel {
+  inline-size: min(22rem, 100%);
+  border-radius: var(--radius-2xl);
+  background: var(--background);
+  box-shadow: var(--shadow-border), var(--shadow-lg);
+  overflow: hidden;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  box-shadow: 0 1px 0 0 var(--border);
+}
+
+.search {
+  flex-shrink: 0;
+  inline-size: 1rem;
+  block-size: 1rem;
+  fill: none;
+  stroke: var(--text-subtle);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.input {
+  inline-size: 100%;
+  border: none;
+  background: none;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--text-subtle);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: var(--space-sm);
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cursor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface-hover);
+}
+
+.label,
+.group {
+  position: relative;
+  z-index: 1;
+}
+
+.mark {
+  background: none;
+  color: var(--primary);
+  font-weight: var(--fw-medium);
+}
+
+.group {
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+}
+
+.empty {
+  padding: var(--space-md);
+  font-size: var(--fs-sm);
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  box-shadow: 0 -1px 0 0 var(--border);
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+}
+
+.hints {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.hints kbd {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.25rem;
+  padding: 0.125rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.hints kbd + kbd {
+  margin-inline-start: calc(var(--space-xs) * -1);
+}
+
+.ran {
+  color: var(--text-muted);
+}

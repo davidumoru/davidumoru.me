@@ -1,0 +1,108 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-lg);
+}
+
+.panel {
+  inline-size: min(21rem, 100%);
+  padding: var(--space-lg);
+  border-radius: var(--radius-2xl);
+  background: var(--background);
+  box-shadow: var(--shadow-border), var(--shadow-lg);
+}
+
+.dots {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.dot {
+  block-size: 0.25rem;
+  border-radius: 999px;
+  background: var(--surface-active);
+  transition:
+    background var(--duration-normal) var(--ease-out),
+    flex-grow var(--duration-normal) var(--ease-out);
+  flex: 1 1 0;
+}
+
+.dot[data-state="done"] {
+  background: var(--primary);
+}
+
+.dot[data-state="current"] {
+  background: var(--primary);
+  flex-grow: 2.4;
+}
+
+.stage {
+  margin-block-start: var(--space-lg);
+  overflow: hidden;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+}
+
+.body {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  color: var(--text-muted);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-md);
+}
+
+.field {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  font-size: var(--fs-sm);
+  color: var(--text-subtle);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-lg);
+}
+
+.ghost,
+.primary {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+.ghost {
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  color: var(--text);
+}
+
+.ghost:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+.primary {
+  background: var(--text);
+  color: var(--background);
+  font-weight: var(--fw-medium);
+}
