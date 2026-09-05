@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import Figure from "./ui/Figure.astro";
 import type { WorkProject } from "../content.config";
 import { Icon } from "./ui/Icon/Icon.tsx";
 
@@ -22,31 +22,13 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
   <div class="cover">
     {
       cover ? (
-        typeof cover === "string" ? (
-          <img
-            class="media"
-            src={cover}
-            alt={coverAlt ?? ""}
-            loading="lazy"
-            decoding="async"
-            style={
-              coverTransition
-                ? `view-transition-name: ${coverTransition}`
-                : undefined
-            }
-          />
-        ) : (
-          <Image
-            class="media"
-            src={cover}
-            alt={coverAlt ?? ""}
-            style={
-              coverTransition
-                ? `view-transition-name: ${coverTransition}`
-                : undefined
-            }
-          />
-        )
+        <Figure
+          src={cover}
+          alt={coverAlt ?? ""}
+          ratio="16 / 10"
+          width={1280}
+          transitionName={coverTransition}
+        />
       ) : (
         <span class="placeholder" />
       )
@@ -94,23 +76,14 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
     position: relative;
     display: block;
     aspect-ratio: 16 / 10;
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    box-shadow: inset 0 0 0 1px var(--image-outline);
   }
 
-  .media,
   .placeholder {
     position: absolute;
     inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    transition: transform var(--duration-slow) var(--ease-out);
-  }
-
-  .placeholder {
+    border-radius: var(--radius-lg);
     background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--image-outline);
   }
 
   .meta {
@@ -175,12 +148,5 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
     inline-size: 1px;
     block-size: 1rem;
     background: var(--border-strong);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .cover:hover .media,
-    .cover:hover .placeholder {
-      transform: scale(1.03);
-    }
   }
 </style>
