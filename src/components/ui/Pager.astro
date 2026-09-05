@@ -60,6 +60,7 @@ const { prev, next } = Astro.props;
   .dir {
     font-size: var(--fs-sm);
     color: var(--text-subtle);
+    transition: color var(--duration-fast) var(--ease-out);
   }
   .title {
     color: var(--text);
@@ -68,5 +69,11 @@ const { prev, next } = Astro.props;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .link:hover .dir {
+      color: var(--text);
+    }
   }
 </style>
