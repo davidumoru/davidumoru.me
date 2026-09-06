@@ -49,7 +49,7 @@ const lab = defineCollection({
       title: z.string(),
       description: z.string().optional(),
       date: z.coerce.date(),
-      status: z.enum(["live", "archive", "draft"]).default("live"),
+      status: z.enum(["live", "draft"]).default("live"),
       poster: image().optional(),
     }),
 });
@@ -60,7 +60,7 @@ const workBase = {
   year: z.number(),
   url: z.string().optional(),
   order: z.number().default(0),
-  status: z.enum(["live", "archive", "draft"]).default("live"),
+  status: z.enum(["live", "draft"]).default("live"),
 };
 
 const work = defineCollection({
