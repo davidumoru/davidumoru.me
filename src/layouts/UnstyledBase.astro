@@ -2,6 +2,7 @@
 import "../styles/index.css";
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
+import { ogSlugs } from "../utils/og";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 
@@ -25,11 +26,14 @@ const {
   publishedDate,
 } = Astro.props;
 
-const pageTitle = title ? `${title} — ${SITE_NAME}` : SITE_NAME;
+const pageTitle = title ? `${title} - ${SITE_NAME}` : SITE_NAME;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 const path = canonical.pathname.replace(/\/+$/, "") || "/index";
-const ogImage = new URL(image ?? `/og${path}.png`, Astro.site);
+
+const slug = path.slice(1);
+const ogSlug = (await ogSlugs()).has(slug) ? slug : "index";
+const ogImage = new URL(image ?? `/og/${ogSlug}.png`, Astro.site);
 
 const personSchema = {
   "@context": "https://schema.org",
