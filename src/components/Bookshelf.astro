@@ -45,7 +45,7 @@ const books = (await getCollection("books")).sort(
     display: grid;
     grid-template-columns: repeat(var(--columns), minmax(0, var(--book-width)));
     justify-content: center;
-    align-items: start;
+    align-items: end;
     gap: var(--space-4xl) var(--gap-inline);
 
     /* Full-bleed so tilted covers can spill past the content column. */
@@ -60,9 +60,10 @@ const books = (await getCollection("books")).sort(
   .bookshelf__book {
     position: relative;
     rotate: var(--tilt);
+    transform-origin: bottom center;
     background: var(--surface);
     box-shadow:
-      var(--shadow-md),
+      var(--shadow-lg),
       inset 0 0 0 1px var(--image-outline);
     transition:
       rotate var(--duration-slow) var(--ease-out),
@@ -71,8 +72,27 @@ const books = (await getCollection("books")).sort(
   }
 
   .bookshelf__book img {
+    display: block;
     inline-size: 100%;
     block-size: auto;
+  }
+
+  .bookshelf__book::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: clamp(5px, 6.5%, 12px);
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      oklch(0 0 0 / 0.34) 0%,
+      oklch(0 0 0 / 0.16) 38%,
+      oklch(0 0 0 / 0.02) 66%,
+      oklch(1 0 0 / 0.14) 84%,
+      oklch(0 0 0 / 0.05) 100%
+    );
   }
 
   @media (hover: hover) {
@@ -81,7 +101,7 @@ const books = (await getCollection("books")).sort(
       translate: 0 -4px;
       z-index: 1;
       box-shadow:
-        var(--shadow-lg),
+        var(--shadow-xl),
         inset 0 0 0 1px var(--image-outline);
     }
   }
