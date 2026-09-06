@@ -383,7 +383,7 @@ const WEATHER_ICON: Record<WeatherIcon, IconName> = {
   }
 
   function loop() {
-    document.querySelectorAll(".here").forEach(paint);
+    document.querySelectorAll(".bento__clock").forEach(paint);
     timer = window.setTimeout(loop, 1000 - (Date.now() % 1000));
   }
 
