@@ -1,5 +1,5 @@
 ---
-import "./stamp.css";
+import "./postcard.css";
 import { PER_PAGE } from "../../utils/guestbook";
 
 const tilts = [-1.2, 0.8, -0.5, 1.3, -1, 0.6, -0.9, 1.1];
@@ -8,34 +8,26 @@ const tilts = [-1.2, 0.8, -0.5, 1.3, -1, 0.6, -0.9, 1.1];
 {
   Array.from({ length: PER_PAGE }).map((_, i) => (
     <div
-      class="guestbook-stamp skeleton"
+      class="postcard skeleton"
       style={`--rotate: ${tilts[i % tilts.length]}deg`}
       aria-hidden="true"
-    >
-      <div class="stamp-paper" />
-    </div>
+    />
   ))
 }
-
-<div class="pager-placeholder" aria-hidden="true"></div>
 
 <p class="sr-only" role="status">Loading guestbook entries</p>
 
 <style>
   .skeleton {
-    --light-stamp-bg: var(--gray-3);
-    pointer-events: none;
-  }
-
-  .skeleton .stamp-paper {
     background-image: linear-gradient(
       100deg,
       transparent 40%,
-      var(--gray-4) 50%,
+      oklch(0 0 0 / 0.05) 50%,
       transparent 60%
     );
     background-size: 300% 100%;
     animation: sweep 1.6s ease-in-out infinite;
+    pointer-events: none;
   }
 
   @keyframes sweep {
@@ -47,20 +39,9 @@ const tilts = [-1.2, 0.8, -0.5, 1.3, -1, 0.6, -0.9, 1.1];
     }
   }
 
-  .pager-placeholder {
-    height: 36px;
-    margin: 2rem auto 3rem;
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .skeleton .stamp-paper {
+    .skeleton {
       animation: none;
-    }
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .skeleton:hover {
-      transform: rotate(var(--rotate));
     }
   }
 </style>

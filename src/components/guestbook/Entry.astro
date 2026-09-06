@@ -1,327 +1,70 @@
 ---
-import "./stamp.css";
-import { stampStyle } from "../../utils/stamp-theme";
+import "./postcard.css";
 
 interface Props {
   name: string;
   message: string;
   country: string;
   date: Date;
-  hue: number;
-  imageUrl?: string;
+  imageUrl: string;
+  no: number;
   link?: string | null;
+  tilt?: number;
 }
 
-const { name, message, country, date, hue, imageUrl, link } = Astro.props;
+const {
+  name,
+  message,
+  country,
+  date,
+  imageUrl,
+  no,
+  link,
+  tilt = 0,
+} = Astro.props;
 
-const displayDate = date.toLocaleDateString(undefined, {
-  year: "numeric",
+const displayDate = date.toLocaleDateString("en-US", {
   month: "short",
   day: "numeric",
+  year: "numeric",
 });
-
-const stampStyles = stampStyle(hue, Math.random() * 3 - 1.5);
 ---
 
-<div class="guestbook-stamp" style={stampStyles}>
-  <div class="stamp-paper"></div>
+<article class="postcard" style={`--rotate: ${tilt}deg`}>
+  <img
+    class="postcard-art"
+    src={imageUrl}
+    alt=""
+    loading="lazy"
+    decoding="async"
+    fetchpriority="low"
+    width="1200"
+    height="896"
+  />
 
-  <div class="stamp-frame">
-    {
-      imageUrl && (
-        <img
-          src={imageUrl}
-          alt=""
-          class="stamp-bg-image"
-          loading="lazy"
-          decoding="async"
-          fetchpriority="low"
-          width="300"
-          height="375"
-        />
-      )
-    }
-  </div>
-
-  <div class="content-overlay">
-    <div class="corner top-left"></div>
-    <div class="corner top-right"></div>
-    <div class="corner bottom-left"></div>
-    <div class="corner bottom-right"></div>
-  </div>
-
-  <div class="stamp-location-text">
-    <span class="country-label">VISIT FROM</span>
-    <span class="country">{country}</span>
-    <div class="country-underline"></div>
-  </div>
-
-  <div class="guestbook-content">
-    <div class="header-row">
+  <div class="postcard-body">
+    <p class="postcard-message">{message}</p>
+    <p class="postcard-signature">
       {
         link ? (
           <a
+            class="postcard-sign"
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            class="entry-name entry-link"
           >
-            <strong>{name}</strong>
+            {name}
           </a>
         ) : (
-          <strong class="entry-name">{name}</strong>
+          <span class="postcard-sign">{name}</span>
         )
       }
-
-      <time class="entry-date" datetime={date.toISOString()}>
-        {displayDate}
-      </time>
-    </div>
-    <div class="message-container">
-      <p class="entry-message">{message}</p>
-    </div>
+    </p>
   </div>
 
-  <div class="postmark" aria-hidden="true">
-    <div class="postmark-outer">
-      <div class="postmark-inner">
-        <span class="postmark-text">VISITED</span>
-        <span class="postmark-date">{displayDate}</span>
-      </div>
-    </div>
-    <div class="postmark-lines"></div>
-  </div>
-
-  <div class="stamp-decorative-line left"></div>
-  <div class="stamp-decorative-line right"></div>
-</div>
-
-<style>
-  .stamp-bg-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.45;
-    filter: contrast(1.1) saturate(1.1);
-    transition:
-      opacity var(--duration-normal, 200ms)
-        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      filter var(--duration-normal, 200ms)
-        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
-  }
-
-  .country {
-    display: block;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--primary-stamp-color);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    text-shadow: 0 0 1px oklch(1 0 0 / 0.8);
-    line-height: 1.2;
-  }
-
-  .guestbook-content {
-    top: calc(var(--perforation-size) + var(--inner-padding));
-    left: calc(var(--perforation-size) + var(--inner-padding));
-    right: calc(var(--perforation-size) + var(--inner-padding));
-    height: calc(
-      100% - 2 * var(--perforation-size) - 2 * var(--inner-padding) - 45px
-    );
-    position: absolute;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .header-row {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 8px;
-    position: relative;
-  }
-
-  .entry-name {
-    display: block;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--dark-text-fixed);
-    line-height: 1.2;
-    width: fit-content;
-    max-width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-  .entry-link {
-    cursor: pointer;
-    text-decoration: none;
-    background-image: linear-gradient(
-      90deg,
-      var(--dark-text-fixed) 60%,
-      transparent 0
-    );
-    background-size: 6px 2px;
-    background-repeat: repeat-x;
-    background-position: left bottom 2px;
-    padding-bottom: 2px;
-    transition:
-      color var(--duration-normal, 200ms)
-        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      background-image var(--duration-normal, 200ms)
-        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94));
-  }
-
-  .entry-link strong {
-    font-weight: 700;
-    color: inherit;
-  }
-
-  .entry-date {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: var(--mid-grey-fixed);
-    font-style: italic;
-    margin-top: 2px;
-  }
-
-  .message-container {
-    background-color: oklch(1 0 0 / 0.4);
-    border-radius: 3px;
-    padding: 10px 12px;
-    margin-top: 4px;
-    flex-grow: 1;
-    border: 1px solid oklch(0 0 0 / 0.05);
-    box-shadow: inset 0 0 5px oklch(1 0 0 / 0.7);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .message-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      oklch(0.85 0.08 var(--hue) / 0.3),
-      transparent
-    );
-  }
-
-  .entry-message {
-    font-size: 1rem;
-    line-height: 1.5;
-    color: var(--dark-text-fixed);
-    font-weight: 400;
-    margin: 0;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 10;
-    -webkit-box-orient: vertical;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-  }
-
-  .postmark {
-    position: absolute;
-    top: 10%;
-    right: 10%;
-    width: 60px;
-    height: 60px;
-    z-index: 3;
-    transform: rotate(12deg);
-  }
-
-  .postmark-outer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 2px double var(--postmark-color-fixed);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .postmark-inner {
-    width: 80%;
-    height: 80%;
-    border: 1px dashed var(--postmark-color-fixed);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    color: var(--postmark-color-fixed);
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
-  }
-
-  .postmark-text {
-    font-size: 0.55rem;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-  }
-
-  .postmark-date {
-    font-size: 0.5rem;
-  }
-
-  .postmark-lines {
-    position: absolute;
-    top: 50%;
-    left: -20px;
-    right: -20px;
-    height: 20px;
-    background-image: repeating-linear-gradient(
-      0deg,
-      var(--postmark-color-fixed),
-      var(--postmark-color-fixed) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    transform: translateY(-50%);
-    z-index: -1;
-  }
-
-  @media (max-width: 400px) {
-    .entry-name {
-      font-size: 1.1rem;
-    }
-
-    .country {
-      font-size: 1rem;
-    }
-
-    .entry-message {
-      font-size: 0.9rem;
-      -webkit-line-clamp: 8;
-    }
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .guestbook-stamp:hover .stamp-bg-image {
-      opacity: 0.55;
-      filter: contrast(1.2) saturate(1.2);
-    }
-    .entry-link:hover {
-      color: var(--primary-stamp-color);
-      background-image: linear-gradient(
-        90deg,
-        var(--primary-stamp-color) 60%,
-        transparent 0
-      );
-    }
-  }
-</style>
+  <footer class="postcard-info">
+    <span class="postcard-place">{country}</span>
+    <time datetime={date.toISOString()}>{displayDate}</time>
+    <span>No. {String(no).padStart(3, "0")}</span>
+  </footer>
+</article>

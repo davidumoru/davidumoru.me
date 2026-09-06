@@ -84,23 +84,23 @@ const error = Astro.url.searchParams.get("error");
   />
 
   <div class="alert-container">
-    {success && <Alert type="success" message="Message added successfully!" />}
+    {success && <Alert type="success" message="Your card is on the wall." />}
     {
       error === "invalid_input" && (
         <Alert
           type="error"
-          message="Invalid input. Ensure author and message are filled."
+          message="That card needs a name and a message."
         />
       )
     }
     {
       error === "invalid_link" && (
-        <Alert type="error" message="Invalid URL format." />
+        <Alert type="error" message="That URL does not look right." />
       )
     }
     {
       error === "too_many_links" && (
-        <Alert type="error" message="Too many links in message." />
+        <Alert type="error" message="One link per card, please." />
       )
     }
   </div>

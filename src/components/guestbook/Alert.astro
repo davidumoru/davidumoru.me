@@ -1,93 +1,108 @@
 ---
-import { Icon } from "../ui/Icon/Icon.tsx";
-
 interface Props {
   type: "success" | "error";
   message: string;
 }
 
 const { type, message } = Astro.props;
+const mark = type === "success" ? "Posted" : "Return to sender";
 ---
 
 <div class="alert" data-type={type} role="alert">
-  <span class="icon" aria-hidden="true">
-    <Icon
-      name={type === "success" ? "checkCircle" : "warning"}
-      size={22}
-      variant="duotone"
-    />
-  </span>
-  <p class="message">{message}</p>
-  <button class="dismiss" type="button" aria-label="Dismiss this message">
-    <Icon name="x" size={16} />
-  </button>
+  <span class="alert-mark">{mark}</span>
+  <p class="alert-message">{message}</p>
+  <button class="alert-dismiss" type="button" aria-label="Dismiss this message"
+    >&times;</button
+  >
 </div>
 
 <style>
   .alert {
-    border-radius: 6px;
-    padding: 0.8rem 1.2rem;
-    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    padding: 0.55rem 0.6rem;
+    border-radius: var(--radius-xs);
+    background-color: var(--pc-paper);
+    color: var(--alert-ink);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    rotate: -0.4deg;
+    box-shadow:
+      inset 0 0 0 1px var(--alert-ink),
+      inset 0 0 0 2px var(--pc-paper),
+      inset 0 0 0 3px var(--alert-ink-soft),
+      0 2px 8px oklch(0 0 0 / 0.14);
   }
 
   .alert[data-type="success"] {
-    background-color: var(--green-3);
-    border: 1px solid var(--green-6);
-    color: var(--green-11);
+    --alert-ink: oklch(0.42 0.09 150);
+    --alert-ink-soft: oklch(0.42 0.09 150 / 0.4);
   }
 
   .alert[data-type="error"] {
-    background-color: var(--red-3);
-    border: 1px solid var(--red-6);
-    color: var(--red-11);
+    --alert-ink: oklch(0.45 0.14 35);
+    --alert-ink-soft: oklch(0.45 0.14 35 / 0.4);
   }
 
-  .icon {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .alert-mark {
+    flex: none;
+    padding: 0.32rem 0.55rem;
+    border: 1px solid var(--alert-ink);
+    border-radius: var(--radius-xs);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
     line-height: 1;
+    rotate: -1.5deg;
   }
 
-  .message {
-    font-weight: 500;
-    line-height: 1.5;
-    margin: 0;
+  .alert-message {
     flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.45;
   }
 
-  .dismiss {
-    flex-shrink: 0;
+  .alert-dismiss {
+    flex: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     padding: 0;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--radius-xs);
     background: transparent;
     color: inherit;
-    opacity: 0.6;
+    font-family: inherit;
+    font-size: 1.1rem;
+    line-height: 1;
+    opacity: 0.55;
     cursor: pointer;
     transition:
       opacity var(--duration-fast) var(--ease-out),
       background var(--duration-fast) var(--ease-out);
   }
-  .dismiss:focus-visible {
+  .alert-dismiss:focus-visible {
     opacity: 1;
     outline: 2px solid currentColor;
     outline-offset: 1px;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .dismiss:hover {
+    .alert-dismiss:hover {
       opacity: 1;
-      background: oklch(0 0 0 / 0.08);
+      background: oklch(0 0 0 / 0.07);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .alert-dismiss {
+      transition: none;
     }
   }
 </style>
@@ -95,7 +110,7 @@ const { type, message } = Astro.props;
 <script>
   function initAlerts() {
     for (const button of document.querySelectorAll<HTMLButtonElement>(
-      ".alert .dismiss",
+      ".alert .alert-dismiss",
     )) {
       button.addEventListener("click", () =>
         button.closest(".alert")?.remove(),

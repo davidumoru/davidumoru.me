@@ -3,7 +3,6 @@ import Entry from "./Entry.astro";
 import Pagination from "./Pagination.astro";
 import { turso } from "../../utils/turso";
 import { PER_PAGE, stampImageUrl } from "../../utils/guestbook";
-import { DEFAULT_HUE } from "../../utils/stamp-theme";
 
 interface Props {
   page: number;
@@ -13,11 +12,9 @@ const { page } = Astro.props;
 
 const [entries, counted] = await Promise.all([
   turso.execute({
-    sql: `SELECT g.author, g.link, g.content, g.country, g.timestamp,
-                 s.has_image AS hasStamp, s.hue AS stampHue
-          FROM GuestBook g
-          LEFT JOIN Stamps s ON g.country = s.country
-          ORDER BY g.timestamp DESC
+    sql: `SELECT author, link, content, country, timestamp
+          FROM GuestBook
+          ORDER BY timestamp DESC
           LIMIT ? OFFSET ?`,
     args: [PER_PAGE, (page - 1) * PER_PAGE],
   }),
@@ -30,24 +27,25 @@ const guestBook = entries.rows as unknown as {
   content: string;
   country: string;
   timestamp: string;
-  hasStamp: number | null;
-  stampHue: number | null;
 }[];
 
 const total = Number(counted.rows[0].total);
 const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+
+const tilts = [-1.2, 0.8, -0.5, 1.3, -1, 0.6, -0.9, 1.1];
 ---
 
 {
-  guestBook.map((entry) => (
+  guestBook.map((entry, i) => (
     <Entry
       name={entry.author}
       link={entry.link}
       message={entry.content}
       date={new Date(entry.timestamp)}
       country={entry.country}
-      hue={entry.stampHue ?? DEFAULT_HUE}
-      imageUrl={entry.hasStamp ? stampImageUrl(entry.country) : undefined}
+      imageUrl={stampImageUrl(entry.country)}
+      no={total - ((page - 1) * PER_PAGE + i)}
+      tilt={tilts[i % tilts.length]}
     />
   ))
 }

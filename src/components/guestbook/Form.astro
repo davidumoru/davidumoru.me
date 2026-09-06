@@ -1,7 +1,5 @@
 ---
-import "./stamp.css";
-import { Icon } from "../ui/Icon/Icon.tsx";
-import { stampStyle, DEFAULT_HUE } from "../../utils/stamp-theme";
+import "./postcard.css";
 
 interface Props {
   countries: { country: string; hue: number }[];
@@ -11,22 +9,11 @@ const { countries } = Astro.props;
 ---
 
 <form
-  class="guestbook-stamp stamp-form"
+  class="postcard postcard-form"
   method="POST"
   enctype="multipart/form-data"
-  style={stampStyle(DEFAULT_HUE)}
 >
-  <div class="stamp-paper"></div>
-  <div class="stamp-frame"></div>
-
-  <div class="content-overlay">
-    <div class="corner top-left"></div>
-    <div class="corner top-right"></div>
-    <div class="corner bottom-left"></div>
-    <div class="corner bottom-right"></div>
-  </div>
-
-  <div class="stamp-form-content">
+  <div class="postcard-form-body">
     <label class="sr-only" for="content">Message</label>
     <textarea
       class="field field-message"
@@ -119,96 +106,86 @@ const { countries } = Astro.props;
     />
   </div>
 
-  <button class="post-mark" type="submit">
-    <Icon name="paperPlaneTilt" size={16} variant="fill" />
-    Post it
-  </button>
+  <button class="post-mark" type="submit">Post it</button>
 
-  <div class="stamp-decorative-line left"></div>
-  <div class="stamp-decorative-line right"></div>
 </form>
 
 <style>
-  .stamp-form {
+  .postcard-form {
     --rotate: -0.8deg;
-    text-align: left;
+    aspect-ratio: auto;
     overflow: visible;
     content-visibility: visible;
+    display: inline-flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    text-align: left;
   }
 
-  .stamp-form-content {
-    position: absolute;
-    top: calc(var(--perforation-size) + var(--inner-padding));
-    left: calc(var(--perforation-size) + var(--inner-padding));
-    right: calc(var(--perforation-size) + var(--inner-padding));
-    height: calc(
-      100% - 2 * var(--perforation-size) - 2 * var(--inner-padding) - 16px
-    );
-    z-index: 3;
+  .postcard-form-body {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.9rem;
   }
 
   .field {
     width: 100%;
-    font-family: inherit;
-    color: var(--dark-text-fixed);
-    background-color: transparent;
-    border: none;
     box-sizing: border-box;
-    transition:
-      background-color var(--duration-fast, 150ms) ease,
-      border-color var(--duration-fast, 150ms) ease;
+    border: none;
+    background-color: transparent;
+    color: var(--pc-ink);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.95rem;
+    transition: border-color var(--duration-fast, 150ms) ease;
   }
   .field::placeholder {
-    color: var(--mid-grey-fixed);
-    opacity: 0.85;
+    color: oklch(0.28 0.02 65 / 0.42);
   }
   .field:focus {
     outline: none;
   }
   .field:focus-visible {
-    outline: 2px solid var(--primary-stamp-color);
+    outline: 2px solid var(--pc-ink);
     outline-offset: 3px;
   }
 
-  .field-message {
-    flex: 1;
-    min-height: 0;
-    resize: none;
-    padding: 8px 10px;
-    font-size: 1rem;
-    line-height: 1.5;
-    border: 1px dashed var(--border-accent);
-    border-radius: 3px;
-    background-color: oklch(1 0 0 / 0.35);
+  .field:autofill,
+  .field:-webkit-autofill,
+  .field:-webkit-autofill:hover,
+  .field:-webkit-autofill:focus,
+  .field:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--pc-ink);
+    caret-color: var(--pc-ink);
+    box-shadow: 0 0 0 100px var(--pc-paper) inset;
+    -webkit-box-shadow: 0 0 0 100px var(--pc-paper) inset;
+    transition: background-color 6000s ease-in-out 0s;
   }
-  .field-message:focus {
-    border-style: solid;
-    border-color: var(--primary-stamp-color);
-    background-color: oklch(1 0 0 / 0.6);
+
+  .field-message {
+    height: 7.5rem;
+    padding: 0;
+    resize: none;
+    font-family: var(--font-mynerve), ui-rounded, cursive;
+    font-size: 1.15rem;
+    line-height: 1.45;
   }
 
   .field-line {
-    padding: 3px 2px;
-    font-size: 0.9rem;
-    border-bottom: 1px dashed var(--border-accent);
+    padding: 0.4em 0;
+    border-bottom: 1px dotted oklch(0.28 0.02 65 / 0.35);
   }
   .field-line:focus {
     border-bottom-style: solid;
-    border-bottom-color: var(--primary-stamp-color);
-    background-color: oklch(1 0 0 / 0.45);
+    border-bottom-color: var(--pc-ink);
   }
 
   .country-select {
     appearance: none;
     cursor: pointer;
-    color: var(--dark-text-fixed);
+    color: var(--pc-ink);
   }
   .country-select:invalid {
-    color: var(--mid-grey-fixed);
-    opacity: 0.85;
+    color: oklch(0.28 0.02 65 / 0.42);
   }
 
   .honeypot {
@@ -231,92 +208,92 @@ const { countries } = Astro.props;
     margin: 0;
     padding: 4px;
     list-style: none;
-    border: 1px solid var(--border-accent);
-    border-radius: 4px;
-    background-color: var(--light-stamp-bg);
-    box-shadow: 0 6px 18px oklch(0 0 0 / 0.18);
+    border-radius: var(--radius-sm);
+    background-color: var(--pc-paper);
+    box-shadow:
+      var(--shadow-border),
+      0 6px 18px oklch(0 0 0 / 0.18);
     scrollbar-width: thin;
   }
 
   .combo-option {
     padding: 4px 7px;
-    border-radius: 3px;
-    font-size: 0.85rem;
-    color: var(--dark-text-fixed);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.8rem;
+    color: var(--pc-ink);
     cursor: pointer;
   }
 
   .post-mark {
     position: absolute;
-    bottom: -16px;
-    right: 22px;
+    right: 1.25rem;
+    bottom: -0.85rem;
     z-index: 7;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 20px;
-    border: none;
-    border-radius: 999px;
-    background-color: var(--action-color);
-    color: oklch(1 0 0);
-    font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--pc-ink);
+    border-radius: var(--radius-xs);
+    background-color: var(--pc-paper);
+    color: var(--pc-ink);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
     line-height: 1;
     cursor: pointer;
+    rotate: -2.5deg;
     box-shadow:
-      0 1px 3px oklch(0 0 0 / 0.2),
-      0 8px 18px oklch(0 0 0 / 0.14);
+      inset 0 0 0 2px var(--pc-paper),
+      inset 0 0 0 3px oklch(0.28 0.02 65 / 0.55),
+      0 2px 6px oklch(0 0 0 / 0.18);
     transition:
-      translate var(--duration-fast, 150ms)
-        var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)),
-      box-shadow var(--duration-fast, 150ms) ease,
-      background-color var(--duration-fast, 150ms) ease;
+      rotate var(--duration-fast, 150ms) var(--ease-out, ease),
+      background-color var(--duration-fast, 150ms) ease,
+      color var(--duration-fast, 150ms) ease,
+      box-shadow var(--duration-fast, 150ms) ease;
   }
   .post-mark:active {
-    translate: 0 1px;
-    box-shadow: 0 1px 2px oklch(0 0 0 / 0.2);
+    rotate: 0deg;
+    background-color: var(--pc-ink);
+    color: var(--pc-paper);
+    box-shadow:
+      inset 0 0 0 2px var(--pc-ink),
+      inset 0 0 0 3px oklch(0.906 0.037 86 / 0.5),
+      0 1px 2px oklch(0 0 0 / 0.2);
   }
   .post-mark:focus-visible {
-    outline: 2px solid var(--primary-stamp-color);
+    outline: 2px solid var(--pc-ink);
     outline-offset: 3px;
   }
 
-  @media (max-width: 400px) {
-    .field-message {
-      font-size: 0.9rem;
-    }
-    .combo-list {
-      max-height: 120px;
-    }
-    .post-mark {
-      font-size: 0.85rem;
-      padding: 8px 16px;
-    }
-  }
-
   @media (hover: hover) and (pointer: fine) {
-    .stamp-form:hover {
+    .postcard-form:hover {
       transform: rotate(var(--rotate));
     }
     .combo-option:hover,
     .combo-option.is-active {
-      background-color: oklch(1 0 0 / 0.75);
-      color: var(--primary-stamp-color);
+      background-color: oklch(0.28 0.02 65 / 0.08);
     }
     .post-mark:hover {
-      translate: 0 -2px;
-      background-color: var(--dark-text-fixed);
+      rotate: 0deg;
       box-shadow:
-        0 2px 5px oklch(0 0 0 / 0.22),
-        0 12px 24px oklch(0 0 0 / 0.18);
+        inset 0 0 0 2px var(--pc-paper),
+        inset 0 0 0 3px var(--pc-ink),
+        0 3px 10px oklch(0 0 0 / 0.22);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-mark,
+    .post-mark:hover,
+    .post-mark:active {
+      transition: none;
+      rotate: -2.5deg;
     }
   }
 </style>
 
 <script>
-  import { applyStampVars, DEFAULT_HUE } from "../../utils/stamp-theme";
-
   let onDocumentClick: ((event: MouseEvent) => void) | null = null;
 
   function initFormStamp() {
@@ -325,16 +302,9 @@ const { countries } = Astro.props;
       onDocumentClick = null;
     }
 
-    const form = document.querySelector<HTMLFormElement>(".stamp-form");
+    const form = document.querySelector<HTMLFormElement>(".postcard-form");
     const select = form?.querySelector<HTMLSelectElement>(".country-select");
     if (!form || !select) return;
-
-    const retint = () => {
-      const hue = Number(select.selectedOptions[0]?.dataset.hue);
-      applyStampVars(form, Number.isFinite(hue) ? hue : DEFAULT_HUE);
-    };
-    select.addEventListener("change", retint);
-    retint();
 
     const combo = form.querySelector<HTMLElement>(".combo");
     const input = form.querySelector<HTMLInputElement>("#country-input");

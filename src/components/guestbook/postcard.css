@@ -1,0 +1,155 @@
+:root {
+  --pc-paper: oklch(0.906 0.037 86);
+  --pc-ink: oklch(0.28 0.02 65);
+}
+
+.postcard {
+  --pc-width: 420px;
+  --pc-pad: 6.5cqw;
+  --pc-msg-size: 4.6cqw;
+  --pc-msg-width: 84cqw;
+  --pc-sign-size: 4cqw;
+  --pc-info-size: 2.5cqw;
+
+  position: relative;
+  width: var(--pc-width);
+  max-width: calc(100vw - 3 * var(--space-lg));
+  aspect-ratio: 4 / 3;
+  container-type: inline-size;
+  display: inline-block;
+  vertical-align: top;
+  margin: 1.5rem;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background-color: var(--pc-paper);
+  box-shadow:
+    var(--shadow-border),
+    0 2px 4px oklch(0 0 0 / 0.06),
+    0 8px 20px oklch(0 0 0 / 0.12);
+  transform: rotate(var(--rotate, 0deg));
+  transition:
+    transform var(--duration-normal, 200ms) var(--ease-out, ease),
+    box-shadow var(--duration-normal, 200ms) var(--ease-out, ease);
+  content-visibility: auto;
+  contain-intrinsic-size: 420px 315px;
+}
+
+.postcard-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.postcard-body {
+  position: absolute;
+  inset: var(--pc-pad) var(--pc-pad) auto var(--pc-pad);
+  z-index: 1;
+  text-align: left;
+}
+
+.postcard-message {
+  margin: 0;
+  max-width: var(--pc-msg-width);
+  font-family: var(--font-mynerve), ui-rounded, cursive;
+  font-size: var(--pc-msg-size);
+  line-height: 1.45;
+  color: var(--pc-ink);
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.postcard-signature {
+  margin: 0.6em 0 0;
+  max-width: var(--pc-msg-width);
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 0.35em;
+  font-family: var(--font-mynerve), ui-rounded, cursive;
+  font-size: var(--pc-sign-size);
+  line-height: 1.2;
+  color: var(--pc-ink);
+}
+
+.postcard-signature::before {
+  content: "\2014";
+  flex: none;
+}
+
+.postcard-sign {
+  color: var(--pc-ink);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.postcard-sign {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: oklch(0.28 0.02 65 / 0.45);
+  transition: text-decoration-color var(--duration-normal, 200ms)
+    var(--ease-out, ease);
+}
+
+.postcard-info {
+  position: absolute;
+  inset: auto var(--pc-pad) var(--pc-pad) auto;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 46cqw;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--pc-info-size);
+  line-height: 1.7;
+  color: var(--pc-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.postcard-info > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.postcard-place {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .postcard {
+    margin: 1rem 0;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .postcard:hover {
+    transform: rotate(calc(var(--rotate, 0deg) / 2)) scale(1.015);
+    box-shadow:
+      var(--shadow-border),
+      0 4px 8px oklch(0 0 0 / 0.08),
+      0 14px 32px oklch(0 0 0 / 0.16);
+  }
+
+  a.postcard-sign:hover {
+    color: var(--pc-ink);
+    text-decoration-color: var(--pc-ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postcard,
+  .postcard:hover {
+    transition: none;
+    transform: rotate(var(--rotate, 0deg));
+  }
+}
