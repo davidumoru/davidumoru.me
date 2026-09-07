@@ -5,7 +5,8 @@ import PostList from "../../components/PostList.astro";
 import { getPosts } from "../../utils/posts";
 
 const description = "Writing on design, code, and whatever else is on my mind.";
-const posts = await getPosts("live");
+const [drafts, live] = await Promise.all([getPosts("draft"), getPosts("live")]);
+const posts = [...drafts, ...live];
 ---
 
 <BaseLayout title="Posts" description={description}>

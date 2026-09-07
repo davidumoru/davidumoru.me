@@ -13,16 +13,32 @@ const { posts, empty = "Nothing here yet." } = Astro.props;
 {
   posts.length > 0 ? (
     <ul class="posts">
-      {posts.map((post) => (
-        <li>
-          <a class="post" href={`/posts/${post.id}`}>
-            <h2 class="title">{post.data.title}</h2>
-            <time class="date" datetime={toISODate(post.data.date)}>
-              {formatDate(post.data.date)}
-            </time>
-          </a>
-        </li>
-      ))}
+      {posts.map((post) => {
+        const draft = post.data.status === "draft";
+        const Row = draft ? "div" : "a";
+        return (
+          <li>
+            <Row
+              class:list={["post", draft && "is-draft"]}
+              {...(draft ? {} : { href: `/posts/${post.id}` })}
+            >
+              <span class="head">
+                <span class="title">{post.data.title}</span>
+                {draft && <span class="pill">Draft</span>}
+              </span>
+              <span class="meta">
+                {draft ? (
+                  <span class="date">&mdash;</span>
+                ) : (
+                  <time class="date" datetime={toISODate(post.data.date)}>
+                    {formatDate(post.data.date)}
+                  </time>
+                )}
+              </span>
+            </Row>
+          </li>
+        );
+      })}
     </ul>
   ) : (
     <p class="empty">{empty}</p>
@@ -35,6 +51,7 @@ const { posts, empty = "Nothing here yet." } = Astro.props;
     margin: 0;
     padding: 0;
   }
+
   .post {
     display: flex;
     justify-content: space-between;
@@ -46,36 +63,84 @@ const { posts, empty = "Nothing here yet." } = Astro.props;
     text-decoration: none;
     transition: background var(--duration-fast) var(--ease-out);
   }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-inline-size: 0;
+  }
+
   .title {
-    margin: 0;
-    font-family: inherit;
     font-size: var(--fs-lg);
-    font-weight: 500;
+    font-weight: var(--fw-heading);
     line-height: var(--lh-snug);
     color: var(--text);
     text-wrap: balance;
   }
-  .date {
+
+  .pill {
     flex-shrink: 0;
+    padding: 0.15em 0.5em;
+    border-radius: 999px;
+    box-shadow: var(--shadow-border);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--text-subtle);
+  }
+
+  .meta {
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-lg);
     font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+
+  .date {
+    min-inline-size: 3rem;
+    text-align: end;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
+
+  .is-draft {
+    cursor: not-allowed;
+  }
+  .is-draft .title {
+    color: var(--text-subtle);
+  }
+  .is-draft .date {
+    color: var(--text-disabled);
+  }
+
   .empty {
     color: var(--text-subtle);
   }
 
-  @media (max-width: 30rem) {
+  @media (max-width: 34rem) {
     .post {
       flex-direction: column;
+      align-items: flex-start;
       gap: var(--space-xs);
+    }
+    .meta {
+      gap: var(--space-md);
+    }
+    .date {
+      min-inline-size: 0;
+      text-align: start;
     }
   }
 
   @media (hover: hover) and (pointer: fine) {
     .post:hover {
       background: var(--surface);
+    }
+    .is-draft:hover {
+      background: color-mix(in oklch, var(--surface) 45%, transparent);
     }
   }
 </style>
