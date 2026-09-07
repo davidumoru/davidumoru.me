@@ -2,7 +2,6 @@ a {
   color: var(--primary);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-position: from-font;
   text-decoration-skip-ink: auto;
   text-underline-offset: 0.15em;
   text-decoration-color: var(--border-strong);
