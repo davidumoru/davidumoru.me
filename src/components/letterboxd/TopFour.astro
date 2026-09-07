@@ -1,28 +1,30 @@
 ---
+import { Image } from "astro:assets";
+import interstellar from "../../assets/film-posters/interstellar.png";
+import hacksawRidge from "../../assets/film-posters/hacksaw-ridge.png";
+import pursuitOfHappyness from "../../assets/film-posters/the-pursuit-of-happyness.png";
+import perksOfBeingAWallflower from "../../assets/film-posters/the-perks-of-being-a-wallflower.png";
+
 const films = [
   {
     title: "Interstellar",
     url: "https://letterboxd.com/film/interstellar/",
-    poster:
-      "https://a.ltrbxd.com/resized/film-poster/1/1/7/6/2/1/117621-interstellar-0-600-0-900-crop.jpg",
+    poster: interstellar,
   },
   {
     title: "Hacksaw Ridge",
     url: "https://letterboxd.com/film/hacksaw-ridge/",
-    poster:
-      "https://a.ltrbxd.com/resized/film-poster/2/5/1/8/7/2/251872-hacksaw-ridge-0-600-0-900-crop.jpg",
+    poster: hacksawRidge,
   },
   {
     title: "The Pursuit of Happyness",
     url: "https://letterboxd.com/film/the-pursuit-of-happyness/",
-    poster:
-      "https://a.ltrbxd.com/resized/film-poster/5/1/0/6/1/51061-the-pursuit-of-happyness-0-600-0-900-crop.jpg",
+    poster: pursuitOfHappyness,
   },
   {
     title: "The Perks of Being a Wallflower",
     url: "https://letterboxd.com/film/the-perks-of-being-a-wallflower/",
-    poster:
-      "https://a.ltrbxd.com/resized/film-poster/7/1/3/3/8/71338-the-perks-of-being-a-wallflower-0-600-0-900-crop.jpg",
+    poster: perksOfBeingAWallflower,
   },
 ];
 ---
@@ -38,12 +40,12 @@ const films = [
         aria-label={f.title}
       >
         <span class="top-four__poster">
-          <img
+          <Image
             src={f.poster}
             alt={`${f.title} poster`}
+            widths={[318, 635]}
+            sizes="(max-width: 34rem) 22vw, 148px"
             loading="lazy"
-            width="600"
-            height="900"
           />
         </span>
       </a>
@@ -66,7 +68,7 @@ const films = [
 
   .top-four__poster {
     display: block;
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 635 / 900;
     border-radius: var(--radius-sm);
     overflow: hidden;
     background: var(--surface);
