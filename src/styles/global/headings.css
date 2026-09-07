@@ -4,7 +4,6 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-instrument-serif), Georgia, serif;
   line-height: var(--lh-tight);
   color: var(--text);
   margin: 0;
@@ -12,25 +11,28 @@ h6 {
 }
 
 h1 {
+  font-family: var(--font-instrument-serif), Georgia, serif;
   font-size: var(--fs-4xl);
 }
 
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: var(--fw-heading);
+  letter-spacing: -0.1px;
+  line-height: var(--lh-snug);
+}
+
 h2 {
-  font-size: var(--fs-3xl);
-}
-
-h3 {
-  font-size: var(--fs-2xl);
-}
-
-h4 {
-  font-size: var(--fs-xl);
-}
-
-h5 {
   font-size: var(--fs-lg);
 }
 
+h3,
+h4,
+h5,
 h6 {
   font-size: var(--fs-base);
 }

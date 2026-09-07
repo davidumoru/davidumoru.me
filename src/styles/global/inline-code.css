@@ -3,5 +3,6 @@ code {
   background: var(--surface-hover);
   border-radius: var(--radius-md);
   font-family: var(--font-geist-mono);
+  font-weight: var(--fw-regular);
   font-size: var(--fs-sm);
 }

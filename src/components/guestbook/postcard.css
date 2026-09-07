@@ -55,6 +55,7 @@
   margin: 0;
   max-width: var(--pc-msg-width);
   font-family: var(--font-mynerve), ui-rounded, cursive;
+  font-weight: var(--fw-regular);
   font-size: var(--pc-msg-size);
   line-height: 1.45;
   color: var(--pc-ink);
@@ -70,6 +71,7 @@
   align-items: baseline;
   gap: 0.35em;
   font-family: var(--font-mynerve), ui-rounded, cursive;
+  font-weight: var(--fw-regular);
   font-size: var(--pc-sign-size);
   line-height: 1.2;
   color: var(--pc-ink);

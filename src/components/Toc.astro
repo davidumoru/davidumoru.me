@@ -65,6 +65,7 @@ const show = items.length >= 2;
     margin: 0;
     padding: 0;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.75rem;
   }
 
@@ -79,6 +80,9 @@ const show = items.length >= 2;
     line-height: var(--lh-snug);
     text-decoration: none;
     transition: color var(--duration-fast) var(--ease-out);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   @media (hover: hover) and (pointer: fine) {

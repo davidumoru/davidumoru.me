@@ -4,6 +4,9 @@
   --surface-hover: var(--gray-3);
   --surface-active: var(--gray-4);
 
+  --fw-body: 450;
+  --fw-heading: 550;
+
   --text: var(--gray-12);
   --text-muted: var(--gray-11);
   --text-subtle: var(--gray-10);

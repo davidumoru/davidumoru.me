@@ -6,6 +6,7 @@ pre {
   max-height: 32rem;
   overflow: auto;
   font-family: var(--font-geist-mono);
+  font-weight: var(--fw-regular);
   font-size: var(--fs-sm);
   line-height: var(--lh-relaxed);
   tab-size: 2;

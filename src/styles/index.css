@@ -6,7 +6,7 @@ body {
   min-height: 100dvh;
   font-family: var(--font-inter), system-ui, sans-serif;
   font-size: var(--fs-base);
-  font-weight: var(--fw-regular);
+  font-weight: var(--fw-body);
   line-height: var(--lh-relaxed);
   color: var(--text-muted);
   background: var(--background);
