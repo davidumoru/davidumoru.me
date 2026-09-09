@@ -1,0 +1,297 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+type Placement = {
+  x: string;
+  y: string;
+  w: string;
+  r: string;
+  i: number;
+  mx?: string;
+  my?: string;
+  mw?: string;
+  mr?: string;
+};
+
+type Piece =
+  | ({ kind: "photo" | "cut" | "sticker"; src: ImageMetadata } & Placement)
+  | ({ kind: "note"; text: string } & Placement)
+  | ({ kind: "chip"; label: string; value: string } & Placement);
+
+interface Props {
+  pieces?: Piece[];
+}
+
+const { pieces = [] } = Astro.props;
+
+const vars = (p: Placement) => {
+  const desktop = `--x:${p.x}; --y:${p.y}; --w:${p.w}; --r:${p.r}; --i:${p.i};`;
+  const narrow =
+    p.mx && p.my && p.mw && p.mr
+      ? ` --mx:${p.mx}; --my:${p.my}; --mw:${p.mw}; --mr:${p.mr}`
+      : "";
+  return desktop + narrow;
+};
+
+const widthFor = { photo: 420, cut: 520, sticker: 120 } as const;
+---
+
+{
+  pieces.length > 0 && (
+    <div class="collage-bleed">
+      <div class="collage">
+        {pieces.map((piece) => {
+          const narrow = Boolean(piece.mx && piece.my && piece.mw && piece.mr);
+          const cls = `item ${piece.kind}${narrow ? "" : " hide-sm"}`;
+
+          if (piece.kind === "note") {
+            return (
+              <div class={cls} style={vars(piece)}>
+                <p>{piece.text}</p>
+              </div>
+            );
+          }
+
+          if (piece.kind === "chip") {
+            return (
+              <div class={cls} style={vars(piece)}>
+                <span class="chip__k">{piece.label}</span>
+                <span class="chip__v">{piece.value}</span>
+              </div>
+            );
+          }
+
+          const Tag = piece.kind === "sticker" ? "span" : "figure";
+          return (
+            <Tag class={cls} style={vars(piece)}>
+              <Image
+                draggable={false}
+                src={piece.src}
+                alt=""
+                widths={[widthFor[piece.kind]]}
+                loading="lazy"
+              />
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  function initCollage() {
+    const board = document.querySelector<HTMLElement>(".collage");
+    if (!board) return;
+
+    const canDrag = matchMedia("(pointer: fine)").matches;
+    let topZ = 20;
+
+    for (const item of board.querySelectorAll<HTMLElement>(".item")) {
+      item.addEventListener("dragstart", (event) => event.preventDefault());
+
+      item.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        if ((event.target as HTMLElement).closest("a")) return;
+
+        item.style.zIndex = String(++topZ);
+
+        if (!canDrag) return;
+
+        event.preventDefault();
+        item.setPointerCapture(event.pointerId);
+        item.dataset.dragging = "true";
+
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const baseX = parseFloat(item.dataset.dx ?? "0");
+        const baseY = parseFloat(item.dataset.dy ?? "0");
+
+        const move = (e: PointerEvent) => {
+          const dx = baseX + e.clientX - startX;
+          const dy = baseY + e.clientY - startY;
+          item.dataset.dx = String(dx);
+          item.dataset.dy = String(dy);
+          item.style.setProperty("--dx", `${dx}px`);
+          item.style.setProperty("--dy", `${dy}px`);
+        };
+
+        const drop = (e: PointerEvent) => {
+          item.releasePointerCapture(e.pointerId);
+          delete item.dataset.dragging;
+          item.removeEventListener("pointermove", move);
+          item.removeEventListener("pointerup", drop);
+          item.removeEventListener("pointercancel", drop);
+        };
+
+        item.addEventListener("pointermove", move);
+        item.addEventListener("pointerup", drop);
+        item.addEventListener("pointercancel", drop);
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", initCollage);
+</script>
+
+<style>
+  .collage-bleed {
+    width: calc(100vw - 2 * var(--space-lg));
+    max-width: 58rem;
+    margin-inline-start: 50%;
+    translate: -50% 0;
+    margin-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .collage {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 16 / 7;
+    isolation: isolate;
+  }
+
+  .item {
+    position: absolute;
+    inset-inline-start: var(--x);
+    inset-block-start: var(--y);
+    inline-size: var(--w);
+    z-index: var(--i);
+    rotate: var(--r);
+    translate: var(--dx, 0px) var(--dy, 0px);
+    cursor: grab;
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out),
+      scale var(--duration-fast) var(--ease-out);
+  }
+
+  .item[data-dragging] {
+    scale: 1.02;
+    cursor: grabbing;
+  }
+
+  .item[data-dragging] :global(img) {
+    box-shadow: var(--shadow-xl);
+  }
+
+  .item :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  .photo :global(img),
+  .cut :global(img),
+  .sticker :global(img) {
+    outline: 1px solid var(--image-outline);
+    outline-offset: -1px;
+  }
+
+  .photo,
+  .cut {
+    margin: 0;
+  }
+
+  .photo {
+    padding: 1.3cqw 1.3cqw 3.6cqw;
+    background: var(--background);
+    box-shadow: var(--shadow-border), var(--shadow-lg);
+  }
+
+  .cut :global(img) {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .sticker :global(img) {
+    border-radius: 22%;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note,
+  .chip {
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-border), var(--shadow-md);
+  }
+
+  .note {
+    padding: 1.8cqw 2.2cqw;
+  }
+
+  .note p {
+    margin: 0;
+    font-family: var(--font-mynerve), ui-rounded, cursive;
+    font-weight: var(--fw-regular);
+    font-size: var(--note-size, 2.3cqw);
+    line-height: 1.35;
+    color: var(--text);
+    text-wrap: pretty;
+  }
+
+  .chip {
+    display: grid;
+    gap: var(--chip-gap, 0.4cqw);
+    padding: var(--chip-pad, 1.6cqw 2cqw);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+  }
+
+  .chip__k {
+    font-size: var(--chip-k, 1.15cqw);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .chip__v {
+    font-size: var(--chip-v, 1.6cqw);
+    color: var(--text);
+  }
+
+  .photo[data-dragging],
+  .note[data-dragging],
+  .chip[data-dragging] {
+    box-shadow: var(--shadow-border), var(--shadow-xl);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .item {
+      transition: none;
+    }
+  }
+
+  /* Positions are inline styles, which outrank anything declared here, so the
+     narrow layout switches which custom properties get read. */
+  @media (max-width: 46rem) {
+    .collage {
+      aspect-ratio: 1 / 0.94;
+      --note-size: 5cqw;
+      --chip-k: 2.6cqw;
+      --chip-v: 3.6cqw;
+      --chip-gap: 1cqw;
+      --chip-pad: 3.4cqw 4cqw;
+    }
+
+    .item {
+      inset-inline-start: var(--mx);
+      inset-block-start: var(--my);
+      inline-size: var(--mw);
+      rotate: var(--mr);
+      cursor: pointer;
+    }
+
+    .photo {
+      padding: 2.4cqw 2.4cqw 7cqw;
+    }
+
+    .note {
+      padding: 4cqw 4.6cqw;
+    }
+
+    .hide-sm {
+      display: none;
+    }
+  }
+</style>
