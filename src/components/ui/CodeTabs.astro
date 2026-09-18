@@ -1,0 +1,279 @@
+---
+import { Code } from "astro:components";
+import type { ComponentProps } from "astro/types";
+import { Icon } from "./Icon/Icon.tsx";
+import type { IconName } from "./Icon/Icon.tsx";
+
+type CodeLanguage = Extract<
+  NonNullable<ComponentProps<typeof Code>["lang"]>,
+  string
+>;
+
+interface File {
+  name: string;
+  lang: CodeLanguage;
+  code: string;
+  label?: string;
+  icon?: IconName;
+}
+
+interface Props {
+  files: File[];
+  label?: string;
+}
+
+const { files, label = "Files" } = Astro.props;
+const uid = `ct-${crypto.randomUUID().slice(0, 8)}`;
+
+const icons: Record<string, IconName> = {
+  tsx: "atom",
+  jsx: "atom",
+  ts: "fileTs",
+  js: "fileJs",
+  mjs: "fileJs",
+  css: "fileCss",
+  html: "fileHtml",
+  py: "filePy",
+  md: "fileMd",
+  mdx: "fileMd",
+  svg: "fileSvg",
+  sql: "fileSql",
+  rs: "fileRs",
+  json: "bracketsCurly",
+  txt: "fileTxt",
+  sh: "terminalWindow",
+  bash: "terminalWindow",
+  zsh: "terminalWindow",
+};
+
+const iconFor = (file: File) =>
+  file.icon ?? icons[file.lang.toLowerCase()] ?? "fileCode";
+---
+
+{
+  files.length > 0 && (
+    <div class="code-tabs">
+      <div class="code-tabs-bar" role="tablist" aria-label={label}>
+        <span class="code-tabs-pill" aria-hidden="true" />
+        {files.map((file, i) => (
+          <button
+            type="button"
+            role="tab"
+            class="code-tab"
+            id={`${uid}-tab-${i}`}
+            aria-controls={`${uid}-panel-${i}`}
+            aria-selected={i === 0 ? "true" : "false"}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            <Icon name={iconFor(file)} variant="duotone" size={16} />
+            {file.label ?? file.name}
+          </button>
+        ))}
+      </div>
+
+      <div class="code-tabs-panels">
+        {files.map((file, i) => (
+          <div
+            class="code-tabs-panel"
+            role="tabpanel"
+            id={`${uid}-panel-${i}`}
+            aria-labelledby={`${uid}-tab-${i}`}
+            hidden={i !== 0}
+          >
+            <Code
+              code={file.code.trim()}
+              lang={file.lang}
+              themes={{ light: "github-light", dark: "github-dark" }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const DURATION = 220;
+
+  function setup() {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const easing =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--ease-out")
+        .trim() || "ease-out";
+
+    document.querySelectorAll<HTMLElement>(".code-tabs").forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = "true";
+
+      const bar = root.querySelector<HTMLElement>(".code-tabs-bar");
+      const pill = root.querySelector<HTMLElement>(".code-tabs-pill");
+      const tabs = [...root.querySelectorAll<HTMLButtonElement>(".code-tab")];
+      const panels = [
+        ...root.querySelectorAll<HTMLElement>(".code-tabs-panel"),
+      ];
+      const stack = root.querySelector<HTMLElement>(".code-tabs-panels");
+      if (!bar || !pill || !tabs.length) return;
+
+      function movePill(tab: HTMLElement, animate: boolean) {
+        if (!pill) return;
+        if (!animate) pill.style.transition = "none";
+        pill.style.transform = `translateX(${tab.offsetLeft}px)`;
+        pill.style.inlineSize = `${tab.offsetWidth}px`;
+        pill.style.opacity = "1";
+        if (!animate) {
+          pill.getBoundingClientRect();
+          pill.style.transition = "";
+        }
+      }
+
+      function select(index: number, focus = false) {
+        const current = panels.findIndex((panel) => !panel.hidden);
+        movePill(tabs[index], !reduced.matches);
+
+        if (current !== index) {
+          const from = stack?.getBoundingClientRect().height ?? 0;
+
+          tabs.forEach((tab, i) => {
+            const active = i === index;
+            tab.setAttribute("aria-selected", String(active));
+            tab.tabIndex = active ? 0 : -1;
+            if (panels[i]) panels[i].hidden = !active;
+          });
+
+          if (!reduced.matches && stack) {
+            const to = stack.getBoundingClientRect().height;
+            if (from && to !== from) {
+              stack.animate([{ height: `${from}px` }, { height: `${to}px` }], {
+                duration: DURATION,
+                easing,
+              });
+            }
+            panels[index].animate(
+              [
+                { opacity: 0, transform: "translateY(4px)" },
+                { opacity: 1, transform: "none" },
+              ],
+              { duration: DURATION, easing },
+            );
+          }
+        }
+
+        if (focus) tabs[index].focus();
+      }
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener("click", () => select(i));
+        tab.addEventListener("keydown", (event) => {
+          const last = tabs.length - 1;
+          if (event.key === "ArrowRight") select(i === last ? 0 : i + 1, true);
+          else if (event.key === "ArrowLeft")
+            select(i === 0 ? last : i - 1, true);
+          else if (event.key === "Home") select(0, true);
+          else if (event.key === "End") select(last, true);
+          else return;
+          event.preventDefault();
+        });
+      });
+
+      const settle = () => {
+        const active =
+          tabs.find((tab) => tab.getAttribute("aria-selected") === "true") ??
+          tabs[0];
+        movePill(active, false);
+      };
+
+      settle();
+      document.fonts?.ready.then(settle);
+      new ResizeObserver(settle).observe(bar);
+    });
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>
+
+<style is:global>
+  .code-tabs {
+    background: var(--background);
+    box-shadow: var(--shadow-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+
+  .code-tabs-bar {
+    position: relative;
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    border-block-end: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .code-tabs-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .code-tabs-pill {
+    position: absolute;
+    inset-block: var(--space-sm);
+    inset-inline-start: 0;
+    inline-size: 0;
+    border-radius: calc(var(--radius-xl) - var(--space-sm));
+    background: var(--surface-hover);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform var(--duration-normal) var(--ease-out),
+      inline-size var(--duration-normal) var(--ease-out);
+  }
+
+  .code-tab {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-shrink: 0;
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-sm);
+    border: none;
+    border-radius: calc(var(--radius-xl) - var(--space-sm));
+    background: transparent;
+    color: var(--text-subtle);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .code-tab:hover {
+    color: var(--text);
+  }
+  .code-tab[aria-selected="true"] {
+    color: var(--text);
+  }
+  .code-tab:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+  }
+
+  .code-tabs-panels {
+    overflow: hidden;
+  }
+
+  .code-tabs-panel[hidden] {
+    display: none;
+  }
+
+  .code-tabs pre {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .code-tabs-pill {
+      transition: none;
+    }
+  }
+</style>

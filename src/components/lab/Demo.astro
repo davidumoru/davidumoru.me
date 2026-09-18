@@ -1,5 +1,5 @@
 ---
-import { Code } from "astro:components";
+import CodeTabs from "../ui/CodeTabs.astro";
 import { Icon } from "../ui/Icon/Icon.tsx";
 
 interface Props {
@@ -21,9 +21,13 @@ const css = import.meta.glob("./*/*.module.css", {
 }) as Record<string, string>;
 
 const files = [
-  { name: `${name}.tsx`, lang: "tsx", code: tsx[`./${name}/${name}.tsx`] },
   {
-    name: `${name}.module.css`,
+    name: "index.tsx",
+    lang: "tsx",
+    code: tsx[`./${name}/${name}.tsx`],
+  },
+  {
+    name: "styles.module.css",
     lang: "css",
     code: css[`./${name}/${name}.module.css`],
   },
@@ -44,16 +48,7 @@ const files = [
           <span>View source</span>
         </summary>
         <div class="files">
-          {files.map((file) => (
-            <div class="file">
-              <span class="filename">{file.name}</span>
-              <Code
-                code={file.code.trim()}
-                lang={file.lang}
-                themes={{ light: "github-light", dark: "github-dark" }}
-              />
-            </div>
-          ))}
+          <CodeTabs files={files} label={`${name} source files`} />
         </div>
       </details>
     )
@@ -132,16 +127,6 @@ const files = [
     block-size: auto;
   }
   .files {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-md);
     margin-block-start: var(--space-sm);
-  }
-  .filename {
-    display: block;
-    margin-block-end: var(--space-xs);
-    font-family: var(--font-geist-mono), monospace;
-    font-size: var(--fs-sm);
-    color: var(--text-subtle);
   }
 </style>
