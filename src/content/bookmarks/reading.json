@@ -1,6 +1,7 @@
 {
   "name": "Reading",
   "order": 1,
+  "icon": "bookOpen",
   "bookmarks": [
     {
       "title": "The Brand Age",

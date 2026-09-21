@@ -117,6 +117,7 @@ const bookmarks = defineCollection({
   schema: z.object({
     name: z.string(),
     order: z.number().default(0),
+    icon: z.string().optional(),
     bookmarks: z.array(
       z.object({
         title: z.string(),

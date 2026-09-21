@@ -2,6 +2,8 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
+import { Icon } from "../components/ui/Icon/Icon.tsx";
+import type { IconName } from "../components/ui/Icon/Icon.tsx";
 
 const description =
   "Tools, reads, and corners of the web I've saved and keep coming back to.";
@@ -10,6 +12,7 @@ const folders = (await getCollection("bookmarks"))
   .sort((a, b) => a.data.order - b.data.order)
   .map((entry) => ({
     name: entry.data.name,
+    icon: entry.data.icon as IconName | undefined,
     bookmarks: entry.data.bookmarks.map((bm) => {
       const host = new URL(bm.url).hostname.replace(/^www\./, "");
       return {
@@ -28,7 +31,12 @@ const folders = (await getCollection("bookmarks"))
     {
       folders.map((folder) => (
         <section class="folder">
-          <h2 class="folder__name">{folder.name}</h2>
+          <h2 class="folder__name">
+            {folder.icon && (
+              <Icon name={folder.icon} variant="duotone" size={16} />
+            )}
+            {folder.name}
+          </h2>
           <ul class="links">
             {folder.bookmarks.map((bm) => (
               <li>
@@ -66,6 +74,9 @@ const folders = (await getCollection("bookmarks"))
   }
 
   .folder__name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
     margin: 0 0 var(--space-sm);
     padding-block-end: var(--space-sm);
     font-family: var(--font-inter, sans-serif);

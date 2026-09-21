@@ -1,6 +1,7 @@
 {
   "name": "Tools",
   "order": 5,
+  "icon": "wrench",
   "bookmarks": [
     {
       "title": "InstaGallery",

@@ -1,6 +1,7 @@
 {
   "name": "People & studios",
   "order": 3,
+  "icon": "usersThree",
   "bookmarks": [
     {
       "title": "elle's homepage",

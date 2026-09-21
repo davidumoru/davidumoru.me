@@ -1,6 +1,7 @@
 {
   "name": "Design & UI",
   "order": 2,
+  "icon": "palette",
   "bookmarks": [
     {
       "title": "Web Interface Guidelines",

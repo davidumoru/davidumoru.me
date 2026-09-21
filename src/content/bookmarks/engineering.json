@@ -1,6 +1,7 @@
 {
   "name": "Engineering",
   "order": 4,
+  "icon": "code",
   "bookmarks": [
     {
       "title": "Learn Data Structures and Algorithms",
