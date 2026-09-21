@@ -1,0 +1,263 @@
+---
+import { Icon } from "./Icon/Icon.tsx";
+
+interface Props {
+  id: string;
+}
+
+interface TweetData {
+  text: string;
+  lang?: string;
+  created_at: string;
+  favorite_count?: number;
+  conversation_count?: number;
+  display_text_range?: [number, number];
+  user: {
+    name: string;
+    screen_name: string;
+    profile_image_url_https: string;
+    profile_image_shape?: string;
+    is_blue_verified?: boolean;
+  };
+  entities?: {
+    urls?: { url: string; display_url: string }[];
+  };
+  photos?: { url: string; width: number; height: number }[];
+}
+
+const { id } = Astro.props;
+
+const token = ((Number(id) / 1e15) * Math.PI)
+  .toString(36)
+  .replace(/(0+|\.)/g, "");
+
+let tweet: TweetData | null = null;
+try {
+  const res = await fetch(
+    `https://cdn.syndication.twimg.com/tweet-result?id=${id}&token=${token}&lang=en`,
+  );
+  if (res.ok) tweet = await res.json();
+} catch {}
+
+const href = tweet
+  ? `https://x.com/${tweet.user.screen_name}/status/${id}`
+  : `https://x.com/i/status/${id}`;
+
+const escape = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function body(tweet: TweetData) {
+  const range = tweet.display_text_range;
+  const raw = range
+    ? Array.from(tweet.text).slice(range[0], range[1]).join("")
+    : tweet.text;
+
+  let text = escape(raw);
+  for (const url of tweet.entities?.urls ?? []) {
+    text = text.replaceAll(url.url, escape(url.display_url));
+  }
+
+  return text
+    .trim()
+    .split(/\n{2,}/)
+    .map((block) => `<p>${block.replace(/\n/g, "<br />")}</p>`)
+    .join("");
+}
+
+const compact = (count?: number) =>
+  !count
+    ? null
+    : count >= 1000
+      ? `${(count / 1000).toFixed(1).replace(/\.0$/, "")}K`
+      : count.toLocaleString("en-US");
+
+const when = tweet ? new Date(tweet.created_at) : null;
+const time = when?.toLocaleTimeString("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: "UTC",
+});
+const date = when?.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const likes = compact(tweet?.favorite_count);
+const replies = compact(tweet?.conversation_count);
+const square = tweet?.user.profile_image_shape === "Square";
+---
+
+{
+  tweet ? (
+    <a class="tweet" href={href} target="_blank" rel="noopener">
+      <span class="tweet-head">
+        <img
+          class:list={["tweet-avatar", { "is-square": square }]}
+          src={tweet.user.profile_image_url_https.replace("_normal", "_x96")}
+          alt=""
+          width="48"
+          height="48"
+          loading="lazy"
+        />
+        <span class="tweet-who">
+          <span class="tweet-name">
+            {tweet.user.name}
+            {tweet.user.is_blue_verified && (
+              <Icon name="sealCheck" variant="fill" size={16} />
+            )}
+          </span>
+          <span class="tweet-handle">@{tweet.user.screen_name}</span>
+        </span>
+      </span>
+
+      <span class="tweet-body" lang={tweet.lang} set:html={body(tweet)} />
+
+      {tweet.photos?.length ? (
+        <span class="tweet-media">
+          {tweet.photos.map((photo) => (
+            <img
+              src={photo.url}
+              alt=""
+              width={photo.width}
+              height={photo.height}
+              loading="lazy"
+            />
+          ))}
+        </span>
+      ) : null}
+
+      <span class="tweet-meta">
+        {time} · {date}
+      </span>
+
+      <span class="tweet-foot">
+        {likes && (
+          <span class="tweet-action">
+            <Icon name="heart" size={18} />
+            {likes}
+          </span>
+        )}
+        {replies && (
+          <span class="tweet-action">
+            <Icon name="chatCircle" size={18} />
+            {replies}
+          </span>
+        )}
+        <span class="tweet-action">
+          <Icon name="link" size={18} />
+          Copy link
+        </span>
+      </span>
+
+      <span class="sr-only"> (opens in new tab)</span>
+    </a>
+  ) : (
+    <p class="tweet-fallback">
+      <a href={href}>View this post on X</a>
+    </p>
+  )
+}
+
+<style>
+  .tweet {
+    display: block;
+    margin-block: var(--space-xl);
+    padding: var(--space-lg);
+    border-radius: var(--radius-2xl);
+    background: var(--background);
+    box-shadow: var(--shadow-border);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out),
+      background var(--duration-fast) var(--ease-out);
+  }
+  .tweet:hover {
+    background: var(--surface);
+    box-shadow: var(--shadow-border-hover);
+  }
+
+  .tweet-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .tweet-avatar {
+    inline-size: 3rem;
+    block-size: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+  }
+  .tweet-avatar.is-square {
+    border-radius: var(--radius-lg);
+  }
+
+  .tweet-who {
+    display: grid;
+    min-inline-size: 0;
+    line-height: var(--lh-snug);
+  }
+
+  .tweet-name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-weight: var(--fw-semibold);
+  }
+  .tweet-name :global(.icon) {
+    color: var(--blue-9);
+  }
+
+  .tweet-handle {
+    color: var(--text-subtle);
+    font-size: var(--fs-sm);
+  }
+
+  .tweet-body {
+    display: block;
+    margin-block-start: var(--space-md);
+  }
+  .tweet-body :global(p + p) {
+    margin-block-start: var(--space-sm);
+  }
+
+  .tweet-media {
+    display: grid;
+    gap: var(--space-xs);
+    margin-block-start: var(--space-md);
+  }
+  .tweet-media img {
+    inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 0 0 1px var(--image-outline);
+  }
+
+  .tweet-meta {
+    display: block;
+    margin-block-start: var(--space-md);
+    color: var(--text-subtle);
+    font-size: var(--fs-sm);
+  }
+
+  .tweet-foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-block-start: var(--space-md);
+    padding-block-start: var(--space-md);
+    border-block-start: 1px solid var(--border);
+  }
+
+  .tweet-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--text-subtle);
+    font-size: var(--fs-sm);
+  }
+</style>
