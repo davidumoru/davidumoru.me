@@ -33,7 +33,7 @@ import { Icon } from "./ui/Icon/Icon.tsx";
   }
 
   const INTERACTIVE = "a[href], button, [role='button'], summary";
-  const HOVERABLE = "a[href]";
+  const HOVERABLE = "a[href], [data-hover-sound]";
 
   if (!(window as any).__soundClickBound) {
     (window as any).__soundClickBound = true;

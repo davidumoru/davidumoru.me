@@ -23,7 +23,7 @@ const marqueeClips = [...clips, ...clips];
     <div class="stage" style={`--n:${clips.length}`}>
       {
         clips.map((src, i) => (
-          <div class="card" style={`--i:${i}`}>
+          <div class="card" style={`--i:${i}`} data-hover-sound="hover">
             <video
               src={src}
               autoplay
