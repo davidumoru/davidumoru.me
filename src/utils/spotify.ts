@@ -28,6 +28,8 @@ interface SpotifyItem {
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const API = "https://api.spotify.com/v1";
 
+const TIMEOUT = 5_000;
+
 const OK_TTL = 20_000;
 const FAIL_TTL = 60_000;
 
@@ -47,6 +49,7 @@ async function accessToken(): Promise<string> {
       grant_type: "refresh_token",
       refresh_token: SPOTIFY_REFRESH_TOKEN!,
     }),
+    signal: AbortSignal.timeout(TIMEOUT),
   });
 
   if (!res.ok) {
@@ -67,6 +70,7 @@ async function accessToken(): Promise<string> {
 async function api(path: string, bearer: string): Promise<unknown> {
   const res = await fetch(`${API}${path}`, {
     headers: { Authorization: `Bearer ${bearer}` },
+    signal: AbortSignal.timeout(TIMEOUT),
   });
   if (!res.ok) throw new Error(`${path} ${res.status}`);
   const body = await res.text();
@@ -143,36 +147,44 @@ export interface SearchResult {
   url?: string;
 }
 
+const norm = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/\s*[([].*?[)\]]\s*/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 export async function searchTracks(
   query: string,
   limit = 6,
 ): Promise<SearchResult[]> {
-  try {
-    const bearer = await accessToken();
-    const params = new URLSearchParams({
-      q: query,
-      type: "track",
-      limit: String(limit),
-    });
-    const data = (await api(`/search?${params}`, bearer)) as {
-      tracks?: { items?: (SpotifyItem & { id?: string })[] };
-    } | null;
+  const bearer = await accessToken();
+  const params = new URLSearchParams({ q: query, type: "track", limit: "20" });
+  const data = (await api(`/search?${params}`, bearer)) as {
+    tracks?: {
+      items?: (SpotifyItem & { id?: string; popularity?: number })[];
+    };
+  } | null;
 
-    return (data?.tracks?.items ?? []).flatMap((item) =>
-      item.id && item.name
-        ? [
-            {
-              id: item.id,
-              title: item.name,
-              artist: item.artists?.map((a) => a.name).join(", ") ?? "",
-              cover: item.album?.images?.at(-1)?.url,
-              url: item.external_urls?.spotify,
-            },
-          ]
-        : [],
-    );
-  } catch (error) {
-    console.error("[spotify]", error instanceof Error ? error.message : error);
-    return [];
+  const seen = new Map<string, SearchResult & { popularity: number }>();
+  for (const item of data?.tracks?.items ?? []) {
+    if (!item.id || !item.name) continue;
+    const artist = item.artists?.map((a) => a.name).join(", ") ?? "";
+    const key = `${norm(item.name)}|${norm(item.artists?.[0]?.name ?? "")}`;
+    const popularity = item.popularity ?? 0;
+    const previous = seen.get(key);
+    if (previous && previous.popularity >= popularity) continue;
+    seen.set(key, {
+      id: item.id,
+      title: item.name,
+      artist,
+      cover: cover(item.album?.images ?? []),
+      url: item.external_urls?.spotify,
+      popularity,
+    });
   }
+
+  return [...seen.values()]
+    .slice(0, limit)
+    .map(({ popularity, ...track }) => track);
 }

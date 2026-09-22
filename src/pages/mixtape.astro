@@ -308,17 +308,17 @@ const invalid = new Set(
     url?: string;
   };
 
-  async function search(q: string): Promise<Pick[]> {
+  async function search(q: string): Promise<Pick[] | null> {
     const needle = q.trim();
     if (!needle) return [];
     try {
       const res = await fetch(
         `/api/mixtape-search?q=${encodeURIComponent(needle)}`,
       );
-      if (!res.ok) return [];
+      if (!res.ok) return null;
       return (await res.json()) as Pick[];
     } catch {
-      return [];
+      return null;
     }
   }
 
@@ -446,8 +446,22 @@ const invalid = new Set(
     }
 
     async function run(q: string) {
-      found = await search(q);
+      const result = await search(q);
       results.innerHTML = "";
+
+      if (!result) {
+        found = [];
+        const note = document.createElement("li");
+        note.className = "result is-note";
+        note.textContent = "Search is unavailable. Try again.";
+        results.append(note);
+        results.hidden = false;
+        fitResults();
+        input.setAttribute("aria-expanded", "true");
+        return;
+      }
+
+      found = result;
       if (!found.length) return close();
 
       found.forEach((t) => {
@@ -915,6 +929,10 @@ const invalid = new Set(
     padding: var(--space-xs) var(--space-sm);
     cursor: pointer;
     transition: background var(--duration-fast) var(--ease-out);
+  }
+  :global(.result.is-note) {
+    color: var(--text-subtle);
+    cursor: default;
   }
   :global(.result.is-active) {
     background: var(--surface-hover);
