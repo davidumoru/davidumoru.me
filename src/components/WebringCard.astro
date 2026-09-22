@@ -15,18 +15,38 @@ const { title, description, url, prev, next, color } = entry.data;
   style={`--ring-bg: var(--${color}-2); --ring-bg-hover: var(--${color}-3); --ring-edge: var(--${color}-5); --ring-text: var(--${color}-11);`}
 >
   <a class="nav" href={prev} aria-label={`Previous site in ${title}`}>
-    <Icon name="arrowLeft" size={18} />
+    <Icon name="arrowLeft" size={18} className="arrow-x arrow-prev" />
   </a>
   <a class="site" href={url} target="_blank" rel="noopener">
     <h2 class="title">{title}</h2>
     <p class="desc">{description}</p>
   </a>
   <a class="nav" href={next} aria-label={`Next site in ${title}`}>
-    <Icon name="arrowRight" size={18} />
+    <Icon name="arrowRight" size={18} className="arrow-x arrow-next" />
   </a>
 </article>
 
 <style>
+  :global(.arrow-x) {
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav:hover :global(.arrow-prev) {
+      translate: -2px 0;
+    }
+    .nav:hover :global(.arrow-next) {
+      translate: 2px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.arrow-x) {
+      transition: none;
+      translate: none !important;
+    }
+  }
+
   .webring {
     display: flex;
     background: var(--ring-bg);

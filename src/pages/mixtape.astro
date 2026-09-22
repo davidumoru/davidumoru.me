@@ -288,7 +288,12 @@ const invalid = new Set(
       <div class="tape-form__foot">
         <Button type="submit" variant="primary">
           Leave it for the next person
-          <Icon name="arrowRight" size={16} />
+          <Icon
+            name="arrowRight"
+            variant="bold"
+            size={16}
+            className="arrow-x arrow-next"
+          />
         </Button>
       </div>
     </form>
@@ -568,6 +573,26 @@ const invalid = new Set(
 </script>
 
 <style>
+  :global(.arrow-x) {
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tape-form__foot button:hover :global(.arrow-next) {
+      translate: 2px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shell:active .shell__swatch {
+      scale: none;
+    }
+    :global(.arrow-x) {
+      transition: none;
+      translate: none !important;
+    }
+  }
+
   .tape-stage {
     display: flex;
     flex-direction: column;
@@ -753,6 +778,10 @@ const invalid = new Set(
     border: none;
     opacity: 0;
   }
+  .shell:active .shell__swatch {
+    scale: 0.97;
+  }
+
   .shell__swatch {
     display: block;
     inline-size: 100%;
@@ -767,6 +796,7 @@ const invalid = new Set(
     box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.25);
     transition:
       box-shadow var(--duration-fast) var(--ease-out),
+      opacity var(--duration-fast) var(--ease-out),
       scale var(--duration-fast) var(--ease-out);
   }
   .shell input:checked + .shell__swatch {
@@ -969,7 +999,7 @@ const invalid = new Set(
 
   @media (hover: hover) and (pointer: fine) {
     .shell:hover .shell__swatch {
-      scale: 1.06;
+      opacity: 0.9;
     }
     .tape-saved__dismiss:hover {
       background: color-mix(in oklch, var(--green-9) 16%, transparent);

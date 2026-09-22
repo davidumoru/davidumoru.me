@@ -47,7 +47,7 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
         caseStudyHref ? (
           <a class="action" href={caseStudyHref}>
             Read Case Study
-            <Icon name="arrowRight" size={16} />
+            <Icon name="arrowRight" size={16} className="arrow-x arrow-next" />
           </a>
         ) : (
           <span class="action action--locked">
@@ -62,7 +62,7 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
             <span class="divider" aria-hidden="true" />
             <a class="action" href={url} {...liveAttrs}>
               View Live Site
-              <Icon name="arrowUpRight" size={16} />
+              <Icon name="arrowUpRight" size={16} className="arrow-x arrow-out" />
             </a>
           </>
         )
@@ -72,6 +72,26 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
 </article>
 
 <style>
+  :global(.arrow-x) {
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .action:hover :global(.arrow-next) {
+      translate: 2px 0;
+    }
+    .action:hover :global(.arrow-out) {
+      translate: 2px -2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.arrow-x) {
+      transition: none;
+      translate: none !important;
+    }
+  }
+
   .cover {
     position: relative;
     display: block;
@@ -132,6 +152,17 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
     color: var(--text-muted);
     text-decoration: none;
     transition: color var(--duration-fast) var(--ease-out);
+  }
+
+
+  .action:active {
+    scale: 0.97;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .action:active {
+      scale: none;
+    }
   }
 
   .action--locked {

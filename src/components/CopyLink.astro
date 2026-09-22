@@ -41,6 +41,16 @@ import { Icon } from "./ui/Icon/Icon.tsx";
 </script>
 
 <style>
+  button:active {
+    scale: 0.97;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button:active {
+      scale: none;
+    }
+  }
+
   .copy {
     display: inline-grid;
     place-items: center;

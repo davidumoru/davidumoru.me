@@ -31,7 +31,7 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
             aria-label="First page"
             data-astro-prefetch="hover"
           >
-            <Icon name="caretDoubleLeft" size={18} />
+            <Icon name="caretDoubleLeft" size={18} className="arrow-x arrow-first" />
           </a>
         )}
         {currentPage > 1 && (
@@ -41,7 +41,7 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
             aria-label="Previous page"
             data-astro-prefetch="hover"
           >
-            <Icon name="arrowLeft" size={18} />
+            <Icon name="arrowLeft" size={18} className="arrow-x arrow-prev" />
           </a>
         )}
         {currentPage < totalPages && (
@@ -51,7 +51,7 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
             aria-label="Next page"
             data-astro-prefetch="hover"
           >
-            <Icon name="arrowRight" size={18} />
+            <Icon name="arrowRight" size={18} className="arrow-x arrow-next" />
           </a>
         )}
       </div>
@@ -60,6 +60,37 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
 </nav>
 
 <style>
+  .pager-btn:active {
+    scale: 0.97;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pager-btn:active {
+      scale: none;
+    }
+  }
+
+  :global(.arrow-x) {
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pager-btn:hover :global(.arrow-first),
+    .pager-btn:hover :global(.arrow-prev) {
+      translate: -2px 0;
+    }
+    .pager-btn:hover :global(.arrow-next) {
+      translate: 2px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.arrow-x) {
+      transition: none;
+      translate: none !important;
+    }
+  }
+
   .pager {
     margin: 2rem auto 3rem;
     text-align: center;

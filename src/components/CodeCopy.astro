@@ -86,6 +86,17 @@ import { Icon } from "./ui/Icon/Icon.tsx";
     opacity: 1;
   }
 
+
+  .code-copy:active {
+    scale: 0.97;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .code-copy:active {
+      scale: none;
+    }
+  }
+
   .ic {
     grid-area: 1 / 1;
     display: inline-grid;
