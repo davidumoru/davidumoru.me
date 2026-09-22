@@ -1,0 +1,396 @@
+---
+interface Props {
+  title: string;
+  from: string;
+  shell: string;
+}
+
+const { title, from, shell } = Astro.props;
+---
+
+<div
+  class="cassette"
+  aria-hidden="true"
+  data-shell={shell}
+ 
+>
+  <span class="cassette__screw is-tl"></span>
+  <span class="cassette__screw is-tr"></span>
+  <span class="cassette__screw is-bl"></span>
+  <span class="cassette__screw is-br"></span>
+  <span class="cassette__screw is-bc"></span>
+
+  <div class="cassette__label">
+    <span class="cassette__band"></span>
+    <span class="cassette__title">{title}</span>
+    <span class="cassette__from">
+      from <span>{from}</span>
+    </span>
+  </div>
+
+  <div class="cassette__window">
+    <span class="spool is-left"><span class="spool__hub"></span></span>
+    <span class="cassette__ribbon"></span>
+    <span class="spool is-right"><span class="spool__hub"></span></span>
+  </div>
+
+  <div class="cassette__base">
+    <span class="cassette__slot"></span>
+    <span class="cassette__hole"></span>
+    <span class="cassette__slot is-wide"></span>
+    <span class="cassette__hole"></span>
+    <span class="cassette__slot"></span>
+  </div>
+</div>
+
+<style>
+  :global([data-shell]) {
+    --shell: oklch(0.26 0.004 250);
+    --shell-hi: oklch(0.34 0.005 250);
+    --shell-lo: oklch(0.19 0.003 250);
+    --paper: oklch(0.94 0.006 250);
+    --tape: oklch(0.32 0.012 250);
+    --tape-lo: oklch(0.23 0.01 250);
+    --hub: oklch(0.88 0.005 250);
+    --ink: oklch(0.26 0.01 250);
+    --edge: oklch(0 0 0 / 0.35);
+  }
+
+  .cassette {
+    position: relative;
+    inline-size: min(28rem, 100%);
+    aspect-ratio: 100 / 64;
+    display: grid;
+    grid-template-rows: 1fr auto auto;
+    gap: 4.5%;
+    padding: 5% 5.5%;
+    border-radius: clamp(6px, 2.2%, 14px);
+    background: linear-gradient(
+      163deg,
+      var(--shell-hi),
+      var(--shell) 42%,
+      var(--shell-lo)
+    );
+    box-shadow:
+      var(--shadow-lg),
+      inset 0 1px 0 oklch(1 0 0 / 0.14),
+      inset 0 0 0 1px var(--edge);
+  }
+
+  :global([data-shell="graphite"]) {
+    --shell: oklch(0.26 0.004 250);
+    --shell-hi: oklch(0.34 0.005 250);
+    --shell-lo: oklch(0.19 0.003 250);
+    --paper: oklch(0.94 0.006 250);
+    --tape: oklch(0.32 0.012 250);
+    --tape-lo: oklch(0.23 0.01 250);
+    --hub: oklch(0.88 0.005 250);
+    --ink: oklch(0.26 0.01 250);
+  }
+
+  :global([data-shell="midnight"]) {
+    --shell: oklch(0.24 0.04 255);
+    --shell-hi: oklch(0.32 0.045 255);
+    --shell-lo: oklch(0.17 0.035 255);
+    --paper: oklch(0.93 0.015 250);
+    --tape: oklch(0.3 0.05 260);
+    --tape-lo: oklch(0.22 0.04 260);
+    --hub: oklch(0.86 0.012 250);
+    --ink: oklch(0.25 0.04 255);
+  }
+
+  :global([data-shell="olive"]) {
+    --shell: oklch(0.27 0.03 130);
+    --shell-hi: oklch(0.35 0.035 130);
+    --shell-lo: oklch(0.2 0.025 130);
+    --paper: oklch(0.94 0.02 110);
+    --tape: oklch(0.33 0.04 120);
+    --tape-lo: oklch(0.24 0.035 120);
+    --hub: oklch(0.88 0.012 110);
+    --ink: oklch(0.26 0.03 130);
+  }
+
+  :global([data-shell="ivory"]),
+  :global([data-shell="smoke"]),
+  :global([data-shell="yellow"]) {
+    --edge: oklch(0 0 0 / 0.14);
+  }
+
+  :global([data-shell="ivory"]) {
+    --shell: oklch(0.86 0.02 85);
+    --shell-hi: oklch(0.92 0.018 85);
+    --shell-lo: oklch(0.76 0.022 85);
+    --paper: oklch(0.96 0.012 85);
+    --tape: oklch(0.35 0.05 45);
+    --tape-lo: oklch(0.26 0.045 45);
+    --hub: oklch(0.72 0.015 85);
+    --ink: oklch(0.3 0.03 60);
+  }
+
+  :global([data-shell="yellow"]) {
+    --shell: oklch(0.83 0.13 95);
+    --shell-hi: oklch(0.89 0.12 95);
+    --shell-lo: oklch(0.72 0.14 92);
+    --paper: oklch(0.96 0.02 95);
+    --tape: oklch(0.33 0.05 45);
+    --tape-lo: oklch(0.24 0.04 45);
+    --hub: oklch(0.9 0.02 95);
+    --ink: oklch(0.3 0.04 80);
+  }
+
+  :global([data-shell="crimson"]) {
+    --shell: oklch(0.26 0.07 25);
+    --shell-hi: oklch(0.34 0.08 25);
+    --shell-lo: oklch(0.19 0.055 25);
+    --paper: oklch(0.94 0.02 40);
+    --tape: oklch(0.32 0.06 30);
+    --tape-lo: oklch(0.23 0.05 30);
+    --hub: oklch(0.88 0.012 40);
+    --ink: oklch(0.27 0.05 25);
+  }
+
+  :global([data-shell="rust"]) {
+    --shell: oklch(0.3 0.06 55);
+    --shell-hi: oklch(0.38 0.07 55);
+    --shell-lo: oklch(0.22 0.05 55);
+    --paper: oklch(0.94 0.022 70);
+    --tape: oklch(0.33 0.06 45);
+    --tape-lo: oklch(0.24 0.05 45);
+    --hub: oklch(0.88 0.014 70);
+    --ink: oklch(0.28 0.05 50);
+  }
+
+  :global([data-shell="teal"]) {
+    --shell: oklch(0.26 0.05 195);
+    --shell-hi: oklch(0.34 0.055 195);
+    --shell-lo: oklch(0.19 0.04 195);
+    --paper: oklch(0.94 0.015 190);
+    --tape: oklch(0.31 0.045 195);
+    --tape-lo: oklch(0.22 0.035 195);
+    --hub: oklch(0.87 0.012 190);
+    --ink: oklch(0.26 0.04 195);
+  }
+
+  :global([data-shell="plum"]) {
+    --shell: oklch(0.26 0.06 320);
+    --shell-hi: oklch(0.34 0.065 320);
+    --shell-lo: oklch(0.19 0.05 320);
+    --paper: oklch(0.94 0.018 320);
+    --tape: oklch(0.31 0.05 320);
+    --tape-lo: oklch(0.22 0.04 320);
+    --hub: oklch(0.87 0.012 320);
+    --ink: oklch(0.26 0.045 320);
+  }
+
+  :global([data-shell="smoke"]) {
+    --shell: oklch(0.72 0.015 250);
+    --shell-hi: oklch(0.8 0.015 250);
+    --shell-lo: oklch(0.6 0.02 250);
+    --paper: oklch(0.96 0.008 250);
+    --tape: oklch(0.33 0.05 45);
+    --tape-lo: oklch(0.24 0.04 45);
+    --hub: oklch(0.85 0.01 250);
+    --ink: oklch(0.3 0.02 250);
+  }
+
+  .cassette__screw {
+    position: absolute;
+    z-index: 2;
+    inline-size: 1.6%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--shell-lo);
+    box-shadow:
+      inset 0 0 0 1px oklch(0 0 0 / 0.5),
+      0 1px 0 oklch(1 0 0 / 0.08);
+  }
+  .cassette__screw.is-tl {
+    inset-block-start: 3.2%;
+    inset-inline-start: 2.6%;
+  }
+  .cassette__screw.is-tr {
+    inset-block-start: 3.2%;
+    inset-inline-end: 2.6%;
+  }
+  .cassette__screw.is-bl {
+    inset-block-end: 3.2%;
+    inset-inline-start: 2.6%;
+  }
+  .cassette__screw.is-bc {
+    inset-block-end: 1.6%;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+  }
+  .cassette__screw.is-br {
+    inset-block-end: 3.2%;
+    inset-inline-end: 2.6%;
+  }
+
+  .cassette__label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.1em;
+    padding: 8% 5% 4%;
+    border-radius: 2px;
+    background:
+      repeating-linear-gradient(
+        oklch(0 0 0 / 0) 0 1.45em,
+        oklch(0.55 0.03 250 / 0.16) 1.45em calc(1.45em + 1px)
+      ),
+      var(--paper);
+    box-shadow:
+      inset 0 0 0 1px oklch(0 0 0 / 0.18),
+      0 1px 0 oklch(1 0 0 / 0.06);
+  }
+
+  .cassette__band {
+    position: absolute;
+    inset: 0 0 auto 0;
+    block-size: 16%;
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(
+      90deg,
+      oklch(0.62 0.14 30),
+      oklch(0.68 0.12 60) 55%,
+      oklch(0.6 0.1 200)
+    );
+    opacity: 0.85;
+  }
+
+  .cassette__from {
+    translate: 0 calc(var(--write-lift, 0.45em) * -1);
+  }
+
+  .cassette__title {
+    translate: 0 calc(var(--write-lift-title, 0.18em) * -1);
+    font-family: var(--font-mynerve), cursive;
+    font-weight: var(--fw-regular);
+    font-size: clamp(1.05rem, 5.4cqw, 1.6rem);
+    line-height: 1.2;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+
+  .cassette__from {
+    font-family: var(--font-geist-mono), monospace;
+    font-size: clamp(0.55rem, 2.4cqw, 0.7rem);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: oklch(0.5 0.02 65);
+  }
+
+  .cassette__window {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 3%;
+    padding: 3.5% 7%;
+    border-radius: 3px;
+    background: linear-gradient(oklch(0.14 0.01 60), oklch(0.17 0.012 60));
+    box-shadow:
+      inset 0 2px 5px oklch(0 0 0 / 0.6),
+      0 1px 0 oklch(1 0 0 / 0.07);
+  }
+
+  .spool {
+    position: relative;
+    inline-size: 4.2rem;
+    max-inline-size: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle, transparent 0 34%, var(--tape) 34% 100%),
+      radial-gradient(circle at 34% 30%, oklch(1 0 0 / 0.1), transparent 55%);
+    box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.5);
+  }
+  .spool.is-left {
+    --tape-size: 84%;
+  }
+  .spool.is-right {
+    --tape-size: 100%;
+  }
+  .spool.is-left::before,
+  .spool.is-right::before {
+    content: "";
+    position: absolute;
+    inline-size: var(--tape-size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      transparent 0 40%,
+      var(--tape) 40% 100%
+    );
+  }
+
+  .spool__hub {
+    position: relative;
+    z-index: 1;
+    inline-size: 38%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      repeating-conic-gradient(
+        from 0deg,
+        var(--shell-lo) 0 9deg,
+        transparent 9deg 60deg
+      ),
+      var(--hub);
+    box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.35);
+  }
+
+  .cassette__ribbon {
+    inline-size: 100%;
+    min-inline-size: 2rem;
+    block-size: 0.34rem;
+    border-radius: 1px;
+    background: linear-gradient(var(--tape), var(--tape-lo));
+    box-shadow: 0 1px 0 oklch(1 0 0 / 0.06);
+  }
+
+  .cassette__base {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6%;
+    padding-block: 1.2%;
+    border-radius: 3px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        oklch(1 0 0 / 0.045) 0 1px,
+        transparent 1px 4px
+      ),
+      linear-gradient(var(--shell-lo), var(--shell));
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.08),
+      inset 0 -1px 2px oklch(0 0 0 / 0.35);
+  }
+
+  .cassette__hole {
+    inline-size: 5.5%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: oklch(0.1 0.01 60);
+    box-shadow:
+      inset 0 1px 2px oklch(0 0 0 / 0.7),
+      0 1px 0 oklch(1 0 0 / 0.07);
+  }
+
+  .cassette__slot {
+    inline-size: 9%;
+    block-size: 0.45rem;
+    border-radius: 2px;
+    background: var(--shell-lo);
+    box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.6);
+  }
+  .cassette__slot.is-wide {
+    inline-size: 16%;
+  }
+</style>

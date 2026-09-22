@@ -134,3 +134,45 @@ export async function getNowPlaying(): Promise<Track | null> {
     return cache.track;
   }
 }
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  artist: string;
+  cover?: string;
+  url?: string;
+}
+
+export async function searchTracks(
+  query: string,
+  limit = 6,
+): Promise<SearchResult[]> {
+  try {
+    const bearer = await accessToken();
+    const params = new URLSearchParams({
+      q: query,
+      type: "track",
+      limit: String(limit),
+    });
+    const data = (await api(`/search?${params}`, bearer)) as {
+      tracks?: { items?: (SpotifyItem & { id?: string })[] };
+    } | null;
+
+    return (data?.tracks?.items ?? []).flatMap((item) =>
+      item.id && item.name
+        ? [
+            {
+              id: item.id,
+              title: item.name,
+              artist: item.artists?.map((a) => a.name).join(", ") ?? "",
+              cover: item.album?.images?.at(-1)?.url,
+              url: item.external_urls?.spotify,
+            },
+          ]
+        : [],
+    );
+  } catch (error) {
+    console.error("[spotify]", error instanceof Error ? error.message : error);
+    return [];
+  }
+}

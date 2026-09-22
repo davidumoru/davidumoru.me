@@ -1,0 +1,995 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Button from "../components/ui/Button.astro";
+import { Icon } from "../components/ui/Icon/Icon.tsx";
+import { turso } from "../utils/turso";
+import Cassette from "../components/mixtape/Cassette.astro";
+
+const description =
+  "Listen to what the last visitor left, then record one for whoever turns up next.";
+
+const MAX_TRACKS = 8;
+
+const SHELLS = [
+  { id: "graphite", label: "Graphite" },
+  { id: "midnight", label: "Midnight" },
+  { id: "olive", label: "Olive" },
+  { id: "ivory", label: "Ivory" },
+  { id: "crimson", label: "Crimson" },
+  { id: "rust", label: "Rust" },
+  { id: "teal", label: "Teal" },
+  { id: "plum", label: "Plum" },
+  { id: "smoke", label: "Smoke" },
+  { id: "yellow", label: "Yellow" },
+];
+const SHELL_IDS = SHELLS.map((shell) => shell.id);
+
+interface Track {
+  title: string;
+  artist: string;
+  url?: string;
+}
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+
+  // Answers success so bots get no failure signal to iterate against.
+  const honeypot = formData.get("special");
+  if (typeof honeypot === "string" && honeypot.trim()) {
+    return Astro.redirect("/mixtape?success=tape_saved");
+  }
+
+  const title = (formData.get("title") as string)?.trim();
+  const from = (formData.get("from") as string)?.trim();
+  const picked = (formData.get("shell") as string)?.trim();
+  const shell = SHELL_IDS.includes(picked) ? picked : "graphite";
+
+  let tracks: Track[] = [];
+  try {
+    const parsed = JSON.parse((formData.get("tracks") as string) || "[]");
+    if (Array.isArray(parsed)) {
+      tracks = parsed
+        .filter(
+          (track) =>
+            track &&
+            typeof track.title === "string" &&
+            typeof track.artist === "string",
+        )
+        .slice(0, MAX_TRACKS)
+        .map((track) => ({
+          title: String(track.title).slice(0, 120),
+          artist: String(track.artist).slice(0, 120),
+          url: typeof track.url === "string" ? track.url.slice(0, 200) : undefined,
+        }));
+    }
+  } catch {}
+
+  const problems: string[] = [];
+  if (!title || title.length > 40) problems.push("title");
+  if (!from || from.length > 30) problems.push("from");
+  if (!tracks.length) problems.push("tracks");
+
+  if (problems.length) {
+    return Astro.redirect(`/mixtape?error=${problems[0]}`);
+  }
+
+  await turso.execute({
+    sql: `INSERT INTO Mixtape (title, from_name, shell, tracks, created_at)
+          VALUES (?, ?, ?, ?, ?)`,
+    args: [
+      title,
+      from,
+      shell,
+      JSON.stringify(tracks),
+      new Date().toISOString(),
+    ],
+  });
+
+  return Astro.redirect("/mixtape?success=tape_saved");
+}
+
+interface Tape {
+  title: string;
+  from: string;
+  shell: string;
+  date: Date;
+  tracks: Track[];
+}
+
+let current: Tape | null = null;
+try {
+  const { rows } = await turso.execute(
+    "SELECT title, from_name, shell, tracks, created_at FROM Mixtape WHERE hidden = 0 ORDER BY id DESC LIMIT 1",
+  );
+  const row = rows[0];
+  if (row) {
+    current = {
+      title: String(row.title),
+      from: String(row.from_name),
+      shell: row.shell ? String(row.shell) : "graphite",
+      date: new Date(String(row.created_at)),
+      tracks: JSON.parse(String(row.tracks)) as Track[],
+    };
+  }
+} catch (error) {
+  console.error("[mixtape]", error instanceof Error ? error.message : error);
+}
+
+const half = current ? Math.ceil(current.tracks.length / 2) : 0;
+const sides = current
+  ? [
+      { side: "A", tracks: current.tracks.slice(0, half) },
+      { side: "B", tracks: current.tracks.slice(half) },
+    ]
+  : [];
+
+const saved = Astro.url.searchParams.has("success");
+const invalid = new Set(
+  (Astro.url.searchParams.get("error") ?? "").split(",").filter(Boolean),
+);
+---
+
+<BaseLayout title="Mixtape" description={description}>
+  <PageHeader title="Mixtape" description={description} showDescription />
+
+  {
+    saved && (
+      <p class="tape-saved" role="status">
+        <Icon name="checkCircle" variant="duotone" size={16} />
+        <span>Your tape is up for the next visitor.</span>
+        <button
+          class="tape-saved__dismiss"
+          type="button"
+          aria-label="Dismiss this message"
+          data-dismiss
+        >
+          <Icon name="x" size={16} />
+        </button>
+      </p>
+    )
+  }
+
+  <section class="tape-stage">
+    <Cassette
+      title={current?.title ?? "blank tape"}
+      from={current?.from ?? "no one yet"}
+      shell={current?.shell ?? "graphite"}
+    />
+
+  </section>
+
+  {
+    !current && (
+      <p class="tape-empty">
+        Nobody has left a tape yet. Record the first one.
+      </p>
+    )
+  }
+
+  <section class="sides">
+    {
+      sides.map(({ side, tracks }) => (
+        <div class="side">
+          <h2 class="side__name">Side {side}</h2>
+          <ol class="side__tracks">
+            {tracks.map((t) => (
+              <li class="track">
+                {t.url ? (
+                  <a
+                    class="track__link"
+                    href={t.url}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="track__title">{t.title}</span>
+                    <span class="track__artist">{t.artist}</span>
+                  </a>
+                ) : (
+                  <span class="track__link">
+                    <span class="track__title">{t.title}</span>
+                    <span class="track__artist">{t.artist}</span>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="handoff">
+    <h2 class="handoff__title">Record the next one</h2>
+    <form class="tape-form" method="POST" data-tape data-max={MAX_TRACKS}>
+      <div class="field-row">
+        <label class="field">
+          <span class="field__label">Tape title</span>
+          <input
+            name="title"
+            type="text"
+            maxlength="40"
+            placeholder="songs for a slow morning"
+            aria-describedby="err-title"
+            aria-invalid={invalid.has("title") ? "true" : undefined}
+          />
+          <span class="field__error" id="err-title" hidden={!invalid.has("title")}>
+            Add a title.
+          </span>
+        </label>
+        <label class="field">
+          <span class="field__label">Your name</span>
+          <input
+            name="from"
+            type="text"
+            maxlength="30"
+            placeholder="Phoebe"
+            aria-describedby="err-from"
+            aria-invalid={invalid.has("from") ? "true" : undefined}
+          />
+          <span class="field__error" id="err-from" hidden={!invalid.has("from")}>
+            Add your name.
+          </span>
+        </label>
+      </div>
+
+      <fieldset class="shells">
+        <legend class="field__label">Shell</legend>
+        <div class="shells__row">
+          {SHELLS.map((option, i) => (
+            <label class="shell">
+              <input
+                type="radio"
+                name="shell"
+                value={option.id}
+                checked={i === 0}
+              />
+              <span class="shell__swatch" data-shell={option.id} />
+              <span class="sr-only">{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div class="picker">
+        <label class="field">
+          <span class="field__label">Add songs</span>
+          <div class="combo">
+            <input
+              id="track-search"
+              type="text"
+              role="combobox"
+              aria-controls="track-results"
+              aria-expanded="false"
+              aria-autocomplete="list"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Search a song or artist"
+              data-search
+            />
+            <ul class="results" id="track-results" role="listbox" hidden></ul>
+          </div>
+          <span class="field__error" id="err-tracks" hidden={!invalid.has("tracks")}>
+            Add at least one song.
+          </span>
+        </label>
+
+        <ol class="picks" data-picks aria-live="polite"></ol>
+      </div>
+
+      <div class="honeypot" aria-hidden="true">
+        <label for="special">Leave this empty</label>
+        <input id="special" type="text" name="special" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="tracks" value="[]" data-tracks />
+
+      <div class="tape-form__foot">
+        <Button type="submit" variant="primary">
+          Leave it for the next person
+          <Icon name="arrowRight" size={16} />
+        </Button>
+      </div>
+    </form>
+  </section>
+</BaseLayout>
+
+<script>
+  type Pick = {
+    id: string;
+    title: string;
+    artist: string;
+    url?: string;
+  };
+
+  async function search(q: string): Promise<Pick[]> {
+    const needle = q.trim();
+    if (!needle) return [];
+    try {
+      const res = await fetch(
+        `/api/mixtape-search?q=${encodeURIComponent(needle)}`,
+      );
+      if (!res.ok) return [];
+      return (await res.json()) as Pick[];
+    } catch {
+      return [];
+    }
+  }
+
+  function bindTape() {
+    const form = document.querySelector<HTMLFormElement>("[data-tape]");
+    if (!form || form.dataset.ready) return;
+    form.dataset.ready = "true";
+
+    const MAX = Number.parseInt(form.dataset.max ?? "8", 10);
+
+    const inputRaw = form.querySelector<HTMLInputElement>("[data-search]");
+    const resultsRaw = form.querySelector<HTMLUListElement>(".results");
+    const listRaw = form.querySelector<HTMLOListElement>("[data-picks]");
+    if (!inputRaw || !resultsRaw || !listRaw) return;
+
+    const input = inputRaw;
+    const results = resultsRaw;
+    const list = listRaw;
+
+    const tracksInput = form.querySelector<HTMLInputElement>("[data-tracks]");
+
+    function setError(name: string, on: boolean) {
+      const field = form!.querySelector<HTMLElement>(`[name="${name}"]`);
+      const message = form!.querySelector<HTMLElement>(`#err-${name}`);
+      if (field) field.setAttribute("aria-invalid", String(on));
+      if (message) message.hidden = !on;
+    }
+
+    form.querySelectorAll<HTMLElement>("[name]").forEach((field) => {
+      const name = field.getAttribute("name");
+      if (!name) return;
+      field.addEventListener("input", () => setError(name, false));
+    });
+
+    const picks: Pick[] = [];
+    let found: Pick[] = [];
+    let active = -1;
+    let timer = 0;
+
+    function renderPicks() {
+      list.innerHTML = "";
+      picks.forEach((t, i) => {
+        const li = document.createElement("li");
+        li.className = "pick";
+        li.innerHTML = `
+          <span class="pick__side">${i < MAX / 2 ? "A" : "B"}${(i % (MAX / 2)) + 1}</span>
+          <span class="pick__text">
+            <span class="pick__title"></span>
+            <span class="pick__artist"></span>
+          </span>
+          <button class="pick__remove" type="button" aria-label="Remove">&times;</button>`;
+        li.querySelector(".pick__title")!.textContent = t.title;
+        li.querySelector(".pick__artist")!.textContent = t.artist;
+        li.querySelector(".pick__remove")!.addEventListener("click", () => {
+          picks.splice(i, 1);
+          renderPicks();
+        });
+        list.append(li);
+      });
+      input.disabled = picks.length >= MAX;
+      input.placeholder =
+        picks.length >= MAX ? "Tape is full" : "Search a song or artist";
+    }
+
+    function fitResults() {
+      results.style.maxBlockSize = "";
+      results.classList.remove("is-up");
+      const first = results.firstElementChild as HTMLElement | null;
+      if (!first) return;
+
+      const styles = getComputedStyle(results);
+      const padding =
+        Number.parseFloat(styles.paddingBlockStart) +
+        Number.parseFloat(styles.paddingBlockEnd);
+      const gap = Number.parseFloat(styles.rowGap) || 0;
+      const row = first.getBoundingClientRect().height;
+      const preferred = Number.parseFloat(styles.maxBlockSize) || 216;
+
+      const box = input.getBoundingClientRect();
+      const margin = 12;
+      const below = window.innerHeight - box.bottom - margin;
+      const above = box.top - margin;
+      const flip = below < row * 2 + padding && above > below;
+      if (flip) results.classList.add("is-up");
+
+      const space = Math.max(row + padding, flip ? above : below);
+      const cap = Math.min(preferred, space);
+      const total = results.scrollHeight;
+
+      if (total <= cap || (total - cap <= row / 2 && total <= space)) {
+        results.style.maxBlockSize = total + "px";
+        return;
+      }
+
+      const rows = Math.max(1, Math.floor((cap - padding + gap) / (row + gap)));
+      results.style.maxBlockSize =
+        rows * row + (rows - 1) * gap + padding + "px";
+    }
+
+    function close() {
+      results.style.maxBlockSize = "";
+      results.hidden = true;
+      input.setAttribute("aria-expanded", "false");
+      active = -1;
+    }
+
+    function setActive(next: number) {
+      const items = [...results.children] as HTMLElement[];
+      items.forEach((el) => el.classList.remove("is-active"));
+      active = next;
+      if (items[active]) {
+        items[active].classList.add("is-active");
+        items[active].scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    function add(track: Pick) {
+      if (picks.length >= MAX || picks.some((p) => p.id === track.id)) return;
+      picks.push(track);
+      setError("tracks", false);
+      input.value = "";
+      close();
+      renderPicks();
+      input.focus();
+    }
+
+    async function run(q: string) {
+      found = await search(q);
+      results.innerHTML = "";
+      if (!found.length) return close();
+
+      found.forEach((t) => {
+        const li = document.createElement("li");
+        li.className = "result";
+        li.role = "option";
+        li.innerHTML = `
+          <span class="result__text">
+            <span class="result__title"></span>
+            <span class="result__artist"></span>
+          </span>`;
+        li.querySelector(".result__title")!.textContent = t.title;
+        li.querySelector(".result__artist")!.textContent = t.artist;
+        li.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          add(t);
+        });
+        results.append(li);
+      });
+
+      results.hidden = false;
+      fitResults();
+      input.setAttribute("aria-expanded", "true");
+      setActive(0);
+    }
+
+    input.addEventListener("input", () => {
+      clearTimeout(timer);
+      const q = input.value;
+      if (!q.trim()) return close();
+      timer = window.setTimeout(() => run(q), 180);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      const items = results.children.length;
+      if (results.hidden || !items) return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setActive((active + 1) % items);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setActive((active - 1 + items) % items);
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        const track = found[active];
+        if (track) add(track);
+      } else if (event.key === "Escape") {
+        close();
+      }
+    });
+
+    input.addEventListener("blur", () => setTimeout(close, 120));
+
+    const refit = () => {
+      if (!results.hidden) fitResults();
+    };
+    window.addEventListener("resize", refit);
+    window.addEventListener("scroll", refit, { passive: true });
+
+    form.addEventListener("submit", (event) => {
+      const title = form.querySelector<HTMLInputElement>('[name="title"]');
+      const from = form.querySelector<HTMLInputElement>('[name="from"]');
+
+      const problems: [string, boolean][] = [
+        ["title", !title?.value.trim()],
+        ["from", !from?.value.trim()],
+        ["tracks", picks.length === 0],
+      ];
+
+      const first = problems.find(([, bad]) => bad);
+      problems.forEach(([name]) => setError(name, first?.[0] === name));
+
+      if (first) {
+        event.preventDefault();
+        const target =
+          first[0] === "tracks"
+            ? input
+            : form.querySelector<HTMLElement>(`[name="${first[0]}"]`);
+        target?.focus();
+        return;
+      }
+
+      if (tracksInput) {
+        tracksInput.value = JSON.stringify(
+          picks.map(({ title, artist, url }) => ({ title, artist, url })),
+        );
+      }
+    });
+
+    renderPicks();
+  }
+
+  function stripFlashParams() {
+    const url = new URL(location.href);
+    if (!url.searchParams.has("success") && !url.searchParams.has("error"))
+      return;
+
+    url.searchParams.delete("success");
+    url.searchParams.delete("error");
+    history.replaceState(history.state, "", url.pathname + url.search);
+  }
+
+  function bindDismiss() {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-dismiss]")
+      .forEach((button) => {
+        if (button.dataset.ready) return;
+        button.dataset.ready = "true";
+        button.addEventListener("click", () =>
+          button.closest(".tape-saved")?.remove(),
+        );
+      });
+  }
+
+  bindTape();
+  bindDismiss();
+  stripFlashParams();
+  document.addEventListener("astro:page-load", () => {
+    bindTape();
+    bindDismiss();
+    stripFlashParams();
+  });
+</script>
+
+<style>
+  .tape-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    margin-block-start: var(--space-2xl);
+  }
+
+
+  .tape-empty {
+    margin-block-start: var(--space-2xl);
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .sides {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-2xl);
+    margin-block-start: var(--space-3xl);
+  }
+
+  .side__name {
+    margin: 0 0 var(--space-sm);
+    padding-block-end: var(--space-sm);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .side__tracks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: track;
+  }
+
+  .track {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    margin-inline: calc(var(--space-sm) * -1);
+    border-radius: var(--radius-md);
+    counter-increment: track;
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .track::before {
+    content: counter(track, decimal-leading-zero);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .track__link {
+    grid-column: 2;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    min-inline-size: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+  .track__title {
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .track__artist {
+    flex-shrink: 0;
+    max-inline-size: 45%;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .track:has(a.track__link:hover) {
+      background: var(--surface);
+    }
+  }
+
+  .handoff {
+    margin-block-start: var(--space-4xl);
+    padding-block-start: var(--space-2xl);
+    border-block-start: 1px solid var(--border);
+  }
+
+  .handoff__title {
+    margin: 0 0 var(--space-xl);
+    font-size: var(--fs-lg);
+  }
+
+  .tape-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-md);
+  }
+
+  .field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .field__label {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+
+  input,
+  textarea {
+    inline-size: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    resize: none;
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-subtle);
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--focus) 16%, transparent);
+  }
+
+  .shells {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .shells legend {
+    padding: 0;
+  }
+  .shells__row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-sm);
+    margin-block-start: var(--space-sm);
+    margin-inline: -4px;
+    padding: 4px;
+  }
+  @media (min-width: 40rem) {
+    .shells__row {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+    }
+  }
+
+  .shell {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .shell input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    border: none;
+    opacity: 0;
+  }
+  .shell__swatch {
+    display: block;
+    inline-size: 100%;
+    block-size: 2.5rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(
+      163deg,
+      var(--shell-hi),
+      var(--shell) 42%,
+      var(--shell-lo)
+    );
+    box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.25);
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out),
+      scale var(--duration-fast) var(--ease-out);
+  }
+  .shell input:checked + .shell__swatch {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+  .shell input:focus-visible + .shell__swatch {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  .field__error {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    margin-block-start: var(--space-xs);
+    font-size: var(--fs-sm);
+    color: var(--red-11);
+  }
+  .field__error[hidden] {
+    display: none;
+  }
+
+  input[aria-invalid="true"],
+  textarea[aria-invalid="true"] {
+    border-color: var(--red-9);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--red-9) 16%, transparent);
+  }
+
+  .tape-saved {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-xl);
+    margin-block-end: 0;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-lg);
+    font-size: var(--fs-sm);
+    background: color-mix(in oklch, var(--green-9) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--green-9) 30%, transparent);
+    color: var(--green-11);
+    text-wrap: pretty;
+  }
+  .tape-saved :global(.icon) {
+    flex-shrink: 0;
+  }
+  .tape-saved__dismiss {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .tape-saved__dismiss :global(.icon) {
+    transition: scale var(--duration-fast) var(--ease-out);
+  }
+  .tape-saved__dismiss:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .honeypot {
+    display: none;
+  }
+
+  .combo {
+    position: relative;
+  }
+
+  .results {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: calc(100% + 4px);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-block-size: 13.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 4px;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-border), var(--shadow-lg);
+  }
+  .results.is-up {
+    inset-block-start: auto;
+    inset-block-end: calc(100% + 4px);
+  }
+  .results[hidden] {
+    display: none;
+  }
+
+  :global(.result),
+  :global(.pick) {
+    display: grid;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  :global(.result) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  :global(.result.is-active) {
+    background: var(--surface-hover);
+  }
+
+  :global(.result__text),
+  :global(.pick__text) {
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.result__title),
+  :global(.pick__title) {
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :global(.result__artist),
+  :global(.pick__artist) {
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .picks {
+    margin: var(--space-md) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs, 4px);
+  }
+
+  :global(.pick) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface);
+    box-shadow: var(--shadow-border);
+  }
+
+  :global(.pick__side) {
+    font-family: var(--font-geist-mono), monospace;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  :global(.pick .pick__text),
+  :global(.result .result__text) {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-xs);
+  }
+  :global(.pick .pick__artist),
+  :global(.result .result__artist) {
+    flex-shrink: 0;
+    max-inline-size: 45%;
+  }
+
+  :global(.pick__remove) {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-subtle);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  :global(.pick__remove:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .shell:hover .shell__swatch {
+      scale: 1.06;
+    }
+    .tape-saved__dismiss:hover {
+      background: color-mix(in oklch, var(--green-9) 16%, transparent);
+    }
+    .tape-saved__dismiss:hover :global(.icon) {
+      scale: 1.06;
+    }
+    :global(.result:hover) {
+      background: var(--surface-hover);
+    }
+    :global(.pick__remove:hover) {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+  }
+
+  .tape-form__foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+</style>
