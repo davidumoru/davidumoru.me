@@ -31,7 +31,12 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
             aria-label="First page"
             data-astro-prefetch="hover"
           >
-            <Icon name="caretDoubleLeft" size={18} className="arrow-x arrow-first" />
+            <Icon
+              name="caretDoubleLeft"
+              variant="regular"
+              size={18}
+              className="arrow-x arrow-first"
+            />
           </a>
         )}
         {currentPage > 1 && (
@@ -41,7 +46,12 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
             aria-label="Previous page"
             data-astro-prefetch="hover"
           >
-            <Icon name="arrowLeft" size={18} className="arrow-x arrow-prev" />
+            <Icon
+              name="arrowLeft"
+              variant="regular"
+              size={18}
+              className="arrow-x arrow-prev"
+            />
           </a>
         )}
         {currentPage < totalPages && (
@@ -51,7 +61,12 @@ const count = `${total.toLocaleString()} ${total === 1 ? "stamp" : "stamps"} on 
             aria-label="Next page"
             data-astro-prefetch="hover"
           >
-            <Icon name="arrowRight" size={18} className="arrow-x arrow-next" />
+            <Icon
+              name="arrowRight"
+              variant="regular"
+              size={18}
+              className="arrow-x arrow-next"
+            />
           </a>
         )}
       </div>

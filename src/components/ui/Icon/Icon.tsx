@@ -362,7 +362,7 @@ const icons: Record<IconName, Partial<Record<IconVariant, string>>> = {
 
 export function Icon({
   name,
-  variant = "regular",
+  variant = "duotone",
   size = 24,
   className,
   title,

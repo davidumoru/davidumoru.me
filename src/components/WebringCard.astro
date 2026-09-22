@@ -15,14 +15,24 @@ const { title, description, url, prev, next, color } = entry.data;
   style={`--ring-bg: var(--${color}-2); --ring-bg-hover: var(--${color}-3); --ring-edge: var(--${color}-5); --ring-text: var(--${color}-11);`}
 >
   <a class="nav" href={prev} aria-label={`Previous site in ${title}`}>
-    <Icon name="arrowLeft" size={18} className="arrow-x arrow-prev" />
+    <Icon
+      name="arrowLeft"
+      variant="regular"
+      size={18}
+      className="arrow-x arrow-prev"
+    />
   </a>
   <a class="site" href={url} target="_blank" rel="noopener">
     <h2 class="title">{title}</h2>
     <p class="desc">{description}</p>
   </a>
   <a class="nav" href={next} aria-label={`Next site in ${title}`}>
-    <Icon name="arrowRight" size={18} className="arrow-x arrow-next" />
+    <Icon
+      name="arrowRight"
+      variant="regular"
+      size={18}
+      className="arrow-x arrow-next"
+    />
   </a>
 </article>
 

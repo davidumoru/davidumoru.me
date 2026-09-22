@@ -47,7 +47,12 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
         caseStudyHref ? (
           <a class="action" href={caseStudyHref}>
             Read Case Study
-            <Icon name="arrowRight" size={16} className="arrow-x arrow-next" />
+            <Icon
+              name="arrowRight"
+              variant="regular"
+              size={16}
+              className="arrow-x arrow-next"
+            />
           </a>
         ) : (
           <span class="action action--locked">
@@ -62,7 +67,12 @@ const coverTransition = caseStudyHref ? `work-cover-${entry.id}` : undefined;
             <span class="divider" aria-hidden="true" />
             <a class="action" href={url} {...liveAttrs}>
               View Live Site
-              <Icon name="arrowUpRight" size={16} className="arrow-x arrow-out" />
+              <Icon
+                name="arrowUpRight"
+                variant="regular"
+                size={16}
+                className="arrow-x arrow-out"
+              />
             </a>
           </>
         )

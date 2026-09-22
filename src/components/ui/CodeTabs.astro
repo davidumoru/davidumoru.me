@@ -65,7 +65,7 @@ const iconFor = (file: File) =>
             aria-selected={i === 0 ? "true" : "false"}
             tabindex={i === 0 ? 0 : -1}
           >
-            <Icon name={iconFor(file)} variant="duotone" size={16} />
+            <Icon name={iconFor(file)} size={16} />
             {file.label ?? file.name}
           </button>
         ))}

@@ -92,7 +92,7 @@ const WEATHER_ICON: Record<WeatherIcon, IconName> = {
           weather && (
             <Fragment>
               <span class="bento__arrow" style={`--dir: ${weather.windDir}deg`}>
-                <Icon name="navigationArrow" variant="duotone" size={16} />
+                <Icon name="navigationArrow" size={16} />
               </span>
               <span class="sr-only">
                 , wind from {Math.round(weather.windDir)} degrees
@@ -112,11 +112,7 @@ const WEATHER_ICON: Record<WeatherIcon, IconName> = {
       <span class="bento__glyph">
         {
           weather && (
-            <Icon
-              name={WEATHER_ICON[weather.icon]}
-              variant="duotone"
-              size={20}
-            />
+            <Icon name={WEATHER_ICON[weather.icon]} size={20} />
           )
         }
       </span>

@@ -33,7 +33,7 @@ const folders = (await getCollection("bookmarks"))
         <section class="folder">
           <h2 class="folder__name">
             {folder.icon && (
-              <Icon name={folder.icon} variant="duotone" size={16} />
+              <Icon name={folder.icon} size={16} />
             )}
             {folder.name}
           </h2>
