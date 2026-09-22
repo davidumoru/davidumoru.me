@@ -24,7 +24,6 @@ const action =
     class="form"
     action={action}
     method="post"
-    target="bd-sink"
     data-subscribe
   >
     <div class="stack">
@@ -45,20 +44,16 @@ const action =
       </div>
       <div class="success" role="status" aria-live="polite">
         <span class="check"><Icon name="checkCircle" size={18} /></span>
-        <span>You're on the list. Check your inbox to confirm.</span>
+        <span data-success-text
+          >You're on the list. Check your inbox to confirm.</span
+        >
         <button type="button" class="relink" data-reset
           >Use a different email</button
         >
       </div>
+      <p class="error" role="alert" hidden data-error></p>
     </div>
   </form>
-
-  <iframe
-    name="bd-sink"
-    class="sink"
-    title="Subscription"
-    aria-hidden="true"
-    tabindex="-1"></iframe>
 </section>
 
 <script>
@@ -189,29 +184,71 @@ const action =
         const input = form.querySelector<HTMLInputElement>("input[type=email]");
         const canvas = form.querySelector<HTMLCanvasElement>(".vanish");
         const reset = form.querySelector<HTMLButtonElement>("[data-reset]");
+        const message = form.querySelector<HTMLElement>("[data-success-text]");
+        const error = form.querySelector<HTMLElement>("[data-error]");
         const label = button?.textContent ?? "Subscribe";
 
-        form.addEventListener("submit", () => {
+        const fail = (text: string) => {
+          if (button) {
+            button.disabled = false;
+            button.textContent = label;
+          }
+          if (error) {
+            error.textContent = text;
+            error.hidden = false;
+          }
+        };
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const email = input?.value.trim();
+          if (!input || !email) return;
+
+          if (error) error.hidden = true;
           if (button) {
             button.disabled = true;
             button.textContent = "Subscribing…";
           }
-          window.setTimeout(() => {
-            const done = () => {
-              if (input) input.value = "";
-              form.dataset.state = "success";
-              play("send");
-            };
-            if (input && canvas) {
-              vanish(input, canvas, done);
-            } else {
-              done();
-            }
-          }, 700);
+
+          let status: string | null = null;
+          try {
+            const res = await fetch("/api/subscribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+            const data = await res.json().catch(() => null);
+            if (res.ok && typeof data?.status === "string") status = data.status;
+          } catch {}
+
+          if (!status) {
+            fail("That didn't go through. Try again.");
+            return;
+          }
+
+          if (message && status === "existing") {
+            message.textContent = "You're already on the list.";
+          }
+
+          const done = () => {
+            input.value = "";
+            form.dataset.state = "success";
+            play("send");
+          };
+          if (canvas) {
+            vanish(input, canvas, done);
+          } else {
+            done();
+          }
         });
 
         reset?.addEventListener("click", () => {
           form.dataset.state = "";
+          if (error) error.hidden = true;
+          if (message) {
+            message.textContent =
+              "You're on the list. Check your inbox to confirm.";
+          }
           if (button) {
             button.disabled = false;
             button.textContent = label;
@@ -352,8 +389,11 @@ const action =
     pointer-events: none;
     opacity: 0;
   }
-  .sink {
-    display: none;
+  .error {
+    grid-area: 2 / 1;
+    margin: var(--space-xs) 0 0;
+    font-size: var(--fs-sm);
+    color: var(--red-11);
   }
 
   @media (max-width: 30rem) {

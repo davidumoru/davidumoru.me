@@ -379,7 +379,9 @@ const WEATHER_ICON: Record<WeatherIcon, IconName> = {
   }
 
   function loop() {
-    document.querySelectorAll(".bento__clock").forEach(paint);
+    const clocks = document.querySelectorAll(".bento__clock");
+    if (!clocks.length) return;
+    clocks.forEach(paint);
     timer = window.setTimeout(loop, 1000 - (Date.now() % 1000));
   }
 
@@ -397,4 +399,5 @@ const WEATHER_ICON: Record<WeatherIcon, IconName> = {
   }
 
   document.addEventListener("astro:page-load", bind);
+  document.addEventListener("astro:before-swap", () => clearTimeout(timer));
 </script>

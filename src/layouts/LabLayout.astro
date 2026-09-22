@@ -12,7 +12,12 @@ interface Props {
 const { title, description, date } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} type="article">
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedDate={date}
+>
   <article>
     <PageHeader title={title} date={date}>
       <CopyLink slot="meta-end" />

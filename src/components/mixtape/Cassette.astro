@@ -8,33 +8,28 @@ interface Props {
 const { title, from, shell } = Astro.props;
 ---
 
-<div
-  class="cassette"
-  aria-hidden="true"
-  data-shell={shell}
- 
->
-  <span class="cassette__screw is-tl"></span>
-  <span class="cassette__screw is-tr"></span>
-  <span class="cassette__screw is-bl"></span>
-  <span class="cassette__screw is-br"></span>
-  <span class="cassette__screw is-bc"></span>
+<div class="cassette" data-shell={shell}>
+  <span class="cassette__screw is-tl" aria-hidden="true"></span>
+  <span class="cassette__screw is-tr" aria-hidden="true"></span>
+  <span class="cassette__screw is-bl" aria-hidden="true"></span>
+  <span class="cassette__screw is-br" aria-hidden="true"></span>
+  <span class="cassette__screw is-bc" aria-hidden="true"></span>
 
   <div class="cassette__label">
-    <span class="cassette__band"></span>
+    <span class="cassette__band" aria-hidden="true"></span>
     <span class="cassette__title">{title}</span>
     <span class="cassette__from">
       from <span>{from}</span>
     </span>
   </div>
 
-  <div class="cassette__window">
+  <div class="cassette__window" aria-hidden="true">
     <span class="spool is-left"><span class="spool__hub"></span></span>
     <span class="cassette__ribbon"></span>
     <span class="spool is-right"><span class="spool__hub"></span></span>
   </div>
 
-  <div class="cassette__base">
+  <div class="cassette__base" aria-hidden="true">
     <span class="cassette__slot"></span>
     <span class="cassette__hole"></span>
     <span class="cassette__slot is-wide"></span>

@@ -38,6 +38,11 @@ export default defineConfig({
         access: "secret",
         optional: true,
       }),
+      BUTTONDOWN_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
     },
   },
 

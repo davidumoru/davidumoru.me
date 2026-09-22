@@ -322,6 +322,13 @@ const invalid = new Set(
     }
   }
 
+  let pageLife: AbortController | null = null;
+
+  function pageSignal() {
+    if (!pageLife) pageLife = new AbortController();
+    return pageLife.signal;
+  }
+
   function bindTape() {
     const form = document.querySelector<HTMLFormElement>("[data-tape]");
     if (!form || form.dataset.ready) return;
@@ -518,8 +525,11 @@ const invalid = new Set(
     const refit = () => {
       if (!results.hidden) fitResults();
     };
-    window.addEventListener("resize", refit);
-    window.addEventListener("scroll", refit, { passive: true });
+    window.addEventListener("resize", refit, { signal: pageSignal() });
+    window.addEventListener("scroll", refit, {
+      passive: true,
+      signal: pageSignal(),
+    });
 
     form.addEventListener("submit", (event) => {
       const title = form.querySelector<HTMLInputElement>('[name="title"]');
@@ -583,6 +593,10 @@ const invalid = new Set(
     bindTape();
     bindDismiss();
     stripFlashParams();
+  });
+  document.addEventListener("astro:before-swap", () => {
+    pageLife?.abort();
+    pageLife = null;
   });
 </script>
 
