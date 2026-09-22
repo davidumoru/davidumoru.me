@@ -69,7 +69,11 @@ const source = track?.live
 
   <p class="now-playing__source">
     <Icon name="spotifyLogo" variant="duotone" size={16} />
-    <span class="now-playing__source-text">{source}</span>
+    <span
+      class:list={["now-playing__source-text", pending && "now-playing__bone"]}
+    >
+      {source}
+    </span>
   </p>
 
   {
@@ -283,6 +287,9 @@ const source = track?.live
   .now-playing__title.now-playing__bone {
     inline-size: 11ch;
     margin-block-start: var(--space-sm);
+  }
+  .now-playing__source-text.now-playing__bone {
+    inline-size: 9ch;
   }
 
   @keyframes now-playing-spin {
