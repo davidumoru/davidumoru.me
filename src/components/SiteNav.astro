@@ -295,12 +295,12 @@ const socialsIndex = step;
       color: var(--text);
     }
 
-    .site-nav-button:hover :global(.icon) {
+    .site-nav-button:hover .icon {
       scale: 1.06;
     }
   }
 
-  .site-nav-button :global(.icon) {
+  .site-nav-button .icon {
     transition: scale var(--duration-fast) var(--ease-out-expo);
   }
 
@@ -569,7 +569,7 @@ const socialsIndex = step;
 
   @media (prefers-reduced-motion: reduce) {
     .site-nav-button:active,
-    .site-nav-button:hover :global(.icon) {
+    .site-nav-button:hover .icon {
       scale: 1;
     }
     .site-nav-swap > span,

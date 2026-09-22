@@ -23,6 +23,16 @@ const {
   tilt = 0,
 } = Astro.props;
 
+const safeLink = (() => {
+  if (!link) return null;
+  try {
+    const { protocol } = new URL(link);
+    return protocol === "http:" || protocol === "https:" ? link : null;
+  } catch {
+    return null;
+  }
+})();
+
 const displayDate = date.toLocaleDateString("en-US", {
   month: "short",
   day: "numeric",
@@ -46,10 +56,10 @@ const displayDate = date.toLocaleDateString("en-US", {
     <p class="postcard-message">{message}</p>
     <p class="postcard-signature">
       {
-        link ? (
+        safeLink ? (
           <a
             class="postcard-sign"
-            href={link}
+            href={safeLink}
             target="_blank"
             rel="noopener noreferrer"
           >
