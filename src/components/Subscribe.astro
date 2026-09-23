@@ -62,12 +62,18 @@ const action =
   type Particle = {
     x: number;
     y: number;
-    r: number;
+    x0: number;
+    life: number;
     vx: number;
     vy: number;
     color: string;
+    threshold: number;
     active: boolean;
   };
+
+  const DURATION = 2000;
+  const BAND_RATIO = 0.28;
+  const MAX_PARTICLES = 12000;
 
   function vanish(
     input: HTMLInputElement,
@@ -100,35 +106,56 @@ const action =
     const textRight = textLeft + ctx.measureText(text).width;
 
     const dw = canvas.width;
-    const data = ctx.getImageData(0, 0, dw, canvas.height).data;
-    const particles: Particle[] = [];
-    for (let y = 0; y < canvas.height; y += dpr) {
-      for (let x = 0; x < dw; x += dpr) {
-        const i = (y * dw + x) * 4;
-        if (data[i + 3] > 128) {
-          particles.push({
-            x: x / dpr,
+    const dh = canvas.height;
+    const data = ctx.getImageData(0, 0, dw, dh).data;
+
+    const sample = (step: number) => {
+      const out: Particle[] = [];
+      for (let y = 0; y < dh; y += step) {
+        for (let x = 0; x < dw; x += step) {
+          const i = (y * dw + x) * 4;
+          if (data[i + 3] <= 128) continue;
+          const cx = x / dpr;
+          out.push({
+            x: cx,
             y: y / dpr,
-            r: 1,
-            vx: (Math.random() - 0.5) * 1.2,
-            vy: (Math.random() - 0.5) * 1.2,
+            x0: cx,
+            life: 1,
+            vx: 0.3 + Math.random() * 0.9,
+            vy: -0.2 + (Math.random() - 0.5) * 0.5,
+            threshold: Math.random(),
             active: false,
             color: `rgba(${data[i]},${data[i + 1]},${data[i + 2]},${data[i + 3] / 255})`,
           });
         }
       }
+      return out;
+    };
+
+    let step = 1;
+    let particles = sample(step);
+    while (particles.length > MAX_PARTICLES && step < 4) {
+      step++;
+      particles = sample(step);
     }
+    const size = step / dpr;
 
     canvas.style.opacity = "1";
     input.style.setProperty("color", "transparent");
     input.style.setProperty("-webkit-text-fill-color", "transparent");
     input.style.setProperty("caret-color", "transparent");
 
-    let pos = textRight;
-    const wipeSpeed = w / 75;
+    const band = Math.max(40, (textRight - textLeft) * BAND_RATIO);
+    const travel = textRight - textLeft + band;
+    const begin = performance.now();
+    let last = begin;
 
-    function frame() {
-      pos -= wipeSpeed;
+    function frame(now: number) {
+      const dt = Math.min((now - last) / 16.667, 3);
+      last = now;
+      const t = Math.min((now - begin) / DURATION, 1);
+      const pos = textRight - t * travel;
+
       ctx!.clearRect(0, 0, w, h);
       ctx!.globalAlpha = 1;
 
@@ -142,25 +169,36 @@ const action =
         ctx!.restore();
       }
 
-      let aliveParticles = 0;
+      let alive = 0;
+      let fill = "";
       for (const p of particles) {
-        if (p.r <= 0) continue;
+        if (p.life <= 0) continue;
+
         if (!p.active) {
-          if (p.x >= pos) p.active = true;
-          else continue;
+          const edge = (p.x0 - pos) / band;
+          if (edge <= 0) continue;
+          alive++;
+          if (edge < p.threshold) {
+            ctx!.globalAlpha = 1;
+            if (fill !== p.color) ctx!.fillStyle = fill = p.color;
+            ctx!.fillRect(p.x, p.y, size, size);
+            continue;
+          }
+          p.active = true;
         }
-        p.x += p.vx;
-        p.y += p.vy;
-        p.r -= 0.014;
-        if (p.r <= 0) continue;
-        aliveParticles++;
-        ctx!.globalAlpha = Math.min(p.r, 1);
-        ctx!.fillStyle = p.color;
-        ctx!.fillRect(p.x, p.y, p.r, p.r);
+
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= 0.022 * dt;
+        if (p.life <= 0) continue;
+        alive++;
+        ctx!.globalAlpha = Math.min(p.life, 1);
+        if (fill !== p.color) ctx!.fillStyle = fill = p.color;
+        ctx!.fillRect(p.x, p.y, size, size);
       }
       ctx!.globalAlpha = 1;
 
-      if (pos > 0 || aliveParticles > 0) {
+      if (t < 1 || alive > 0) {
         requestAnimationFrame(frame);
       } else {
         input.style.removeProperty("color");
