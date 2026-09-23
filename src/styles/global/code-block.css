@@ -7,7 +7,7 @@ pre {
   overflow: auto;
   font-family: var(--font-geist-mono);
   font-weight: var(--fw-regular);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-code);
   line-height: var(--lh-relaxed);
   tab-size: 2;
 }

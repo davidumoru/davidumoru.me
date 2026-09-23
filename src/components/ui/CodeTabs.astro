@@ -93,14 +93,8 @@ const iconFor = (file: File) =>
 }
 
 <script>
-  const DURATION = 220;
-
   function setup() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const easing =
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--ease-out")
-        .trim() || "ease-out";
 
     document.querySelectorAll<HTMLElement>(".code-tabs").forEach((root) => {
       if (root.dataset.ready) return;
@@ -112,7 +106,6 @@ const iconFor = (file: File) =>
       const panels = [
         ...root.querySelectorAll<HTMLElement>(".code-tabs-panel"),
       ];
-      const stack = root.querySelector<HTMLElement>(".code-tabs-panels");
       if (!bar || !pill || !tabs.length) return;
 
       function movePill(tab: HTMLElement, animate: boolean) {
@@ -132,31 +125,12 @@ const iconFor = (file: File) =>
         movePill(tabs[index], !reduced.matches);
 
         if (current !== index) {
-          const from = stack?.getBoundingClientRect().height ?? 0;
-
           tabs.forEach((tab, i) => {
             const active = i === index;
             tab.setAttribute("aria-selected", String(active));
             tab.tabIndex = active ? 0 : -1;
             if (panels[i]) panels[i].hidden = !active;
           });
-
-          if (!reduced.matches && stack) {
-            const to = stack.getBoundingClientRect().height;
-            if (from && to !== from) {
-              stack.animate([{ height: `${from}px` }, { height: `${to}px` }], {
-                duration: DURATION,
-                easing,
-              });
-            }
-            panels[index].animate(
-              [
-                { opacity: 0, transform: "translateY(4px)" },
-                { opacity: 1, transform: "none" },
-              ],
-              { duration: DURATION, easing },
-            );
-          }
         }
 
         if (focus) tabs[index].focus();
@@ -242,7 +216,7 @@ const iconFor = (file: File) =>
     background: transparent;
     color: var(--text-subtle);
     font-family: var(--font-geist-mono), monospace;
-    font-size: var(--fs-sm);
+    font-size: var(--fs-code);
     white-space: nowrap;
     cursor: pointer;
     transition: color var(--duration-fast) var(--ease-out);
