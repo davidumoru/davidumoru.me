@@ -6,63 +6,71 @@
 
 .button {
   position: relative;
-  display: grid;
+  display: inline-grid;
   place-items: center;
-  inline-size: 5.5rem;
-  block-size: 5.5rem;
+  block-size: 2.5rem;
+  padding-inline: 1.125rem;
+  overflow: hidden;
   border: none;
-  border-radius: 50%;
+  border-radius: 10px;
   background: var(--surface);
   box-shadow: var(--shadow-border);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-heading);
+  white-space: nowrap;
   cursor: pointer;
   touch-action: none;
   user-select: none;
-  transition: transform var(--duration-fast) var(--ease-out);
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: 2px solid transparent;
+  transition: scale 160ms var(--ease-out);
 }
 
-.button:active {
-  transform: scale(0.95);
+.button[data-holding] {
+  scale: 0.97;
 }
 
-.button[data-done="true"] {
-  cursor: pointer;
+.button:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
 }
 
-.ring {
+.fill {
   position: absolute;
   inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  transform: rotate(-90deg);
-  fill: none;
-  overflow: visible;
-}
-
-.track {
-  stroke: var(--border);
-  stroke-width: 5;
-}
-
-.progress {
-  stroke: var(--primary);
-  stroke-width: 5;
-  stroke-linecap: round;
-  transition: stroke var(--duration-normal) var(--ease-out);
-}
-
-.button[data-done="true"] .progress {
-  stroke: var(--green-9);
-}
-
-.icon {
-  position: relative;
-  z-index: 1;
   display: grid;
   place-items: center;
-  color: var(--text-muted);
-  transition: color var(--duration-normal) var(--ease-out);
+  background: var(--text);
+  color: var(--background);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 200ms var(--ease-out);
 }
 
-.button[data-done="true"] .icon {
-  color: var(--green-9);
+.button[data-holding] .fill {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--hold) linear;
+}
+
+.button[data-done] .fill {
+  clip-path: inset(0 0 0 0);
+  transition: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:not([data-done]):hover {
+    background: var(--surface-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .button[data-holding] {
+    scale: none;
+  }
 }

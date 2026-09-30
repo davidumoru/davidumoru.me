@@ -1,0 +1,62 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-xl);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  inline-size: min(22.5rem, 100%);
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.75rem 1.125rem;
+  background: var(--background);
+  box-shadow: var(--shadow-border);
+  cursor: text;
+  transition:
+    border-radius 360ms cubic-bezier(0.23, 1, 0.32, 1),
+    margin 360ms cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.row[data-focused] {
+  z-index: 1;
+}
+
+.label {
+  font-size: var(--fs-base);
+  color: var(--text-subtle);
+}
+
+.input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: var(--fs-base);
+  color: var(--text);
+  outline: none;
+}
+
+.row:focus-within {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 1px var(--focus),
+    0 0 0 4px color-mix(in oklch, var(--focus) 16%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    transition: none;
+  }
+}

@@ -6,24 +6,37 @@
 }
 
 .add {
-  padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--radius-2xl);
-  border: 1px solid var(--border);
-  background: var(--surface);
+  block-size: 2.25rem;
+  padding-inline: 1rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: var(--shadow-border);
   color: var(--text);
   font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-heading);
   cursor: pointer;
+  outline: 2px solid transparent;
   transition:
     background var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-}
-
-.add:hover {
-  background: var(--surface-hover);
+    scale var(--duration-fast) var(--ease-out);
 }
 
 .add:active {
-  transform: scale(0.96);
+  scale: 0.97;
+}
+
+.add:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .add:hover {
+    background: var(--surface-hover);
+  }
 }
 
 .region {
@@ -35,10 +48,13 @@
   transition: height var(--duration-slow) var(--ease-out);
 }
 
-.toast {
+.slot {
   position: absolute;
   inset-block-end: 0;
   inset-inline: 0;
+}
+
+.toast {
   display: flex;
   align-items: center;
   min-height: 3rem;
@@ -48,4 +64,20 @@
   box-shadow: var(--shadow-border), var(--shadow-lg);
   font-size: var(--fs-sm);
   color: var(--text);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.toast[data-swiping] {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .add {
+    transition: none;
+  }
+  .add:active {
+    scale: none;
+  }
 }

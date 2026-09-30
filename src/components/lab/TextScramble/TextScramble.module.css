@@ -1,0 +1,24 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.word {
+  padding: var(--space-xs) var(--space-sm);
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--fs-2xl);
+  white-space: pre;
+  cursor: pointer;
+  outline: 2px solid transparent;
+}
+
+.word:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}

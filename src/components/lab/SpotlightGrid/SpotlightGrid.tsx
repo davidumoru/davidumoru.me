@@ -13,7 +13,7 @@ const label: CSSProperties = {
   fontSize: "var(--fs-sm)",
 };
 
-export default function Spotlight() {
+export default function SpotlightGrid() {
   const [pos, setPos] = useState({ x: "50%", y: "50%" });
 
   const onMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -30,7 +30,7 @@ export default function Spotlight() {
     position: "absolute",
     inset: 0,
     backgroundImage:
-      "radial-gradient(var(--border-strong) 1px, transparent 1px)",
+      "radial-gradient(light-dark(var(--gray-8), var(--border-strong)) 1px, transparent 1px)",
     backgroundSize: "22px 22px",
     WebkitMaskImage: mask,
     maskImage: mask,

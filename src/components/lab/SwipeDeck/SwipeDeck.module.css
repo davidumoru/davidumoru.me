@@ -1,0 +1,91 @@
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.deck {
+  display: grid;
+  place-items: center;
+  inline-size: 16rem;
+  block-size: 10rem;
+  border-radius: var(--radius-2xl);
+  outline: 2px solid transparent;
+}
+
+.deck:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}
+
+.card {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  inline-size: 16rem;
+  block-size: 10rem;
+  border-radius: var(--radius-2xl);
+  background: var(--background);
+  box-shadow:
+    var(--shadow-border),
+    var(--shadow-lg);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-heading);
+  color: var(--text);
+  user-select: none;
+}
+
+.card[data-top] {
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.card[data-top]:active {
+  cursor: grabbing;
+}
+
+.reset {
+  position: absolute;
+  block-size: 2.25rem;
+  padding-inline: 1rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: var(--shadow-border);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-heading);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    scale var(--duration-fast) var(--ease-out);
+}
+
+.reset:active {
+  scale: 0.97;
+}
+
+.reset:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reset:hover {
+    background: var(--surface-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reset {
+    transition: none;
+  }
+  .reset:active {
+    scale: none;
+  }
+}

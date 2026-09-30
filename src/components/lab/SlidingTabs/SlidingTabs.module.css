@@ -4,10 +4,13 @@
 }
 
 .bar {
+  --pad: var(--space-xs);
+  --radius: var(--radius-2xl);
+
   display: inline-flex;
   gap: var(--space-xs);
-  padding: var(--space-xs);
-  border-radius: var(--radius-2xl);
+  padding: var(--pad);
+  border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow-border);
 }
@@ -16,35 +19,49 @@
   position: relative;
   padding: var(--space-sm) var(--space-lg);
   border: none;
+  border-radius: calc(var(--radius) - var(--pad));
   background: transparent;
-  border-radius: var(--radius-xl);
+  color: var(--text-subtle);
   font: inherit;
   font-size: var(--fs-sm);
-  color: var(--text-subtle);
   cursor: pointer;
+  outline: 2px solid transparent;
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.tab:not([data-active="true"]):hover {
-  color: var(--text-muted);
+.tab[data-active] {
+  color: var(--text);
 }
 
-.tab[data-active="true"] {
-  color: var(--text);
+.tab:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
 }
 
 .pill {
   position: absolute;
   inset: 0;
-  border-radius: var(--radius-xl);
+  z-index: 0;
   background: var(--surface-active);
   box-shadow: var(--shadow-sm);
-  z-index: 0;
 }
 
 .label {
   position: relative;
   z-index: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tab:not([data-active]):hover {
+    color: var(--text-muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
 }
 
 @media (max-width: 32rem) {

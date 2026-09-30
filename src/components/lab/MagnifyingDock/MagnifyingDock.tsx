@@ -9,12 +9,12 @@ import {
 import styles from "./MagnifyingDock.module.css";
 
 const ITEMS = [
-  "var(--blue-9)",
-  "var(--green-9)",
-  "var(--orange-9)",
-  "var(--purple-9)",
-  "var(--pink-9)",
-  "var(--primary)",
+  "color-mix(in oklch, var(--gray-12) 78%, var(--background))",
+  "color-mix(in oklch, var(--gray-12) 90%, var(--background))",
+  "color-mix(in oklch, var(--gray-12) 72%, var(--background))",
+  "color-mix(in oklch, var(--gray-12) 86%, var(--background))",
+  "color-mix(in oklch, var(--gray-12) 75%, var(--background))",
+  "color-mix(in oklch, var(--gray-12) 82%, var(--background))",
 ];
 
 export default function MagnifyingDock() {

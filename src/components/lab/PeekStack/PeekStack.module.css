@@ -1,0 +1,148 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-xl);
+}
+
+.deck {
+  position: relative;
+  display: grid;
+  inline-size: min(18rem, 100%);
+  margin-block-start: 1.375rem;
+  clip-path: inset(-12rem -2rem -2px -2rem);
+}
+
+.card {
+  grid-area: 1 / 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.125rem;
+  border-radius: var(--radius-xl);
+  background: var(--background);
+  box-shadow: var(--shadow-border);
+  transform-origin: center bottom;
+}
+
+.close {
+  position: absolute;
+  inset-block-start: 0.875rem;
+  inset-inline-end: 0.875rem;
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-subtle);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    opacity 150ms var(--ease-out);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.title {
+  margin: 0;
+  padding-inline-end: var(--space-xl);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-snug);
+  color: var(--text);
+  transition:
+    opacity 180ms var(--ease-out),
+    color 180ms var(--ease-out),
+    font-weight 180ms var(--ease-out);
+}
+
+.body {
+  margin-block-start: var(--space-sm);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  color: var(--text-subtle);
+  text-wrap: pretty;
+  transition: opacity 150ms var(--ease-out);
+}
+
+.action {
+  inline-size: 100%;
+  margin-block-start: auto;
+  padding: var(--space-sm);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--text);
+  color: var(--background);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-heading);
+  cursor: pointer;
+  transition: opacity 150ms var(--ease-out);
+}
+
+.body + .action {
+  margin-block-start: var(--space-lg);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.action:active {
+  scale: 0.98;
+}
+
+.card:not([data-depth="0"]):not([data-depth="leaving"]) :is(.close, .body, .action) {
+  opacity: 0;
+}
+
+.card:not([data-depth="0"]):not([data-depth="leaving"]) .title {
+  opacity: 0;
+  font-weight: var(--fw-body);
+  color: var(--text-subtle);
+}
+
+.card[data-reveal] .title {
+  opacity: 1;
+}
+
+.hit {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 20;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hit:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+  border-radius: var(--radius-xl);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .action:hover {
+    opacity: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action:active {
+    scale: none;
+  }
+}

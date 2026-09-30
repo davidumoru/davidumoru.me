@@ -1,137 +1,231 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { AnimatePresence, motion, type Transition } from "motion/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  type Transition,
+} from "motion/react";
 import styles from "./StatusMorph.module.css";
 
-const MORPH: Transition = { duration: 0.6, ease: [0.41, 1.03, 0.6, 1.03] };
+type Status = "idle" | "saving" | "saved";
 
-const ICON_SPRING: Transition = {
-  type: "spring",
-  mass: 4,
-  stiffness: 800,
-  damping: 80,
-  restDelta: 0.0001,
+const LABELS: Record<Status, string> = {
+  idle: "Save changes",
+  saving: "Saving changes",
+  saved: "Changes saved",
 };
+
+const SAVING_MS = 1400;
+const SAVED_MS = 1600;
+const ICON = 16;
+const ICON_GAP = 8;
+
+const INSTANT: Transition = { duration: 0 };
+const GLIDE: Transition = { duration: 0.4, ease: [0.19, 1, 0.22, 1] };
+const ENTER_FADE: Transition = { duration: 0.2, delay: 0.1 };
+const EXIT_FADE: Transition = { duration: 0.1 };
+const SWAP: Transition = { type: "spring", duration: 0.35, bounce: 0 };
 
 function Spinner() {
   return (
-    <svg width="22" height="22" viewBox="0 0 23 23" fill="none">
-      <g className={styles.spinner}>
-        <path
-          d="M21.313 11.4062C21.313 16.8775 16.8777 21.3128 11.4065 21.3128"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        <path
-          opacity="0.1"
-          d="M11.4065 21.313C16.8777 21.313 21.313 16.8777 21.313 11.4065C21.313 5.93529 16.8777 1.5 11.4065 1.5C5.93529 1.5 1.5 5.93529 1.5 11.4065C1.5 16.8777 5.93529 21.313 11.4065 21.313Z"
-          stroke="currentColor"
-          strokeWidth="3"
-        />
-      </g>
+    <svg
+      width={ICON}
+      height={ICON}
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        cx="8"
+        cy="8"
+        r="6.5"
+        stroke="currentColor"
+        strokeOpacity="0.25"
+        strokeWidth="1.5"
+      />
+      <path
+        className={styles.spinner}
+        d="M14.5 8A6.5 6.5 0 0 1 8 14.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
-function Check() {
+function Check({ reduce }: { reduce: boolean }) {
   return (
-    <svg width="20" height="20" viewBox="0 0 21 21" fill="none">
-      <path
-        d="M20.9016 10.4508C20.9016 4.67899 16.2226 0 10.4508 0C4.67899 0 0 4.67899 0 10.4508C0 16.2226 4.67899 20.9016 10.4508 20.9016C16.2226 20.9016 20.9016 16.2226 20.9016 10.4508Z"
-        fill="currentColor"
+    <svg
+      width={ICON}
+      height={ICON}
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        cx="8"
+        cy="8"
+        r="6.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
       />
-      <path
-        d="M6.09631 10.9828L8.83539 13.6439L14.8053 7.83789"
-        stroke="black"
-        strokeOpacity="0.85"
-        strokeWidth="2.5"
+      <motion.path
+        d="M5.25 8.25 7.25 10.25 10.75 6"
+        stroke="currentColor"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        initial={{ pathLength: reduce ? 1 : 0 }}
+        animate={{ pathLength: 1 }}
+        transition={reduce ? INSTANT : { duration: 0.3, delay: 0.1 }}
       />
     </svg>
   );
 }
 
-const states: { label: string; color: string; icon: ReactNode }[] = [
-  { label: "Saving Changes", color: "var(--blue-9)", icon: <Spinner /> },
-  { label: "Changes Saved", color: "var(--green-9)", icon: <Check /> },
-];
+type Glyph = { id: number; char: string };
+
+function lcs(a: string[], b: string[]): Map<number, number> {
+  const dp = Array.from({ length: a.length + 1 }, () =>
+    Array<number>(b.length + 1).fill(0),
+  );
+  for (let i = a.length - 1; i >= 0; i--) {
+    for (let j = b.length - 1; j >= 0; j--) {
+      dp[i][j] =
+        a[i] === b[j]
+          ? dp[i + 1][j + 1] + 1
+          : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  const pairs = new Map<number, number>();
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) pairs.set(j++, i++);
+    else if (dp[i + 1][j] >= dp[i][j + 1]) i++;
+    else j++;
+  }
+  return pairs;
+}
 
 function TextMorph({
   children,
-  className,
-  transition,
+  reduce,
 }: {
   children: string;
-  className?: string;
-  transition: Transition;
+  reduce: boolean;
 }) {
-  const words = useMemo(() => {
-    const counts: Record<string, number> = {};
-    return children.split(" ").map((word) => {
-      const n = (counts[word] = (counts[word] ?? 0) + 1);
-      return { key: `${word}__${n}`, word };
+  const previous = useRef<Glyph[]>([]);
+  const next = useRef(0);
+
+  const glyphs = useMemo(() => {
+    const before = previous.current;
+    const chars = Array.from(children);
+    const pairs = lcs(
+      before.map((glyph) => glyph.char),
+      chars,
+    );
+    return chars.map((char, index) => {
+      const match = pairs.get(index);
+      return {
+        id: match === undefined ? next.current++ : before[match].id,
+        char,
+      };
     });
   }, [children]);
 
+  useEffect(() => {
+    previous.current = glyphs;
+  }, [glyphs]);
+
   return (
-    <span className={className}>
-      <span className={styles.morph}>
-        <AnimatePresence mode="popLayout" initial={false}>
-          {words.map(({ key, word }) => (
-            <motion.span
-              key={key}
-              layout
-              className={styles.word}
-              initial={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
-              transition={transition}
-            >
-              {word}
-            </motion.span>
-          ))}
-        </AnimatePresence>
-      </span>
+    <span className={styles.morph} aria-hidden="true">
+      <AnimatePresence mode="popLayout" initial={false}>
+        {glyphs.map(({ id, char }) => (
+          <motion.span
+            key={id}
+            layout="position"
+            className={styles.glyph}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              transition: reduce ? INSTANT : { ...GLIDE, opacity: ENTER_FADE },
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.95,
+              transition: reduce ? INSTANT : { ...GLIDE, opacity: EXIT_FADE },
+            }}
+            transition={reduce ? INSTANT : GLIDE}
+          >
+            {char === " " ? "\u00a0" : char}
+          </motion.span>
+        ))}
+      </AnimatePresence>
     </span>
   );
 }
 
 export default function StatusMorph() {
-  const [index, setIndex] = useState(0);
+  const [status, setStatus] = useState<Status>("idle");
+  const reduce = useReducedMotion() ?? false;
 
   useEffect(() => {
-    const id = setInterval(
-      () => setIndex((prev) => (prev + 1) % states.length),
-      2200,
+    if (status === "idle") return;
+    const id = setTimeout(
+      () => setStatus(status === "saving" ? "saved" : "idle"),
+      status === "saving" ? SAVING_MS : SAVED_MS,
     );
-    return () => clearInterval(id);
-  }, []);
+    return () => clearTimeout(id);
+  }, [status]);
 
-  const state = states[index];
+  const busy = status !== "idle";
+  const morph = reduce ? INSTANT : GLIDE;
+  const swap = reduce ? INSTANT : SWAP;
 
   return (
     <div className={styles.root}>
-      <motion.div layout className={styles.action} transition={MORPH}>
-        <span className={styles.iconWrapper}>
+      <motion.button
+        layout
+        type="button"
+        className={styles.button}
+        style={{ borderRadius: 8 }}
+        transition={morph}
+        aria-disabled={busy || undefined}
+        onClick={() => !busy && setStatus("saving")}
+      >
+        <motion.span
+          className={styles.iconSlot}
+          initial={false}
+          animate={{
+            width: busy ? ICON : 0,
+            marginInlineEnd: busy ? ICON_GAP : 0,
+          }}
+          transition={morph}
+        >
           <AnimatePresence initial={false}>
-            <motion.span
-              key={index}
-              className={styles.icon}
-              style={{ color: state.color }}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.6, transition: ICON_SPRING }}
-              transition={{ delay: 0.1, ...ICON_SPRING }}
-            >
-              {state.icon}
-            </motion.span>
+            {busy && (
+              <motion.span
+                key={status}
+                className={styles.icon}
+                initial={{ opacity: 0, scale: 0.5, filter: "blur(2px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.5, filter: "blur(2px)" }}
+                transition={swap}
+              >
+                {status === "saving" ? <Spinner /> : <Check reduce={reduce} />}
+              </motion.span>
+            )}
           </AnimatePresence>
-        </span>
-        <TextMorph className={styles.label} transition={MORPH}>
-          {state.label}
-        </TextMorph>
-      </motion.div>
+        </motion.span>
+        <TextMorph reduce={reduce}>{LABELS[status]}</TextMorph>
+        <span className={styles.srOnly}>{LABELS[status]}</span>
+      </motion.button>
+      <span className={styles.srOnly} aria-live="polite">
+        {status === "saving" ? "Saving" : status === "saved" ? "Saved" : ""}
+      </span>
     </div>
   );
 }

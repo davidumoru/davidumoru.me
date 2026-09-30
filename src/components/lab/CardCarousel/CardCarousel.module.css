@@ -1,15 +1,25 @@
 .root {
+  --card: clamp(10rem, 55cqi, 15rem);
+
   display: flex;
   flex-direction: column;
   align-items: center;
   block-size: 100%;
+  container-type: inline-size;
 }
 
 .viewport {
   position: relative;
   inline-size: 100%;
-  block-size: 272px;
-  margin-block-start: -80px;
+  block-size: calc(var(--card) + var(--lift));
+  margin-block-start: calc(var(--card) / -3);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.viewport:active {
+  cursor: grabbing;
 }
 
 .row {
@@ -18,13 +28,12 @@
   inset-inline-start: 50%;
   display: flex;
   align-items: flex-end;
-  gap: 1rem;
 }
 
 .card {
   flex-shrink: 0;
-  inline-size: 240px;
-  block-size: 240px;
+  inline-size: var(--card);
+  block-size: var(--card);
   border: none;
   border-radius: var(--radius-2xl);
   background: var(--surface-active);
@@ -39,6 +48,7 @@
 }
 
 .dot {
+  position: relative;
   block-size: 10px;
   padding: 0;
   border: none;
@@ -50,4 +60,31 @@
 
 .dot[data-active="true"] {
   background: var(--text-subtle);
+}
+
+.dot::before {
+  content: "";
+  position: absolute;
+  inset: -0.5rem -0.25rem;
+}
+
+.card,
+.dot {
+  outline: 2px solid transparent;
+}
+
+.card:focus-visible,
+.dot:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}
+
+.srOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

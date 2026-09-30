@@ -1,0 +1,166 @@
+.root {
+  position: relative;
+  block-size: 28rem;
+  overflow: hidden;
+}
+
+.thread {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  block-size: 100%;
+  padding: var(--space-xl) var(--space-lg) var(--space-4xl);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--space-xl),
+    #000 calc(100% - var(--space-4xl)),
+    transparent
+  );
+  transition:
+    filter var(--duration-slow) var(--ease-out),
+    opacity var(--duration-slow) var(--ease-out);
+}
+.thread::-webkit-scrollbar {
+  display: none;
+}
+
+.root[data-open] .thread {
+  filter: blur(3px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.line {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  inline-size: min(28rem, 100%);
+  margin-inline: auto;
+}
+.line[data-mine] {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-inline-size: 80%;
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  color: var(--text-muted);
+  text-wrap: pretty;
+  transition:
+    background var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out);
+}
+
+.line:not([data-mine]) .bubble {
+  max-inline-size: 88%;
+  padding-inline: 0;
+  background: none;
+}
+
+.line[data-mine] .bubble {
+  background: var(--surface-active);
+  color: var(--text);
+}
+
+.bubble[data-landed] {
+  background: color-mix(in oklch, var(--focus) 26%, var(--surface-active));
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-lg) var(--space-4xl);
+  overflow-y: auto;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pick {
+  border: none;
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.pick:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.toggle {
+  position: absolute;
+  inset-block-end: var(--space-lg);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: var(--background);
+  box-shadow:
+    var(--shadow-border),
+    var(--shadow-lg);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.toggleLabel {
+  display: block;
+  padding: var(--space-xs) var(--space-md);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.toggle:active {
+  scale: 0.97;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .line[data-mine] .pick:hover {
+    background: var(--text);
+    color: var(--background);
+  }
+  .toggle:hover {
+    background: var(--surface);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thread,
+  .bubble,
+  .toggle {
+    transition: none;
+  }
+  .toggle:active {
+    scale: none;
+  }
+}

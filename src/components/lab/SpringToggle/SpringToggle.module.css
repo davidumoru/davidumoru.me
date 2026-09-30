@@ -1,0 +1,66 @@
+.root {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+}
+
+.track {
+  --off: var(--gray-6);
+  --on: oklch(0.24 0 0);
+  --knob-off: #fff;
+  --knob-on: #fff;
+
+  position: relative;
+  inline-size: 72px;
+  block-size: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: var(--off);
+  cursor: pointer;
+  outline: 1px solid transparent;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 240ms var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.track[data-on] {
+  background: var(--on);
+}
+
+.track:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--focus),
+    0 0 0 4px color-mix(in oklch, var(--focus) 16%, transparent);
+}
+
+.knob {
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 5px;
+  block-size: 34px;
+  border-radius: 17px;
+  background: var(--knob-off);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.04);
+  transition: background 240ms var(--ease-out);
+}
+
+.track[data-on] .knob {
+  background: var(--knob-on);
+}
+
+:global(.dark) .track {
+  --off: var(--gray-5);
+  --knob-off: var(--gray-12);
+  --on: var(--gray-12);
+  --knob-on: var(--gray-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .knob {
+    transition: none;
+  }
+}

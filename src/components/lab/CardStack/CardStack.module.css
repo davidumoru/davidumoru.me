@@ -7,10 +7,24 @@
 
 .stack {
   display: grid;
+  border-radius: var(--radius-xl);
+  outline: 2px solid transparent;
+}
+
+.stack:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}
+
+.slot {
+  grid-area: 1 / 1;
+  transform-origin: center;
 }
 
 .item {
   cursor: grab;
+  touch-action: pan-y;
 }
 
 .card {

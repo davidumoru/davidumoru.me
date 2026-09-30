@@ -1,0 +1,178 @@
+.root {
+  --good: var(--green-11);
+  --bad: var(--red-11);
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  padding: var(--space-lg);
+}
+
+:global(.dark) .root {
+  --good: var(--green-9);
+  --bad: var(--red-9);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: text;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.row[data-status="ok"] .slot {
+  box-shadow:
+    0 0 0 1px var(--good),
+    0 0 0 4px color-mix(in oklch, var(--good) 16%, transparent);
+  transition-delay: calc(var(--n) * 45ms);
+}
+
+.slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3.5rem;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-border);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--fs-2xl);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    opacity var(--duration-normal) var(--ease-out);
+}
+
+.row[data-status="checking"] .slot {
+  opacity: 0.5;
+}
+
+.row[data-status="bad"] .slot {
+  box-shadow:
+    0 0 0 1px var(--bad),
+    0 0 0 4px color-mix(in oklch, var(--bad) 16%, transparent);
+}
+
+.ghost,
+.digit {
+  grid-area: 1 / 1;
+  transform-origin: center bottom;
+  transform-style: preserve-3d;
+}
+
+.ghost {
+  color: var(--text-disabled);
+  opacity: 1;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.slot[data-filled] .ghost {
+  opacity: 0;
+}
+
+.digit {
+  color: var(--text);
+}
+
+.dash {
+  flex-shrink: 0;
+  inline-size: var(--space-md);
+  block-size: 2px;
+  border-radius: var(--radius-xs);
+  background: var(--border-strong);
+}
+
+.ring {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 0 0 1px var(--focus),
+    0 0 0 4px color-mix(in oklch, var(--focus) 16%, transparent);
+  pointer-events: none;
+}
+
+.row[data-status="bad"] .ring {
+  box-shadow:
+    0 0 0 1px var(--bad),
+    0 0 0 4px color-mix(in oklch, var(--bad) 16%, transparent);
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  border: none;
+  background: none;
+  color: transparent;
+  caret-color: transparent;
+  font: inherit;
+  outline: none;
+  opacity: 0;
+  cursor: text;
+}
+
+.trail {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--surface-active);
+  opacity: 0;
+  animation: trail var(--trail) var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * var(--stagger));
+}
+
+@keyframes trail {
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+@media (max-width: 30rem) {
+  .row {
+    gap: var(--space-sm);
+  }
+  .cell {
+    gap: var(--space-sm);
+  }
+  .slot {
+    inline-size: 2.25rem;
+    block-size: 2.75rem;
+    font-size: var(--fs-xl);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail {
+    animation: none;
+  }
+  .slot {
+    transition: none;
+  }
+}
+
+.hint {
+  position: absolute;
+  inset-block-end: 3.5rem;
+  inset-inline: 0;
+  margin: 0;
+  text-align: center;
+  font-size: var(--fs-code);
+  color: var(--text-subtle);
+}

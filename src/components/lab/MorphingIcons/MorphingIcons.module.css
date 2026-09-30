@@ -15,20 +15,38 @@
   box-shadow: var(--shadow-border);
   color: var(--text);
   cursor: pointer;
+  outline: 2px solid transparent;
   transition:
     background var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-}
-
-.button:hover {
-  background: var(--surface-hover);
+    scale var(--duration-fast) var(--ease-out);
 }
 
 .button:active {
-  transform: scale(0.96);
+  scale: 0.96;
+}
+
+.button:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
 }
 
 .icon {
   inline-size: 44px;
   block-size: 44px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background: var(--surface-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .button:active {
+    scale: none;
+  }
 }

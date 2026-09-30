@@ -7,45 +7,56 @@
 .button {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding-block: var(--space-sm);
-  padding-inline: var(--space-md) var(--space-lg);
+  gap: 0.5rem;
+  block-size: 2.25rem;
+  padding-inline: 0.75rem 0.875rem;
   border: none;
-  border-radius: var(--radius-2xl);
-  background: var(--surface);
+  border-radius: 999px;
+  background: var(--background);
   box-shadow: var(--shadow-border);
-  font: inherit;
   color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-heading);
   cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: 2px solid transparent;
+  transition: background var(--duration-fast) var(--ease-out);
 }
 
-.heartWrap {
+.button:focus-visible {
+  box-shadow:
+    0 0 0 1px var(--text-subtle),
+    0 0 0 4px color-mix(in oklch, var(--text) 12%, transparent);
+}
+
+.heart {
   position: relative;
   display: grid;
   place-items: center;
-  inline-size: 28px;
-  block-size: 28px;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
 }
 
 .outline,
 .fill {
   grid-area: 1 / 1;
-  inline-size: 26px;
-  block-size: 26px;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .outline {
-  color: var(--gray-8);
+  color: var(--text-subtle);
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.button[data-liked="true"] .outline {
+.button[data-liked] .outline {
   color: var(--red-9);
 }
 
 .fill {
   color: var(--red-9);
-  fill: currentColor;
 }
 
 .burst {
@@ -58,33 +69,51 @@
 
 .halo {
   grid-area: 1 / 1;
-  inline-size: 24px;
-  block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
   border-radius: 50%;
-  border: 2px solid var(--red-9);
+  box-shadow: inset 0 0 0 1.5px var(--red-9);
 }
 
-.particle {
+.spark {
   grid-area: 1 / 1;
   border-radius: 50%;
-}
-
-.countWrap {
-  display: grid;
-  place-items: center start;
-  min-inline-size: 3ch;
-  block-size: 1.4em;
-  overflow: hidden;
+  background: var(--red-9);
 }
 
 .count {
-  grid-area: 1 / 1;
+  display: inline-flex;
   font-variant-numeric: tabular-nums;
-  font-size: var(--fs-sm);
   color: var(--text-muted);
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.button[data-liked="true"] .count {
+.button[data-liked] .count {
   color: var(--text);
+}
+
+.window {
+  position: relative;
+  display: block;
+  block-size: 1.25em;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.digit {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background: var(--surface-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .outline,
+  .count {
+    transition: none;
+  }
 }

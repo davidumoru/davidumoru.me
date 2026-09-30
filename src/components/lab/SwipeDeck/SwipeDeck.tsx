@@ -1,99 +1,148 @@
-import { useState, type CSSProperties } from "react";
-import { motion, AnimatePresence, type PanInfo } from "motion/react";
+import { useRef, useState, type KeyboardEvent } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type PanInfo,
+  type Transition,
+} from "motion/react";
+import styles from "./SwipeDeck.module.css";
 
-const DECK = [
+type Card = { id: number; label: string };
+
+const DECK: Card[] = [
   { id: 1, label: "Flick me away" },
   { id: 2, label: "Then the next" },
   { id: 3, label: "Keep going" },
   { id: 4, label: "Last one" },
 ];
 
-const stage: CSSProperties = {
-  position: "relative",
-  display: "grid",
-  placeItems: "center",
-  touchAction: "none",
-};
+const DISTANCE = 100;
+const VELOCITY = 500;
+const FLY = 420;
+const TILT = 12;
 
-const cardStyle: CSSProperties = {
-  position: "absolute",
-  width: "16rem",
-  height: "10rem",
-  display: "grid",
-  placeItems: "center",
-  borderRadius: "var(--radius-2xl)",
-  border: "1px solid var(--border)",
-  background: "var(--background)",
-  boxShadow: "var(--shadow-lg)",
-  fontFamily: "var(--font-instrument-serif), Georgia, serif",
-  fontSize: "var(--fs-xl)",
-  color: "var(--text)",
-  cursor: "grab",
-  userSelect: "none",
-};
+const INSTANT: Transition = { duration: 0 };
+const SPRING: Transition = { type: "spring", stiffness: 300, damping: 30 };
+const OUT: Transition = { duration: 0.3, ease: [0.23, 1, 0.32, 1] };
 
-const resetBtn: CSSProperties = {
-  padding: "var(--space-sm) var(--space-lg)",
-  border: "1px solid var(--border)",
-  borderRadius: "var(--radius-2xl)",
-  background: "var(--background)",
-  color: "var(--text)",
-  font: "inherit",
-  cursor: "pointer",
-};
+function DeckCard({
+  card,
+  depth,
+  total,
+  reduce,
+  onDismiss,
+}: {
+  card: Card;
+  depth: number;
+  total: number;
+  reduce: boolean;
+  onDismiss: (direction: number) => void;
+}) {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 200], [-TILT, TILT]);
+  const isTop = depth === 0;
+
+  return (
+    <motion.div
+      className={styles.card}
+      data-top={isTop || undefined}
+      style={{ x, rotate, zIndex: total - depth }}
+      initial={reduce ? false : { scale: 0.9, y: 24, opacity: 0 }}
+      animate={{ scale: 1 - depth * 0.04, y: depth * -12, opacity: 1 }}
+      variants={{
+        exit: (direction: number) => ({
+          x: direction * FLY,
+          rotate: direction * TILT * 1.5,
+          opacity: 0,
+          transition: reduce ? INSTANT : OUT,
+        }),
+      }}
+      exit="exit"
+      transition={reduce ? INSTANT : SPRING}
+      drag={isTop ? "x" : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.8}
+      onDragEnd={(_event, info: PanInfo) => {
+        const flung =
+          Math.abs(info.offset.x) > DISTANCE ||
+          Math.abs(info.velocity.x) > VELOCITY;
+        if (!flung) return;
+        const direction =
+          Math.abs(info.velocity.x) > VELOCITY
+            ? Math.sign(info.velocity.x)
+            : Math.sign(info.offset.x);
+        onDismiss(direction || 1);
+      }}
+      aria-hidden={!isTop}
+    >
+      {card.label}
+    </motion.div>
+  );
+}
 
 export default function SwipeDeck() {
   const [cards, setCards] = useState(DECK);
   const [direction, setDirection] = useState(1);
+  const reduce = useReducedMotion() ?? false;
+  const deck = useRef<HTMLDivElement>(null);
 
-  const dismiss = (id: number) =>
-    setCards((cs) => cs.filter((c) => c.id !== id));
-  const reset = () => setCards(DECK);
+  function dismiss(towards: number) {
+    setDirection(towards);
+    setCards((current) => current.slice(1));
+  }
+
+  function onKeyDown(event: KeyboardEvent) {
+    if (!cards.length) return;
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      dismiss(-1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      dismiss(1);
+    }
+  }
 
   return (
-    <div style={stage}>
-      <AnimatePresence custom={direction}>
-        {cards.map((card, i) => {
-          const depth = i;
-          const isTop = depth === 0;
-          return (
-            <motion.div
+    <div className={styles.stage}>
+      <div
+        ref={deck}
+        className={styles.deck}
+        tabIndex={cards.length ? 0 : -1}
+        role="group"
+        aria-roledescription="card deck"
+        aria-label={
+          cards.length
+            ? `${cards[0].label}. ${cards.length} left. Swipe or use the arrow keys to dismiss.`
+            : "Deck empty"
+        }
+        onKeyDown={onKeyDown}
+      >
+        <AnimatePresence custom={direction}>
+          {cards.map((card, depth) => (
+            <DeckCard
               key={card.id}
-              custom={direction}
-              style={{ ...cardStyle, zIndex: cards.length - depth }}
-              initial={{ scale: 0.9, y: 24, opacity: 0 }}
-              animate={{ scale: 1 - depth * 0.04, y: depth * -12, opacity: 1 }}
-              variants={{
-                exit: (dir: number) => ({
-                  x: dir * 340,
-                  opacity: 0,
-                  transition: { duration: 0.25 },
-                }),
-              }}
-              exit="exit"
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              drag={isTop ? "x" : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.8}
-              whileDrag={{ cursor: "grabbing" }}
-              onDragEnd={(_event, info: PanInfo) => {
-                if (info.offset.x > 120) {
-                  setDirection(1);
-                  dismiss(card.id);
-                } else if (info.offset.x < -120) {
-                  setDirection(-1);
-                  dismiss(card.id);
-                }
-              }}
-            >
-              {card.label}
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
+              card={card}
+              depth={depth}
+              total={cards.length}
+              reduce={reduce}
+              onDismiss={dismiss}
+            />
+          ))}
+        </AnimatePresence>
+      </div>
 
       {cards.length === 0 && (
-        <button style={resetBtn} onClick={reset}>
+        <button
+          type="button"
+          className={styles.reset}
+          onClick={() => {
+            setCards(DECK);
+            deck.current?.focus();
+          }}
+        >
           Reset deck
         </button>
       )}
