@@ -7,14 +7,28 @@ interface Props {
 }
 
 const { entry } = Astro.props;
+
+const posters = import.meta.glob<{ default: ImageMetadata }>(
+  "../content/lab/*/poster{,-dark}.png",
+  { eager: true },
+);
+const light = posters[`../content/lab/${entry.id}/poster.png`]?.default;
+const dark = posters[`../content/lab/${entry.id}/poster-dark.png`]?.default;
 ---
 
 <a class="card" href={`/lab/${entry.id}`}>
   <div class="preview">
     {
-      entry.data.poster && (
-        <Image class="poster" src={entry.data.poster} alt="" />
+      light && (
+        <Image
+          class:list={["poster", dark && "poster--light"]}
+          src={light}
+          alt=""
+        />
       )
+    }
+    {
+      dark && <Image class="poster poster--dark" src={dark} alt="" />
     }
   </div>
   <div class="reveal">
@@ -29,6 +43,7 @@ const { entry } = Astro.props;
     --card-pad: var(--space-sm);
     --card-radius: var(--radius-2xl);
 
+    position: relative;
     display: flex;
     flex-direction: column;
     aspect-ratio: 3 / 2;
@@ -45,6 +60,13 @@ const { entry } = Astro.props;
     background: var(--surface);
     overflow: hidden;
   }
+  .poster--dark,
+  :global(.dark) .poster--light {
+    display: none;
+  }
+  :global(.dark) .poster--dark {
+    display: block;
+  }
   .poster {
     width: 100%;
     height: 100%;
@@ -53,6 +75,13 @@ const { entry } = Astro.props;
     box-shadow: inset 0 0 0 1px var(--image-outline);
   }
   .reveal {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding: 0 var(--card-pad) var(--card-pad);
+    border-end-start-radius: var(--card-radius);
+    border-end-end-radius: var(--card-radius);
+    background: var(--background);
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows var(--duration-fast) var(--ease-out);

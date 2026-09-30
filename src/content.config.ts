@@ -44,14 +44,12 @@ const now = defineCollection({
 
 const lab = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/lab" }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string().optional(),
-      date: z.coerce.date(),
-      status: z.enum(["live", "draft"]).default("live"),
-      poster: image().optional(),
-    }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.coerce.date(),
+    status: z.enum(["live", "draft"]).default("live"),
+  }),
 });
 
 const workBase = {
