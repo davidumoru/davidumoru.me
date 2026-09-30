@@ -4,6 +4,7 @@ import {
   motion,
   useReducedMotion,
   type Transition,
+  type Variants,
 } from "motion/react";
 import styles from "./LikeButton.module.css";
 
@@ -13,7 +14,21 @@ const HEART =
 const INSTANT: Transition = { duration: 0 };
 const POP: Transition = { type: "spring", duration: 0.45, bounce: 0.5 };
 const DEFLATE: Transition = { type: "spring", duration: 0.25, bounce: 0 };
-const ROLL: Transition = { type: "spring", duration: 0.35, bounce: 0.15 };
+const ROLL: Transition = { duration: 0.28, ease: [0.23, 1, 0.32, 1] };
+
+const digit: Variants = {
+  enter: (up: boolean) => ({
+    y: up ? "70%" : "-70%",
+    opacity: 0,
+    filter: "blur(2px)",
+  }),
+  center: { y: "0%", opacity: 1, filter: "blur(0px)" },
+  exit: (up: boolean) => ({
+    y: up ? "-70%" : "70%",
+    opacity: 0,
+    filter: "blur(2px)",
+  }),
+};
 const HALO: Transition = { duration: 0.45, ease: [0.19, 1, 0.22, 1] };
 const SPARK: Transition = { duration: 0.5, ease: [0.19, 1, 0.22, 1] };
 
@@ -116,13 +131,15 @@ export default function LikeButton() {
               key={`place-${digits.length - index}`}
               className={styles.window}
             >
-              <AnimatePresence mode="popLayout" initial={false}>
+              <AnimatePresence mode="popLayout" initial={false} custom={up}>
                 <motion.span
                   key={char}
                   className={styles.digit}
-                  initial={reduce ? false : { y: up ? "100%" : "-100%" }}
-                  animate={{ y: "0%" }}
-                  exit={reduce ? { opacity: 0 } : { y: up ? "-100%" : "100%" }}
+                  custom={up}
+                  variants={digit}
+                  initial={reduce ? false : "enter"}
+                  animate="center"
+                  exit="exit"
                   transition={reduce ? INSTANT : ROLL}
                 >
                   {char}

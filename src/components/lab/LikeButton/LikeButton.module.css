@@ -96,7 +96,6 @@
   position: relative;
   display: block;
   block-size: 1.25em;
-  overflow: hidden;
   line-height: 1.25;
 }
 
