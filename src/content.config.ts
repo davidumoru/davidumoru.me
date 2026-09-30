@@ -125,6 +125,24 @@ const bookmarks = defineCollection({
   }),
 });
 
+const gallery = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/gallery" }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.coerce.date().optional(),
+      order: z.number().default(0),
+      photos: z
+        .array(
+          z.object({
+            src: image(),
+            alt: z.string(),
+          }),
+        )
+        .min(1),
+    }),
+});
+
 export const collections = {
   pages,
   posts,
@@ -135,6 +153,7 @@ export const collections = {
   webrings,
   scraps,
   bookmarks,
+  gallery,
 };
 
 type WorkEntry = CollectionEntry<"work">;

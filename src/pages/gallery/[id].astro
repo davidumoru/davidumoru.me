@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import {
+  COMING_SOON,
+  STACK,
+  getAlbums,
+  photoName,
+  type GalleryAlbum,
+} from "../../utils/gallery";
+
+export async function getStaticPaths() {
+  if (COMING_SOON) return [];
+  const albums = await getAlbums();
+  return albums.map((album) => ({
+    params: { id: album.id },
+    props: { album },
+  }));
+}
+
+const { album } = Astro.props as { album: GalleryAlbum };
+---
+
+<BaseLayout title={album.title} description={`Photos from ${album.title}.`}>
+  <PageHeader title={album.title} date={album.date} />
+  <div class="photos">
+    {
+      album.photos.map((photo, i) => (
+        <figure class="photo">
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            width={photo.width}
+            height={photo.height}
+            loading={i < 4 ? "eager" : "lazy"}
+            transition:name={i < STACK ? photoName(album.id, i) : undefined}
+          />
+        </figure>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .photos {
+    --wide: min(64rem, 100vw - 2 * var(--space-lg));
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+    gap: var(--space-md);
+    inline-size: var(--wide);
+    margin-inline: calc((100% - var(--wide)) / 2);
+  }
+
+  .photo {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px var(--image-outline),
+      var(--shadow-md);
+  }
+
+  .photo img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+</style>
