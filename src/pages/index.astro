@@ -38,7 +38,7 @@ const pfpSrcs = pfps.map((img) => img.src);
       >
         <img src={pfpSrcs[0]} alt="" width="112" height="112" />
       </button>
-      <div>
+      <div class="home-hero-text">
         <h1 class="home-hero-name">David Umoru</h1>
         <p class="home-hero-role">Design Engineer</p>
       </div>
@@ -50,9 +50,9 @@ const pfpSrcs = pfps.map((img) => img.src);
         a designer and an engineer. A design engineer, if you will.
       </p>
       <p>
-        My work mostly revolves around the web. I think a lot about how things
-        look, feel, and behave, and I'll obsess over the details until the
-        experience is right.
+        My <a href="/work">work</a> mostly revolves around the web, especially in
+        the small details: motion, interaction, the way things respond. A lot of that
+        tinkering ends up in the <a href="/lab">lab</a>.
       </p>
       <p>
         At the moment, I work on the product team at{" "}
@@ -163,6 +163,10 @@ const pfpSrcs = pfps.map((img) => img.src);
     .home-hero-pfp:active {
       transform: none;
     }
+  }
+
+  .home-hero-text {
+    text-box: trim-both cap alphabetic;
   }
 
   .home-hero-name {
