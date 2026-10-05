@@ -2,35 +2,50 @@
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
-const MAX_TILT_DEGREES = 3;
+const MIN_LEAN = 9;
+const MAX_LEAN = 13;
 
-function tilt(id: string): number {
+function lean(id: string): number {
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
     hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
   }
   const unit = (hash % 1000) / 1000;
-  return (unit * 2 - 1) * MAX_TILT_DEGREES;
+  return Math.round((MIN_LEAN + unit * (MAX_LEAN - MIN_LEAN)) * 10) / 10;
 }
 
 const books = (await getCollection("books")).sort(
   (a, b) => a.data.order - b.data.order,
 );
+
+const missing = (columns: number) =>
+  (columns - (books.length % columns)) % columns;
+const fill = [5, 4, 3, 2]
+  .map((columns) => `--missing-${columns}: ${missing(columns)}`)
+  .join("; ");
 ---
 
 <ul class="bookshelf" role="list">
   {
     books.map((book) => (
-      <li class="bookshelf__book" style={`--tilt: ${tilt(book.id)}deg`}>
-        <Image
-          src={book.data.cover}
-          alt={book.data.title}
-          inferSize
-          widths={[160, 320]}
-          sizes="154px"
-          loading="lazy"
-          decoding="async"
-        />
+      <li
+        class="bookshelf__slot"
+        style={[`--lean: ${lean(book.id)}deg`, book === books.at(-1) && fill]
+          .filter(Boolean)
+          .join("; ")}
+      >
+        <span class="bookshelf__shadow" aria-hidden="true" />
+        <div class="bookshelf__book">
+          <Image
+            src={book.data.cover}
+            alt={book.data.title}
+            inferSize
+            widths={[160, 320]}
+            sizes="154px"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </li>
     ))
   }
@@ -41,34 +56,119 @@ const books = (await getCollection("books")).sort(
     --columns: 5;
     --book-width: 9.625rem;
     --gap-inline: var(--space-4xl);
+    --overhang: var(--space-lg);
+    --shelf-height: 1.125rem;
+    --shelf-radius: var(--radius-sm);
+    --perspective: 36rem;
+    --wood: oklch(0.72 0.065 72);
+    --wood-light: oklch(0.8 0.055 78);
+    --wood-dark: oklch(0.58 0.07 60);
+    --grain: oklch(0.5 0.06 55 / 0.14);
+    --shelf-shadow: oklch(0.35 0.04 60 / 0.16);
+    --shelf-shadow-far: oklch(0.35 0.04 60 / 0.08);
+    --book-shadow: oklch(0.25 0.02 60 / 0.12);
 
     display: grid;
     grid-template-columns: repeat(var(--columns), minmax(0, var(--book-width)));
     justify-content: center;
     align-items: end;
-    gap: var(--space-4xl) var(--gap-inline);
+    gap: calc(var(--space-4xl) + var(--shelf-height)) var(--gap-inline);
 
-    /* Full-bleed so tilted covers can spill past the content column. */
     inline-size: 100vw;
     margin-inline: calc(50% - 50vw);
     padding-inline: var(--space-lg);
-    padding-block-start: var(--space-3xl);
+    padding-block: var(--space-3xl) calc(var(--space-2xl) + var(--shelf-height));
+    overflow-x: clip;
 
     list-style: none;
   }
 
+  :global(.dark) .bookshelf {
+    --wood: oklch(0.5 0.055 60);
+    --wood-light: oklch(0.58 0.05 65);
+    --wood-dark: oklch(0.38 0.05 50);
+    --grain: oklch(0.25 0.04 50 / 0.22);
+    --shelf-shadow: oklch(0 0 0 / 0.5);
+    --shelf-shadow-far: oklch(0 0 0 / 0.3);
+    --book-shadow: oklch(0 0 0 / 0.4);
+  }
+
+  .bookshelf__slot {
+    --start: calc(var(--gap-inline) / -2);
+    --end: calc(var(--gap-inline) / -2);
+
+    position: relative;
+  }
+
+  .bookshelf__slot::before,
+  .bookshelf__slot::after {
+    content: "";
+    position: absolute;
+    inset-block-start: calc(100% - 2px);
+    inset-inline: var(--start) var(--end);
+    block-size: calc(var(--shelf-height) + 2px);
+    border-radius: var(--radius-start, 0) var(--radius-end, 0)
+      var(--radius-end, 0) var(--radius-start, 0);
+    pointer-events: none;
+  }
+
+  .bookshelf__slot::before {
+    z-index: 1;
+    box-shadow:
+      0 2px 2px var(--shelf-shadow),
+      0 8px 14px var(--shelf-shadow-far);
+  }
+
+  .bookshelf__slot::after {
+    z-index: 2;
+    background:
+      repeating-linear-gradient(
+        transparent 0 2px,
+        var(--grain) 2px 3px,
+        transparent 3px 5px,
+        var(--grain) 5px 5.5px,
+        transparent 5.5px 9px
+      ),
+      linear-gradient(
+        var(--wood-light) 0 4px,
+        var(--wood) 4px calc(100% - 2px),
+        var(--wood-dark) calc(100% - 2px)
+      );
+  }
+
+  .bookshelf__slot:last-child {
+    --end: calc(
+      (var(--missing) * (100% + var(--gap-inline)) + var(--overhang)) * -1
+    );
+    --radius-end: var(--shelf-radius);
+  }
+
+  .bookshelf__shadow {
+    position: absolute;
+    inset: 0;
+    background: var(--book-shadow);
+    filter: blur(10px);
+    transform-origin: bottom center;
+    translate: 5px -2px;
+    transform: perspective(var(--perspective)) rotateX(var(--lean));
+    pointer-events: none;
+    transition:
+      translate var(--duration-slow) var(--ease-out),
+      filter var(--duration-slow) var(--ease-out),
+      opacity var(--duration-slow) var(--ease-out);
+  }
+
   .bookshelf__book {
     position: relative;
-    rotate: var(--tilt);
+    transform: perspective(var(--perspective)) rotateX(var(--lean));
     transform-origin: bottom center;
     background: var(--surface);
     box-shadow:
-      var(--shadow-lg),
+      var(--shadow-xs),
       inset 0 0 0 1px var(--image-outline);
     transition:
-      rotate var(--duration-slow) var(--ease-out),
-      translate var(--duration-slow) var(--ease-out),
-      box-shadow var(--duration-slow) var(--ease-out);
+      transform var(--duration-slow) var(--ease-out),
+      translate var(--duration-slow) var(--ease-out);
   }
 
   .bookshelf__book img {
@@ -80,49 +180,126 @@ const books = (await getCollection("books")).sort(
   .bookshelf__book::before {
     content: "";
     position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: clamp(5px, 6.5%, 12px);
+    inset: 0;
     z-index: 1;
     pointer-events: none;
-    background: linear-gradient(
-      90deg,
-      oklch(0 0 0 / 0.34) 0%,
-      oklch(0 0 0 / 0.16) 38%,
-      oklch(0 0 0 / 0.02) 66%,
-      oklch(1 0 0 / 0.14) 84%,
-      oklch(0 0 0 / 0.05) 100%
-    );
+    background:
+      linear-gradient(
+          90deg,
+          oklch(0 0 0 / 0.34) 0%,
+          oklch(0 0 0 / 0.16) 38%,
+          oklch(0 0 0 / 0.02) 66%,
+          oklch(1 0 0 / 0.14) 84%,
+          oklch(0 0 0 / 0.05) 100%
+        )
+        0 0 / clamp(5px, 6.5%, 12px) 100% no-repeat,
+      linear-gradient(
+        160deg,
+        oklch(1 0 0 / 0.16) 0%,
+        oklch(1 0 0 / 0) 35%,
+        oklch(0 0 0 / 0) 65%,
+        oklch(0 0 0 / 0.12) 100%
+      );
   }
 
-  @media (hover: hover) {
-    .bookshelf__book:hover {
-      rotate: 0deg;
+  @media (hover: hover) and (pointer: fine) {
+    .bookshelf__slot:hover .bookshelf__shadow {
+      translate: 8px -3px;
+      filter: blur(12px);
+      opacity: 0.8;
+    }
+
+    .bookshelf__slot:hover .bookshelf__book {
+      transform: perspective(var(--perspective)) rotateX(0deg);
       translate: 0 -4px;
-      z-index: 1;
-      box-shadow:
-        var(--shadow-xl),
-        inset 0 0 0 1px var(--image-outline);
     }
   }
 
-  @media (max-width: 64rem) {
+  @media (width > 64rem) {
+    .bookshelf__slot:nth-child(5n + 1) {
+      --start: calc(var(--overhang) * -1);
+      --radius-start: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:nth-child(5n) {
+      --end: calc(var(--overhang) * -1);
+      --radius-end: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:last-child {
+      --missing: var(--missing-5);
+    }
+  }
+
+  @media (48rem < width <= 64rem) {
     .bookshelf {
       --columns: 4;
+      --overhang: var(--space-sm);
+    }
+
+    .bookshelf__slot:nth-child(4n + 1) {
+      --start: calc(var(--overhang) * -1);
+      --radius-start: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:nth-child(4n) {
+      --end: calc(var(--overhang) * -1);
+      --radius-end: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:last-child {
+      --missing: var(--missing-4);
     }
   }
 
-  @media (max-width: 48rem) {
+  @media (32rem < width <= 48rem) {
     .bookshelf {
       --columns: 3;
       --gap-inline: var(--space-3xl);
+      --overhang: var(--space-sm);
+    }
+
+    .bookshelf__slot:nth-child(3n + 1) {
+      --start: calc(var(--overhang) * -1);
+      --radius-start: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:nth-child(3n) {
+      --end: calc(var(--overhang) * -1);
+      --radius-end: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:last-child {
+      --missing: var(--missing-3);
     }
   }
 
-  @media (max-width: 32rem) {
+  @media (width <= 32rem) {
     .bookshelf {
       --columns: 2;
       --gap-inline: var(--space-2xl);
+      --overhang: var(--space-sm);
+    }
+
+    .bookshelf__slot:nth-child(2n + 1) {
+      --start: calc(var(--overhang) * -1);
+      --radius-start: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:nth-child(2n) {
+      --end: calc(var(--overhang) * -1);
+      --radius-end: var(--shelf-radius);
+    }
+
+    .bookshelf__slot:last-child {
+      --missing: var(--missing-2);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bookshelf__shadow,
+    .bookshelf__book {
+      transition: none;
     }
   }
 </style>
