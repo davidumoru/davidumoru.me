@@ -27,9 +27,7 @@ const dark = posters[`../content/lab/${entry.id}/poster-dark.png`]?.default;
         />
       )
     }
-    {
-      dark && <Image class="poster poster--dark" src={dark} alt="" />
-    }
+    {dark && <Image class="poster poster--dark" src={dark} alt="" />}
   </div>
   <div class="reveal">
     <div class="reveal-inner">
@@ -51,14 +49,24 @@ const dark = posters[`../content/lab/${entry.id}/poster-dark.png`]?.default;
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-border);
     text-decoration: none;
+    overflow: clip;
     transition: box-shadow var(--duration-fast) ease;
   }
   .preview {
+    --inner-radius: calc(var(--card-radius) - var(--card-pad));
+    --cut: calc(var(--space-sm) + var(--lh-snug) * 1em);
+
     flex: 1;
     min-height: 0;
-    border-radius: calc(var(--card-radius) - var(--card-pad));
+    border-radius: var(--inner-radius);
     background: var(--surface);
     overflow: hidden;
+    clip-path: inset(0 round var(--inner-radius));
+    transition: clip-path var(--duration-fast) var(--ease-out);
+  }
+  .card:hover .preview,
+  .card:focus-visible .preview {
+    clip-path: inset(0 0 var(--cut) round var(--inner-radius));
   }
   .poster--dark,
   :global(.dark) .poster--light {
@@ -79,8 +87,6 @@ const dark = posters[`../content/lab/${entry.id}/poster-dark.png`]?.default;
     inset-inline: 0;
     inset-block-end: 0;
     padding: 0 var(--card-pad) var(--card-pad);
-    border-end-start-radius: var(--card-radius);
-    border-end-end-radius: var(--card-radius);
     background: var(--background);
     display: grid;
     grid-template-rows: 0fr;

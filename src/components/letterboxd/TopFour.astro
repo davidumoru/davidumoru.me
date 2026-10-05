@@ -44,7 +44,7 @@ const films = [
             src={f.poster}
             alt={`${f.title} poster`}
             widths={[318, 635]}
-            sizes="(max-width: 34rem) 22vw, 148px"
+            sizes="(max-width: 34rem) 45vw, 196px"
             loading="lazy"
           />
         </span>
@@ -55,10 +55,14 @@ const films = [
 
 <style>
   .top-four {
+    --wide: min(52rem, 100vw - 2 * var(--space-lg));
+
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-md);
     align-items: start;
+    inline-size: var(--wide);
+    margin-inline: calc((100% - var(--wide)) / 2);
   }
 
   .top-four__item {
@@ -94,7 +98,10 @@ const films = [
 
   @media (max-width: 34rem) {
     .top-four {
+      grid-template-columns: repeat(2, 1fr);
       gap: var(--space-sm);
+      inline-size: auto;
+      margin-inline: 0;
     }
   }
 </style>
