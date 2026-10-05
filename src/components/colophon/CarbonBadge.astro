@@ -1,0 +1,138 @@
+<div class="carbonbadge" data-carbon-badge>
+  <div class="row">
+    <span class="grams" data-grams>Measuring CO<sub>2</sub>&hellip;</span>
+    <a
+      class="brand"
+      href="https://www.websitecarbon.com/"
+      target="_blank"
+      rel="noopener">Website Carbon</a
+    >
+  </div>
+  <span class="percent" data-percent>&nbsp;</span>
+</div>
+
+<script>
+  const URL_ = "https://davidumoru.me/";
+  const KEY = `wcb_${URL_}`;
+  const DAY = 864e5;
+
+  type Result = { c: number; p: number; t: number };
+
+  function render(badge: HTMLElement, result: Result | null) {
+    const grams = badge.querySelector("[data-grams]")!;
+    const percent = badge.querySelector("[data-percent]")!;
+    if (!result) {
+      grams.textContent = "No result";
+      percent.innerHTML = "&nbsp;";
+      return;
+    }
+    grams.innerHTML = `${result.c}g of CO<sub>2</sub>/view`;
+    percent.textContent = `Cleaner than ${result.p}% of pages tested`;
+  }
+
+  function read(): Result | null {
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function measure(): Promise<Result | null> {
+    try {
+      const res = await fetch(
+        `https://api.websitecarbon.com/b?url=${encodeURIComponent(URL_)}`,
+      );
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (typeof data.c !== "number") throw new Error();
+      const result = { c: data.c, p: data.p, t: Date.now() };
+      try {
+        localStorage.setItem(KEY, JSON.stringify(result));
+      } catch {}
+      return result;
+    } catch {
+      return null;
+    }
+  }
+
+  async function bind() {
+    const badge = document.querySelector<HTMLElement>("[data-carbon-badge]");
+    if (!badge) return;
+    const cached = read();
+    if (cached) render(badge, cached);
+    if (!cached || Date.now() - cached.t > DAY) {
+      const fresh = await measure();
+      if (fresh || !cached) render(badge, fresh);
+    }
+  }
+
+  document.addEventListener("astro:page-load", bind);
+</script>
+
+<style>
+  .carbonbadge {
+    --b1: #0e11a8;
+    --b2: #00ffbc;
+    display: inline-block;
+    margin-block-start: var(--space-xs);
+    font-size: 15px;
+    text-align: center;
+    color: var(--b1);
+    line-height: 1.15;
+  }
+
+  .carbonbadge sub {
+    vertical-align: middle;
+    position: relative;
+    top: 0.3em;
+    font-size: 0.7em;
+  }
+
+  .percent,
+  .brand,
+  .grams {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1em;
+    line-height: 1.15;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    text-decoration: none;
+    margin: 0.2em 0;
+  }
+
+  .brand,
+  .grams {
+    padding: 0.3em 0.5em;
+    border: 0.13em solid var(--b2);
+  }
+
+  .grams {
+    border-radius: 0.3em 0 0 0.3em;
+    background: #fff;
+    border-right: 0;
+    min-width: 8.2em;
+  }
+
+  .brand {
+    border-radius: 0 0.3em 0.3em 0;
+    border-left: 0;
+    background: var(--b1);
+    color: #fff;
+    font-weight: 700;
+    border-color: var(--b1);
+  }
+
+  :global(.dark) .brand {
+    color: var(--b1);
+    background: var(--b2);
+    border-color: var(--b2);
+  }
+
+  :global(.dark) .percent {
+    color: #fff;
+  }
+</style>

@@ -9,6 +9,7 @@ coverAlt: Minimalist book page with bold 'COLOPHON' text and publication details
 import Spec from "../../../components/colophon/Spec.astro";
 import Row from "../../../components/colophon/Row.astro";
 import Fonts from "../../../components/colophon/Fonts.astro";
+import CarbonBadge from "../../../components/colophon/CarbonBadge.astro";
 
 <Spec>
   <Row label="Stack">
@@ -43,6 +44,10 @@ import Fonts from "../../../components/colophon/Fonts.astro";
 
 <Row label="Hosting">
   [Vercel](https://vercel.com/), with Web Analytics and Speed Insights.
+</Row>
+
+<Row label="Carbon">
+  <CarbonBadge />
 </Row>
 
 <Row label="Privacy">
