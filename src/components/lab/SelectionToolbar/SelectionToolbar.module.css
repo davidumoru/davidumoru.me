@@ -48,7 +48,6 @@
   margin-block-start: var(--space-md);
   font-size: var(--fs-sm);
   color: var(--text-muted);
-  text-wrap: pretty;
 }
 
 .nudge {

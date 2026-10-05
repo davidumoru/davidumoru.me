@@ -55,7 +55,6 @@
   font-size: var(--fs-sm);
   line-height: var(--lh-snug);
   color: var(--text-muted);
-  text-wrap: pretty;
   transition:
     background var(--duration-normal) var(--ease-out),
     color var(--duration-normal) var(--ease-out);

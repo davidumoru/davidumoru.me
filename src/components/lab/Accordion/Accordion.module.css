@@ -59,7 +59,6 @@
   font-size: var(--fs-sm);
   line-height: var(--lh-normal);
   color: var(--text-muted);
-  text-wrap: pretty;
 }
 
 @media (prefers-reduced-motion: reduce) {

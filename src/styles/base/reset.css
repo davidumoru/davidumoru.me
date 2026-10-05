@@ -28,6 +28,7 @@
 
 body {
   line-height: 1.5;
+  text-wrap: pretty;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -66,9 +67,6 @@ h6 {
   overflow-wrap: break-word;
 }
 
-p {
-  text-wrap: pretty;
-}
 h1,
 h2,
 h3,

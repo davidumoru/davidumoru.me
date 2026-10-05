@@ -60,7 +60,6 @@
   line-height: 1.45;
   color: var(--pc-ink);
   overflow-wrap: break-word;
-  text-wrap: pretty;
 }
 
 .postcard-signature {

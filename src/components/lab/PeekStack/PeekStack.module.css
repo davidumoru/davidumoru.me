@@ -68,7 +68,6 @@
   font-size: var(--fs-sm);
   line-height: var(--lh-snug);
   color: var(--text-subtle);
-  text-wrap: pretty;
   transition: opacity 150ms var(--ease-out);
 }
 
