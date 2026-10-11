@@ -1,0 +1,116 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { getPlaylist } from "../utils/playlists";
+
+const description =
+  "Songs I keep on repeat, bundled into playlists for different moods.";
+
+const playlists = await Promise.all(
+  (await getCollection("playlists"))
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(getPlaylist),
+);
+---
+
+<BaseLayout title="Playlists" description={description}>
+  <PageHeader title="Playlists" description={description} showDescription />
+
+  <ul class="grid">
+    {
+      playlists.map((playlist) => (
+        <li>
+          <a class="tile" href={playlist.url} target="_blank" rel="noopener">
+            <span class="cover">
+              {playlist.cover && (
+                <img
+                  src={playlist.cover}
+                  alt=""
+                  width="300"
+                  height="300"
+                  loading="lazy"
+                />
+              )}
+            </span>
+            <span class="name">{playlist.title}</span>
+            {playlist.note && <span class="note">{playlist.note}</span>}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--space-xl) var(--space-lg);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cover {
+    display: block;
+    aspect-ratio: 1;
+    margin-block-end: var(--space-xs);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px var(--image-outline),
+      var(--shadow-sm);
+    transition:
+      scale var(--duration-normal) var(--ease-out),
+      box-shadow var(--duration-normal) var(--ease-out);
+  }
+
+  .cover img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .name {
+    font-weight: var(--fw-heading);
+    line-height: var(--lh-snug);
+    color: var(--text);
+  }
+
+  .note {
+    font-size: var(--fs-sm);
+    line-height: var(--lh-snug);
+    color: var(--text-subtle);
+  }
+
+  .tile:focus-visible .cover {
+    outline: 2px solid var(--text-subtle);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tile:hover .cover {
+      scale: 1.02;
+      box-shadow:
+        0 0 0 1px var(--image-outline),
+        var(--shadow-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cover {
+      transition: none;
+    }
+  }
+</style>

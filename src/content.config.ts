@@ -3,7 +3,7 @@ import {
   type CollectionEntry,
   type SchemaContext,
 } from "astro:content";
-import { glob } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const coverFields = ({ image }: SchemaContext) => ({
@@ -143,6 +143,15 @@ const gallery = defineCollection({
     }),
 });
 
+const playlists = defineCollection({
+  loader: file("src/content/playlists.json"),
+  schema: z.object({
+    url: z.url(),
+    note: z.string().optional(),
+    order: z.number().default(0),
+  }),
+});
+
 export const collections = {
   pages,
   posts,
@@ -154,6 +163,7 @@ export const collections = {
   scraps,
   bookmarks,
   gallery,
+  playlists,
 };
 
 type WorkEntry = CollectionEntry<"work">;

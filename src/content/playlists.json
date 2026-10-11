@@ -1,0 +1,44 @@
+[
+  {
+    "id": "2-42",
+    "order": 1,
+    "url": "https://open.spotify.com/playlist/57ZdpbE7DrZ1Y3wjjiQPsO",
+    "note": "On repeat whenever I need to lock in."
+  },
+  {
+    "id": "oh-i-love-it-and-i-hate-it",
+    "order": 2,
+    "url": "https://open.spotify.com/playlist/70IOWtZzpsLd1ZEDZdaGZb",
+    "note": "Songs that hurt in the best way."
+  },
+  {
+    "id": "slow-down-you-crazy-child",
+    "order": 3,
+    "url": "https://open.spotify.com/playlist/2d9GyFrqhI4jm4vBvbzhcg",
+    "note": "For when everything feels like too much."
+  },
+  {
+    "id": "nostalgia",
+    "order": 4,
+    "url": "https://open.spotify.com/playlist/2UUQckGWFAJ2MEatwwAa28",
+    "note": "Back to the playlists I had on my first phone."
+  },
+  {
+    "id": "jil",
+    "order": 5,
+    "url": "https://open.spotify.com/playlist/43JCenLH2oeX50emcEJE60",
+    "note": "A little bit of everything, mostly for the drive."
+  },
+  {
+    "id": "musicals",
+    "order": 6,
+    "url": "https://open.spotify.com/playlist/2W0whVXKPCoEh7sfqNgn6N",
+    "note": "Showtunes I will defend to the end."
+  },
+  {
+    "id": "still-awake",
+    "order": 7,
+    "url": "https://open.spotify.com/playlist/7BoE0110hh3nT6EehOrb17",
+    "note": "2am, lights off, headphones on."
+  }
+]
