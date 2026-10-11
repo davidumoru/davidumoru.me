@@ -14,8 +14,8 @@ function lean(id: string): number {
   return Math.round((MIN_LEAN + unit * (MAX_LEAN - MIN_LEAN)) * 10) / 10;
 }
 
-const books = (await getCollection("books")).sort(
-  (a, b) => a.data.order - b.data.order,
+const books = (await getCollection("books")).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
 );
 
 const missing = (columns: number) =>

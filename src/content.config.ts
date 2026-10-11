@@ -101,13 +101,11 @@ const webrings = defineCollection({
 
 const books = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/books" }),
-  schema: () =>
-    z.object({
-      title: z.string(),
-      author: z.string(),
-      cover: z.url(),
-      order: z.number().default(0),
-    }),
+  schema: z.object({
+    title: z.string(),
+    author: z.string(),
+    cover: z.url(),
+  }),
 });
 
 const bookmarks = defineCollection({
